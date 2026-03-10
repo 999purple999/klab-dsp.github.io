@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-LAB DSP · K-DSP UNIVERSAL</title>
+    <style>
+        /* RESET & FONTS – fedele all’originale */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        :root {
+            --bg-dark: #000000;
+            --bg-card: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #8a8a8a;
+            --accent-green: #00ff41;
+            --accent-cyan: #00ffea;
+            --border-color: #222222;
+            --gradient-green: linear-gradient(135deg, #00ff41 0%, #00ff9d 100%);
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 65, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(0, 255, 234, 0.03) 0%, transparent 20%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .header {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: transparent;
+            border: 2px solid var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 24px;
+            color: var(--accent-green);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: 2px;
+        }
+
+        .lang-selector {
+            background: transparent;
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0,255,65,0.3);
+            transition: 0.2s;
+        }
+        .lang-selector:hover {
+            background: var(--accent-green);
+            color: #000;
+        }
+        .lang-selector option {
+            background: #111;
+            color: #fff;
+        }
+
+        .hero {
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero-sub {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .price-display {
+            margin: 2rem 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .old-price {
+            font-size: 2rem;
+            color: #888;
+            text-decoration: line-through;
+            font-weight: 500;
+        }
+
+        .new-price {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--accent-green);
+            text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+            line-height: 1;
+        }
+
+        .currency {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            align-self: flex-end;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+            border-color: var(--accent-green);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent-green);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.9);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.7);
+            transform: translateY(-3px);
+        }
+
+        /* Griglia features */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 2.5rem;
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 1px solid #222;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: #050505;
+            padding: 20px;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 10px var(--accent-cyan));
+        }
+
+        .product-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-green), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-highlight {
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: auto;
+        }
+
+        /* FAQ SECTION */
+        .faq-wrapper {
+            max-width: 1100px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .faq-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .faq-column {
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 255, 65, 0.1);
+            transition: border 0.2s;
+        }
+
+        .faq-column:hover {
+            border-color: var(--accent-green);
+        }
+
+        .faq-column h3 {
+            color: var(--accent-green);
+            font-size: 1.5rem;
+            margin-bottom: 1.8rem;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .faq-item {
+            margin-bottom: 1.8rem;
+        }
+
+        .faq-question {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .faq-question::before {
+            content: "▶";
+            color: var(--accent-green);
+            font-size: 0.8rem;
+        }
+
+        .faq-answer {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            padding-left: 1.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            padding: 30px 20px;
+            border-top: 1px solid #111;
+            text-align: center;
+            color: #444;
+            font-size: 0.8rem;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            color: var(--accent-green);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .new-price { font-size: 2.8rem; }
+            .faq-grid { grid-template-columns: 1fr; }
+            .hero-buttons { flex-direction: column; width: 100%; }
+            .btn-primary, .btn-secondary { width: 100%; }
+            .header-container { flex-direction: column; align-items: flex-start; }
+            .lang-selector { align-self: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="matrix-bg"></div>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-container">
+        <div class="logo">
+            <div class="logo-icon">⚡</div>
+            <div class="logo-text">K-LAB INDUSTRIES</div>
+        </div>
+        <select id="langSwitcher" class="lang-selector">
+            <option value="it" selected>🇮🇹 Italiano</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="zh">🇨🇳 中文</option>
+        </select>
+    </div>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <h1>K-DSP UNIVERSAL</h1>
+    <p class="hero-sub" data-i18n="heroSub">Il Motore Neurale Definitivo. 9 Emulazioni Analogiche (Neve, SSL, Tape) a zero latenza.</p>
+    
+    <div class="price-display">
+        <span class="old-price">€49</span>
+        <span class="new-price">€20</span>
+        <span class="currency">EUR</span>
+    </div>
+
+    <div class="hero-buttons">
+        <!-- LINK STRIPE DIRETTO PER L'ACQUISTO -->
+        <a href="https://buy.stripe.com/test_14AeV62lP2Q11q27BV5wI00" class="btn-primary" data-i18n="btnBuy">ACQUISTA LICENZA A VITA (€20)</a>
+        <a href="#" class="btn-secondary" data-i18n="btnDemo">SCARICA DEMO (24H)</a>
+    </div>
+</section>
+
+<!-- FEATURE CARDS -->
+<div class="products-grid">
+    <!-- Card 1 -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%2300ff41' stroke-width='2' stroke-dasharray='6 6' /%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E"
+                 alt="Neural Core">
+        </div>
+        <div class="product-content">
+            <h3 class="product-title" data-i18n="card1Title">NEURAL CORE</h3>
+            <p class="feature-desc" data-i18n="card1Desc">Convoluzione dinamica proprietaria per un suono analogico perfetto. Replica la risposta armonica di console e nastri con dettaglio impossibile.</p>
+            <div class="feature-highlight" data-i18n="card1Highlight">zero latenza · 64-bit floating point</div>
+        </div>
+    </div>
+    <!-- Card 2 -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect x='20' y='30' width='60' height='40' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Cline x1='30' y1='40' x2='70' y2='40' stroke='%2300ffea' stroke-width='2' /%3E%3Cline x1='30' y1='60' x2='70' y2='60' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E"
+                 alt="9 Modelli">
+        </div>
+        <div class="product-content">
+            <h3 class="product-title" data-i18n="card2Title">9 MODELLI INCLUSI</h3>
+            <p class="feature-desc" data-i18n="card2Desc">Preamp, console ed EQ di leggendaria emulazione: K_1073 (Neve), SSL 4000, Tape Machine, V76, LA-2A, 1176, Pultec, Helios, e un rack di mixing.</p>
+            <div class="feature-highlight" data-i18n="card2Highlight">ogni modello è un'emulazione circuitale</div>
+        </div>
+    </div>
+    <!-- Card 3 -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 L40,30 L60,30 L80,50 L60,70 L40,70 L20,50' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='12' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E"
+                 alt="Cloud Authenticator">
+        </div>
+        <div class="product-content">
+            <h3 class="product-title" data-i18n="card3Title">CLOUD AUTHENTICATOR</h3>
+            <p class="feature-desc" data-i18n="card3Desc">Licenza legata alla tua email, sicura e inattaccabile. Attivazione istantanea via server, niente dongle o file chiave da perdere.</p>
+            <div class="feature-highlight" data-i18n="card3Highlight">2FA pronta · cambio macchine illimitato</div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ SECTION -->
+<div class="faq-wrapper">
+    <h2 class="faq-title" data-i18n="faqTitle">DOMANDE FREQUENTI</h2>
+    <div class="faq-grid">
+        <!-- colonna sinistra: prima dell'acquisto -->
+        <div class="faq-column">
+            <h3 data-i18n="faqPreTitle">🔍 PRIMA DELL'ACQUISTO</h3>
+            <div class="faq-item">
+                <div class="faq-question" data-i18n="faqPreQ1">Compatibile con Mac e Windows?</div>
+                <div class="faq-answer" data-i18n="faqPreA1">Al momento è disponibile in formato VST3 per Windows. La versione Mac AU è in sviluppo e sarà rilasciata entro Q2 2026.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" data-i18n="faqPreQ2">Ci sono abbonamenti?</div>
+                <div class="faq-answer" data-i18n="faqPreA2">Assolutamente no. Paghi 20€ una volta sola e la licenza è tua per sempre, inclusi aggiornamenti minori.</div>
+            </div>
+        </div>
+        <!-- colonna destra: dopo l'acquisto -->
+        <div class="faq-column">
+            <h3 data-i18n="faqPostTitle">⚙️ DOPO L'ACQUISTO</h3>
+            <div class="faq-item">
+                <div class="faq-question" data-i18n="faqPostQ1">Come attivo il plugin?</div>
+                <div class="faq-answer" data-i18n="faqPostA1">Dopo il pagamento su Stripe, apri la tua DAW, carica il K-DSP Universal e inserisci l'indirizzo email che hai usato. Il nostro Neural Core sbloccherà l'audio istantaneamente.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" data-i18n="faqPostQ2">Ho bisogno di internet per l'attivazione?</div>
+                <div class="faq-answer" data-i18n="faqPostA2">Sì, il plugin richiede una connessione attiva la prima volta che lo avvii per verificare la licenza. Dopo funziona offline per 30 giorni.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <p data-i18n="footerCopyright">© 2026 K-LAB DSP Industries. Tutti i diritti riservati.</p>
+    <p>
+        <a href="#" data-i18n="footerVat">P.IVA 01234567890</a> · 
+        <a href="#" data-i18n="footerTerms">Termini</a> · 
+        <a href="#" data-i18n="footerPrivacy">Privacy Policy</a>
+    </p>
+    <p style="color: #333; margin-top: 1rem;" data-i18n="footerTagline">K-DSP UNIVERSAL – il suono analogico senza compromessi.</p>
+</footer>
+
+<!-- MULTILINGUA SCRIPT -->
+<script>
+    (function() {
+        // Traduzioni
+        const translations = {
+            it: {
+                heroSub: "Il Motore Neurale Definitivo. 9 Emulazioni Analogiche (Neve, SSL, Tape) a zero latenza.",
+                btnBuy: "ACQUISTA LICENZA A VITA (€20)",
+                btnDemo: "SCARICA DEMO (24H)",
+                card1Title: "NEURAL CORE",
+                card1Desc: "Convoluzione dinamica proprietaria per un suono analogico perfetto. Replica la risposta armonica di console e nastri con dettaglio impossibile.",
+                card1Highlight: "zero latenza · 64-bit floating point",
+                card2Title: "9 MODELLI INCLUSI",
+                card2Desc: "Preamp, console ed EQ di leggendaria emulazione: K_1073 (Neve), SSL 4000, Tape Machine, V76, LA-2A, 1176, Pultec, Helios, e un rack di mixing.",
+                card2Highlight: "ogni modello è un'emulazione circuitale",
+                card3Title: "CLOUD AUTHENTICATOR",
+                card3Desc: "Licenza legata alla tua email, sicura e inattaccabile. Attivazione istantanea via server, niente dongle o file chiave da perdere.",
+                card3Highlight: "2FA pronta · cambio macchine illimitato",
+                faqTitle: "DOMANDE FREQUENTI",
+                faqPreTitle: "🔍 PRIMA DELL'ACQUISTO",
+                faqPreQ1: "Compatibile con Mac e Windows?",
+                faqPreA1: "Al momento è disponibile in formato VST3 per Windows. La versione Mac AU è in sviluppo e sarà rilasciata entro Q2 2026.",
+                faqPreQ2: "Ci sono abbonamenti?",
+                faqPreA2: "Assolutamente no. Paghi 20€ una volta sola e la licenza è tua per sempre, inclusi aggiornamenti minori.",
+                faqPostTitle: "⚙️ DOPO L'ACQUISTO",
+                faqPostQ1: "Come attivo il plugin?",
+                faqPostA1: "Dopo il pagamento su Stripe, apri la tua DAW, carica il K-DSP Universal e inserisci l'indirizzo email che hai usato. Il nostro Neural Core sbloccherà l'audio istantaneamente.",
+                faqPostQ2: "Ho bisogno di internet per l'attivazione?",
+                faqPostA2: "Sì, il plugin richiede una connessione attiva la prima volta che lo avvii per verificare la licenza. Dopo funziona offline per 30 giorni.",
+                footerCopyright: "© 2026 K-LAB DSP Industries. Tutti i diritti riservati.",
+                footerVat: "P.IVA 01234567890",
+                footerTerms: "Termini",
+                footerPrivacy: "Privacy Policy",
+                footerTagline: "K-DSP UNIVERSAL – il suono analogico senza compromessi."
+            },
+            en: {
+                heroSub: "The Definitive Neural Engine. 9 Analog Emulations (Neve, SSL, Tape) with zero latency.",
+                btnBuy: "BUY LIFETIME LICENSE (€20)",
+                btnDemo: "DOWNLOAD DEMO (24H)",
+                card1Title: "NEURAL CORE",
+                card1Desc: "Proprietary dynamic convolution for perfect analog sound. Replicates the harmonic response of consoles and tape with impossible detail.",
+                card1Highlight: "zero latency · 64-bit floating point",
+                card2Title: "9 MODELS INCLUDED",
+                card2Desc: "Legendary preamp, console and EQ emulations: K_1073 (Neve), SSL 4000, Tape Machine, V76, LA-2A, 1176, Pultec, Helios, and a mixing rack.",
+                card2Highlight: "each model is a circuit emulation",
+                card3Title: "CLOUD AUTHENTICATOR",
+                card3Desc: "License linked to your email, secure and unbreakable. Instant server activation, no dongles or key files to lose.",
+                card3Highlight: "2FA ready · unlimited machine changes",
+                faqTitle: "FREQUENTLY ASKED QUESTIONS",
+                faqPreTitle: "🔍 BEFORE PURCHASE",
+                faqPreQ1: "Compatible with Mac and Windows?",
+                faqPreA1: "Currently available as VST3 for Windows. The Mac AU version is in development and will be released by Q2 2026.",
+                faqPreQ2: "Are there subscriptions?",
+                faqPreA2: "Absolutely not. You pay €20 once and the license is yours forever, including minor updates.",
+                faqPostTitle: "⚙️ AFTER PURCHASE",
+                faqPostQ1: "How do I activate the plugin?",
+                faqPostA1: "After payment on Stripe, open your DAW, load K-DSP Universal and enter the email address you used. Our Neural Core will unlock the audio instantly.",
+                faqPostQ2: "Do I need internet for activation?",
+                faqPostA2: "Yes, the plugin requires an active connection the first time you run it to verify the license. After that it works offline for 30 days.",
+                footerCopyright: "© 2026 K-LAB DSP Industries. All rights reserved.",
+                footerVat: "VAT 01234567890",
+                footerTerms: "Terms",
+                footerPrivacy: "Privacy Policy",
+                footerTagline: "K-DSP UNIVERSAL – analog sound without compromise."
+            },
+            zh: {
+                heroSub: "终极神经引擎。9种模拟仿真（Neve、SSL、磁带）零延迟。",
+                btnBuy: "购买永久许可证 (€20)",
+                btnDemo: "下载试用版 (24小时)",
+                card1Title: "神经核心",
+                card1Desc: "专有的动态卷积技术，呈现完美模拟声。以不可能的细节复现调音台和磁带的谐波响应。",
+                card1Highlight: "零延迟 · 64位浮点",
+                card2Title: "包含9种模型",
+                card2Desc: "传奇前置放大器、调音台和均衡器仿真：K_1073 (Neve)、SSL 4000、磁带机、V76、LA-2A、1176、Pultec、Helios 以及混音机架。",
+                card2Highlight: "每个模型都是电路级仿真",
+                card3Title: "云验证器",
+                card3Desc: "许可证与您的电子邮件绑定，安全且无法破解。即时服务器激活，无需加密狗或密钥文件。",
+                card3Highlight: "支持双重认证 · 无限机器更换",
+                faqTitle: "常见问题",
+                faqPreTitle: "🔍 购买前",
+                faqPreQ1: "兼容 Mac 和 Windows 吗？",
+                faqPreA1: "目前提供 Windows VST3 版本。Mac AU 版本正在开发中，将于2026年第二季度发布。",
+                faqPreQ2: "有订阅制吗？",
+                faqPreA2: "完全没有。您一次性支付20欧元，许可证永久有效，包含次要更新。",
+                faqPostTitle: "⚙️ 购买后",
+                faqPostQ1: "如何激活插件？",
+                faqPostA1: "在Stripe付款后，打开您的DAW，加载K-DSP Universal并输入您使用的电子邮件地址。我们的神经核心将立即解锁音频。",
+                faqPostQ2: "激活需要互联网吗？",
+                faqPostA2: "是的，插件首次运行需要联网验证许可证。之后可离线使用30天。",
+                footerCopyright: "© 2026 K-LAB DSP Industries。保留所有权利。",
+                footerVat: "增值税号 01234567890",
+                footerTerms: "条款",
+                footerPrivacy: "隐私政策",
+                footerTagline: "K-DSP UNIVERSAL – 毫不妥协的模拟之声。"
+            }
+        };
+
+        const elements = document.querySelectorAll('[data-i18n]');
+
+        function setLanguage(lang) {
+            if (!translations[lang]) return;
+            const t = translations[lang];
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+            localStorage.setItem('preferredLang', lang);
+        }
+
+        const savedLang = localStorage.getItem('preferredLang') || 'it';
+        document.getElementById('langSwitcher').value = savedLang;
+        setLanguage(savedLang);
+
+        document.getElementById('langSwitcher').addEventListener('change', function(e) {
+            setLanguage(e.target.value);
+        });
+    })();
+</script>
+
+<!-- LINK STRIPE DIRETTO GIA' PRESENTE NEL PULSANTE .btn-primary -->
+</body>
+</html>
