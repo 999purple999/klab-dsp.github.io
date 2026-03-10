@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-LAB DSP · K-DSP UNIVERSAL</title>
+    <title>K-LAB DSP · K-LAB GENESIS BUNDLE</title>
     <style>
         /* RESET & FONTS – fedele all’originale */
         * {
@@ -117,10 +117,11 @@
             color: #fff;
         }
 
+        /* Hero section per il bundle principale */
         .hero {
             padding: 4rem 2rem 2rem;
             text-align: center;
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             position: relative;
         }
@@ -139,7 +140,7 @@
             font-size: 1.25rem;
             color: var(--text-secondary);
             margin-bottom: 2rem;
-            max-width: 700px;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -226,6 +227,37 @@
             color: #000;
             box-shadow: 0 0 30px rgba(0, 255, 65, 0.7);
             transform: translateY(-3px);
+        }
+
+        /* Sample audio buttons */
+        .sample-audio {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 2.5rem 0 1rem;
+        }
+        .sample-btn {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .sample-btn:hover {
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-green);
+        }
+        .sample-btn::before {
+            content: "▶";
+            font-size: 0.9rem;
         }
 
         /* Griglia features */
@@ -505,6 +537,7 @@
             .faq-grid { grid-template-columns: 1fr; }
             .hero-buttons { flex-direction: column; width: 100%; }
             .btn-primary, .btn-secondary { width: 100%; }
+            .sample-audio { flex-direction: column; align-items: center; }
             .header-container { flex-direction: column; align-items: flex-start; }
             .lang-selector { align-self: flex-end; }
         }
@@ -529,78 +562,77 @@
     </div>
 </header>
 
-<!-- HERO SECTION -->
+<!-- HERO SECTION - K-LAB GENESIS BUNDLE (prodotto principale) -->
 <section class="hero">
-    <h1>K-DSP UNIVERSAL</h1>
-    <p class="hero-sub" data-i18n="heroSub">Il motore neurale definitivo. 9 modelli di emulazione dinamica a zero latenza.</p>
+    <h1>K-LAB GENESIS BUNDLE</h1>
+    <p class="hero-sub" data-i18n="heroSub">
+        Il motore neurale definitivo, leggero come una piuma. Gira senza problemi su qualsiasi portatile, anche di 10 anni fa.<br>
+        <strong style="color:var(--accent-cyan);">4 bit depth selezionabili:</strong> 32 bit float (master quality), 16, 8 e 4 bit (ultra fast quality) senza compromessi timbrici.<br>
+        Include due preamplificatori di livello studio: <strong>K-512c</strong> e <strong>K-1073MP</strong>.
+    </p>
     
     <div class="price-display">
-        <span class="old-price">€49</span>
-        <span class="new-price">€20</span>
+        <span class="new-price">€15</span>
         <span class="currency">EUR</span>
     </div>
 
     <div class="hero-buttons">
-        <!-- LINK STRIPE DIRETTO PER L'ACQUISTO -->
-        <a href="https://buy.stripe.com/test_14AeV62lP2Q11q27BV5wI00" class="btn-primary" data-i18n="btnBuy">ACQUISTA LICENZA A VITA (€20)</a>
+        <!-- Link di acquisto per il bundle principale -->
+        <a href="https://buy.stripe.com/8x25kD91Ten08Bjeaebsc01" class="btn-primary" data-i18n="btnBuy">ACQUISTA ORA (€15)</a>
         <a href="#" class="btn-secondary" data-i18n="btnDemo">SCARICA DEMO (24H)</a>
+    </div>
+
+    <!-- Placeholder per due campioni audio -->
+    <div class="sample-audio">
+        <a href="#" class="sample-btn" data-i18n="sample1">Ascolta Sample 1</a>
+        <a href="#" class="sample-btn" data-i18n="sample2">Ascolta Sample 2</a>
     </div>
 </section>
 
-<!-- FEATURE CARDS -->
+<!-- FEATURE CARDS - ora descrivono le caratteristiche del motore Genesis -->
 <div class="products-grid">
-    <!-- Card 1 -->
+    <!-- Card 1: Ultra leggero -->
     <div class="product-card">
         <div class="product-image">
             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%2300ff41' stroke-width='2' stroke-dasharray='6 6' /%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E"
-                 alt="Neural Core">
+                 alt="Ultra Light Engine">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card1Title">K-NEURAL CORE</h3>
-            <p class="feature-desc" data-i18n="card1Desc">Convoluzione dinamica proprietaria per un suono analogico perfetto. Replica la risposta armonica di console e nastri con dettaglio impossibile.</p>
-            <div class="feature-highlight" data-i18n="card1Highlight">zero latenza · 64-bit floating point</div>
+            <h3 class="product-title" data-i18n="card1Title">MOTORE ULTRA LEGGERO</h3>
+            <p class="feature-desc" data-i18n="card1Desc">Ottimizzato per CPU datate: funziona fluidamente su portatili di 10 anni fa. Consumo ridotto, prestazioni实时.</p>
+            <div class="feature-highlight" data-i18n="card1Highlight">zero latenza · qualsiasi hardware</div>
         </div>
     </div>
-    <!-- Card 2 -->
+    <!-- Card 2: 4 bit depth selezionabili -->
     <div class="product-card">
         <div class="product-image">
             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect x='20' y='30' width='60' height='40' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Cline x1='30' y1='40' x2='70' y2='40' stroke='%2300ffea' stroke-width='2' /%3E%3Cline x1='30' y1='60' x2='70' y2='60' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E"
-                 alt="9 Modelli">
+                 alt="4 Bit Depth">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card2Title">9 MODELLI K-LAB</h3>
-            <p class="feature-desc" data-i18n="card2Desc">Preamp, console ed EQ di leggendaria emulazione: K-1073, K-SSL 4K, K-TAPE, K-V76, K-LA2A, K-1176, K-PULTEC, K-HELIOS, e un rack di mixing.</p>
-            <div class="feature-highlight" data-i18n="card2Highlight">ogni modello è un'emulazione circuitale</div>
+            <h3 class="product-title" data-i18n="card2Title">4 BIT DEPTH</h3>
+            <p class="feature-desc" data-i18n="card2Desc">Scegli la modalità: 32 bit float per il massimo della qualità, 16/8/4 bit per sessioni ultra rapide. La qualità timbrica resta intatta.</p>
+            <div class="feature-highlight" data-i18n="card2Highlight">selezionabile in tempo reale</div>
         </div>
     </div>
-    <!-- Card 3 -->
+    <!-- Card 3: Due preamplificatori inclusi -->
     <div class="product-card">
         <div class="product-image">
             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 L40,30 L60,30 L80,50 L60,70 L40,70 L20,50' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='12' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E"
-                 alt="Cloud Authenticator">
+                 alt="Due Preamp">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card3Title">K-CLOUD AUTHENTICATOR</h3>
-            <p class="feature-desc" data-i18n="card3Desc">Licenza legata alla tua email, sicura e inattaccabile. Attivazione istantanea via server, niente dongle o file chiave da perdere.</p>
-            <div class="feature-highlight" data-i18n="card3Highlight">2FA pronta · cambio macchine illimitato</div>
+            <h3 class="product-title" data-i18n="card3Title">2 PREAMP INCLUSI</h3>
+            <p class="feature-desc" data-i18n="card3Desc">K-512c (API ispirazione) e K-1073MP (Neve ispirazione). Emulazioni circuitali di livello mastering.</p>
+            <div class="feature-highlight" data-i18n="card3Highlight">pronti all'uso</div>
         </div>
     </div>
 </div>
 
-<!-- BUNDLE SECTION -->
+<!-- BUNDLE SECTION - gli altri bundle rimangono invariati -->
 <section class="bundles-section">
-    <h2 class="bundles-title" data-i18n="bundlesTitle">Bundle ed Espansioni</h2>
+    <h2 class="bundles-title" data-i18n="bundlesTitle">Altri Bundle ed Espansioni</h2>
     <div class="bundles-grid">
-        <!-- Bundle 1: Genesis Bundle (Core Engine + Dual Preamp) -->
-        <div class="bundle-card">
-            <h3 data-i18n="bundle1Title">K-LAB GENESIS BUNDLE</h3>
-            <p class="bundle-desc" data-i18n="bundle1Desc">
-                Il motore neurale K-DSP Universal più due preamplificatori selezionati: K-512c e K-1073MP. Include l'installer del plugin e istruzioni di licenza. Modellati con tecnologia proprietaria a 16/8/4 bit per una risposta impeccabile. Zero latenza, 64-bit floating point.
-            </p>
-            <div class="bundle-price" data-i18n="bundle1Price">€15</div>
-            <a href="https://buy.stripe.com/8x25kD91Ten08Bjeaebsc01" class="btn-bundle" data-i18n="bundle1Btn">ACQUISTA</a>
-        </div>
-
         <!-- Bundle 2: Preamp Expansion Vol.1 (Avalon & Neve Console Heritage) -->
         <div class="bundle-card">
             <h3 data-i18n="bundle2Title">PREAMP EXPANSION VOL.1</h3>
@@ -682,7 +714,7 @@
         <a href="#" data-i18n="footerTerms">Termini</a> · 
         <a href="#" data-i18n="footerPrivacy">Privacy Policy</a>
     </p>
-    <p style="color: #333; margin-top: 1rem;" data-i18n="footerTagline">K-DSP UNIVERSAL – il suono analogico senza compromessi.</p>
+    <p style="color: #333; margin-top: 1rem;" data-i18n="footerTagline">K-LAB GENESIS – il suono analogico senza compromessi.</p>
 </footer>
 
 <!-- MULTILINGUA SCRIPT -->
@@ -691,23 +723,21 @@
         // Traduzioni
         const translations = {
             it: {
-                heroSub: "Il motore neurale definitivo. 9 modelli di emulazione dinamica a zero latenza.",
-                btnBuy: "ACQUISTA LICENZA A VITA (€20)",
+                heroSub: "Il motore neurale definitivo, leggero come una piuma. Gira senza problemi su qualsiasi portatile, anche di 10 anni fa. 4 bit depth selezionabili: 32 bit float (master quality), 16, 8 e 4 bit (ultra fast quality) senza compromessi timbrici. Include due preamplificatori di livello studio: K-512c e K-1073MP.",
+                btnBuy: "ACQUISTA ORA (€15)",
                 btnDemo: "SCARICA DEMO (24H)",
-                card1Title: "K-NEURAL CORE",
-                card1Desc: "Convoluzione dinamica proprietaria per un suono analogico perfetto. Replica la risposta armonica di console e nastri con dettaglio impossibile.",
-                card1Highlight: "zero latenza · 64-bit floating point",
-                card2Title: "9 MODELLI K-LAB",
-                card2Desc: "Preamp, console ed EQ di leggendaria emulazione: K-1073, K-SSL 4K, K-TAPE, K-V76, K-LA2A, K-1176, K-PULTEC, K-HELIOS, e un rack di mixing.",
-                card2Highlight: "ogni modello è un'emulazione circuitale",
-                card3Title: "K-CLOUD AUTHENTICATOR",
-                card3Desc: "Licenza legata alla tua email, sicura e inattaccabile. Attivazione istantanea via server, niente dongle o file chiave da perdere.",
-                card3Highlight: "2FA pronta · cambio macchine illimitato",
-                bundlesTitle: "Bundle ed Espansioni",
-                bundle1Title: "K-LAB GENESIS BUNDLE",
-                bundle1Desc: "Il motore neurale K-DSP Universal più due preamplificatori selezionati: K-512c e K-1073MP. Include l'installer del plugin e istruzioni di licenza. Modellati con tecnologia proprietaria a 16/8/4 bit per una risposta impeccabile. Zero latenza, 64-bit floating point.",
-                bundle1Price: "€15",
-                bundle1Btn: "ACQUISTA",
+                sample1: "Ascolta Sample 1",
+                sample2: "Ascolta Sample 2",
+                card1Title: "MOTORE ULTRA LEGGERO",
+                card1Desc: "Ottimizzato per CPU datate: funziona fluidamente su portatili di 10 anni fa. Consumo ridotto, prestazioni实时.",
+                card1Highlight: "zero latenza · qualsiasi hardware",
+                card2Title: "4 BIT DEPTH",
+                card2Desc: "Scegli la modalità: 32 bit float per il massimo della qualità, 16/8/4 bit per sessioni ultra rapide. La qualità timbrica resta intatta.",
+                card2Highlight: "selezionabile in tempo reale",
+                card3Title: "2 PREAMP INCLUSI",
+                card3Desc: "K-512c (API ispirazione) e K-1073MP (Neve ispirazione). Emulazioni circuitali di livello mastering.",
+                card3Highlight: "pronti all'uso",
+                bundlesTitle: "Altri Bundle ed Espansioni",
                 bundle2Title: "PREAMP EXPANSION VOL.1",
                 bundle2Desc: "5 modelli di preamplificatori ispirati alle console storiche: K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B. Perfetti per arricchire la tua traccia con calore analogico. Training con loss multi-risoluzione per una fedeltà timbrica senza compromessi.",
                 bundle2Price: "€10",
@@ -739,26 +769,24 @@
                 footerVat: "P.IVA 01234567890",
                 footerTerms: "Termini",
                 footerPrivacy: "Privacy Policy",
-                footerTagline: "K-DSP UNIVERSAL – il suono analogico senza compromessi."
+                footerTagline: "K-LAB GENESIS – il suono analogico senza compromessi."
             },
             en: {
-                heroSub: "The definitive neural engine. 9 dynamic emulation models with zero latency.",
-                btnBuy: "BUY LIFETIME LICENSE (€20)",
+                heroSub: "The ultimate neural engine, light as a feather. Runs smoothly on any laptop, even 10 years old. 4 selectable bit depths: 32-bit float (master quality), 16, 8 and 4-bit (ultra fast quality) with no tonal compromise. Includes two studio-grade preamps: K-512c and K-1073MP.",
+                btnBuy: "BUY NOW (€15)",
                 btnDemo: "DOWNLOAD DEMO (24H)",
-                card1Title: "K-NEURAL CORE",
-                card1Desc: "Proprietary dynamic convolution for perfect analog sound. Replicates the harmonic response of consoles and tape with impossible detail.",
-                card1Highlight: "zero latency · 64-bit floating point",
-                card2Title: "9 K-LAB MODELS",
-                card2Desc: "Legendary preamp, console and EQ emulations: K-1073, K-SSL 4K, K-TAPE, K-V76, K-LA2A, K-1176, K-PULTEC, K-HELIOS, and a mixing rack.",
-                card2Highlight: "each model is a circuit emulation",
-                card3Title: "K-CLOUD AUTHENTICATOR",
-                card3Desc: "License linked to your email, secure and unbreakable. Instant server activation, no dongles or key files to lose.",
-                card3Highlight: "2FA ready · unlimited machine changes",
-                bundlesTitle: "Bundles & Expansions",
-                bundle1Title: "K-LAB GENESIS BUNDLE",
-                bundle1Desc: "K-DSP Universal neural engine plus two selected preamps: K-512c and K-1073MP. Includes plugin installer and license instructions. Modeled with proprietary 16/8/4-bit technology for impeccable response. Zero latency, 64-bit floating point.",
-                bundle1Price: "€15",
-                bundle1Btn: "BUY NOW",
+                sample1: "Listen Sample 1",
+                sample2: "Listen Sample 2",
+                card1Title: "ULTRA LIGHT ENGINE",
+                card1Desc: "Optimized for older CPUs: runs smoothly on 10-year-old laptops. Low consumption, real-time performance.",
+                card1Highlight: "zero latency · any hardware",
+                card2Title: "4 BIT DEPTH",
+                card2Desc: "Choose the mode: 32-bit float for maximum quality, 16/8/4-bit for ultra-fast sessions. Tonal quality remains intact.",
+                card2Highlight: "selectable in real time",
+                card3Title: "2 PREAMPS INCLUDED",
+                card3Desc: "K-512c (API inspired) and K-1073MP (Neve inspired). Mastering-grade circuit emulations.",
+                card3Highlight: "ready to use",
+                bundlesTitle: "Other Bundles & Expansions",
                 bundle2Title: "PREAMP EXPANSION VOL.1",
                 bundle2Desc: "5 preamp models inspired by historic consoles: K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B. Perfect for adding analog warmth to your track. Multi-resolution loss training for uncompromising tonal fidelity.",
                 bundle2Price: "€10",
@@ -790,26 +818,24 @@
                 footerVat: "VAT 01234567890",
                 footerTerms: "Terms",
                 footerPrivacy: "Privacy Policy",
-                footerTagline: "K-DSP UNIVERSAL – analog sound without compromise."
+                footerTagline: "K-LAB GENESIS – analog sound without compromise."
             },
             zh: {
-                heroSub: "终极神经引擎。9种动态仿真模型，零延迟。",
-                btnBuy: "购买永久许可证 (€20)",
+                heroSub: "终极神经引擎，轻如羽毛。可在任何笔记本电脑上流畅运行，即使是10年前的旧机型。4种可选位深度：32位浮点（母带品质），16、8和4位（超快品质），音色无妥协。包含两个录音室级前置放大器：K-512c 和 K-1073MP。",
+                btnBuy: "立即购买 (€15)",
                 btnDemo: "下载试用版 (24小时)",
-                card1Title: "K-神经核心",
-                card1Desc: "专有的动态卷积技术，呈现完美模拟声。以不可能的细节复现调音台和磁带的谐波响应。",
-                card1Highlight: "零延迟 · 64位浮点",
-                card2Title: "9个K-LAB模型",
-                card2Desc: "传奇前置放大器、调音台和均衡器仿真：K-1073, K-SSL 4K, K-TAPE, K-V76, K-LA2A, K-1176, K-PULTEC, K-HELIOS 以及混音机架。",
-                card2Highlight: "每个模型都是电路级仿真",
-                card3Title: "K-云验证器",
-                card3Desc: "许可证与您的电子邮件绑定，安全且无法破解。即时服务器激活，无需加密狗或密钥文件。",
-                card3Highlight: "支持双重认证 · 无限机器更换",
-                bundlesTitle: "捆绑包与扩展",
-                bundle1Title: "K-LAB GENESIS BUNDLE",
-                bundle1Desc: "K-DSP Universal神经引擎加上两个精选前置放大器：K-512c 和 K-1073MP。包含插件安装程序和许可证说明。采用16/8/4位专有技术建模，响应无可挑剔。零延迟，64位浮点。",
-                bundle1Price: "€15",
-                bundle1Btn: "立即购买",
+                sample1: "试听样本1",
+                sample2: "试听样本2",
+                card1Title: "超轻引擎",
+                card1Desc: "针对旧款CPU优化：在10年前的笔记本电脑上流畅运行。低消耗，实时性能。",
+                card1Highlight: "零延迟 · 任何硬件",
+                card2Title: "4种位深度",
+                card2Desc: "选择模式：32位浮点以获得最高品质，16/8/4位用于超快速处理。音色质量保持不变。",
+                card2Highlight: "实时可选",
+                card3Title: "包含2个前置放大器",
+                card3Desc: "K-512c（API风格）和K-1073MP（Neve风格）。母带级电路仿真。",
+                card3Highlight: "即插即用",
+                bundlesTitle: "其他捆绑包和扩展",
                 bundle2Title: "前置放大器扩展 VOL.1",
                 bundle2Desc: "5个灵感源自历史调音台的前置放大器模型：K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B。为您的音轨增添模拟温暖感。多分辨率损失训练，音色 fidelity 无妥协。",
                 bundle2Price: "€10",
@@ -841,7 +867,7 @@
                 footerVat: "增值税号 01234567890",
                 footerTerms: "条款",
                 footerPrivacy: "隐私政策",
-                footerTagline: "K-DSP UNIVERSAL – 毫不妥协的模拟之声。"
+                footerTagline: "K-LAB GENESIS – 毫不妥协的模拟之声。"
             }
         };
 
@@ -869,6 +895,5 @@
     })();
 </script>
 
-<!-- LINK STRIPE DIRETTO GIA' PRESENTE NEL PULSANTE .btn-primary -->
 </body>
 </html>
