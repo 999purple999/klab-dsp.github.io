@@ -316,6 +316,95 @@
             margin-top: auto;
         }
 
+        /* Bundle cards */
+        .bundles-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .bundles-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bundles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .bundle-card {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 1.8rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .bundle-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+        }
+
+        .bundle-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-green), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bundle-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .bundle-price {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--accent-green);
+            text-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+            margin-bottom: 1.2rem;
+        }
+
+        .btn-bundle {
+            background: transparent;
+            color: var(--accent-green);
+            border: 2px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .btn-bundle:hover {
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+            transform: scale(1.05);
+        }
+
         /* FAQ SECTION */
         .faq-wrapper {
             max-width: 1100px;
@@ -443,7 +532,7 @@
 <!-- HERO SECTION -->
 <section class="hero">
     <h1>K-DSP UNIVERSAL</h1>
-    <p class="hero-sub" data-i18n="heroSub">Il Motore Neurale Definitivo. 9 Emulazioni Analogiche (Neve, SSL, Tape) a zero latenza.</p>
+    <p class="hero-sub" data-i18n="heroSub">Il motore neurale definitivo. 9 modelli di emulazione dinamica a zero latenza.</p>
     
     <div class="price-display">
         <span class="old-price">€49</span>
@@ -467,7 +556,7 @@
                  alt="Neural Core">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card1Title">NEURAL CORE</h3>
+            <h3 class="product-title" data-i18n="card1Title">K-NEURAL CORE</h3>
             <p class="feature-desc" data-i18n="card1Desc">Convoluzione dinamica proprietaria per un suono analogico perfetto. Replica la risposta armonica di console e nastri con dettaglio impossibile.</p>
             <div class="feature-highlight" data-i18n="card1Highlight">zero latenza · 64-bit floating point</div>
         </div>
@@ -479,8 +568,8 @@
                  alt="9 Modelli">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card2Title">9 MODELLI INCLUSI</h3>
-            <p class="feature-desc" data-i18n="card2Desc">Preamp, console ed EQ di leggendaria emulazione: K_1073 (Neve), SSL 4000, Tape Machine, V76, LA-2A, 1176, Pultec, Helios, e un rack di mixing.</p>
+            <h3 class="product-title" data-i18n="card2Title">9 MODELLI K-LAB</h3>
+            <p class="feature-desc" data-i18n="card2Desc">Preamp, console ed EQ di leggendaria emulazione: K-1073, K-SSL 4K, K-TAPE, K-V76, K-LA2A, K-1176, K-PULTEC, K-HELIOS, e un rack di mixing.</p>
             <div class="feature-highlight" data-i18n="card2Highlight">ogni modello è un'emulazione circuitale</div>
         </div>
     </div>
@@ -491,12 +580,68 @@
                  alt="Cloud Authenticator">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card3Title">CLOUD AUTHENTICATOR</h3>
+            <h3 class="product-title" data-i18n="card3Title">K-CLOUD AUTHENTICATOR</h3>
             <p class="feature-desc" data-i18n="card3Desc">Licenza legata alla tua email, sicura e inattaccabile. Attivazione istantanea via server, niente dongle o file chiave da perdere.</p>
             <div class="feature-highlight" data-i18n="card3Highlight">2FA pronta · cambio macchine illimitato</div>
         </div>
     </div>
 </div>
+
+<!-- BUNDLE SECTION -->
+<section class="bundles-section">
+    <h2 class="bundles-title" data-i18n="bundlesTitle">Bundle ed Espansioni</h2>
+    <div class="bundles-grid">
+        <!-- Bundle 1: Genesis Bundle (Core Engine + Dual Preamp) -->
+        <div class="bundle-card">
+            <h3 data-i18n="bundle1Title">K-LAB GENESIS BUNDLE</h3>
+            <p class="bundle-desc" data-i18n="bundle1Desc">
+                Il motore neurale K-DSP Universal più due preamplificatori selezionati: K-512c e K-1073MP. Include l'installer del plugin e istruzioni di licenza. Modellati con tecnologia proprietaria a 16/8/4 bit per una risposta impeccabile. Zero latenza, 64-bit floating point.
+            </p>
+            <div class="bundle-price" data-i18n="bundle1Price">€15</div>
+            <a href="https://buy.stripe.com/8x25kD91Ten08Bjeaebsc01" class="btn-bundle" data-i18n="bundle1Btn">ACQUISTA</a>
+        </div>
+
+        <!-- Bundle 2: Preamp Expansion Vol.1 (Avalon & Neve Console Heritage) -->
+        <div class="bundle-card">
+            <h3 data-i18n="bundle2Title">PREAMP EXPANSION VOL.1</h3>
+            <p class="bundle-desc" data-i18n="bundle2Desc">
+                5 modelli di preamplificatori ispirati alle console storiche: K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B. Perfetti per arricchire la tua traccia con calore analogico. Training con loss multi-risoluzione per una fedeltà timbrica senza compromessi.
+            </p>
+            <div class="bundle-price" data-i18n="bundle2Price">€10</div>
+            <a href="https://buy.stripe.com/00wfZh1zr7YC9Fn8PUbsc05" class="btn-bundle" data-i18n="bundle2Btn">ACQUISTA</a>
+        </div>
+
+        <!-- Bundle 3: Preamp Expansion Vol.2 (Tape Saturators & Studio Secrets) -->
+        <div class="bundle-card">
+            <h3 data-i18n="bundle3Title">PREAMP EXPANSION VOL.2</h3>
+            <p class="bundle-desc" data-i18n="bundle3Desc">
+                7 modelli di preamplificatori e unità tape: K-A807, K-EQP1, K-SPL, K-TEAC, K-YAMAHA, K-AMESZ, K-OTARI. Emulazione circuitale avanzata con preservazione della fase e normalizzazione EBU R128.
+            </p>
+            <div class="bundle-price" data-i18n="bundle3Price">€10</div>
+            <a href="https://buy.stripe.com/8x23cvdi93Im6tbeaebsc04" class="btn-bundle" data-i18n="bundle3Btn">ACQUISTA</a>
+        </div>
+
+        <!-- Bundle 4: Neural Amphead Suite (Boutique & High-Gain Titans) -->
+        <div class="bundle-card">
+            <h3 data-i18n="bundle4Title">NEURAL AMPHEAD SUITE</h3>
+            <p class="bundle-desc" data-i18n="bundle4Desc">
+                5 modelli di teste amplificate: K-JP2C, K-BADLANDER, K-JCM800, K-LYNX, K-TWIN. Catturati con dinamica a 64-bit e quantizzazione adattiva per suonabilità autentica.
+            </p>
+            <div class="bundle-price" data-i18n="bundle4Price">€10</div>
+            <a href="https://buy.stripe.com/00w4gz5PH4Mq18Reaebsc03" class="btn-bundle" data-i18n="bundle4Btn">ACQUISTA</a>
+        </div>
+
+        <!-- Bundle 5: Stompbox Evolution (Legendary Overdrive & Drive Collection) -->
+        <div class="bundle-card">
+            <h3 data-i18n="bundle5Title">STOMPBOX EVOLUTION</h3>
+            <p class="bundle-desc" data-i18n="bundle5Desc">
+                5 pedali effetti: K-TS9, K-RAT, K-MORNING GLORY, K-ANDY TIMMONS, K-BD2. Modellazione non lineare con QAT e supporto stereo a zero latenza.
+            </p>
+            <div class="bundle-price" data-i18n="bundle5Price">€10</div>
+            <a href="https://buy.stripe.com/5kQ00j2Dv3Im3gZ5DIbsc02" class="btn-bundle" data-i18n="bundle5Btn">ACQUISTA</a>
+        </div>
+    </div>
+</section>
 
 <!-- FAQ SECTION -->
 <div class="faq-wrapper">
@@ -511,7 +656,7 @@
             </div>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPreQ2">Ci sono abbonamenti?</div>
-                <div class="faq-answer" data-i18n="faqPreA2">Assolutamente no. Paghi 20€ una volta sola e la licenza è tua per sempre, inclusi aggiornamenti minori.</div>
+                <div class="faq-answer" data-i18n="faqPreA2">Assolutamente no. Paghi una volta sola e la licenza è tua per sempre, inclusi aggiornamenti minori.</div>
             </div>
         </div>
         <!-- colonna destra: dopo l'acquisto -->
@@ -519,7 +664,7 @@
             <h3 data-i18n="faqPostTitle">⚙️ DOPO L'ACQUISTO</h3>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPostQ1">Come attivo il plugin?</div>
-                <div class="faq-answer" data-i18n="faqPostA1">Dopo il pagamento su Stripe, apri la tua DAW, carica il K-DSP Universal e inserisci l'indirizzo email che hai usato. Il nostro Neural Core sbloccherà l'audio istantaneamente.</div>
+                <div class="faq-answer" data-i18n="faqPostA1">Dopo il pagamento, apri la tua DAW, carica il plugin e inserisci l'indirizzo email che hai usato. Il sistema sbloccherà l'audio istantaneamente.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPostQ2">Ho bisogno di internet per l'attivazione?</div>
@@ -546,27 +691,48 @@
         // Traduzioni
         const translations = {
             it: {
-                heroSub: "Il Motore Neurale Definitivo. 9 Emulazioni Analogiche (Neve, SSL, Tape) a zero latenza.",
+                heroSub: "Il motore neurale definitivo. 9 modelli di emulazione dinamica a zero latenza.",
                 btnBuy: "ACQUISTA LICENZA A VITA (€20)",
                 btnDemo: "SCARICA DEMO (24H)",
-                card1Title: "NEURAL CORE",
+                card1Title: "K-NEURAL CORE",
                 card1Desc: "Convoluzione dinamica proprietaria per un suono analogico perfetto. Replica la risposta armonica di console e nastri con dettaglio impossibile.",
                 card1Highlight: "zero latenza · 64-bit floating point",
-                card2Title: "9 MODELLI INCLUSI",
-                card2Desc: "Preamp, console ed EQ di leggendaria emulazione: K_1073 (Neve), SSL 4000, Tape Machine, V76, LA-2A, 1176, Pultec, Helios, e un rack di mixing.",
+                card2Title: "9 MODELLI K-LAB",
+                card2Desc: "Preamp, console ed EQ di leggendaria emulazione: K-1073, K-SSL 4K, K-TAPE, K-V76, K-LA2A, K-1176, K-PULTEC, K-HELIOS, e un rack di mixing.",
                 card2Highlight: "ogni modello è un'emulazione circuitale",
-                card3Title: "CLOUD AUTHENTICATOR",
+                card3Title: "K-CLOUD AUTHENTICATOR",
                 card3Desc: "Licenza legata alla tua email, sicura e inattaccabile. Attivazione istantanea via server, niente dongle o file chiave da perdere.",
                 card3Highlight: "2FA pronta · cambio macchine illimitato",
+                bundlesTitle: "Bundle ed Espansioni",
+                bundle1Title: "K-LAB GENESIS BUNDLE",
+                bundle1Desc: "Il motore neurale K-DSP Universal più due preamplificatori selezionati: K-512c e K-1073MP. Include l'installer del plugin e istruzioni di licenza. Modellati con tecnologia proprietaria a 16/8/4 bit per una risposta impeccabile. Zero latenza, 64-bit floating point.",
+                bundle1Price: "€15",
+                bundle1Btn: "ACQUISTA",
+                bundle2Title: "PREAMP EXPANSION VOL.1",
+                bundle2Desc: "5 modelli di preamplificatori ispirati alle console storiche: K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B. Perfetti per arricchire la tua traccia con calore analogico. Training con loss multi-risoluzione per una fedeltà timbrica senza compromessi.",
+                bundle2Price: "€10",
+                bundle2Btn: "ACQUISTA",
+                bundle3Title: "PREAMP EXPANSION VOL.2",
+                bundle3Desc: "7 modelli di preamplificatori e unità tape: K-A807, K-EQP1, K-SPL, K-TEAC, K-YAMAHA, K-AMESZ, K-OTARI. Emulazione circuitale avanzata con preservazione della fase e normalizzazione EBU R128.",
+                bundle3Price: "€10",
+                bundle3Btn: "ACQUISTA",
+                bundle4Title: "NEURAL AMPHEAD SUITE",
+                bundle4Desc: "5 modelli di teste amplificate: K-JP2C, K-BADLANDER, K-JCM800, K-LYNX, K-TWIN. Catturati con dinamica a 64-bit e quantizzazione adattiva per suonabilità autentica.",
+                bundle4Price: "€10",
+                bundle4Btn: "ACQUISTA",
+                bundle5Title: "STOMPBOX EVOLUTION",
+                bundle5Desc: "5 pedali effetti: K-TS9, K-RAT, K-MORNING GLORY, K-ANDY TIMMONS, K-BD2. Modellazione non lineare con QAT e supporto stereo a zero latenza.",
+                bundle5Price: "€10",
+                bundle5Btn: "ACQUISTA",
                 faqTitle: "DOMANDE FREQUENTI",
                 faqPreTitle: "🔍 PRIMA DELL'ACQUISTO",
                 faqPreQ1: "Compatibile con Mac e Windows?",
                 faqPreA1: "Al momento è disponibile in formato VST3 per Windows. La versione Mac AU è in sviluppo e sarà rilasciata entro Q2 2026.",
                 faqPreQ2: "Ci sono abbonamenti?",
-                faqPreA2: "Assolutamente no. Paghi 20€ una volta sola e la licenza è tua per sempre, inclusi aggiornamenti minori.",
+                faqPreA2: "Assolutamente no. Paghi una volta sola e la licenza è tua per sempre, inclusi aggiornamenti minori.",
                 faqPostTitle: "⚙️ DOPO L'ACQUISTO",
                 faqPostQ1: "Come attivo il plugin?",
-                faqPostA1: "Dopo il pagamento su Stripe, apri la tua DAW, carica il K-DSP Universal e inserisci l'indirizzo email che hai usato. Il nostro Neural Core sbloccherà l'audio istantaneamente.",
+                faqPostA1: "Dopo il pagamento, apri la tua DAW, carica il plugin e inserisci l'indirizzo email che hai usato. Il sistema sbloccherà l'audio istantaneamente.",
                 faqPostQ2: "Ho bisogno di internet per l'attivazione?",
                 faqPostA2: "Sì, il plugin richiede una connessione attiva la prima volta che lo avvii per verificare la licenza. Dopo funziona offline per 30 giorni.",
                 footerCopyright: "© 2026 K-LAB DSP Industries. Tutti i diritti riservati.",
@@ -576,27 +742,48 @@
                 footerTagline: "K-DSP UNIVERSAL – il suono analogico senza compromessi."
             },
             en: {
-                heroSub: "The Definitive Neural Engine. 9 Analog Emulations (Neve, SSL, Tape) with zero latency.",
+                heroSub: "The definitive neural engine. 9 dynamic emulation models with zero latency.",
                 btnBuy: "BUY LIFETIME LICENSE (€20)",
                 btnDemo: "DOWNLOAD DEMO (24H)",
-                card1Title: "NEURAL CORE",
+                card1Title: "K-NEURAL CORE",
                 card1Desc: "Proprietary dynamic convolution for perfect analog sound. Replicates the harmonic response of consoles and tape with impossible detail.",
                 card1Highlight: "zero latency · 64-bit floating point",
-                card2Title: "9 MODELS INCLUDED",
-                card2Desc: "Legendary preamp, console and EQ emulations: K_1073 (Neve), SSL 4000, Tape Machine, V76, LA-2A, 1176, Pultec, Helios, and a mixing rack.",
+                card2Title: "9 K-LAB MODELS",
+                card2Desc: "Legendary preamp, console and EQ emulations: K-1073, K-SSL 4K, K-TAPE, K-V76, K-LA2A, K-1176, K-PULTEC, K-HELIOS, and a mixing rack.",
                 card2Highlight: "each model is a circuit emulation",
-                card3Title: "CLOUD AUTHENTICATOR",
+                card3Title: "K-CLOUD AUTHENTICATOR",
                 card3Desc: "License linked to your email, secure and unbreakable. Instant server activation, no dongles or key files to lose.",
                 card3Highlight: "2FA ready · unlimited machine changes",
+                bundlesTitle: "Bundles & Expansions",
+                bundle1Title: "K-LAB GENESIS BUNDLE",
+                bundle1Desc: "K-DSP Universal neural engine plus two selected preamps: K-512c and K-1073MP. Includes plugin installer and license instructions. Modeled with proprietary 16/8/4-bit technology for impeccable response. Zero latency, 64-bit floating point.",
+                bundle1Price: "€15",
+                bundle1Btn: "BUY NOW",
+                bundle2Title: "PREAMP EXPANSION VOL.1",
+                bundle2Desc: "5 preamp models inspired by historic consoles: K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B. Perfect for adding analog warmth to your track. Multi-resolution loss training for uncompromising tonal fidelity.",
+                bundle2Price: "€10",
+                bundle2Btn: "BUY NOW",
+                bundle3Title: "PREAMP EXPANSION VOL.2",
+                bundle3Desc: "7 preamp and tape unit models: K-A807, K-EQP1, K-SPL, K-TEAC, K-YAMAHA, K-AMESZ, K-OTARI. Advanced circuit emulation with phase preservation and EBU R128 normalization.",
+                bundle3Price: "€10",
+                bundle3Btn: "BUY NOW",
+                bundle4Title: "NEURAL AMPHEAD SUITE",
+                bundle4Desc: "5 amp head models: K-JP2C, K-BADLANDER, K-JCM800, K-LYNX, K-TWIN. Captured with 64-bit dynamics and adaptive quantization for authentic playability.",
+                bundle4Price: "€10",
+                bundle4Btn: "BUY NOW",
+                bundle5Title: "STOMPBOX EVOLUTION",
+                bundle5Desc: "5 effect pedals: K-TS9, K-RAT, K-MORNING GLORY, K-ANDY TIMMONS, K-BD2. Nonlinear modeling with QAT and zero-latency stereo support.",
+                bundle5Price: "€10",
+                bundle5Btn: "BUY NOW",
                 faqTitle: "FREQUENTLY ASKED QUESTIONS",
                 faqPreTitle: "🔍 BEFORE PURCHASE",
                 faqPreQ1: "Compatible with Mac and Windows?",
                 faqPreA1: "Currently available as VST3 for Windows. The Mac AU version is in development and will be released by Q2 2026.",
                 faqPreQ2: "Are there subscriptions?",
-                faqPreA2: "Absolutely not. You pay €20 once and the license is yours forever, including minor updates.",
+                faqPreA2: "Absolutely not. You pay once and the license is yours forever, including minor updates.",
                 faqPostTitle: "⚙️ AFTER PURCHASE",
                 faqPostQ1: "How do I activate the plugin?",
-                faqPostA1: "After payment on Stripe, open your DAW, load K-DSP Universal and enter the email address you used. Our Neural Core will unlock the audio instantly.",
+                faqPostA1: "After payment, open your DAW, load the plugin and enter the email address you used. The system will unlock the audio instantly.",
                 faqPostQ2: "Do I need internet for activation?",
                 faqPostA2: "Yes, the plugin requires an active connection the first time you run it to verify the license. After that it works offline for 30 days.",
                 footerCopyright: "© 2026 K-LAB DSP Industries. All rights reserved.",
@@ -606,27 +793,48 @@
                 footerTagline: "K-DSP UNIVERSAL – analog sound without compromise."
             },
             zh: {
-                heroSub: "终极神经引擎。9种模拟仿真（Neve、SSL、磁带）零延迟。",
+                heroSub: "终极神经引擎。9种动态仿真模型，零延迟。",
                 btnBuy: "购买永久许可证 (€20)",
                 btnDemo: "下载试用版 (24小时)",
-                card1Title: "神经核心",
+                card1Title: "K-神经核心",
                 card1Desc: "专有的动态卷积技术，呈现完美模拟声。以不可能的细节复现调音台和磁带的谐波响应。",
                 card1Highlight: "零延迟 · 64位浮点",
-                card2Title: "包含9种模型",
-                card2Desc: "传奇前置放大器、调音台和均衡器仿真：K_1073 (Neve)、SSL 4000、磁带机、V76、LA-2A、1176、Pultec、Helios 以及混音机架。",
+                card2Title: "9个K-LAB模型",
+                card2Desc: "传奇前置放大器、调音台和均衡器仿真：K-1073, K-SSL 4K, K-TAPE, K-V76, K-LA2A, K-1176, K-PULTEC, K-HELIOS 以及混音机架。",
                 card2Highlight: "每个模型都是电路级仿真",
-                card3Title: "云验证器",
+                card3Title: "K-云验证器",
                 card3Desc: "许可证与您的电子邮件绑定，安全且无法破解。即时服务器激活，无需加密狗或密钥文件。",
                 card3Highlight: "支持双重认证 · 无限机器更换",
+                bundlesTitle: "捆绑包与扩展",
+                bundle1Title: "K-LAB GENESIS BUNDLE",
+                bundle1Desc: "K-DSP Universal神经引擎加上两个精选前置放大器：K-512c 和 K-1073MP。包含插件安装程序和许可证说明。采用16/8/4位专有技术建模，响应无可挑剔。零延迟，64位浮点。",
+                bundle1Price: "€15",
+                bundle1Btn: "立即购买",
+                bundle2Title: "前置放大器扩展 VOL.1",
+                bundle2Desc: "5个灵感源自历史调音台的前置放大器模型：K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B。为您的音轨增添模拟温暖感。多分辨率损失训练，音色 fidelity 无妥协。",
+                bundle2Price: "€10",
+                bundle2Btn: "立即购买",
+                bundle3Title: "前置放大器扩展 VOL.2",
+                bundle3Desc: "7个前置放大器和磁带单元模型：K-A807, K-EQP1, K-SPL, K-TEAC, K-YAMAHA, K-AMESZ, K-OTARI。先进电路仿真，相位保持和EBU R128标准化。",
+                bundle3Price: "€10",
+                bundle3Btn: "立即购买",
+                bundle4Title: "神经音箱头套件",
+                bundle4Desc: "5个音箱头模型：K-JP2C, K-BADLANDER, K-JCM800, K-LYNX, K-TWIN。64位动态捕捉，自适应量化，真实演奏感。",
+                bundle4Price: "€10",
+                bundle4Btn: "立即购买",
+                bundle5Title: "单块效果器进化",
+                bundle5Desc: "5个效果器踏板：K-TS9, K-RAT, K-MORNING GLORY, K-ANDY TIMMONS, K-BD2。非线性建模，QAT，零延迟立体声支持。",
+                bundle5Price: "€10",
+                bundle5Btn: "立即购买",
                 faqTitle: "常见问题",
                 faqPreTitle: "🔍 购买前",
                 faqPreQ1: "兼容 Mac 和 Windows 吗？",
                 faqPreA1: "目前提供 Windows VST3 版本。Mac AU 版本正在开发中，将于2026年第二季度发布。",
                 faqPreQ2: "有订阅制吗？",
-                faqPreA2: "完全没有。您一次性支付20欧元，许可证永久有效，包含次要更新。",
+                faqPreA2: "完全没有。您一次性支付，许可证永久有效，包含次要更新。",
                 faqPostTitle: "⚙️ 购买后",
                 faqPostQ1: "如何激活插件？",
-                faqPostA1: "在Stripe付款后，打开您的DAW，加载K-DSP Universal并输入您使用的电子邮件地址。我们的神经核心将立即解锁音频。",
+                faqPostA1: "付款后，打开您的DAW，加载插件并输入您使用的电子邮件地址。系统将立即解锁音频。",
                 faqPostQ2: "激活需要互联网吗？",
                 faqPostA2: "是的，插件首次运行需要联网验证许可证。之后可离线使用30天。",
                 footerCopyright: "© 2026 K-LAB DSP Industries。保留所有权利。",
