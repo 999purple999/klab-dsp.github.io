@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K-LAB DSP · K-LAB GENESIS BUNDLE</title>
     <style>
-        /* RESET & FONTS – fedele all’originale */
+        /* RESET & FONTS */
         * {
             margin: 0;
             padding: 0;
@@ -21,7 +21,6 @@
             --accent-green: #00ff41;
             --accent-cyan: #00ffea;
             --border-color: #222222;
-            --gradient-green: linear-gradient(135deg, #00ff41 0%, #00ff9d 100%);
         }
 
         body {
@@ -108,18 +107,37 @@
             box-shadow: 0 0 8px rgba(0,255,65,0.3);
             transition: 0.2s;
         }
+        
         .lang-selector:hover {
             background: var(--accent-green);
             color: #000;
         }
+        
         .lang-selector option {
             background: #111;
             color: #fff;
         }
 
-        /* Hero section per il bundle principale */
+        /* LIVE COUNTER MATRIX STYLE */
+        .live-counter-container {
+            max-width: 1000px; 
+            margin: 1.5rem auto 0 auto; 
+            padding: 0 2rem; 
+            display: flex; 
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 0.85rem; 
+            color: var(--accent-green); 
+            opacity: 0.9;
+        }
+        .status-item span.prompt { color: var(--text-secondary); }
+        .status-item span.value { text-shadow: 0 0 5px var(--accent-green); }
+
+        /* HERO SECTION */
         .hero {
-            padding: 4rem 2rem 2rem;
+            padding: 3rem 2rem 2rem;
             text-align: center;
             max-width: 1000px;
             margin: 0 auto;
@@ -143,6 +161,7 @@
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.5;
         }
 
         .price-display {
@@ -152,13 +171,6 @@
             justify-content: center;
             gap: 1rem;
             flex-wrap: wrap;
-        }
-
-        .old-price {
-            font-size: 2rem;
-            color: #888;
-            text-decoration: line-through;
-            font-weight: 500;
         }
 
         .new-price {
@@ -229,13 +241,13 @@
             transform: translateY(-3px);
         }
 
-        /* Sample audio buttons */
         .sample-audio {
             display: flex;
             gap: 1.5rem;
             justify-content: center;
             margin: 2.5rem 0 1rem;
         }
+        
         .sample-btn {
             background: rgba(0, 255, 65, 0.1);
             border: 1px solid var(--accent-green);
@@ -250,17 +262,43 @@
             align-items: center;
             gap: 0.5rem;
         }
+        
         .sample-btn:hover {
             background: var(--accent-green);
             color: #000;
             box-shadow: 0 0 15px var(--accent-green);
         }
+        
         .sample-btn::before {
             content: "▶";
             font-size: 0.9rem;
         }
 
-        /* Griglia features */
+        /* MANIFESTO SECTION */
+        .manifesto-container {
+            max-width: 800px; 
+            margin: 4rem auto; 
+            text-align: center; 
+            padding: 2.5rem 2rem; 
+            border: 1px solid var(--border-color); 
+            background: rgba(0,255,65,0.02); 
+            border-radius: 12px; 
+            position: relative; 
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .manifesto-line {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 3px; 
+            height: 100%; 
+            background: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+
+        /* GRID FEATURES */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
@@ -348,7 +386,7 @@
             margin-top: auto;
         }
 
-        /* Bundle cards */
+        /* BUNDLES SECTION */
         .bundles-section {
             max-width: 1200px;
             margin: 4rem auto;
@@ -437,99 +475,21 @@
             transform: scale(1.05);
         }
 
-        /* FAQ SECTION */
-        .faq-wrapper {
-            max-width: 1100px;
-            margin: 4rem auto;
-            padding: 0 1.5rem;
-        }
-
-        .faq-title {
-            text-align: center;
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 3rem;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .faq-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .faq-column {
-            background: rgba(10, 10, 10, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(0, 255, 65, 0.1);
-            transition: border 0.2s;
-        }
-
-        .faq-column:hover {
-            border-color: var(--accent-green);
-        }
-
-        .faq-column h3 {
-            color: var(--accent-green);
-            font-size: 1.5rem;
-            margin-bottom: 1.8rem;
-            border-bottom: 1px dashed #333;
-            padding-bottom: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        .faq-item {
-            margin-bottom: 1.8rem;
-        }
-
-        .faq-question {
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 0.4rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .faq-question::before {
-            content: "▶";
-            color: var(--accent-green);
-            font-size: 0.8rem;
-        }
-
-        .faq-answer {
-            color: #aaa;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            padding-left: 1.5rem;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 60px;
-            padding: 30px 20px;
-            border-top: 1px solid #111;
-            text-align: center;
-            color: #444;
-            font-size: 0.8rem;
-        }
-
-        .footer a {
-            color: #666;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        .footer a:hover {
-            color: var(--accent-green);
-        }
+        /* FAQ & FOOTER */
+        .faq-wrapper { max-width: 1100px; margin: 4rem auto; padding: 0 1.5rem; }
+        .faq-title { text-align: center; font-size: 2.2rem; font-weight: 800; margin-bottom: 3rem; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .faq-column { background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(12px); border-radius: 20px; padding: 2rem; border: 1px solid rgba(0, 255, 65, 0.1); transition: border 0.2s; }
+        .faq-column:hover { border-color: var(--accent-green); }
+        .faq-column h3 { color: var(--accent-green); font-size: 1.5rem; margin-bottom: 1.8rem; border-bottom: 1px dashed #333; padding-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; }
+        .faq-item { margin-bottom: 1.8rem; }
+        .faq-question { color: #fff; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 8px; }
+        .faq-question::before { content: "▶"; color: var(--accent-green); font-size: 0.8rem; }
+        .faq-answer { color: #aaa; font-size: 0.95rem; line-height: 1.5; padding-left: 1.5rem; }
+        
+        .footer { margin-top: 60px; padding: 30px 20px; border-top: 1px solid #111; text-align: center; color: #444; font-size: 0.8rem; }
+        .footer a { color: #666; text-decoration: none; margin: 0 10px; }
+        .footer a:hover { color: var(--accent-green); }
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 36px; }
@@ -540,6 +500,7 @@
             .sample-audio { flex-direction: column; align-items: center; }
             .header-container { flex-direction: column; align-items: flex-start; }
             .lang-selector { align-self: flex-end; }
+            .live-counter-container { flex-direction: column; align-items: flex-start; gap: 10px; }
         }
     </style>
 </head>
@@ -547,7 +508,6 @@
 
 <div class="matrix-bg"></div>
 
-<!-- HEADER -->
 <header class="header">
     <div class="header-container">
         <div class="logo">
@@ -562,12 +522,26 @@
     </div>
 </header>
 
-<!-- HERO SECTION - K-LAB GENESIS BUNDLE (prodotto principale) -->
+<div class="live-counter-container">
+    <div class="status-item">
+        <span class="prompt">></span> STATUS: <span class="value">STABLE</span>
+    </div>
+    <div class="status-item">
+        <span class="prompt">></span> NODES_ACTIVE: <span class="value" id="nodes-count">000,152</span>
+    </div>
+    <div class="status-item">
+        <span class="prompt">></span> PREMIUM_LICENSES: <span class="value" id="license-count">000,084</span>
+    </div>
+    <div class="status-item">
+        <span class="prompt">></span> CPU_SAVED: <span class="value" id="cpu-count">1,204 GHz</span>
+    </div>
+</div>
+
 <section class="hero">
     <h1>K-LAB GENESIS BUNDLE</h1>
     <p class="hero-sub" data-i18n="heroSub">
         Il motore neurale definitivo, leggero come una piuma. Gira senza problemi su qualsiasi portatile, anche di 10 anni fa.<br>
-        <strong style="color:var(--accent-cyan);">4 bit depth selezionabili:</strong> 32 bit float (master quality), 16, 8 e 4 bit (ultra fast quality) senza compromessi timbrici.<br>
+        <strong style="color:var(--accent-cyan);">3 Neural Bit-Depths:</strong> 16, 8 e 4 bit per prestazioni estreme, zero compromessi timbrici.<br>
         Include due preamplificatori di livello studio: <strong>K-512c</strong> e <strong>K-1073MP</strong>.
     </p>
     
@@ -577,297 +551,228 @@
     </div>
 
     <div class="hero-buttons">
-        <!-- Link di acquisto per il bundle principale -->
         <a href="https://buy.stripe.com/8x25kD91Ten08Bjeaebsc01" class="btn-primary" data-i18n="btnBuy">ACQUISTA ORA (€15)</a>
         <a href="#" class="btn-secondary" data-i18n="btnDemo">SCARICA DEMO (24H)</a>
     </div>
 
-    <!-- Placeholder per due campioni audio -->
     <div class="sample-audio">
         <a href="#" class="sample-btn" data-i18n="sample1">Ascolta Sample 1</a>
         <a href="#" class="sample-btn" data-i18n="sample2">Ascolta Sample 2</a>
     </div>
 </section>
 
-<!-- FEATURE CARDS - ora descrivono le caratteristiche del motore Genesis -->
+<div class="manifesto-container">
+    <div class="manifesto-line"></div>
+    <h2 style="font-family: 'Courier New', monospace; font-size: 1.8rem; color: var(--accent-green); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(0,255,65,0.5);" data-i18n="manifestoTitle">
+        SYSTEM_MANIFESTO
+    </h2>
+    <p style="font-size: 2.2rem; font-weight: 900; line-height: 1.1; color: #fff; margin-bottom: 1.5rem; letter-spacing: -1px;" data-i18n="manifestoBody">
+        "Ci stiamo fumando l'industria.<br>
+        Che la <span style="color: var(--accent-cyan); text-shadow: 0 0 15px var(--accent-cyan);">democratizzazione</span> dell'audio abbia inizio."
+    </p>
+    <p style="color: var(--text-secondary); font-family: 'Courier New', monospace; font-size: 0.9rem; text-transform: uppercase;">
+        [ AUTHOR: K-DSP / K-LAB INDUSTRIES ]
+    </p>
+</div>
+
 <div class="products-grid">
-    <!-- Card 1: Ultra leggero -->
     <div class="product-card">
         <div class="product-image">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%2300ff41' stroke-width='2' stroke-dasharray='6 6' /%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E"
-                 alt="Ultra Light Engine">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%2300ff41' stroke-width='2' stroke-dasharray='6 6' /%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Ultra Light Engine">
         </div>
         <div class="product-content">
             <h3 class="product-title" data-i18n="card1Title">MOTORE ULTRA LEGGERO</h3>
-            <p class="feature-desc" data-i18n="card1Desc">Ottimizzato per CPU datate: funziona fluidamente su portatili di 10 anni fa. Consumo ridotto, prestazioni实时.</p>
+            <p class="feature-desc" data-i18n="card1Desc">Ottimizzato per CPU datate: funziona fluidamente su portatili di 10 anni fa. Consumo ridotto, prestazioni in tempo reale.</p>
             <div class="feature-highlight" data-i18n="card1Highlight">zero latenza · qualsiasi hardware</div>
         </div>
     </div>
-    <!-- Card 2: 4 bit depth selezionabili -->
     <div class="product-card">
         <div class="product-image">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect x='20' y='30' width='60' height='40' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Cline x1='30' y1='40' x2='70' y2='40' stroke='%2300ffea' stroke-width='2' /%3E%3Cline x1='30' y1='60' x2='70' y2='60' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E"
-                 alt="4 Bit Depth">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect x='20' y='30' width='60' height='40' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Cline x1='30' y1='40' x2='70' y2='40' stroke='%2300ffea' stroke-width='2' /%3E%3Cline x1='30' y1='60' x2='70' y2='60' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="3 Bit Depth">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card2Title">4 BIT DEPTH</h3>
-            <p class="feature-desc" data-i18n="card2Desc">Scegli la modalità: 32 bit float per il massimo della qualità, 16/8/4 bit per sessioni ultra rapide. La qualità timbrica resta intatta.</p>
+            <h3 class="product-title" data-i18n="card2Title">TRIPLO MOTORE NEURALE</h3>
+            <p class="feature-desc" data-i18n="card2Desc">Scegli la risoluzione dinamica: 16-bit per il mix finale, 8 o 4-bit per gestire centinaia di tracce simultanee senza saturare la CPU.</p>
             <div class="feature-highlight" data-i18n="card2Highlight">selezionabile in tempo reale</div>
         </div>
     </div>
-    <!-- Card 3: Due preamplificatori inclusi -->
     <div class="product-card">
         <div class="product-image">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 L40,30 L60,30 L80,50 L60,70 L40,70 L20,50' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='12' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E"
-                 alt="Due Preamp">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 L40,30 L60,30 L80,50 L60,70 L40,70 L20,50' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='12' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Due Preamp">
         </div>
         <div class="product-content">
             <h3 class="product-title" data-i18n="card3Title">2 PREAMP INCLUSI</h3>
-            <p class="feature-desc" data-i18n="card3Desc">K-512c (API ispirazione) e K-1073MP (Neve ispirazione). Emulazioni circuitali di livello mastering.</p>
+            <p class="feature-desc" data-i18n="card3Desc">K-512c (API ispired) e K-1073MP (Neve ispired). Emulazioni circuitali complete pronte ad aggredire i tuoi mix.</p>
             <div class="feature-highlight" data-i18n="card3Highlight">pronti all'uso</div>
         </div>
     </div>
 </div>
 
-<!-- BUNDLE SECTION - gli altri bundle rimangono invariati -->
 <section class="bundles-section">
-    <h2 class="bundles-title" data-i18n="bundlesTitle">Altri Bundle ed Espansioni</h2>
+    <h2 class="bundles-title" data-i18n="bundlesTitle">Espansioni Disponibili</h2>
     <div class="bundles-grid">
-        <!-- Bundle 2: Preamp Expansion Vol.1 (Avalon & Neve Console Heritage) -->
+        
         <div class="bundle-card">
             <h3 data-i18n="bundle2Title">PREAMP EXPANSION VOL.1</h3>
             <p class="bundle-desc" data-i18n="bundle2Desc">
-                5 modelli di preamplificatori ispirati alle console storiche: K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B. Perfetti per arricchire la tua traccia con calore analogico. Training con loss multi-risoluzione per una fedeltà timbrica senza compromessi.
+                4 modelli di outboard premium aggiuntivi. Perfetti per arricchire la tua traccia con calore analogico. Training neurale per una fedeltà timbrica senza compromessi, perfetti per sfruttare l'Auto-Gain di K-BL.
             </p>
             <div class="bundle-price" data-i18n="bundle2Price">€10</div>
             <a href="https://buy.stripe.com/00wfZh1zr7YC9Fn8PUbsc05" class="btn-bundle" data-i18n="bundle2Btn">ACQUISTA</a>
         </div>
 
-        <!-- Bundle 3: Preamp Expansion Vol.2 (Tape Saturators & Studio Secrets) -->
-        <div class="bundle-card">
-            <h3 data-i18n="bundle3Title">PREAMP EXPANSION VOL.2</h3>
-            <p class="bundle-desc" data-i18n="bundle3Desc">
-                7 modelli di preamplificatori e unità tape: K-A807, K-EQP1, K-SPL, K-TEAC, K-YAMAHA, K-AMESZ, K-OTARI. Emulazione circuitale avanzata con preservazione della fase e normalizzazione EBU R128.
-            </p>
-            <div class="bundle-price" data-i18n="bundle3Price">€10</div>
-            <a href="https://buy.stripe.com/8x23cvdi93Im6tbeaebsc04" class="btn-bundle" data-i18n="bundle3Btn">ACQUISTA</a>
         </div>
-
-        <!-- Bundle 4: Neural Amphead Suite (Boutique & High-Gain Titans) -->
-        <div class="bundle-card">
-            <h3 data-i18n="bundle4Title">NEURAL AMPHEAD SUITE</h3>
-            <p class="bundle-desc" data-i18n="bundle4Desc">
-                5 modelli di teste amplificate: K-JP2C, K-BADLANDER, K-JCM800, K-LYNX, K-TWIN. Catturati con dinamica a 64-bit e quantizzazione adattiva per suonabilità autentica.
-            </p>
-            <div class="bundle-price" data-i18n="bundle4Price">€10</div>
-            <a href="https://buy.stripe.com/00w4gz5PH4Mq18Reaebsc03" class="btn-bundle" data-i18n="bundle4Btn">ACQUISTA</a>
-        </div>
-
-        <!-- Bundle 5: Stompbox Evolution (Legendary Overdrive & Drive Collection) -->
-        <div class="bundle-card">
-            <h3 data-i18n="bundle5Title">STOMPBOX EVOLUTION</h3>
-            <p class="bundle-desc" data-i18n="bundle5Desc">
-                5 pedali effetti: K-TS9, K-RAT, K-MORNING GLORY, K-ANDY TIMMONS, K-BD2. Modellazione non lineare con QAT e supporto stereo a zero latenza.
-            </p>
-            <div class="bundle-price" data-i18n="bundle5Price">€10</div>
-            <a href="https://buy.stripe.com/5kQ00j2Dv3Im3gZ5DIbsc02" class="btn-bundle" data-i18n="bundle5Btn">ACQUISTA</a>
-        </div>
-    </div>
 </section>
 
-<!-- FAQ SECTION -->
 <div class="faq-wrapper">
     <h2 class="faq-title" data-i18n="faqTitle">DOMANDE FREQUENTI</h2>
     <div class="faq-grid">
-        <!-- colonna sinistra: prima dell'acquisto -->
         <div class="faq-column">
             <h3 data-i18n="faqPreTitle">🔍 PRIMA DELL'ACQUISTO</h3>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPreQ1">Compatibile con Mac e Windows?</div>
-                <div class="faq-answer" data-i18n="faqPreA1">Al momento è disponibile in formato VST3 per Windows. La versione Mac AU è in sviluppo e sarà rilasciata entro Q2 2026.</div>
+                <div class="faq-answer" data-i18n="faqPreA1">Al momento è disponibile in formato VST3 per Windows. La versione Mac AU è in sviluppo.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPreQ2">Ci sono abbonamenti?</div>
-                <div class="faq-answer" data-i18n="faqPreA2">Assolutamente no. Paghi una volta sola e la licenza è tua per sempre, inclusi aggiornamenti minori.</div>
+                <div class="faq-answer" data-i18n="faqPreA2">Nessun abbonamento. Paghi una volta, la licenza è tua per sempre.</div>
             </div>
         </div>
-        <!-- colonna destra: dopo l'acquisto -->
         <div class="faq-column">
             <h3 data-i18n="faqPostTitle">⚙️ DOPO L'ACQUISTO</h3>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPostQ1">Come attivo il plugin?</div>
-                <div class="faq-answer" data-i18n="faqPostA1">Dopo il pagamento, apri la tua DAW, carica il plugin e inserisci l'indirizzo email che hai usato. Il sistema sbloccherà l'audio istantaneamente.</div>
+                <div class="faq-answer" data-i18n="faqPostA1">Carica il plugin nella tua DAW e inserisci l'email usata per l'acquisto. Il sistema sblocca l'audio all'istante.</div>
             </div>
             <div class="faq-item">
-                <div class="faq-question" data-i18n="faqPostQ2">Ho bisogno di internet per l'attivazione?</div>
-                <div class="faq-answer" data-i18n="faqPostA2">Sì, il plugin richiede una connessione attiva la prima volta che lo avvii per verificare la licenza. Dopo funziona offline per 30 giorni.</div>
+                <div class="faq-question" data-i18n="faqPostQ2">Serve internet?</div>
+                <div class="faq-answer" data-i18n="faqPostA2">Solo al primo avvio per la verifica DRM. Dopo funziona offline.</div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
     <p data-i18n="footerCopyright">© 2026 K-LAB DSP Industries. Tutti i diritti riservati.</p>
     <p>
-        <a href="#" data-i18n="footerVat">P.IVA 01234567890</a> · 
         <a href="#" data-i18n="footerTerms">Termini</a> · 
         <a href="#" data-i18n="footerPrivacy">Privacy Policy</a>
     </p>
-    <p style="color: #333; margin-top: 1rem;" data-i18n="footerTagline">K-LAB GENESIS – il suono analogico senza compromessi.</p>
 </footer>
 
-<!-- MULTILINGUA SCRIPT -->
 <script>
     (function() {
-        // Traduzioni
         const translations = {
             it: {
-                heroSub: "Il motore neurale definitivo, leggero come una piuma. Gira senza problemi su qualsiasi portatile, anche di 10 anni fa. 4 bit depth selezionabili: 32 bit float (master quality), 16, 8 e 4 bit (ultra fast quality) senza compromessi timbrici. Include due preamplificatori di livello studio: K-512c e K-1073MP.",
+                heroSub: "Il motore neurale definitivo, leggero come una piuma. Gira senza problemi su qualsiasi portatile. 3 Neural Bit-Depths: 16, 8 e 4 bit per prestazioni estreme, zero compromessi timbrici. Include: K-512c e K-1073MP.",
                 btnBuy: "ACQUISTA ORA (€15)",
                 btnDemo: "SCARICA DEMO (24H)",
-                sample1: "Ascolta Sample 1",
-                sample2: "Ascolta Sample 2",
+                sample1: "Ascolta Dry",
+                sample2: "Ascolta K-1073 (4-bit)",
+                manifestoTitle: "SYSTEM_MANIFESTO",
+                manifestoBody: "\"Ci stiamo fumando l'industria. Che la democratizzazione dell'audio abbia inizio.\"",
                 card1Title: "MOTORE ULTRA LEGGERO",
-                card1Desc: "Ottimizzato per CPU datate: funziona fluidamente su portatili di 10 anni fa. Consumo ridotto, prestazioni实时.",
-                card1Highlight: "zero latenza · qualsiasi hardware",
-                card2Title: "4 BIT DEPTH",
-                card2Desc: "Scegli la modalità: 32 bit float per il massimo della qualità, 16/8/4 bit per sessioni ultra rapide. La qualità timbrica resta intatta.",
+                card1Desc: "Ottimizzato per CPU datate: consumi ridotti al minimo per un flusso di lavoro istantaneo.",
+                card1Highlight: "zero latenza",
+                card2Title: "TRIPLO MOTORE NEURALE",
+                card2Desc: "Scegli la risoluzione: 16-bit per il mix finale, 8 o 4-bit per gestire centinaia di tracce.",
                 card2Highlight: "selezionabile in tempo reale",
                 card3Title: "2 PREAMP INCLUSI",
-                card3Desc: "K-512c (API ispirazione) e K-1073MP (Neve ispirazione). Emulazioni circuitali di livello mastering.",
+                card3Desc: "K-512c (API ispired) e K-1073MP (Neve ispired).",
                 card3Highlight: "pronti all'uso",
-                bundlesTitle: "Altri Bundle ed Espansioni",
+                bundlesTitle: "Espansioni Disponibili",
                 bundle2Title: "PREAMP EXPANSION VOL.1",
-                bundle2Desc: "5 modelli di preamplificatori ispirati alle console storiche: K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B. Perfetti per arricchire la tua traccia con calore analogico. Training con loss multi-risoluzione per una fedeltà timbrica senza compromessi.",
+                bundle2Desc: "4 modelli di outboard premium aggiuntivi. Perfetti per arricchire la tua traccia con calore analogico. Training neurale per una fedeltà timbrica senza compromessi, perfetti per sfruttare l'Auto-Gain di K-BL.",
                 bundle2Price: "€10",
                 bundle2Btn: "ACQUISTA",
-                bundle3Title: "PREAMP EXPANSION VOL.2",
-                bundle3Desc: "7 modelli di preamplificatori e unità tape: K-A807, K-EQP1, K-SPL, K-TEAC, K-YAMAHA, K-AMESZ, K-OTARI. Emulazione circuitale avanzata con preservazione della fase e normalizzazione EBU R128.",
-                bundle3Price: "€10",
-                bundle3Btn: "ACQUISTA",
-                bundle4Title: "NEURAL AMPHEAD SUITE",
-                bundle4Desc: "5 modelli di teste amplificate: K-JP2C, K-BADLANDER, K-JCM800, K-LYNX, K-TWIN. Catturati con dinamica a 64-bit e quantizzazione adattiva per suonabilità autentica.",
-                bundle4Price: "€10",
-                bundle4Btn: "ACQUISTA",
-                bundle5Title: "STOMPBOX EVOLUTION",
-                bundle5Desc: "5 pedali effetti: K-TS9, K-RAT, K-MORNING GLORY, K-ANDY TIMMONS, K-BD2. Modellazione non lineare con QAT e supporto stereo a zero latenza.",
-                bundle5Price: "€10",
-                bundle5Btn: "ACQUISTA",
                 faqTitle: "DOMANDE FREQUENTI",
                 faqPreTitle: "🔍 PRIMA DELL'ACQUISTO",
                 faqPreQ1: "Compatibile con Mac e Windows?",
-                faqPreA1: "Al momento è disponibile in formato VST3 per Windows. La versione Mac AU è in sviluppo e sarà rilasciata entro Q2 2026.",
+                faqPreA1: "Al momento disponibile VST3 per Windows. Mac AU in arrivo.",
                 faqPreQ2: "Ci sono abbonamenti?",
-                faqPreA2: "Assolutamente no. Paghi una volta sola e la licenza è tua per sempre, inclusi aggiornamenti minori.",
+                faqPreA2: "Nessun abbonamento. Licenza a vita.",
                 faqPostTitle: "⚙️ DOPO L'ACQUISTO",
                 faqPostQ1: "Come attivo il plugin?",
-                faqPostA1: "Dopo il pagamento, apri la tua DAW, carica il plugin e inserisci l'indirizzo email che hai usato. Il sistema sbloccherà l'audio istantaneamente.",
-                faqPostQ2: "Ho bisogno di internet per l'attivazione?",
-                faqPostA2: "Sì, il plugin richiede una connessione attiva la prima volta che lo avvii per verificare la licenza. Dopo funziona offline per 30 giorni.",
+                faqPostA1: "Inserisci l'email usata all'acquisto direttamente nel plugin.",
+                faqPostQ2: "Serve internet?",
+                faqPostA2: "Solo al primo avvio per il controllo licenza.",
                 footerCopyright: "© 2026 K-LAB DSP Industries. Tutti i diritti riservati.",
-                footerVat: "P.IVA 01234567890",
                 footerTerms: "Termini",
-                footerPrivacy: "Privacy Policy",
-                footerTagline: "K-LAB GENESIS – il suono analogico senza compromessi."
+                footerPrivacy: "Privacy Policy"
             },
             en: {
-                heroSub: "The ultimate neural engine, light as a feather. Runs smoothly on any laptop, even 10 years old. 4 selectable bit depths: 32-bit float (master quality), 16, 8 and 4-bit (ultra fast quality) with no tonal compromise. Includes two studio-grade preamps: K-512c and K-1073MP.",
+                heroSub: "The ultimate neural engine, light as a feather. Runs smoothly on any laptop. 3 Neural Bit-Depths: 16, 8 and 4-bit for extreme performance, zero tonal compromise. Includes: K-512c and K-1073MP.",
                 btnBuy: "BUY NOW (€15)",
                 btnDemo: "DOWNLOAD DEMO (24H)",
-                sample1: "Listen Sample 1",
-                sample2: "Listen Sample 2",
+                sample1: "Listen Dry",
+                sample2: "Listen K-1073 (4-bit)",
+                manifestoTitle: "SYSTEM_MANIFESTO",
+                manifestoBody: "\"We're smoking the industry. Let the democratization of audio begin.\"",
                 card1Title: "ULTRA LIGHT ENGINE",
-                card1Desc: "Optimized for older CPUs: runs smoothly on 10-year-old laptops. Low consumption, real-time performance.",
-                card1Highlight: "zero latency · any hardware",
-                card2Title: "4 BIT DEPTH",
-                card2Desc: "Choose the mode: 32-bit float for maximum quality, 16/8/4-bit for ultra-fast sessions. Tonal quality remains intact.",
+                card1Desc: "Optimized for older CPUs: minimal consumption for an instant workflow.",
+                card1Highlight: "zero latency",
+                card2Title: "TRIPLE NEURAL ENGINE",
+                card2Desc: "Choose resolution: 16-bit for final mix, 8 or 4-bit to handle hundreds of tracks.",
                 card2Highlight: "selectable in real time",
                 card3Title: "2 PREAMPS INCLUDED",
-                card3Desc: "K-512c (API inspired) and K-1073MP (Neve inspired). Mastering-grade circuit emulations.",
+                card3Desc: "K-512c (API inspired) and K-1073MP (Neve inspired).",
                 card3Highlight: "ready to use",
-                bundlesTitle: "Other Bundles & Expansions",
+                bundlesTitle: "Available Expansions",
                 bundle2Title: "PREAMP EXPANSION VOL.1",
-                bundle2Desc: "5 preamp models inspired by historic consoles: K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B. Perfect for adding analog warmth to your track. Multi-resolution loss training for uncompromising tonal fidelity.",
+                bundle2Desc: "4 additional premium outboard models. Perfect for adding analog warmth to your track. Neural training for uncompromising tonal fidelity, perfect to leverage K-BL Auto-Gain.",
                 bundle2Price: "€10",
                 bundle2Btn: "BUY NOW",
-                bundle3Title: "PREAMP EXPANSION VOL.2",
-                bundle3Desc: "7 preamp and tape unit models: K-A807, K-EQP1, K-SPL, K-TEAC, K-YAMAHA, K-AMESZ, K-OTARI. Advanced circuit emulation with phase preservation and EBU R128 normalization.",
-                bundle3Price: "€10",
-                bundle3Btn: "BUY NOW",
-                bundle4Title: "NEURAL AMPHEAD SUITE",
-                bundle4Desc: "5 amp head models: K-JP2C, K-BADLANDER, K-JCM800, K-LYNX, K-TWIN. Captured with 64-bit dynamics and adaptive quantization for authentic playability.",
-                bundle4Price: "€10",
-                bundle4Btn: "BUY NOW",
-                bundle5Title: "STOMPBOX EVOLUTION",
-                bundle5Desc: "5 effect pedals: K-TS9, K-RAT, K-MORNING GLORY, K-ANDY TIMMONS, K-BD2. Nonlinear modeling with QAT and zero-latency stereo support.",
-                bundle5Price: "€10",
-                bundle5Btn: "BUY NOW",
-                faqTitle: "FREQUENTLY ASKED QUESTIONS",
+                faqTitle: "FAQ",
                 faqPreTitle: "🔍 BEFORE PURCHASE",
-                faqPreQ1: "Compatible with Mac and Windows?",
-                faqPreA1: "Currently available as VST3 for Windows. The Mac AU version is in development and will be released by Q2 2026.",
+                faqPreQ1: "Mac and Windows compatible?",
+                faqPreA1: "Currently available as VST3 for Windows. Mac AU coming soon.",
                 faqPreQ2: "Are there subscriptions?",
-                faqPreA2: "Absolutely not. You pay once and the license is yours forever, including minor updates.",
+                faqPreA2: "No subscriptions. Lifetime license.",
                 faqPostTitle: "⚙️ AFTER PURCHASE",
-                faqPostQ1: "How do I activate the plugin?",
-                faqPostA1: "After payment, open your DAW, load the plugin and enter the email address you used. The system will unlock the audio instantly.",
-                faqPostQ2: "Do I need internet for activation?",
-                faqPostA2: "Yes, the plugin requires an active connection the first time you run it to verify the license. After that it works offline for 30 days.",
+                faqPostQ1: "How do I activate?",
+                faqPostA1: "Enter your purchase email directly in the plugin.",
+                faqPostQ2: "Internet required?",
+                faqPostA2: "Only on first launch for license check.",
                 footerCopyright: "© 2026 K-LAB DSP Industries. All rights reserved.",
-                footerVat: "VAT 01234567890",
                 footerTerms: "Terms",
-                footerPrivacy: "Privacy Policy",
-                footerTagline: "K-LAB GENESIS – analog sound without compromise."
+                footerPrivacy: "Privacy Policy"
             },
             zh: {
-                heroSub: "终极神经引擎，轻如羽毛。可在任何笔记本电脑上流畅运行，即使是10年前的旧机型。4种可选位深度：32位浮点（母带品质），16、8和4位（超快品质），音色无妥协。包含两个录音室级前置放大器：K-512c 和 K-1073MP。",
+                heroSub: "终极神经引擎，轻如羽毛。在任何笔记本电脑上流畅运行。3种神经位深度：16、8和4位，提供极致性能，音色零妥协。包含：K-512c和K-1073MP。",
                 btnBuy: "立即购买 (€15)",
-                btnDemo: "下载试用版 (24小时)",
-                sample1: "试听样本1",
-                sample2: "试听样本2",
+                btnDemo: "下载试用版 (24H)",
+                sample1: "干声试听",
+                sample2: "K-1073 (4-bit) 试听",
+                manifestoTitle: "SYSTEM_MANIFESTO",
+                manifestoBody: "\"我们正在颠覆行业。让音频的民主化开始吧。\"",
                 card1Title: "超轻引擎",
-                card1Desc: "针对旧款CPU优化：在10年前的笔记本电脑上流畅运行。低消耗，实时性能。",
-                card1Highlight: "零延迟 · 任何硬件",
-                card2Title: "4种位深度",
-                card2Desc: "选择模式：32位浮点以获得最高品质，16/8/4位用于超快速处理。音色质量保持不变。",
+                card1Desc: "针对旧CPU优化：最低功耗，实现即时工作流。",
+                card1Highlight: "零延迟",
+                card2Title: "三重神经引擎",
+                card2Desc: "选择分辨率：16位用于最终混音，8位或4位用于处理数百个音轨。",
                 card2Highlight: "实时可选",
                 card3Title: "包含2个前置放大器",
-                card3Desc: "K-512c（API风格）和K-1073MP（Neve风格）。母带级电路仿真。",
+                card3Desc: "K-512c (API风格) 和 K-1073MP (Neve风格)。",
                 card3Highlight: "即插即用",
-                bundlesTitle: "其他捆绑包和扩展",
+                bundlesTitle: "可用扩展",
                 bundle2Title: "前置放大器扩展 VOL.1",
-                bundle2Desc: "5个灵感源自历史调音台的前置放大器模型：K-AD2022, K-31102, K-VT747, K-SSL 4K BUSS, K-610B。为您的音轨增添模拟温暖感。多分辨率损失训练，音色 fidelity 无妥协。",
+                bundle2Desc: "4个额外的优质外部硬件模型。完美为您的音轨增添模拟温暖感。神经训练提供毫不妥协的音色保真度，完美利用K-BL的自动增益功能。",
                 bundle2Price: "€10",
                 bundle2Btn: "立即购买",
-                bundle3Title: "前置放大器扩展 VOL.2",
-                bundle3Desc: "7个前置放大器和磁带单元模型：K-A807, K-EQP1, K-SPL, K-TEAC, K-YAMAHA, K-AMESZ, K-OTARI。先进电路仿真，相位保持和EBU R128标准化。",
-                bundle3Price: "€10",
-                bundle3Btn: "立即购买",
-                bundle4Title: "神经音箱头套件",
-                bundle4Desc: "5个音箱头模型：K-JP2C, K-BADLANDER, K-JCM800, K-LYNX, K-TWIN。64位动态捕捉，自适应量化，真实演奏感。",
-                bundle4Price: "€10",
-                bundle4Btn: "立即购买",
-                bundle5Title: "单块效果器进化",
-                bundle5Desc: "5个效果器踏板：K-TS9, K-RAT, K-MORNING GLORY, K-ANDY TIMMONS, K-BD2。非线性建模，QAT，零延迟立体声支持。",
-                bundle5Price: "€10",
-                bundle5Btn: "立即购买",
                 faqTitle: "常见问题",
                 faqPreTitle: "🔍 购买前",
-                faqPreQ1: "兼容 Mac 和 Windows 吗？",
-                faqPreA1: "目前提供 Windows VST3 版本。Mac AU 版本正在开发中，将于2026年第二季度发布。",
-                faqPreQ2: "有订阅制吗？",
-                faqPreA2: "完全没有。您一次性支付，许可证永久有效，包含次要更新。",
+                faqPreQ1: "兼容 Mac 和 Windows？",
+                faqPreA1: "目前提供 Windows VST3。Mac AU 即将推出。",
+                faqPreQ2: "有订阅吗？",
+                faqPreA2: "没有订阅。终身许可。",
                 faqPostTitle: "⚙️ 购买后",
-                faqPostQ1: "如何激活插件？",
-                faqPostA1: "付款后，打开您的DAW，加载插件并输入您使用的电子邮件地址。系统将立即解锁音频。",
-                faqPostQ2: "激活需要互联网吗？",
-                faqPostA2: "是的，插件首次运行需要联网验证许可证。之后可离线使用30天。",
+                faqPostQ1: "如何激活？",
+                faqPostA1: "直接在插件中输入购买邮箱。",
+                faqPostQ2: "需要网络？",
+                faqPostA2: "仅首次启动时需要验证许可。",
                 footerCopyright: "© 2026 K-LAB DSP Industries。保留所有权利。",
-                footerVat: "增值税号 01234567890",
                 footerTerms: "条款",
-                footerPrivacy: "隐私政策",
-                footerTagline: "K-LAB GENESIS – 毫不妥协的模拟之声。"
+                footerPrivacy: "隐私政策"
             }
         };
 
@@ -879,7 +784,7 @@
             elements.forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (t[key]) {
-                    el.textContent = t[key];
+                    el.innerHTML = t[key]; // Uso innerHTML per supportare i tag <br> e <span> nel manifesto
                 }
             });
             localStorage.setItem('preferredLang', lang);
