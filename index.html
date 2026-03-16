@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-LAB DSP · K-LAB GENESIS BUNDLE</title>
+    <title>K-LAB DSP · StreamSauce & GENESIS</title>
     <style>
         /* RESET & FONTS */
         * {
@@ -118,7 +118,96 @@
             color: #fff;
         }
 
-        /* LIVE COUNTER MATRIX STYLE */
+        /* pulsante area utente */
+        .user-btn {
+            background: transparent;
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 0 8px rgba(0,255,234,0.3);
+            margin-left: 1rem;
+        }
+        .user-btn:hover {
+            background: var(--accent-cyan);
+            color: #000;
+        }
+
+        /* MODALE */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-card {
+            background: #111;
+            border: 1px solid var(--accent-green);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(0,255,65,0.3);
+        }
+        .modal-card h2 {
+            color: var(--accent-green);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .modal-card input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            background: #222;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 6px;
+        }
+        .modal-card button {
+            background: var(--accent-green);
+            color: #000;
+            border: none;
+            padding: 0.8rem;
+            width: 100%;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal-card button:hover {
+            box-shadow: 0 0 15px var(--accent-green);
+        }
+        .close-modal {
+            margin-top: 1rem;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid #333;
+        }
+        .key-display {
+            margin-top: 1.5rem;
+            background: #0a0a0a;
+            padding: 1rem;
+            border: 1px dashed var(--accent-cyan);
+            border-radius: 6px;
+            word-break: break-all;
+            font-family: monospace;
+            color: var(--accent-cyan);
+        }
+
+        /* LIVE COUNTER */
         .live-counter-container {
             max-width: 1000px; 
             margin: 1.5rem auto 0 auto; 
@@ -135,7 +224,7 @@
         .status-item span.prompt { color: var(--text-secondary); }
         .status-item span.value { text-shadow: 0 0 5px var(--accent-green); }
 
-        /* HERO SECTION */
+        /* HERO */
         .hero {
             padding: 3rem 2rem 2rem;
             text-align: center;
@@ -274,7 +363,7 @@
             font-size: 0.9rem;
         }
 
-        /* MANIFESTO SECTION */
+        /* MANIFESTO */
         .manifesto-container {
             max-width: 800px; 
             margin: 4rem auto; 
@@ -298,7 +387,7 @@
             box-shadow: 0 0 10px var(--accent-green);
         }
 
-        /* GRID FEATURES */
+        /* FEATURE CARDS (StreamSauce) */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
@@ -386,50 +475,43 @@
             margin-top: auto;
         }
 
-        /* BUNDLES SECTION */
-        .bundles-section {
+        /* SEZIONE PREORDINE GENESIS */
+        .preorder-section {
             max-width: 1200px;
             margin: 4rem auto;
             padding: 0 1.5rem;
         }
 
-        .bundles-title {
+        .preorder-title {
             text-align: center;
             font-size: 2.2rem;
             font-weight: 800;
-            margin-bottom: 3rem;
+            margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .bundles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+        .preorder-sub {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
         }
 
-        .bundle-card {
+        .preorder-card {
             background: rgba(10, 10, 10, 0.8);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-radius: 20px;
-            padding: 1.8rem 1.5rem;
+            padding: 2rem;
+            max-width: 500px;
+            margin: 0 auto;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
         }
 
-        .bundle-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-green);
-            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
-        }
-
-        .bundle-card h3 {
-            font-size: 1.8rem;
+        .preorder-card h3 {
+            font-size: 2rem;
             font-weight: 700;
             margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--accent-green), #fff);
@@ -437,45 +519,54 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .bundle-desc {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
-        }
-
-        .bundle-price {
-            font-size: 2.2rem;
+        .preorder-price {
+            font-size: 2.8rem;
             font-weight: 900;
             color: var(--accent-green);
-            text-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
-            margin-bottom: 1.2rem;
+            text-shadow: 0 0 20px rgba(0,255,65,0.5);
+            margin-bottom: 1rem;
         }
 
-        .btn-bundle {
+        .preorder-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .eta-badge {
+            display: inline-block;
+            background: rgba(0,255,65,0.1);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .btn-preorder {
             background: transparent;
             color: var(--accent-green);
             border: 2px solid var(--accent-green);
             border-radius: 8px;
-            padding: 0.8rem 1.5rem;
-            font-weight: 700;
+            padding: 1rem 2.5rem;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             text-decoration: none;
             display: inline-block;
-            text-align: center;
             transition: all 0.2s;
+            cursor: pointer;
         }
 
-        .btn-bundle:hover {
+        .btn-preorder:hover {
             background: var(--accent-green);
             color: #000;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
-            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.7);
+            transform: translateY(-3px);
         }
 
-        /* FAQ & FOOTER */
+        /* FAQ */
         .faq-wrapper { max-width: 1100px; margin: 4rem auto; padding: 0 1.5rem; }
         .faq-title { text-align: center; font-size: 2.2rem; font-weight: 800; margin-bottom: 3rem; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
@@ -500,7 +591,7 @@
             .sample-audio { flex-direction: column; align-items: center; }
             .header-container { flex-direction: column; align-items: flex-start; }
             .lang-selector { align-self: flex-end; }
-            .live-counter-container { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .user-btn { margin-left: 0; margin-top: 0.5rem; }
         }
     </style>
 </head>
@@ -514,13 +605,31 @@
             <div class="logo-icon">⚡</div>
             <div class="logo-text">K-LAB INDUSTRIES</div>
         </div>
-        <select id="langSwitcher" class="lang-selector">
-            <option value="it" selected>🇮🇹 Italiano</option>
-            <option value="en">🇬🇧 English</option>
-            <option value="zh">🇨🇳 中文</option>
-        </select>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <select id="langSwitcher" class="lang-selector">
+                <option value="it" selected>🇮🇹 Italiano</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="zh">🇨🇳 中文</option>
+            </select>
+            <button class="user-btn" id="userAreaBtn">🔐 AREA UTENTE</button>
+        </div>
     </div>
 </header>
+
+<!-- MODALE UTENTE -->
+<div class="modal" id="userModal">
+    <div class="modal-card">
+        <h2>🔐 AREA UTENTE</h2>
+        <input type="email" placeholder="Email" id="loginEmail">
+        <input type="password" placeholder="Password (opzionale demo)" id="loginPass">
+        <button id="loginBtn">ACCEDI / GENERA CHIAVE</button>
+        <div class="key-display" id="keyDisplay" style="display: none;">
+            <span>🔑 La tua licenza:</span><br>
+            <span id="licenseKey">KLAB-XXXX-XXXX-XXXX</span>
+        </div>
+        <button class="close-modal" id="closeModalBtn">CHIUDI</button>
+    </div>
+</div>
 
 <div class="live-counter-container">
     <div class="status-item">
@@ -537,27 +646,28 @@
     </div>
 </div>
 
+<!-- PRODOTTO PRINCIPALE: K-LAB StreamSauce -->
 <section class="hero">
-    <h1>K-LAB GENESIS BUNDLE</h1>
+    <h1>K-LAB STREAMSAUCE</h1>
     <p class="hero-sub" data-i18n="heroSub">
-        Il motore neurale definitivo, leggero come una piuma. Gira senza problemi su qualsiasi portatile, anche di 10 anni fa.<br>
-        <strong style="color:var(--accent-cyan);">3 Neural Bit-Depths:</strong> 16, 8 e 4 bit per prestazioni estreme, zero compromessi timbrici.<br>
-        Include due preamplificatori di livello studio: <strong>K-512c</strong> e <strong>K-1073MP</strong>.
+        La catena vocale definitiva per streamer e producer. Tre macro: Clean, Presence, Sauce. <br>
+        Modalità Advanced per il controllo totale, Target Mode (-18, -14, -10 LUFS).<br>
+        Zero latenza, architettura C++20 ultraleggera.
     </p>
     
     <div class="price-display">
-        <span class="new-price">€15</span>
+        <span class="new-price">€10</span>
         <span class="currency">EUR</span>
     </div>
 
     <div class="hero-buttons">
-        <a href="https://buy.stripe.com/8x25kD91Ten08Bjeaebsc01" class="btn-primary" data-i18n="btnBuy">ACQUISTA ORA (€15)</a>
+        <a href="https://buy.stripe.com/14AfZhfqh7YC6tb0jobsc06" class="btn-primary" data-i18n="btnBuy">ACQUISTA ORA (€10)</a>
         <a href="#" class="btn-secondary" data-i18n="btnDemo">SCARICA DEMO (24H)</a>
     </div>
 
     <div class="sample-audio">
-        <a href="#" class="sample-btn" data-i18n="sample1">Ascolta Sample 1</a>
-        <a href="#" class="sample-btn" data-i18n="sample2">Ascolta Sample 2</a>
+        <a href="#" class="sample-btn" data-i18n="sample1">Ascolta Dry</a>
+        <a href="#" class="sample-btn" data-i18n="sample2">Ascolta StreamSauce</a>
     </div>
 </section>
 
@@ -575,55 +685,57 @@
     </p>
 </div>
 
+<!-- CARATTERISTICHE STREAMSAUCE -->
 <div class="products-grid">
     <div class="product-card">
         <div class="product-image">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%2300ff41' stroke-width='2' stroke-dasharray='6 6' /%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Ultra Light Engine">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%2300ff41' stroke-width='2' stroke-dasharray='6 6' /%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Macro knob">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card1Title">MOTORE ULTRA LEGGERO</h3>
-            <p class="feature-desc" data-i18n="card1Desc">Ottimizzato per CPU datate: funziona fluidamente su portatili di 10 anni fa. Consumo ridotto, prestazioni in tempo reale.</p>
-            <div class="feature-highlight" data-i18n="card1Highlight">zero latenza · qualsiasi hardware</div>
+            <h3 class="product-title" data-i18n="card1Title">3 MACRO KNOB</h3>
+            <p class="feature-desc" data-i18n="card1Desc">Clean (gate intelligente), Presence (EQ high‑shelf), Sauce (compressione + saturazione). Streamer‑friendly.</p>
+            <div class="feature-highlight" data-i18n="card1Highlight">zero click · smoothing 30ms</div>
         </div>
     </div>
     <div class="product-card">
         <div class="product-image">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect x='20' y='30' width='60' height='40' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Cline x1='30' y1='40' x2='70' y2='40' stroke='%2300ffea' stroke-width='2' /%3E%3Cline x1='30' y1='60' x2='70' y2='60' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="3 Bit Depth">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect x='20' y='30' width='60' height='40' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Cline x1='30' y1='40' x2='70' y2='40' stroke='%2300ffea' stroke-width='2' /%3E%3Cline x1='30' y1='60' x2='70' y2='60' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Advanced panel">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card2Title">TRIPLO MOTORE NEURALE</h3>
-            <p class="feature-desc" data-i18n="card2Desc">Scegli la risoluzione dinamica: 16-bit per il mix finale, 8 o 4-bit per gestire centinaia di tracce simultanee senza saturare la CPU.</p>
-            <div class="feature-highlight" data-i18n="card2Highlight">selezionabile in tempo reale</div>
+            <h3 class="product-title" data-i18n="card2Title">MODO ADVANCED</h3>
+            <p class="feature-desc" data-i18n="card2Desc">Controllo totale su gate, compressore, EQ e gain. Per quando vuoi sporcarti le mani.</p>
+            <div class="feature-highlight" data-i18n="card2Highlight">5 slider · precisione</div>
         </div>
     </div>
     <div class="product-card">
         <div class="product-image">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 L40,30 L60,30 L80,50 L60,70 L40,70 L20,50' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='12' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Due Preamp">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 L40,30 L60,30 L80,50 L60,70 L40,70 L20,50' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='12' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Target mode">
         </div>
         <div class="product-content">
-            <h3 class="product-title" data-i18n="card3Title">2 PREAMP INCLUSI</h3>
-            <p class="feature-desc" data-i18n="card3Desc">K-512c (API ispired) e K-1073MP (Neve ispired). Emulazioni circuitali complete pronte ad aggredire i tuoi mix.</p>
-            <div class="feature-highlight" data-i18n="card3Highlight">pronti all'uso</div>
+            <h3 class="product-title" data-i18n="card3Title">TARGET MODE</h3>
+            <p class="feature-desc" data-i18n="card3Desc">Scegli il livello di uscita: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfetto per streaming e podcast.</p>
+            <div class="feature-highlight" data-i18n="card3Highlight">conforme alle piattaforme</div>
         </div>
     </div>
 </div>
 
-<section class="bundles-section">
-    <h2 class="bundles-title" data-i18n="bundlesTitle">Espansioni Disponibili</h2>
-    <div class="bundles-grid">
-        
-        <div class="bundle-card">
-            <h3 data-i18n="bundle2Title">PREAMP EXPANSION VOL.1</h3>
-            <p class="bundle-desc" data-i18n="bundle2Desc">
-                4 modelli di outboard premium aggiuntivi. Perfetti per arricchire la tua traccia con calore analogico. Training neurale per una fedeltà timbrica senza compromessi, perfetti per sfruttare l'Auto-Gain di K-BL.
-            </p>
-            <div class="bundle-price" data-i18n="bundle2Price">€10</div>
-            <a href="https://buy.stripe.com/00wfZh1zr7YC9Fn8PUbsc05" class="btn-bundle" data-i18n="bundle2Btn">ACQUISTA</a>
-        </div>
-
-        </div>
+<!-- SEZIONE PREORDINE GENESIS BUNDLE -->
+<section class="preorder-section">
+    <h2 class="preorder-title">K-LAB GENESIS BUNDLE</h2>
+    <p class="preorder-sub">Il motore neurale definitivo, leggero come una piuma. Tre bit‑depth, due preamp inclusi.</p>
+    <div class="preorder-card">
+        <h3>GENESIS BUNDLE</h3>
+        <div class="preorder-price">€20</div>
+        <div class="eta-badge">🕒 USCITA TRA 3-6 MESI</div>
+        <p class="preorder-desc">
+            Tre risoluzioni neurali (16/8/4 bit), preamp K‑512c (API) e K‑1073MP (Neve).<br>
+            Gira su qualsiasi portatile, anche di 10 anni fa.
+        </p>
+        <a href="#" class="btn-preorder" id="preorderBtn">PREORDINA ORA</a>
+    </div>
 </section>
 
+<!-- FAQ (invariata, solo aggiornati i testi) -->
 <div class="faq-wrapper">
     <h2 class="faq-title" data-i18n="faqTitle">DOMANDE FREQUENTI</h2>
     <div class="faq-grid">
@@ -631,18 +743,18 @@
             <h3 data-i18n="faqPreTitle">🔍 PRIMA DELL'ACQUISTO</h3>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPreQ1">Compatibile con Mac e Windows?</div>
-                <div class="faq-answer" data-i18n="faqPreA1">Al momento è disponibile in formato VST3 per Windows. La versione Mac AU è in sviluppo.</div>
+                <div class="faq-answer" data-i18n="faqPreA1">StreamSauce è disponibile in VST3 per Windows (macOS in arrivo). Genesis Bundle seguirà alla release.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPreQ2">Ci sono abbonamenti?</div>
-                <div class="faq-answer" data-i18n="faqPreA2">Nessun abbonamento. Paghi una volta, la licenza è tua per sempre.</div>
+                <div class="faq-answer" data-i18n="faqPreA2">Nessun abbonamento. Paghi una volta, licenza a vita.</div>
             </div>
         </div>
         <div class="faq-column">
             <h3 data-i18n="faqPostTitle">⚙️ DOPO L'ACQUISTO</h3>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPostQ1">Come attivo il plugin?</div>
-                <div class="faq-answer" data-i18n="faqPostA1">Carica il plugin nella tua DAW e inserisci l'email usata per l'acquisto. Il sistema sblocca l'audio all'istante.</div>
+                <div class="faq-answer" data-i18n="faqPostA1">Inserisci l'email usata per l'acquisto direttamente nel plugin. La chiave viene generata automaticamente.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" data-i18n="faqPostQ2">Serve internet?</div>
@@ -661,143 +773,173 @@
 </footer>
 
 <script>
-    (function() {
-        const translations = {
-            it: {
-                heroSub: "Il motore neurale definitivo, leggero come una piuma. Gira senza problemi su qualsiasi portatile. 3 Neural Bit-Depths: 16, 8 e 4 bit per prestazioni estreme, zero compromessi timbrici. Include: K-512c e K-1073MP.",
-                btnBuy: "ACQUISTA ORA (€15)",
-                btnDemo: "SCARICA DEMO (24H)",
-                sample1: "Ascolta Dry",
-                sample2: "Ascolta K-1073 (4-bit)",
-                manifestoTitle: "SYSTEM_MANIFESTO",
-                manifestoBody: "\"Ci stiamo fumando l'industria. Che la democratizzazione dell'audio abbia inizio.\"",
-                card1Title: "MOTORE ULTRA LEGGERO",
-                card1Desc: "Ottimizzato per CPU datate: consumi ridotti al minimo per un flusso di lavoro istantaneo.",
-                card1Highlight: "zero latenza",
-                card2Title: "TRIPLO MOTORE NEURALE",
-                card2Desc: "Scegli la risoluzione: 16-bit per il mix finale, 8 o 4-bit per gestire centinaia di tracce.",
-                card2Highlight: "selezionabile in tempo reale",
-                card3Title: "2 PREAMP INCLUSI",
-                card3Desc: "K-512c (API ispired) e K-1073MP (Neve ispired).",
-                card3Highlight: "pronti all'uso",
-                bundlesTitle: "Espansioni Disponibili",
-                bundle2Title: "PREAMP EXPANSION VOL.1",
-                bundle2Desc: "4 modelli di outboard premium aggiuntivi. Perfetti per arricchire la tua traccia con calore analogico. Training neurale per una fedeltà timbrica senza compromessi, perfetti per sfruttare l'Auto-Gain di K-BL.",
-                bundle2Price: "€10",
-                bundle2Btn: "ACQUISTA",
-                faqTitle: "DOMANDE FREQUENTI",
-                faqPreTitle: "🔍 PRIMA DELL'ACQUISTO",
-                faqPreQ1: "Compatibile con Mac e Windows?",
-                faqPreA1: "Al momento disponibile VST3 per Windows. Mac AU in arrivo.",
-                faqPreQ2: "Ci sono abbonamenti?",
-                faqPreA2: "Nessun abbonamento. Licenza a vita.",
-                faqPostTitle: "⚙️ DOPO L'ACQUISTO",
-                faqPostQ1: "Come attivo il plugin?",
-                faqPostA1: "Inserisci l'email usata all'acquisto direttamente nel plugin.",
-                faqPostQ2: "Serve internet?",
-                faqPostA2: "Solo al primo avvio per il controllo licenza.",
-                footerCopyright: "© 2026 K-LAB DSP Industries. Tutti i diritti riservati.",
-                footerTerms: "Termini",
-                footerPrivacy: "Privacy Policy"
-            },
-            en: {
-                heroSub: "The ultimate neural engine, light as a feather. Runs smoothly on any laptop. 3 Neural Bit-Depths: 16, 8 and 4-bit for extreme performance, zero tonal compromise. Includes: K-512c and K-1073MP.",
-                btnBuy: "BUY NOW (€15)",
-                btnDemo: "DOWNLOAD DEMO (24H)",
-                sample1: "Listen Dry",
-                sample2: "Listen K-1073 (4-bit)",
-                manifestoTitle: "SYSTEM_MANIFESTO",
-                manifestoBody: "\"We're smoking the industry. Let the democratization of audio begin.\"",
-                card1Title: "ULTRA LIGHT ENGINE",
-                card1Desc: "Optimized for older CPUs: minimal consumption for an instant workflow.",
-                card1Highlight: "zero latency",
-                card2Title: "TRIPLE NEURAL ENGINE",
-                card2Desc: "Choose resolution: 16-bit for final mix, 8 or 4-bit to handle hundreds of tracks.",
-                card2Highlight: "selectable in real time",
-                card3Title: "2 PREAMPS INCLUDED",
-                card3Desc: "K-512c (API inspired) and K-1073MP (Neve inspired).",
-                card3Highlight: "ready to use",
-                bundlesTitle: "Available Expansions",
-                bundle2Title: "PREAMP EXPANSION VOL.1",
-                bundle2Desc: "4 additional premium outboard models. Perfect for adding analog warmth to your track. Neural training for uncompromising tonal fidelity, perfect to leverage K-BL Auto-Gain.",
-                bundle2Price: "€10",
-                bundle2Btn: "BUY NOW",
-                faqTitle: "FAQ",
-                faqPreTitle: "🔍 BEFORE PURCHASE",
-                faqPreQ1: "Mac and Windows compatible?",
-                faqPreA1: "Currently available as VST3 for Windows. Mac AU coming soon.",
-                faqPreQ2: "Are there subscriptions?",
-                faqPreA2: "No subscriptions. Lifetime license.",
-                faqPostTitle: "⚙️ AFTER PURCHASE",
-                faqPostQ1: "How do I activate?",
-                faqPostA1: "Enter your purchase email directly in the plugin.",
-                faqPostQ2: "Internet required?",
-                faqPostA2: "Only on first launch for license check.",
-                footerCopyright: "© 2026 K-LAB DSP Industries. All rights reserved.",
-                footerTerms: "Terms",
-                footerPrivacy: "Privacy Policy"
-            },
-            zh: {
-                heroSub: "终极神经引擎，轻如羽毛。在任何笔记本电脑上流畅运行。3种神经位深度：16、8和4位，提供极致性能，音色零妥协。包含：K-512c和K-1073MP。",
-                btnBuy: "立即购买 (€15)",
-                btnDemo: "下载试用版 (24H)",
-                sample1: "干声试听",
-                sample2: "K-1073 (4-bit) 试听",
-                manifestoTitle: "SYSTEM_MANIFESTO",
-                manifestoBody: "\"我们正在颠覆行业。让音频的民主化开始吧。\"",
-                card1Title: "超轻引擎",
-                card1Desc: "针对旧CPU优化：最低功耗，实现即时工作流。",
-                card1Highlight: "零延迟",
-                card2Title: "三重神经引擎",
-                card2Desc: "选择分辨率：16位用于最终混音，8位或4位用于处理数百个音轨。",
-                card2Highlight: "实时可选",
-                card3Title: "包含2个前置放大器",
-                card3Desc: "K-512c (API风格) 和 K-1073MP (Neve风格)。",
-                card3Highlight: "即插即用",
-                bundlesTitle: "可用扩展",
-                bundle2Title: "前置放大器扩展 VOL.1",
-                bundle2Desc: "4个额外的优质外部硬件模型。完美为您的音轨增添模拟温暖感。神经训练提供毫不妥协的音色保真度，完美利用K-BL的自动增益功能。",
-                bundle2Price: "€10",
-                bundle2Btn: "立即购买",
-                faqTitle: "常见问题",
-                faqPreTitle: "🔍 购买前",
-                faqPreQ1: "兼容 Mac 和 Windows？",
-                faqPreA1: "目前提供 Windows VST3。Mac AU 即将推出。",
-                faqPreQ2: "有订阅吗？",
-                faqPreA2: "没有订阅。终身许可。",
-                faqPostTitle: "⚙️ 购买后",
-                faqPostQ1: "如何激活？",
-                faqPostA1: "直接在插件中输入购买邮箱。",
-                faqPostQ2: "需要网络？",
-                faqPostA2: "仅首次启动时需要验证许可。",
-                footerCopyright: "© 2026 K-LAB DSP Industries。保留所有权利。",
-                footerTerms: "条款",
-                footerPrivacy: "隐私政策"
-            }
-        };
-
-        const elements = document.querySelectorAll('[data-i18n]');
-
-        function setLanguage(lang) {
-            if (!translations[lang]) return;
-            const t = translations[lang];
-            elements.forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (t[key]) {
-                    el.innerHTML = t[key]; // Uso innerHTML per supportare i tag <br> e <span> nel manifesto
-                }
-            });
-            localStorage.setItem('preferredLang', lang);
+    // Traduzioni
+    const translations = {
+        it: {
+            heroSub: "La catena vocale definitiva per streamer e producer. Tre macro: Clean, Presence, Sauce. Modalità Advanced per il controllo totale, Target Mode (-18, -14, -10 LUFS). Zero latenza, architettura C++20 ultraleggera.",
+            btnBuy: "ACQUISTA ORA (€10)",
+            btnDemo: "SCARICA DEMO (24H)",
+            sample1: "Ascolta Dry",
+            sample2: "Ascolta StreamSauce",
+            manifestoTitle: "SYSTEM_MANIFESTO",
+            manifestoBody: "\"Ci stiamo fumando l'industria. Che la democratizzazione dell'audio abbia inizio.\"",
+            card1Title: "3 MACRO KNOB",
+            card1Desc: "Clean (gate intelligente), Presence (EQ high‑shelf), Sauce (compressione + saturazione). Streamer‑friendly.",
+            card1Highlight: "zero click · smoothing 30ms",
+            card2Title: "MODO ADVANCED",
+            card2Desc: "Controllo totale su gate, compressore, EQ e gain. Per quando vuoi sporcarti le mani.",
+            card2Highlight: "5 slider · precisione",
+            card3Title: "TARGET MODE",
+            card3Desc: "Scegli il livello di uscita: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfetto per streaming e podcast.",
+            card3Highlight: "conforme alle piattaforme",
+            faqTitle: "DOMANDE FREQUENTI",
+            faqPreTitle: "🔍 PRIMA DELL'ACQUISTO",
+            faqPreQ1: "Compatibile con Mac e Windows?",
+            faqPreA1: "StreamSauce è disponibile in VST3 per Windows (macOS in arrivo). Genesis Bundle seguirà alla release.",
+            faqPreQ2: "Ci sono abbonamenti?",
+            faqPreA2: "Nessun abbonamento. Licenza a vita.",
+            faqPostTitle: "⚙️ DOPO L'ACQUISTO",
+            faqPostQ1: "Come attivo il plugin?",
+            faqPostA1: "Inserisci l'email usata per l'acquisto direttamente nel plugin. La chiave viene generata automaticamente.",
+            faqPostQ2: "Serve internet?",
+            faqPostA2: "Solo al primo avvio per la verifica DRM.",
+            footerCopyright: "© 2026 K-LAB DSP Industries. Tutti i diritti riservati.",
+            footerTerms: "Termini",
+            footerPrivacy: "Privacy Policy"
+        },
+        en: {
+            heroSub: "The ultimate vocal chain for streamers and producers. Three macros: Clean, Presence, Sauce. Advanced mode for total control, Target Mode (-18, -14, -10 LUFS). Zero latency, ultra‑light C++20 architecture.",
+            btnBuy: "BUY NOW (€10)",
+            btnDemo: "DOWNLOAD DEMO (24H)",
+            sample1: "Listen Dry",
+            sample2: "Listen StreamSauce",
+            manifestoTitle: "SYSTEM_MANIFESTO",
+            manifestoBody: "\"We're smoking the industry. Let the democratization of audio begin.\"",
+            card1Title: "3 MACRO KNOBS",
+            card1Desc: "Clean (intelligent gate), Presence (high‑shelf EQ), Sauce (compression + saturation). Streamer‑friendly.",
+            card1Highlight: "zero click · 30ms smoothing",
+            card2Title: "ADVANCED MODE",
+            card2Desc: "Full control over gate, compressor, EQ and gain. For when you want to get your hands dirty.",
+            card2Highlight: "5 sliders · precision",
+            card3Title: "TARGET MODE",
+            card3Desc: "Choose output level: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfect for streaming and podcast.",
+            card3Highlight: "platform compliant",
+            faqTitle: "FAQ",
+            faqPreTitle: "🔍 BEFORE PURCHASE",
+            faqPreQ1: "Mac and Windows compatible?",
+            faqPreA1: "StreamSauce is available as VST3 for Windows (macOS coming soon). Genesis Bundle will follow at release.",
+            faqPreQ2: "Are there subscriptions?",
+            faqPreA2: "No subscriptions. Lifetime license.",
+            faqPostTitle: "⚙️ AFTER PURCHASE",
+            faqPostQ1: "How do I activate?",
+            faqPostA1: "Enter your purchase email directly in the plugin. The key is generated automatically.",
+            faqPostQ2: "Internet required?",
+            faqPostA2: "Only on first launch for DRM check.",
+            footerCopyright: "© 2026 K-LAB DSP Industries. All rights reserved.",
+            footerTerms: "Terms",
+            footerPrivacy: "Privacy Policy"
+        },
+        zh: {
+            heroSub: "面向主播和制作人的终极人声处理链。三个宏旋钮：Clean、Presence、Sauce。高级模式提供全面控制，目标响度模式（-18、-14、-10 LUFS）。零延迟，超轻量C++20架构。",
+            btnBuy: "立即购买 (€10)",
+            btnDemo: "下载试用版 (24H)",
+            sample1: "干声试听",
+            sample2: "StreamSauce 试听",
+            manifestoTitle: "SYSTEM_MANIFESTO",
+            manifestoBody: "\"我们正在颠覆行业。让音频的民主化开始吧。\"",
+            card1Title: "3个宏旋钮",
+            card1Desc: "Clean（智能门限）、Presence（高架EQ）、Sauce（压缩+饱和）。主播友好。",
+            card1Highlight: "零咔哒声 · 30ms平滑",
+            card2Title: "高级模式",
+            card2Desc: "全面控制门限、压缩器、EQ和增益。适合想要精细调节的用户。",
+            card2Highlight: "5个滑块 · 精准",
+            card3Title: "目标响度模式",
+            card3Desc: "选择输出电平：Quiet (-18 LUFS)、Normal (-14)、Loud (-10)。完美适用于直播和播客。",
+            card3Highlight: "符合平台标准",
+            faqTitle: "常见问题",
+            faqPreTitle: "🔍 购买前",
+            faqPreQ1: "兼容 Mac 和 Windows？",
+            faqPreA1: "StreamSauce 提供 Windows VST3 版本（macOS即将推出）。Genesis Bundle 将在发售后提供。",
+            faqPreQ2: "有订阅吗？",
+            faqPreA2: "没有订阅。终身许可。",
+            faqPostTitle: "⚙️ 购买后",
+            faqPostQ1: "如何激活？",
+            faqPostA1: "直接在插件中输入购买邮箱，密钥将自动生成。",
+            faqPostQ2: "需要网络？",
+            faqPostA2: "仅在首次启动时验证DRM。",
+            footerCopyright: "© 2026 K-LAB DSP Industries。保留所有权利。",
+            footerTerms: "条款",
+            footerPrivacy: "隐私政策"
         }
+    };
 
-        const savedLang = localStorage.getItem('preferredLang') || 'it';
-        document.getElementById('langSwitcher').value = savedLang;
-        setLanguage(savedLang);
-
-        document.getElementById('langSwitcher').addEventListener('change', function(e) {
-            setLanguage(e.target.value);
+    // Gestione lingua
+    const elements = document.querySelectorAll('[data-i18n]');
+    function setLanguage(lang) {
+        if (!translations[lang]) return;
+        const t = translations[lang];
+        elements.forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                el.innerHTML = t[key];
+            }
         });
-    })();
+        localStorage.setItem('preferredLang', lang);
+    }
+    const savedLang = localStorage.getItem('preferredLang') || 'it';
+    document.getElementById('langSwitcher').value = savedLang;
+    setLanguage(savedLang);
+    document.getElementById('langSwitcher').addEventListener('change', function(e) {
+        setLanguage(e.target.value);
+    });
+
+    // Modale utente
+    const modal = document.getElementById('userModal');
+    const userBtn = document.getElementById('userAreaBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const keyDisplay = document.getElementById('keyDisplay');
+    const licenseSpan = document.getElementById('licenseKey');
+
+    userBtn.addEventListener('click', () => {
+        modal.classList.add('active');
+    });
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+        keyDisplay.style.display = 'none';
+    });
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+            keyDisplay.style.display = 'none';
+        }
+    });
+
+    // Simula generazione chiave
+    loginBtn.addEventListener('click', () => {
+        const email = document.getElementById('loginEmail').value;
+        if (email.includes('@')) {
+            const fakeKey = 'KLAB-' + Math.random().toString(36).substring(2,10).toUpperCase() + '-' + Math.random().toString(36).substring(2,10).toUpperCase();
+            licenseSpan.innerText = fakeKey;
+            keyDisplay.style.display = 'block';
+        } else {
+            alert('Inserisci una email valida per generare una chiave demo.');
+        }
+    });
+
+    // Preordine (solo alert)
+    document.getElementById('preorderBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Il preordine sarà disponibile a breve. Grazie per l\'interesse!');
+    });
+
+    // Demo alert
+    document.querySelectorAll('.btn-secondary, .sample-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Demo disponibile nella prossima release. Iscriviti alla newsletter per essere avvisato!');
+        });
+    });
 </script>
 
 </body>
