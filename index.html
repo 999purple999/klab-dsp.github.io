@@ -249,6 +249,12 @@
             object-fit: cover;
         }
 
+        .video-caption {
+            text-align:center;
+            color:#666;
+            margin-top:0.5rem;
+        }
+
         /* FEATURES QUICK */
         .features-quick {
             display: flex;
@@ -530,9 +536,9 @@
     <!-- PRODOTTO PRINCIPALE: StreamSauce -->
     <section class="hero">
         <h1>STREAMSAUCE</h1>
-        <div class="hero-sub">La tua voce perfetta in 3 click.</div>
-        <div class="hero-description">
-            Addio clipping, rumori di fondo e voci piatte. Con StreamSauce bastano 3 manopole per avere un suono professionale. Niente studi tecnici, niente ore di setup.
+        <div class="hero-sub" data-i18n="heroSub">Your perfect voice in 3 clicks.</div>
+        <div class="hero-description" data-i18n="heroDesc">
+            No more clipping, background noise, or flat vocals. With StreamSauce, 3 knobs are all you need for professional sound. No technical studies, no hours of setup.
         </div>
         
         <div class="price-display">
@@ -540,10 +546,10 @@
             <span class="currency">EUR</span>
         </div>
 
-        <div class="guarantee-badge">🔒 Garanzia 30 giorni · Licenza a vita</div>
+        <div class="guarantee-badge" data-i18n="guarantee">🔒 30-day guarantee · Lifetime license</div>
 
         <div class="hero-buttons">
-            <a href="https://buy.stripe.com/14AfZhfqh7YC6tb0jobsc06" class="btn-primary">ACQUISTA ORA</a>
+            <a href="https://buy.stripe.com/14AfZhfqh7YC6tb0jobsc06" class="btn-primary" data-i18n="btnBuy">BUY NOW (€10)</a>
         </div>
     </section>
 
@@ -553,102 +559,102 @@
             <video controls preload="metadata">
                 <source src="video/streamsauce.webm" type="video/webm">
                 <source src="video/streamsauce.mp4" type="video/mp4">
-                Il tuo browser non supporta il video.
+                Your browser does not support the video tag.
             </video>
         </div>
-        <p style="text-align:center; color:#666; margin-top:0.5rem;">Ascolta la differenza in 30 secondi</p>
+        <p class="video-caption" data-i18n="videoCaption">Hear the difference in 30 seconds</p>
     </div>
 
     <!-- FEATURE IN PRIMO PIANO -->
     <div class="features-quick">
         <div class="feature-item">
             <div class="feature-icon">🎚️</div>
-            <h3>CLEAN</h3>
-            <p>Elimina rumore di fondo e soffio. Voce cristallina.</p>
+            <h3 data-i18n="feature1Title">CLEAN</h3>
+            <p data-i18n="feature1Desc">Removes background noise and hiss. Crystal clear voice.</p>
         </div>
         <div class="feature-item">
             <div class="feature-icon">🎤</div>
-            <h3>PRESENCE</h3>
-            <p>Chiarezza e brillantezza. Taglia il mix senza sforzo.</p>
+            <h3 data-i18n="feature2Title">PRESENCE</h3>
+            <p data-i18n="feature2Desc">Clarity and brightness. Cuts through the mix effortlessly.</p>
         </div>
         <div class="feature-item">
             <div class="feature-icon">🔥</div>
-            <h3>SAUCE</h3>
-            <p>Compressione e saturazione "analogica". Suono professionale.</p>
+            <h3 data-i18n="feature3Title">SAUCE</h3>
+            <p data-i18n="feature3Desc">Analog-style compression and saturation. Professional sound.</p>
         </div>
     </div>
 
     <!-- CARATTERISTICHE STREAMSAUCE -->
     <div class="products-grid">
         <div class="product-card">
-            <h3 class="product-title">3 MANOPOLE</h3>
-            <p class="feature-desc">Clean (gate intelligente), Presence (EQ high-shelf), Sauce (compressione + saturazione). Giri e la voce è perfetta.</p>
+            <h3 class="product-title" data-i18n="card1Title">3 KNOBS</h3>
+            <p class="feature-desc" data-i18n="card1Desc">Clean (intelligent gate), Presence (high-shelf EQ), Sauce (compression + saturation). Turn and your voice is perfect.</p>
         </div>
         <div class="product-card">
-            <h3 class="product-title">MODO AVANZATO</h3>
-            <p class="feature-desc">Controllo totale su gate, compressore, EQ e gain. Per quando vuoi sporcarti le mani.</p>
+            <h3 class="product-title" data-i18n="card2Title">ADVANCED MODE</h3>
+            <p class="feature-desc" data-i18n="card2Desc">Full control over gate, compressor, EQ and gain. For when you want to get your hands dirty.</p>
         </div>
         <div class="product-card">
-            <h3 class="product-title">TARGET LUFS</h3>
-            <p class="feature-desc">Scegli il livello di uscita: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfetto per ogni piattaforma.</p>
+            <h3 class="product-title" data-i18n="card3Title">TARGET LUFS</h3>
+            <p class="feature-desc" data-i18n="card3Desc">Choose output level: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfect for any platform.</p>
         </div>
     </div>
 
     <!-- EMAIL SECTION (per notifiche Mac e Genesis) -->
     <div class="email-section">
-        <h3>📢 AVVISAMI</h3>
-        <p>MacOS in arrivo entro 2 mesi · GENESIS in preordine</p>
-        <p style="font-size:0.9rem; color:#666;">Lasciami la tua email e ti avviserò appena escono</p>
+        <h3 data-i18n="notifyTitle">📢 NOTIFY ME</h3>
+        <p data-i18n="notifySub">macOS coming within 2 months · GENESIS pre-order</p>
+        <p style="font-size:0.9rem; color:#666;" data-i18n="notifyText">Leave your email and I'll notify you as soon as they're out.</p>
         
         <form class="email-form" id="notifyForm">
-            <input type="email" id="notifyEmail" placeholder="La tua email" required>
+            <input type="email" id="notifyEmail" placeholder="Your email" required>
             <input type="hidden" name="PRODUCT" value="notify">
             <input type="hidden" name="SOURCE" value="sito_notifiche">
-            <button type="submit" id="notifySubmit">AVVISAMI</button>
+            <button type="submit" id="notifySubmit" data-i18n="notifyButton">NOTIFY ME</button>
         </form>
         <div id="notifyMessage" style="margin-top:1rem; color:var(--accent-green);"></div>
     </div>
 
     <!-- SEZIONE PREORDINE GENESIS BUNDLE -->
     <section class="preorder-section">
-        <h2 class="preorder-title">K-LAB GENESIS BUNDLE</h2>
-        <p class="preorder-sub">The ultimate neural engine, light as a feather. Three bit‑depths, two preamps included.</p>
+        <h2 class="preorder-title" data-i18n="genesisTitle">K-LAB GENESIS BUNDLE</h2>
+        <p class="preorder-sub" data-i18n="genesisSub">The ultimate neural engine, light as a feather. Three bit‑depths, two preamps included.</p>
         <div class="preorder-card">
-            <h3>GENESIS BUNDLE</h3>
+            <h3 data-i18n="genesisName">GENESIS BUNDLE</h3>
             <div class="preorder-price">€20</div>
-            <div class="eta-badge">🕒 RELEASE IN 3-6 MONTHS</div>
-            <p class="preorder-desc">
+            <div class="eta-badge" data-i18n="genesisEta">🕒 RELEASE IN 3-6 MONTHS</div>
+            <p class="preorder-desc" data-i18n="genesisDesc">
                 Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.<br>
                 Runs on any laptop, even 10 years old.
             </p>
-            <a href="https://buy.stripe.com/test_28o5nH8j47q8f9C000" class="btn-preorder" id="preorderBtn">PRE-ORDER NOW</a>
+            <a href="https://buy.stripe.com/test_28o5nH8j47q8f9C000" class="btn-preorder" data-i18n="genesisPreorder">PRE-ORDER NOW</a>
         </div>
     </section>
 
     <!-- FAQ -->
     <div class="faq-wrapper">
-        <h2 class="faq-title">FREQUENTLY ASKED QUESTIONS</h2>
+        <h2 class="faq-title" data-i18n="faqTitle">FREQUENTLY ASKED QUESTIONS</h2>
         <div class="faq-grid">
             <div class="faq-column">
-                <h3>🔍 BEFORE PURCHASE</h3>
+                <h3 data-i18n="faqPreTitle">🔍 BEFORE PURCHASE</h3>
                 <div class="faq-item">
-                    <div class="faq-question">Mac and Windows compatible?</div>
-                    <div class="faq-answer">StreamSauce is available as VST3 for Windows (macOS coming soon). Genesis Bundle will follow at release.</div>
+                    <div class="faq-question" data-i18n="faqPreQ1">Mac and Windows compatible?</div>
+                    <div class="faq-answer" data-i18n="faqPreA1">StreamSauce is available as VST3 for Windows (macOS coming soon). Genesis Bundle will follow at release.</div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question">Are there subscriptions?</div>
-                    <div class="faq-answer">No subscriptions. Lifetime license.</div>
+                    <div class="faq-question" data-i18n="faqPreQ2">Are there subscriptions?</div>
+                    <div class="faq-answer" data-i18n="faqPreA2">No subscriptions. Lifetime license.</div>
                 </div>
             </div>
             <div class="faq-column">
-                <h3>⚙️ AFTER PURCHASE</h3>
+                <h3 data-i18n="faqPostTitle">⚙️ AFTER PURCHASE</h3>
                 <div class="faq-item">
-                    <div class="faq-question">How do I activate?</div>
-                    <div class="faq-answer">Enter your purchase email directly in the plugin. The key is generated automatically.</div>
+                    <div class="faq-question" data-i18n="faqPostQ1">How do I activate?</div>
+                    <div class="faq-answer" data-i18n="faqPostA1">Enter your purchase email directly in the plugin. The key is generated automatically.</div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question">Internet required?</div>
-                    <div class="faq-answer">No, the plugin works completely offline.</div>
+                    <div class="faq-question" data-i18n="faqPostQ2">Internet required?</div>
+                    <div class="faq-answer" data-i18n="faqPostA2">No, the plugin works completely offline.</div>
                 </div>
             </div>
         </div>
@@ -656,37 +662,124 @@
 </main>
 
 <footer class="footer">
-    <p>© 2026 K-LAB DSP Industries. All rights reserved.</p>
+    <p data-i18n="footerCopyright">© 2026 K-LAB DSP Industries. All rights reserved.</p>
     <p>
-        <a href="#">Terms</a> · 
-        <a href="#">Privacy Policy</a>
+        <a href="#" data-i18n="footerTerms">Terms</a> · 
+        <a href="#" data-i18n="footerPrivacy">Privacy Policy</a>
     </p>
 </footer>
 
 <script>
-    // Gestione lingua
-    const elements = document.querySelectorAll('[data-i18n]');
+    // Traduzioni complete
     const translations = {
         en: {
-            btnBuy: "BUY NOW (€10)"
+            heroSub: "Your perfect voice in 3 clicks.",
+            heroDesc: "No more clipping, background noise, or flat vocals. With StreamSauce, 3 knobs are all you need for professional sound. No technical studies, no hours of setup.",
+            btnBuy: "BUY NOW (€10)",
+            guarantee: "🔒 30-day guarantee · Lifetime license",
+            videoCaption: "Hear the difference in 30 seconds",
+            feature1Title: "CLEAN",
+            feature1Desc: "Removes background noise and hiss. Crystal clear voice.",
+            feature2Title: "PRESENCE",
+            feature2Desc: "Clarity and brightness. Cuts through the mix effortlessly.",
+            feature3Title: "SAUCE",
+            feature3Desc: "Analog-style compression and saturation. Professional sound.",
+            card1Title: "3 KNOBS",
+            card1Desc: "Clean (intelligent gate), Presence (high-shelf EQ), Sauce (compression + saturation). Turn and your voice is perfect.",
+            card2Title: "ADVANCED MODE",
+            card2Desc: "Full control over gate, compressor, EQ and gain. For when you want to get your hands dirty.",
+            card3Title: "TARGET LUFS",
+            card3Desc: "Choose output level: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfect for any platform.",
+            notifyTitle: "📢 NOTIFY ME",
+            notifySub: "macOS coming within 2 months · GENESIS pre-order",
+            notifyText: "Leave your email and I'll notify you as soon as they're out.",
+            notifyButton: "NOTIFY ME",
+            genesisTitle: "K-LAB GENESIS BUNDLE",
+            genesisSub: "The ultimate neural engine, light as a feather. Three bit‑depths, two preamps included.",
+            genesisName: "GENESIS BUNDLE",
+            genesisEta: "🕒 RELEASE IN 3-6 MONTHS",
+            genesisDesc: "Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.\nRuns on any laptop, even 10 years old.",
+            genesisPreorder: "PRE-ORDER NOW",
+            faqTitle: "FREQUENTLY ASKED QUESTIONS",
+            faqPreTitle: "🔍 BEFORE PURCHASE",
+            faqPreQ1: "Mac and Windows compatible?",
+            faqPreA1: "StreamSauce is available as VST3 for Windows (macOS coming soon). Genesis Bundle will follow at release.",
+            faqPreQ2: "Are there subscriptions?",
+            faqPreA2: "No subscriptions. Lifetime license.",
+            faqPostTitle: "⚙️ AFTER PURCHASE",
+            faqPostQ1: "How do I activate?",
+            faqPostA1: "Enter your purchase email directly in the plugin. The key is generated automatically.",
+            faqPostQ2: "Internet required?",
+            faqPostA2: "No, the plugin works completely offline.",
+            footerCopyright: "© 2026 K-LAB DSP Industries. All rights reserved.",
+            footerTerms: "Terms",
+            footerPrivacy: "Privacy Policy"
         },
         it: {
-            btnBuy: "ACQUISTA ORA (€10)"
+            heroSub: "La tua voce perfetta in 3 click.",
+            heroDesc: "Addio clipping, rumori di fondo e voci piatte. Con StreamSauce bastano 3 manopole per avere un suono professionale. Niente studi tecnici, niente ore di setup.",
+            btnBuy: "ACQUISTA ORA (€10)",
+            guarantee: "🔒 Garanzia 30 giorni · Licenza a vita",
+            videoCaption: "Ascolta la differenza in 30 secondi",
+            feature1Title: "CLEAN",
+            feature1Desc: "Elimina rumore di fondo e soffio. Voce cristallina.",
+            feature2Title: "PRESENCE",
+            feature2Desc: "Chiarezza e brillantezza. Taglia il mix senza sforzo.",
+            feature3Title: "SAUCE",
+            feature3Desc: "Compressione e saturazione 'analogica'. Suono professionale.",
+            card1Title: "3 MANOPOLE",
+            card1Desc: "Clean (gate intelligente), Presence (EQ high-shelf), Sauce (compressione + saturazione). Giri e la voce è perfetta.",
+            card2Title: "MODO AVANZATO",
+            card2Desc: "Controllo totale su gate, compressore, EQ e gain. Per quando vuoi sporcarti le mani.",
+            card3Title: "TARGET LUFS",
+            card3Desc: "Scegli il livello di uscita: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfetto per ogni piattaforma.",
+            notifyTitle: "📢 AVVISAMI",
+            notifySub: "macOS in arrivo entro 2 mesi · GENESIS in preordine",
+            notifyText: "Lasciami la tua email e ti avviserò appena escono.",
+            notifyButton: "AVVISAMI",
+            genesisTitle: "K-LAB GENESIS BUNDLE",
+            genesisSub: "The ultimate neural engine, light as a feather. Three bit‑depths, two preamps included.",
+            genesisName: "GENESIS BUNDLE",
+            genesisEta: "🕒 USCITA TRA 3-6 MESI",
+            genesisDesc: "Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.\nRuns on any laptop, even 10 years old.",
+            genesisPreorder: "PRE-ORDINA ORA",
+            faqTitle: "DOMANDE FREQUENTI",
+            faqPreTitle: "🔍 PRIMA DELL'ACQUISTO",
+            faqPreQ1: "Compatibile con Mac e Windows?",
+            faqPreA1: "StreamSauce è disponibile in VST3 per Windows (macOS in arrivo). Genesis Bundle seguirà alla release.",
+            faqPreQ2: "Ci sono abbonamenti?",
+            faqPreA2: "Nessun abbonamento. Licenza a vita.",
+            faqPostTitle: "⚙️ DOPO L'ACQUISTO",
+            faqPostQ1: "Come attivo il plugin?",
+            faqPostA1: "Inserisci l'email usata per l'acquisto direttamente nel plugin. La chiave viene generata automaticamente.",
+            faqPostQ2: "Serve internet?",
+            faqPostA2: "No, il plugin funziona completamente offline.",
+            footerCopyright: "© 2026 K-LAB DSP Industries. Tutti i diritti riservati.",
+            footerTerms: "Termini",
+            footerPrivacy: "Privacy Policy"
         }
     };
 
+    const elements = document.querySelectorAll('[data-i18n]');
     function setLanguage(lang) {
         if (!translations[lang]) return;
         const t = translations[lang];
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (t[key]) {
-                el.innerHTML = t[key];
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    el.placeholder = t[key];
+                } else if (el.tagName === 'A' && el.classList.contains('btn-preorder')) {
+                    el.innerHTML = t[key];
+                } else {
+                    el.innerHTML = t[key];
+                }
             }
         });
         localStorage.setItem('preferredLang', lang);
     }
 
+    // Imposta lingua di default (inglese)
     const savedLang = localStorage.getItem('preferredLang') || 'en';
     document.getElementById('langSwitcher').value = savedLang;
     setLanguage(savedLang);
@@ -707,10 +800,9 @@
         
         // Disabilita bottone
         submitBtn.disabled = true;
-        submitBtn.textContent = 'INVIO...';
+        submitBtn.textContent = document.getElementById('langSwitcher').value === 'it' ? 'INVIO...' : 'SENDING...';
         
         try {
-            // Invia al worker Cloudflare
             const formData = new FormData();
             formData.append('EMAIL', email);
             formData.append('PRODUCT', 'notify');
@@ -722,24 +814,24 @@
             });
             
             if (response.redirected) {
-                // Se c'è redirect, la mail è stata inviata
-                notifyMessage.innerHTML = '✅ Grazie! Ti avviserò appena escono.';
+                notifyMessage.innerHTML = document.getElementById('langSwitcher').value === 'it' 
+                    ? '✅ Grazie! Ti avviserò appena escono.' 
+                    : '✅ Thank you! I\'ll notify you as soon as they\'re out.';
                 notifyForm.reset();
             } else {
-                notifyMessage.innerHTML = '❌ Errore, riprova più tardi.';
+                notifyMessage.innerHTML = document.getElementById('langSwitcher').value === 'it' 
+                    ? '❌ Errore, riprova più tardi.' 
+                    : '❌ Error, please try again later.';
             }
         } catch (error) {
             console.error('Errore:', error);
-            notifyMessage.innerHTML = '❌ Errore di connessione.';
+            notifyMessage.innerHTML = document.getElementById('langSwitcher').value === 'it' 
+                ? '❌ Errore di connessione.' 
+                : '❌ Connection error.';
         } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'AVVISAMI';
+            submitBtn.textContent = document.getElementById('langSwitcher').value === 'it' ? 'AVVISAMI' : 'NOTIFY ME';
         }
-    });
-
-    // Preordine Genesis
-    document.getElementById('preorderBtn').addEventListener('click', (e) => {
-        // Link già diretto a Stripe, nessun alert
     });
 </script>
 
