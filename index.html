@@ -227,6 +227,7 @@
             transform: translateY(-3px);
         }
 
+        /* Pulsante secondario ora serve solo per eventuali altri usi, ma non per demo */
         .btn-secondary {
             background: transparent;
             color: var(--accent-green);
@@ -554,7 +555,7 @@
 
     <div class="hero-buttons">
         <a href="https://buy.stripe.com/14AfZhfqh7YC6tb0jobsc06" class="btn-primary" data-i18n="btnBuy">BUY NOW (€10)</a>
-        <a href="#" class="btn-secondary" data-i18n="btnDemo">DOWNLOAD DEMO (24H)</a>
+        <!-- Pulsante demo RIMOSSO -->
     </div>
 
     <div class="sample-audio">
@@ -623,7 +624,7 @@
             Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.<br>
             Runs on any laptop, even 10 years old.
         </p>
-        <a href="#" class="btn-preorder" id="preorderBtn">PRE-ORDER NOW</a>
+        <a href="https://buy.stripe.com/your_genesis_link_here" class="btn-preorder" id="preorderBtn">PRE-ORDER NOW</a>
     </div>
 </section>
 
@@ -665,12 +666,11 @@
 </footer>
 
 <script>
-    // Traduzioni
+    // Traduzioni (invariate)
     const translations = {
         en: {
             heroSub: "The ultimate vocal chain for streamers and producers. Three macros: Clean, Presence, Sauce. Advanced mode for total control, Target Mode (-18, -14, -10 LUFS). Zero latency, ultra‑light C++20 architecture.",
             btnBuy: "BUY NOW (€10)",
-            btnDemo: "DOWNLOAD DEMO (24H)",
             sample1: "Listen Dry",
             sample2: "Listen StreamSauce",
             manifestoTitle: "SYSTEM_MANIFESTO",
@@ -702,7 +702,6 @@
         it: {
             heroSub: "La catena vocale definitiva per streamer e producer. Tre macro: Clean, Presence, Sauce. Modalità Advanced per il controllo totale, Target Mode (-18, -14, -10 LUFS). Zero latenza, architettura C++20 ultraleggera.",
             btnBuy: "ACQUISTA ORA (€10)",
-            btnDemo: "SCARICA DEMO (24H)",
             sample1: "Ascolta Dry",
             sample2: "Ascolta StreamSauce",
             manifestoTitle: "SYSTEM_MANIFESTO",
@@ -734,7 +733,6 @@
         zh: {
             heroSub: "面向主播和制作人的终极人声处理链。三个宏旋钮：Clean、Presence、Sauce。高级模式提供全面控制，目标响度模式（-18、-14、-10 LUFS）。零延迟，超轻量C++20架构。",
             btnBuy: "立即购买 (€10)",
-            btnDemo: "下载试用版 (24H)",
             sample1: "干声试听",
             sample2: "StreamSauce 试听",
             manifestoTitle: "SYSTEM_MANIFESTO",
@@ -791,11 +789,11 @@
         alert('Pre-order will be available soon. Thank you for your interest!');
     });
 
-    // Demo alert
-    document.querySelectorAll('.btn-secondary, .sample-btn').forEach(btn => {
+    // Sample audio (placeholder)
+    document.querySelectorAll('.sample-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            alert('Demo available in the next release. Subscribe to the newsletter to be notified!');
+            alert('Audio samples will be available soon. Stay tuned!');
         });
     });
 </script>
