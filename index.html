@@ -118,23 +118,6 @@
             color: #fff;
         }
 
-        /* LIVE COUNTER */
-        .live-counter-container {
-            max-width: 1000px; 
-            margin: 1.5rem auto 0 auto; 
-            padding: 0 2rem; 
-            display: flex; 
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px; 
-            font-family: 'Courier New', monospace; 
-            font-size: 0.85rem; 
-            color: var(--accent-green); 
-            opacity: 0.9;
-        }
-        .status-item span.prompt { color: var(--text-secondary); }
-        .status-item span.value { text-shadow: 0 0 5px var(--accent-green); }
-
         /* HERO */
         .hero {
             padding: 3rem 2rem 2rem;
@@ -155,12 +138,17 @@
         }
 
         .hero-sub {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: #ccc;
             max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto 2rem;
             line-height: 1.5;
         }
 
@@ -188,6 +176,16 @@
             margin-bottom: 0.5rem;
         }
 
+        .guarantee-badge {
+            background: rgba(0,255,65,0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 40px;
+            padding: 0.5rem 1.5rem;
+            display: inline-block;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
         .hero-buttons {
             display: flex;
             gap: 1.5rem;
@@ -197,7 +195,7 @@
             margin-top: 1.5rem;
         }
 
-        .btn-primary, .btn-secondary {
+        .btn-primary {
             padding: 1rem 2.5rem;
             border-radius: 8px;
             font-weight: 900;
@@ -211,9 +209,6 @@
             align-items: center;
             justify-content: center;
             border: 2px solid transparent;
-        }
-
-        .btn-primary {
             background: var(--accent-green);
             color: #000;
             box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
@@ -227,76 +222,63 @@
             transform: translateY(-3px);
         }
 
-        /* Pulsante secondario ora serve solo per eventuali altri usi, ma non per demo */
-        .btn-secondary {
-            background: transparent;
-            color: var(--accent-green);
-            border-color: var(--accent-green);
-            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+        /* VIDEO SECTION */
+        .video-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 1rem;
         }
 
-        .btn-secondary:hover {
-            background: var(--accent-green);
-            color: #000;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.7);
-            transform: translateY(-3px);
-        }
-
-        .sample-audio {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            margin: 2.5rem 0 1rem;
-        }
-        
-        .sample-btn {
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            padding: 0.8rem 2rem;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .sample-btn:hover {
-            background: var(--accent-green);
-            color: #000;
-            box-shadow: 0 0 15px var(--accent-green);
-        }
-        
-        .sample-btn::before {
-            content: "▶";
-            font-size: 0.9rem;
-        }
-
-        /* MANIFESTO */
-        .manifesto-container {
-            max-width: 800px; 
-            margin: 4rem auto; 
-            text-align: center; 
-            padding: 2.5rem 2rem; 
-            border: 1px solid var(--border-color); 
-            background: rgba(0,255,65,0.02); 
-            border-radius: 12px; 
-            position: relative; 
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 12px;
+            border: 1px solid var(--accent-green);
+            box-shadow: 0 0 30px rgba(0,255,65,0.2);
+            background: #111;
         }
-        
-        .manifesto-line {
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 3px; 
-            height: 100%; 
-            background: var(--accent-green);
-            box-shadow: 0 0 10px var(--accent-green);
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* FEATURES QUICK */
+        .features-quick {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 4rem auto;
+            max-width: 900px;
+            padding: 0 1rem;
+            flex-wrap: wrap;
+        }
+
+        .feature-item {
+            text-align: center;
+            flex: 1 1 200px;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item h3 {
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item p {
+            color: #aaa;
+            font-size: 0.95rem;
         }
 
         /* FEATURE CARDS (StreamSauce) */
@@ -320,6 +302,8 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
+            padding: 2rem 1.5rem;
+            text-align: center;
         }
 
         .product-card:hover {
@@ -328,47 +312,11 @@
             box-shadow: 0 10px 30px rgba(0, 255, 65, 0.1);
         }
 
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            border-bottom: 1px solid #222;
-        }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background-color: #050505;
-            padding: 20px;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 0 10px var(--accent-cyan));
-        }
-
-        .product-image:hover img {
-            transform: scale(1.05);
-        }
-
-        .product-content {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
         .product-title {
             font-size: 24px;
             font-weight: 700;
-            color: var(--text-primary);
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--accent-green), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--accent-green);
         }
 
         .feature-desc {
@@ -378,13 +326,66 @@
             margin-bottom: 0.5rem;
         }
 
-        .feature-highlight {
-            color: var(--accent-cyan);
-            font-weight: 600;
-            font-size: 0.9rem;
+        /* EMAIL SECTION (solo per notifiche Mac e Genesis) */
+        .email-section {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: rgba(0,255,65,0.03);
+            border: 1px solid #333;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .email-section h3 {
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .email-section p {
+            color: #aaa;
+            margin-bottom: 1.5rem;
+        }
+
+        .email-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .email-form input {
+            flex: 1 1 250px;
+            padding: 1rem;
+            background: #111;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .email-form input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .email-form button {
+            padding: 1rem 2rem;
+            background: var(--accent-green);
+            color: #000;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: auto;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .email-form button:hover {
+            background: transparent;
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
         }
 
         /* SEZIONE PREORDINE GENESIS */
@@ -499,8 +500,8 @@
             .new-price { font-size: 2.8rem; }
             .faq-grid { grid-template-columns: 1fr; }
             .hero-buttons { flex-direction: column; width: 100%; }
-            .btn-primary, .btn-secondary { width: 100%; }
-            .sample-audio { flex-direction: column; align-items: center; }
+            .btn-primary { width: 100%; }
+            .features-quick { flex-direction: column; gap: 1.5rem; }
             .header-container { flex-direction: column; align-items: flex-start; }
             .lang-selector { align-self: flex-end; }
         }
@@ -520,251 +521,160 @@
             <select id="langSwitcher" class="lang-selector">
                 <option value="en" selected>🇬🇧 English</option>
                 <option value="it">🇮🇹 Italiano</option>
-                <option value="zh">🇨🇳 中文</option>
             </select>
         </div>
     </div>
 </header>
 
-<div class="live-counter-container">
-    <div class="status-item">
-        <span class="prompt">></span> STATUS: <span class="value">STABLE</span>
-    </div>
-    <div class="status-item">
-        <span class="prompt">></span> NODES_ACTIVE: <span class="value" id="nodes-count">000,152</span>
-    </div>
-    <div class="status-item">
-        <span class="prompt">></span> PREMIUM_LICENSES: <span class="value" id="license-count">000,084</span>
-    </div>
-    <div class="status-item">
-        <span class="prompt">></span> CPU_SAVED: <span class="value" id="cpu-count">1,204 GHz</span>
-    </div>
-</div>
-
-<!-- PRODOTTO PRINCIPALE: K-LAB StreamSauce -->
-<section class="hero">
-    <h1>K-LAB STREAMSAUCE</h1>
-    <p class="hero-sub" data-i18n="heroSub">
-        The ultimate vocal chain for streamers and producers. Three macros: Clean, Presence, Sauce. Advanced mode for total control, Target Mode (-18, -14, -10 LUFS). Zero latency, ultra‑light C++20 architecture.
-    </p>
-    
-    <div class="price-display">
-        <span class="new-price">€10</span>
-        <span class="currency">EUR</span>
-    </div>
-
-    <div class="hero-buttons">
-        <a href="https://buy.stripe.com/14AfZhfqh7YC6tb0jobsc06" class="btn-primary" data-i18n="btnBuy">BUY NOW (€10)</a>
-        <!-- Pulsante demo RIMOSSO -->
-    </div>
-
-    <div class="sample-audio">
-        <a href="#" class="sample-btn" data-i18n="sample1">Listen Dry</a>
-        <a href="#" class="sample-btn" data-i18n="sample2">Listen StreamSauce</a>
-    </div>
-</section>
-
-<div class="manifesto-container">
-    <div class="manifesto-line"></div>
-    <h2 style="font-family: 'Courier New', monospace; font-size: 1.8rem; color: var(--accent-green); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(0,255,65,0.5);" data-i18n="manifestoTitle">
-        SYSTEM_MANIFESTO
-    </h2>
-    <p style="font-size: 2.2rem; font-weight: 900; line-height: 1.1; color: #fff; margin-bottom: 1.5rem; letter-spacing: -1px;" data-i18n="manifestoBody">
-        "We're smoking the industry.<br>
-        Let the <span style="color: var(--accent-cyan); text-shadow: 0 0 15px var(--accent-cyan);">democratization</span> of audio begin."
-    </p>
-    <p style="color: var(--text-secondary); font-family: 'Courier New', monospace; font-size: 0.9rem; text-transform: uppercase;">
-        [ AUTHOR: K-DSP / K-LAB INDUSTRIES ]
-    </p>
-</div>
-
-<!-- CARATTERISTICHE STREAMSAUCE -->
-<div class="products-grid">
-    <div class="product-card">
-        <div class="product-image">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%2300ff41' stroke-width='2' stroke-dasharray='6 6' /%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Macro knob">
+<main>
+    <!-- PRODOTTO PRINCIPALE: StreamSauce -->
+    <section class="hero">
+        <h1>STREAMSAUCE</h1>
+        <div class="hero-sub">La tua voce perfetta in 3 click.</div>
+        <div class="hero-description">
+            Addio clipping, rumori di fondo e voci piatte. Con StreamSauce bastano 3 manopole per avere un suono professionale. Niente studi tecnici, niente ore di setup.
         </div>
-        <div class="product-content">
-            <h3 class="product-title" data-i18n="card1Title">3 MACRO KNOBS</h3>
-            <p class="feature-desc" data-i18n="card1Desc">Clean (intelligent gate), Presence (high‑shelf EQ), Sauce (compression + saturation). Streamer‑friendly.</p>
-            <div class="feature-highlight" data-i18n="card1Highlight">zero click · 30ms smoothing</div>
+        
+        <div class="price-display">
+            <span class="new-price">€10</span>
+            <span class="currency">EUR</span>
+        </div>
+
+        <div class="guarantee-badge">🔒 Garanzia 30 giorni · Licenza a vita</div>
+
+        <div class="hero-buttons">
+            <a href="https://buy.stripe.com/14AfZhfqh7YC6tb0jobsc06" class="btn-primary">ACQUISTA ORA</a>
+        </div>
+    </section>
+
+    <!-- VIDEO DIMOSTRATIVO -->
+    <div class="video-container">
+        <div class="video-wrapper">
+            <video controls preload="metadata">
+                <source src="video/streamsauce.webm" type="video/webm">
+                <source src="video/streamsauce.mp4" type="video/mp4">
+                Il tuo browser non supporta il video.
+            </video>
+        </div>
+        <p style="text-align:center; color:#666; margin-top:0.5rem;">Ascolta la differenza in 30 secondi</p>
+    </div>
+
+    <!-- FEATURE IN PRIMO PIANO -->
+    <div class="features-quick">
+        <div class="feature-item">
+            <div class="feature-icon">🎚️</div>
+            <h3>CLEAN</h3>
+            <p>Elimina rumore di fondo e soffio. Voce cristallina.</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🎤</div>
+            <h3>PRESENCE</h3>
+            <p>Chiarezza e brillantezza. Taglia il mix senza sforzo.</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🔥</div>
+            <h3>SAUCE</h3>
+            <p>Compressione e saturazione "analogica". Suono professionale.</p>
         </div>
     </div>
-    <div class="product-card">
-        <div class="product-image">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect x='20' y='30' width='60' height='40' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Cline x1='30' y1='40' x2='70' y2='40' stroke='%2300ffea' stroke-width='2' /%3E%3Cline x1='30' y1='60' x2='70' y2='60' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Advanced panel">
-        </div>
-        <div class="product-content">
-            <h3 class="product-title" data-i18n="card2Title">ADVANCED MODE</h3>
-            <p class="feature-desc" data-i18n="card2Desc">Full control over gate, compressor, EQ and gain. For when you want to get your hands dirty.</p>
-            <div class="feature-highlight" data-i18n="card2Highlight">5 sliders · precision</div>
-        </div>
-    </div>
-    <div class="product-card">
-        <div class="product-image">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 L40,30 L60,30 L80,50 L60,70 L40,70 L20,50' fill='none' stroke='%2300ff41' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='12' fill='none' stroke='%2300ffea' stroke-width='2' /%3E%3C/svg%3E" alt="Target mode">
-        </div>
-        <div class="product-content">
-            <h3 class="product-title" data-i18n="card3Title">TARGET MODE</h3>
-            <p class="feature-desc" data-i18n="card3Desc">Choose output level: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfect for streaming and podcast.</p>
-            <div class="feature-highlight" data-i18n="card3Highlight">platform compliant</div>
-        </div>
-    </div>
-</div>
 
-<!-- SEZIONE PREORDINE GENESIS BUNDLE -->
-<section class="preorder-section">
-    <h2 class="preorder-title">K-LAB GENESIS BUNDLE</h2>
-    <p class="preorder-sub">The ultimate neural engine, light as a feather. Three bit‑depths, two preamps included.</p>
-    <div class="preorder-card">
-        <h3>GENESIS BUNDLE</h3>
-        <div class="preorder-price">€20</div>
-        <div class="eta-badge">🕒 RELEASE IN 3-6 MONTHS</div>
-        <p class="preorder-desc">
-            Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.<br>
-            Runs on any laptop, even 10 years old.
-        </p>
-        <a href="https://buy.stripe.com/your_genesis_link_here" class="btn-preorder" id="preorderBtn">PRE-ORDER NOW</a>
+    <!-- CARATTERISTICHE STREAMSAUCE -->
+    <div class="products-grid">
+        <div class="product-card">
+            <h3 class="product-title">3 MANOPOLE</h3>
+            <p class="feature-desc">Clean (gate intelligente), Presence (EQ high-shelf), Sauce (compressione + saturazione). Giri e la voce è perfetta.</p>
+        </div>
+        <div class="product-card">
+            <h3 class="product-title">MODO AVANZATO</h3>
+            <p class="feature-desc">Controllo totale su gate, compressore, EQ e gain. Per quando vuoi sporcarti le mani.</p>
+        </div>
+        <div class="product-card">
+            <h3 class="product-title">TARGET LUFS</h3>
+            <p class="feature-desc">Scegli il livello di uscita: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfetto per ogni piattaforma.</p>
+        </div>
     </div>
-</section>
 
-<!-- FAQ -->
-<div class="faq-wrapper">
-    <h2 class="faq-title" data-i18n="faqTitle">FREQUENTLY ASKED QUESTIONS</h2>
-    <div class="faq-grid">
-        <div class="faq-column">
-            <h3 data-i18n="faqPreTitle">🔍 BEFORE PURCHASE</h3>
-            <div class="faq-item">
-                <div class="faq-question" data-i18n="faqPreQ1">Mac and Windows compatible?</div>
-                <div class="faq-answer" data-i18n="faqPreA1">StreamSauce is available as VST3 for Windows (macOS coming soon). Genesis Bundle will follow at release.</div>
+    <!-- EMAIL SECTION (per notifiche Mac e Genesis) -->
+    <div class="email-section">
+        <h3>📢 AVVISAMI</h3>
+        <p>MacOS in arrivo entro 2 mesi · GENESIS in preordine</p>
+        <p style="font-size:0.9rem; color:#666;">Lasciami la tua email e ti avviserò appena escono</p>
+        
+        <form class="email-form" id="notifyForm">
+            <input type="email" id="notifyEmail" placeholder="La tua email" required>
+            <input type="hidden" name="PRODUCT" value="notify">
+            <input type="hidden" name="SOURCE" value="sito_notifiche">
+            <button type="submit" id="notifySubmit">AVVISAMI</button>
+        </form>
+        <div id="notifyMessage" style="margin-top:1rem; color:var(--accent-green);"></div>
+    </div>
+
+    <!-- SEZIONE PREORDINE GENESIS BUNDLE -->
+    <section class="preorder-section">
+        <h2 class="preorder-title">K-LAB GENESIS BUNDLE</h2>
+        <p class="preorder-sub">The ultimate neural engine, light as a feather. Three bit‑depths, two preamps included.</p>
+        <div class="preorder-card">
+            <h3>GENESIS BUNDLE</h3>
+            <div class="preorder-price">€20</div>
+            <div class="eta-badge">🕒 RELEASE IN 3-6 MONTHS</div>
+            <p class="preorder-desc">
+                Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.<br>
+                Runs on any laptop, even 10 years old.
+            </p>
+            <a href="https://buy.stripe.com/test_28o5nH8j47q8f9C000" class="btn-preorder" id="preorderBtn">PRE-ORDER NOW</a>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <div class="faq-wrapper">
+        <h2 class="faq-title">FREQUENTLY ASKED QUESTIONS</h2>
+        <div class="faq-grid">
+            <div class="faq-column">
+                <h3>🔍 BEFORE PURCHASE</h3>
+                <div class="faq-item">
+                    <div class="faq-question">Mac and Windows compatible?</div>
+                    <div class="faq-answer">StreamSauce is available as VST3 for Windows (macOS coming soon). Genesis Bundle will follow at release.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Are there subscriptions?</div>
+                    <div class="faq-answer">No subscriptions. Lifetime license.</div>
+                </div>
             </div>
-            <div class="faq-item">
-                <div class="faq-question" data-i18n="faqPreQ2">Are there subscriptions?</div>
-                <div class="faq-answer" data-i18n="faqPreA2">No subscriptions. Lifetime license.</div>
-            </div>
-        </div>
-        <div class="faq-column">
-            <h3 data-i18n="faqPostTitle">⚙️ AFTER PURCHASE</h3>
-            <div class="faq-item">
-                <div class="faq-question" data-i18n="faqPostQ1">How do I activate?</div>
-                <div class="faq-answer" data-i18n="faqPostA1">Enter your purchase email directly in the plugin. The key is generated automatically.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" data-i18n="faqPostQ2">Internet required?</div>
-                <div class="faq-answer" data-i18n="faqPostA2">No, the plugin works completely offline.</div>
+            <div class="faq-column">
+                <h3>⚙️ AFTER PURCHASE</h3>
+                <div class="faq-item">
+                    <div class="faq-question">How do I activate?</div>
+                    <div class="faq-answer">Enter your purchase email directly in the plugin. The key is generated automatically.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Internet required?</div>
+                    <div class="faq-answer">No, the plugin works completely offline.</div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
 <footer class="footer">
-    <p data-i18n="footerCopyright">© 2026 K-LAB DSP Industries. All rights reserved.</p>
+    <p>© 2026 K-LAB DSP Industries. All rights reserved.</p>
     <p>
-        <a href="#" data-i18n="footerTerms">Terms</a> · 
-        <a href="#" data-i18n="footerPrivacy">Privacy Policy</a>
+        <a href="#">Terms</a> · 
+        <a href="#">Privacy Policy</a>
     </p>
 </footer>
 
 <script>
-    // Traduzioni (invariate)
+    // Gestione lingua
+    const elements = document.querySelectorAll('[data-i18n]');
     const translations = {
         en: {
-            heroSub: "The ultimate vocal chain for streamers and producers. Three macros: Clean, Presence, Sauce. Advanced mode for total control, Target Mode (-18, -14, -10 LUFS). Zero latency, ultra‑light C++20 architecture.",
-            btnBuy: "BUY NOW (€10)",
-            sample1: "Listen Dry",
-            sample2: "Listen StreamSauce",
-            manifestoTitle: "SYSTEM_MANIFESTO",
-            manifestoBody: "\"We're smoking the industry. Let the democratization of audio begin.\"",
-            card1Title: "3 MACRO KNOBS",
-            card1Desc: "Clean (intelligent gate), Presence (high‑shelf EQ), Sauce (compression + saturation). Streamer‑friendly.",
-            card1Highlight: "zero click · 30ms smoothing",
-            card2Title: "ADVANCED MODE",
-            card2Desc: "Full control over gate, compressor, EQ and gain. For when you want to get your hands dirty.",
-            card2Highlight: "5 sliders · precision",
-            card3Title: "TARGET MODE",
-            card3Desc: "Choose output level: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfect for streaming and podcast.",
-            card3Highlight: "platform compliant",
-            faqTitle: "FREQUENTLY ASKED QUESTIONS",
-            faqPreTitle: "🔍 BEFORE PURCHASE",
-            faqPreQ1: "Mac and Windows compatible?",
-            faqPreA1: "StreamSauce is available as VST3 for Windows (macOS coming soon). Genesis Bundle will follow at release.",
-            faqPreQ2: "Are there subscriptions?",
-            faqPreA2: "No subscriptions. Lifetime license.",
-            faqPostTitle: "⚙️ AFTER PURCHASE",
-            faqPostQ1: "How do I activate?",
-            faqPostA1: "Enter your purchase email directly in the plugin. The key is generated automatically.",
-            faqPostQ2: "Internet required?",
-            faqPostA2: "No, the plugin works completely offline.",
-            footerCopyright: "© 2026 K-LAB DSP Industries. All rights reserved.",
-            footerTerms: "Terms",
-            footerPrivacy: "Privacy Policy"
+            btnBuy: "BUY NOW (€10)"
         },
         it: {
-            heroSub: "La catena vocale definitiva per streamer e producer. Tre macro: Clean, Presence, Sauce. Modalità Advanced per il controllo totale, Target Mode (-18, -14, -10 LUFS). Zero latenza, architettura C++20 ultraleggera.",
-            btnBuy: "ACQUISTA ORA (€10)",
-            sample1: "Ascolta Dry",
-            sample2: "Ascolta StreamSauce",
-            manifestoTitle: "SYSTEM_MANIFESTO",
-            manifestoBody: "\"Ci stiamo fumando l'industria. Che la democratizzazione dell'audio abbia inizio.\"",
-            card1Title: "3 MACRO KNOB",
-            card1Desc: "Clean (gate intelligente), Presence (EQ high‑shelf), Sauce (compressione + saturazione). Streamer‑friendly.",
-            card1Highlight: "zero click · smoothing 30ms",
-            card2Title: "MODO ADVANCED",
-            card2Desc: "Controllo totale su gate, compressore, EQ e gain. Per quando vuoi sporcarti le mani.",
-            card2Highlight: "5 slider · precisione",
-            card3Title: "TARGET MODE",
-            card3Desc: "Scegli il livello di uscita: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfetto per streaming e podcast.",
-            card3Highlight: "conforme alle piattaforme",
-            faqTitle: "DOMANDE FREQUENTI",
-            faqPreTitle: "🔍 PRIMA DELL'ACQUISTO",
-            faqPreQ1: "Compatibile con Mac e Windows?",
-            faqPreA1: "StreamSauce è disponibile in VST3 per Windows (macOS in arrivo). Genesis Bundle seguirà alla release.",
-            faqPreQ2: "Ci sono abbonamenti?",
-            faqPreA2: "Nessun abbonamento. Licenza a vita.",
-            faqPostTitle: "⚙️ DOPO L'ACQUISTO",
-            faqPostQ1: "Come attivo il plugin?",
-            faqPostA1: "Inserisci l'email usata per l'acquisto direttamente nel plugin. La chiave viene generata automaticamente.",
-            faqPostQ2: "Serve internet?",
-            faqPostA2: "No, il plugin funziona completamente offline.",
-            footerCopyright: "© 2026 K-LAB DSP Industries. Tutti i diritti riservati.",
-            footerTerms: "Termini",
-            footerPrivacy: "Privacy Policy"
-        },
-        zh: {
-            heroSub: "面向主播和制作人的终极人声处理链。三个宏旋钮：Clean、Presence、Sauce。高级模式提供全面控制，目标响度模式（-18、-14、-10 LUFS）。零延迟，超轻量C++20架构。",
-            btnBuy: "立即购买 (€10)",
-            sample1: "干声试听",
-            sample2: "StreamSauce 试听",
-            manifestoTitle: "SYSTEM_MANIFESTO",
-            manifestoBody: "\"我们正在颠覆行业。让音频的民主化开始吧。\"",
-            card1Title: "3个宏旋钮",
-            card1Desc: "Clean（智能门限）、Presence（高架EQ）、Sauce（压缩+饱和）。主播友好。",
-            card1Highlight: "零咔哒声 · 30ms平滑",
-            card2Title: "高级模式",
-            card2Desc: "全面控制门限、压缩器、EQ和增益。适合想要精细调节的用户。",
-            card2Highlight: "5个滑块 · 精准",
-            card3Title: "目标响度模式",
-            card3Desc: "选择输出电平：Quiet (-18 LUFS)、Normal (-14)、Loud (-10)。完美适用于直播和播客。",
-            card3Highlight: "符合平台标准",
-            faqTitle: "常见问题",
-            faqPreTitle: "🔍 购买前",
-            faqPreQ1: "兼容 Mac 和 Windows？",
-            faqPreA1: "StreamSauce 提供 Windows VST3 版本（macOS即将推出）。Genesis Bundle 将在发售后提供。",
-            faqPreQ2: "有订阅吗？",
-            faqPreA2: "没有订阅。终身许可。",
-            faqPostTitle: "⚙️ 购买后",
-            faqPostQ1: "如何激活？",
-            faqPostA1: "直接在插件中输入购买邮箱，密钥将自动生成。",
-            faqPostQ2: "需要网络？",
-            faqPostA2: "不需要，插件完全离线工作。",
-            footerCopyright: "© 2026 K-LAB DSP Industries。保留所有权利。",
-            footerTerms: "条款",
-            footerPrivacy: "隐私政策"
+            btnBuy: "ACQUISTA ORA (€10)"
         }
     };
 
-    // Gestione lingua
-    const elements = document.querySelectorAll('[data-i18n]');
     function setLanguage(lang) {
         if (!translations[lang]) return;
         const t = translations[lang];
@@ -776,25 +686,60 @@
         });
         localStorage.setItem('preferredLang', lang);
     }
+
     const savedLang = localStorage.getItem('preferredLang') || 'en';
     document.getElementById('langSwitcher').value = savedLang;
     setLanguage(savedLang);
+    
     document.getElementById('langSwitcher').addEventListener('change', function(e) {
         setLanguage(e.target.value);
     });
 
-    // Preordine (solo alert)
-    document.getElementById('preorderBtn').addEventListener('click', (e) => {
+    // Gestione form notifiche (invia a Telegram via Cloudflare Worker)
+    const notifyForm = document.getElementById('notifyForm');
+    const notifyMessage = document.getElementById('notifyMessage');
+
+    notifyForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        alert('Pre-order will be available soon. Thank you for your interest!');
+        
+        const email = document.getElementById('notifyEmail').value;
+        const submitBtn = document.getElementById('notifySubmit');
+        
+        // Disabilita bottone
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'INVIO...';
+        
+        try {
+            // Invia al worker Cloudflare
+            const formData = new FormData();
+            formData.append('EMAIL', email);
+            formData.append('PRODUCT', 'notify');
+            formData.append('SOURCE', 'sito_notifiche');
+            
+            const response = await fetch('https://contactlater.accessisoftwarefrancesco.workers.dev/subscribe', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.redirected) {
+                // Se c'è redirect, la mail è stata inviata
+                notifyMessage.innerHTML = '✅ Grazie! Ti avviserò appena escono.';
+                notifyForm.reset();
+            } else {
+                notifyMessage.innerHTML = '❌ Errore, riprova più tardi.';
+            }
+        } catch (error) {
+            console.error('Errore:', error);
+            notifyMessage.innerHTML = '❌ Errore di connessione.';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'AVVISAMI';
+        }
     });
 
-    // Sample audio (placeholder)
-    document.querySelectorAll('.sample-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('Audio samples will be available soon. Stay tuned!');
-        });
+    // Preordine Genesis
+    document.getElementById('preorderBtn').addEventListener('click', (e) => {
+        // Link già diretto a Stripe, nessun alert
     });
 </script>
 
