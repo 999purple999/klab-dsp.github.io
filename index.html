@@ -627,7 +627,8 @@
                 Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.<br>
                 Runs on any laptop, even 10 years old.
             </p>
-            <a href="https://buy.stripe.com/test_28o5nH8j47q8f9C000" class="btn-preorder" data-i18n="genesisPreorder">PRE-ORDER NOW</a>
+            <!-- ✅ FIX: link reale Stripe al posto del link TEST -->
+            <a href="https://buy.stripe.com/8x25kD91Ten08Bjeaebsc01" class="btn-preorder" data-i18n="genesisPreorder">PRE-ORDER NOW</a>
         </div>
     </section>
 
@@ -797,10 +798,11 @@
         
         const email = document.getElementById('notifyEmail').value;
         const submitBtn = document.getElementById('notifySubmit');
+        const isIt = document.getElementById('langSwitcher').value === 'it';
         
         // Disabilita bottone
         submitBtn.disabled = true;
-        submitBtn.textContent = document.getElementById('langSwitcher').value === 'it' ? 'INVIO...' : 'SENDING...';
+        submitBtn.textContent = isIt ? 'INVIO...' : 'SENDING...';
         
         try {
             const formData = new FormData();
@@ -808,29 +810,32 @@
             formData.append('PRODUCT', 'notify');
             formData.append('SOURCE', 'sito_notifiche');
             
+            // ✅ FIX: il worker ora risponde 200 JSON invece di fare redirect 302
+            // Il redirect causava un errore CORS perché il browser seguiva
+            // il redirect verso /grazie.html sul dominio del worker (senza CORS headers)
             const response = await fetch('https://contactlater.accessisoftwarefrancesco.workers.dev/subscribe', {
                 method: 'POST',
                 body: formData
             });
             
-            if (response.redirected) {
-                notifyMessage.innerHTML = document.getElementById('langSwitcher').value === 'it' 
-                    ? '✅ Grazie! Ti avviserò appena escono.' 
+            if (response.ok) {
+                notifyMessage.innerHTML = isIt
+                    ? '✅ Grazie! Ti avviserò appena escono.'
                     : '✅ Thank you! I\'ll notify you as soon as they\'re out.';
                 notifyForm.reset();
             } else {
-                notifyMessage.innerHTML = document.getElementById('langSwitcher').value === 'it' 
-                    ? '❌ Errore, riprova più tardi.' 
+                notifyMessage.innerHTML = isIt
+                    ? '❌ Errore, riprova più tardi.'
                     : '❌ Error, please try again later.';
             }
         } catch (error) {
             console.error('Errore:', error);
-            notifyMessage.innerHTML = document.getElementById('langSwitcher').value === 'it' 
-                ? '❌ Errore di connessione.' 
+            notifyMessage.innerHTML = isIt
+                ? '❌ Errore di connessione.'
                 : '❌ Connection error.';
         } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = document.getElementById('langSwitcher').value === 'it' ? 'AVVISAMI' : 'NOTIFY ME';
+            submitBtn.textContent = isIt ? 'AVVISAMI' : 'NOTIFY ME';
         }
     });
 </script>
