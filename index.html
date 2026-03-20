@@ -3,842 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-LAB DSP · StreamSauce & GENESIS</title>
+    <title>K-LAB Industries | Pro Audio DSP</title>
     <style>
-        /* RESET & FONTS */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        /* CSS Reset & Cyberpunk Analogue Variables */
+        :root {
+            --bg-color: #000000;
+            --panel-color: #0a0a0a;
+            --panel-light: #111111;
+            --border-color: #222222;
+            --neon-green: #00FF41;
+            --neon-green-dim: #005010;
+            --text-main: #FFFFFF;
+            --text-muted: #8A8A8A;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        :root {
-            --bg-dark: #000000;
-            --bg-card: #0a0a0a;
-            --text-primary: #ffffff;
-            --text-secondary: #8a8a8a;
-            --accent-green: #00ff41;
-            --accent-cyan: #00ffea;
-            --border-color: #222222;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .matrix-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(0, 255, 65, 0.03) 0%, transparent 20%),
-                radial-gradient(circle at 80% 70%, rgba(0, 255, 234, 0.03) 0%, transparent 20%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .header {
-            padding: 1rem 2rem;
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
             border-bottom: 1px solid var(--border-color);
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
+            background-color: rgba(0, 0, 0, 0.9);
             position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-            gap: 1rem;
+            z-index: 100;
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: transparent;
-            border: 2px solid var(--accent-green);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 1.5rem;
             font-weight: 900;
-            font-size: 24px;
-            color: var(--accent-green);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
-        }
-
-        .logo-text {
-            font-size: 26px;
-            font-weight: 900;
-            color: var(--text-primary);
             letter-spacing: 2px;
+            color: var(--text-main);
         }
 
-        .lang-selector {
-            background: transparent;
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            outline: none;
-            box-shadow: 0 0 8px rgba(0,255,65,0.3);
-            transition: 0.2s;
-        }
-        
-        .lang-selector:hover {
-            background: var(--accent-green);
-            color: #000;
-        }
-        
-        .lang-selector option {
-            background: #111;
-            color: #fff;
+        .logo span {
+            color: var(--neon-green);
         }
 
-        /* HERO */
+        /* Hero Section */
         .hero {
-            padding: 3rem 2rem 2rem;
             text-align: center;
-            max-width: 1000px;
-            margin: 0 auto;
-            position: relative;
+            padding: 6rem 1rem;
+            background: radial-gradient(circle at center, var(--panel-light) 0%, var(--bg-color) 70%);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .hero h1 {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 0.75rem;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
-        }
-
-        .hero-sub {
-            font-size: 1.5rem;
-            color: #fff;
-            margin-bottom: 1rem;
-            font-weight: 400;
-        }
-
-        .hero-description {
-            font-size: 1.2rem;
-            color: #ccc;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            line-height: 1.5;
-        }
-
-        .price-display {
-            margin: 2rem 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .new-price {
             font-size: 3.5rem;
-            font-weight: 900;
-            color: var(--accent-green);
-            text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-            line-height: 1;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
         }
 
-        .currency {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            align-self: flex-end;
-            margin-bottom: 0.5rem;
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
         }
 
-        .guarantee-badge {
-            background: rgba(0,255,65,0.1);
-            border: 1px solid var(--accent-green);
-            border-radius: 40px;
-            padding: 0.5rem 1.5rem;
-            display: inline-block;
-            margin-bottom: 2rem;
-            font-weight: 600;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-top: 1.5rem;
-        }
-
-        .btn-primary {
-            padding: 1rem 2.5rem;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid transparent;
-            background: var(--accent-green);
-            color: #000;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
-            border-color: var(--accent-green);
-        }
-
-        .btn-primary:hover {
-            background: transparent;
-            color: var(--accent-green);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.9);
-            transform: translateY(-3px);
-        }
-
-        /* VIDEO SECTION */
-        .video-container {
-            max-width: 800px;
-            margin: 3rem auto;
-            padding: 0 1rem;
-        }
-
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            border: 1px solid var(--accent-green);
-            box-shadow: 0 0 30px rgba(0,255,65,0.2);
-            background: #111;
-        }
-
-        .video-wrapper video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .video-caption {
-            text-align:center;
-            color:#666;
-            margin-top:0.5rem;
-        }
-
-        /* FEATURES QUICK */
-        .features-quick {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin: 4rem auto;
-            max-width: 900px;
-            padding: 0 1rem;
-            flex-wrap: wrap;
-        }
-
-        .feature-item {
-            text-align: center;
-            flex: 1 1 200px;
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--accent-green);
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-item h3 {
-            color: var(--accent-green);
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-item p {
-            color: #aaa;
-            font-size: 0.95rem;
-        }
-
-        /* FEATURE CARDS (StreamSauce) */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-            gap: 2.5rem;
-            padding: 2rem 1rem;
-            max-width: 1200px;
+        /* Pricing Section */
+        .pricing-section {
+            padding: 5rem 5%;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        .product-card {
-            background: rgba(10, 10, 10, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Product Cards */
+        .card {
+            background-color: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            padding: 2rem 1.5rem;
-            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .product-card:hover {
+        .card:hover {
+            border-color: var(--neon-green-dim);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.05);
             transform: translateY(-5px);
-            border-color: var(--accent-green);
-            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.1);
         }
 
-        .product-title {
-            font-size: 24px;
+        /* Flag for flagship */
+        .flag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--neon-green-dim);
+            color: var(--neon-green);
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--accent-green);
+            border-radius: 4px;
+            text-transform: uppercase;
+            border: 1px solid var(--neon-green);
         }
 
-        .feature-desc {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 0.5rem;
-        }
-
-        /* EMAIL SECTION (solo per notifiche Mac e Genesis) */
-        .email-section {
-            max-width: 600px;
-            margin: 4rem auto;
-            padding: 2rem;
-            background: rgba(0,255,65,0.03);
-            border: 1px solid #333;
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        .email-section h3 {
-            color: var(--accent-green);
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-        }
-
-        .email-section p {
-            color: #aaa;
+        .card-header {
             margin-bottom: 1.5rem;
         }
 
-        .email-form {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        .email-form input {
-            flex: 1 1 250px;
-            padding: 1rem;
-            background: #111;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .email-form input:focus {
-            outline: none;
-            border-color: var(--accent-green);
-        }
-
-        .email-form button {
-            padding: 1rem 2rem;
-            background: var(--accent-green);
-            color: #000;
-            font-weight: 900;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .email-form button:hover {
-            background: transparent;
-            color: var(--accent-green);
-            border: 1px solid var(--accent-green);
-        }
-
-        /* SEZIONE PREORDINE GENESIS */
-        .preorder-section {
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 1.5rem;
-        }
-
-        .preorder-title {
-            text-align: center;
-            font-size: 2.2rem;
+        .product-name {
+            font-size: 1.8rem;
             font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
         }
 
-        .preorder-sub {
+        .product-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            height: 45px;
+        }
+
+        .price-container {
+            margin-bottom: 2rem;
+        }
+
+        .price-strike {
+            color: var(--text-muted);
+            text-decoration: line-through;
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+        }
+
+        .price-current {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--neon-green);
+        }
+
+        .price-note {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 2.5rem;
+            flex-grow: 1;
+        }
+
+        .features li {
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            color: #d0d0d0;
+            display: flex;
+            align-items: center;
+        }
+
+        .features li::before {
+            content: '✓';
+            color: var(--neon-green);
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            width: 100%;
             text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            font-size: 1.2rem;
-        }
-
-        .preorder-card {
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 500px;
-            margin: 0 auto;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            text-align: center;
-        }
-
-        .preorder-card h3 {
-            font-size: 2rem;
+            padding: 1rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--accent-green), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .preorder-price {
-            font-size: 2.8rem;
-            font-weight: 900;
-            color: var(--accent-green);
-            text-shadow: 0 0 20px rgba(0,255,65,0.5);
-            margin-bottom: 1rem;
-        }
-
-        .preorder-desc {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-
-        .eta-badge {
-            display: inline-block;
-            background: rgba(0,255,65,0.1);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            padding: 0.5rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            margin-bottom: 2rem;
-        }
-
-        .btn-preorder {
-            background: transparent;
-            color: var(--accent-green);
-            border: 2px solid var(--accent-green);
-            border-radius: 8px;
-            padding: 1rem 2.5rem;
-            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.2s;
+            letter-spacing: 1px;
+            border-radius: 4px;
             cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
         }
 
-        .btn-preorder:hover {
-            background: var(--accent-green);
-            color: #000;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.7);
-            transform: translateY(-3px);
+        .btn-primary {
+            background-color: var(--neon-green-dim);
+            color: var(--text-main);
+            border: 1px solid var(--neon-green);
         }
 
-        /* FAQ */
-        .faq-wrapper { max-width: 1100px; margin: 4rem auto; padding: 0 1.5rem; }
-        .faq-title { text-align: center; font-size: 2.2rem; font-weight: 800; margin-bottom: 3rem; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        .faq-column { background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(12px); border-radius: 20px; padding: 2rem; border: 1px solid rgba(0, 255, 65, 0.1); transition: border 0.2s; }
-        .faq-column:hover { border-color: var(--accent-green); }
-        .faq-column h3 { color: var(--accent-green); font-size: 1.5rem; margin-bottom: 1.8rem; border-bottom: 1px dashed #333; padding-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; }
-        .faq-item { margin-bottom: 1.8rem; }
-        .faq-question { color: #fff; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 8px; }
-        .faq-question::before { content: "▶"; color: var(--accent-green); font-size: 0.8rem; }
-        .faq-answer { color: #aaa; font-size: 0.95rem; line-height: 1.5; padding-left: 1.5rem; }
-        
-        .footer { margin-top: 60px; padding: 30px 20px; border-top: 1px solid #111; text-align: center; color: #444; font-size: 0.8rem; }
-        .footer a { color: #666; text-decoration: none; margin: 0 10px; }
-        .footer a:hover { color: var(--accent-green); }
+        .btn-primary:hover {
+            background-color: var(--neon-green);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+        }
 
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 36px; }
-            .new-price { font-size: 2.8rem; }
-            .faq-grid { grid-template-columns: 1fr; }
-            .hero-buttons { flex-direction: column; width: 100%; }
-            .btn-primary { width: 100%; }
-            .features-quick { flex-direction: column; gap: 1.5rem; }
-            .header-container { flex-direction: column; align-items: flex-start; }
-            .lang-selector { align-self: flex-end; }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--panel-light);
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-<div class="matrix-bg"></div>
+    <nav>
+        <div class="logo">K-LAB <span>HQ</span></div>
+        <div style="color: var(--text-muted); font-size: 0.9rem;">The new standard in Analog DSP</div>
+    </nav>
 
-<header class="header">
-    <div class="header-container">
-        <div class="logo">
-            <div class="logo-icon">⚡</div>
-            <div class="logo-text">K-LAB INDUSTRIES</div>
-        </div>
-        <div style="display: flex; gap: 1rem; align-items: center;">
-            <select id="langSwitcher" class="lang-selector">
-                <option value="en" selected>🇬🇧 English</option>
-                <option value="it">🇮🇹 Italiano</option>
-            </select>
-        </div>
-    </div>
-</header>
+    <header class="hero">
+        <h1>Code. Math. <span style="color: var(--neon-green);">Analog Soul.</span></h1>
+        <p>Zero-latency pitch correction, WaveNet hardware cloning, and the ultimate streamer audio racks. Stop wasting CPU. Start sounding professional.</p>
+    </header>
 
-<main>
-    <!-- PRODOTTO PRINCIPALE: StreamSauce -->
-    <section class="hero">
-        <h1>STREAMSAUCE</h1>
-        <div class="hero-sub" data-i18n="heroSub">Your perfect voice in 3 clicks.</div>
-        <div class="hero-description" data-i18n="heroDesc">
-            No more clipping, background noise, or flat vocals. With StreamSauce, 3 knobs are all you need for professional sound. No technical studies, no hours of setup.
-        </div>
+    <section class="pricing-section">
+        <h2 class="section-title">Select Your Weapon</h2>
         
-        <div class="price-display">
-            <span class="new-price">€10</span>
-            <span class="currency">EUR</span>
-        </div>
+        <div class="grid">
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="product-name">StreamSauce</h3>
+                    <p class="product-desc">The ultimate 1-click audio processor for Streamers & Podcasters.</p>
+                </div>
+                <div class="price-container">
+                    <span class="price-strike">€49</span>
+                    <span class="price-current">€29</span>
+                    <span class="price-note">Introductory Offer • Lifetime License</span>
+                </div>
+                <ul class="features">
+                    <li>3-Knob Macro Control (Clean, Presence, Sauce)</li>
+                    <li>Target LUFS Modes (Quiet, Normal, Loud)</li>
+                    <li>Integrated Loudness Metering</li>
+                    <li>Zero-latency Gate & Limiter</li>
+                    <li>Perfect for OBS, Twitch & YouTube</li>
+                </ul>
+                <a href="#" class="btn btn-primary">Get License</a>
+                <a href="#" class="btn btn-secondary">Try Demo</a>
+            </div>
 
-        <div class="guarantee-badge" data-i18n="guarantee">🔒 30-day guarantee · Lifetime license</div>
+            <div class="card" style="border-color: var(--neon-green-dim);">
+                <div class="flag">Flagship</div>
+                <div class="card-header">
+                    <h3 class="product-name">FRKX Engine</h3>
+                    <p class="product-desc">Pro Analog WaveNet Inference Player. True hardware cloning.</p>
+                </div>
+                <div class="price-container">
+                    <span class="price-strike">€149</span>
+                    <span class="price-current">€99</span>
+                    <span class="price-note">Includes 3 Factory Hardware Models (.frkx)</span>
+                </div>
+                <ul class="features">
+                    <li>Neural Network Analog Emulation</li>
+                    <li>Up to 8X Phase-Linear Oversampling</li>
+                    <li>True Mid/Side Routing & Crosstalk</li>
+                    <li>Gain Match & Soft Clipper</li>
+                    <li>Load external .frkx & .json models</li>
+                </ul>
+                <a href="#" class="btn btn-primary">Get License</a>
+                <a href="#" class="btn btn-secondary">Try Demo</a>
+            </div>
 
-        <div class="hero-buttons">
-            <a href="https://buy.stripe.com/14AfZhfqh7YC6tb0jobsc06" class="btn-primary" data-i18n="btnBuy">BUY NOW (€10)</a>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="product-name">VFX Rack</h3>
+                    <p class="product-desc">Zero-Latency Pitch Correction meets Non-Deterministic Analog Chain.</p>
+                </div>
+                <div class="price-container">
+                    <span class="price-strike">€129</span>
+                    <span class="price-current">€89</span>
+                    <span class="price-note">Introductory Offer • Lifetime License</span>
+                </div>
+                <ul class="features">
+                    <li>Pro Auto-Tune Engine (< 5ms latency)</li>
+                    <li>Non-Deterministic Analog Drift</li>
+                    <li>Thermal-simulated Saturation</li>
+                    <li>Complete Vocal Chain (Comp, EQ, Verb)</li>
+                    <li>30+ Pro Producer Presets</li>
+                </ul>
+                <a href="#" class="btn btn-primary">Get License</a>
+                <a href="#" class="btn btn-secondary">Try Demo</a>
+            </div>
+
         </div>
     </section>
 
-    <!-- VIDEO DIMOSTRATIVO -->
-    <div class="video-container">
-        <div class="video-wrapper">
-            <video controls preload="metadata">
-                <source src="video/streamsauce.webm" type="video/webm">
-                <source src="video/streamsauce.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-        <p class="video-caption" data-i18n="videoCaption">Hear the difference in 30 seconds</p>
-    </div>
-
-    <!-- FEATURE IN PRIMO PIANO -->
-    <div class="features-quick">
-        <div class="feature-item">
-            <div class="feature-icon">🎚️</div>
-            <h3 data-i18n="feature1Title">CLEAN</h3>
-            <p data-i18n="feature1Desc">Removes background noise and hiss. Crystal clear voice.</p>
-        </div>
-        <div class="feature-item">
-            <div class="feature-icon">🎤</div>
-            <h3 data-i18n="feature2Title">PRESENCE</h3>
-            <p data-i18n="feature2Desc">Clarity and brightness. Cuts through the mix effortlessly.</p>
-        </div>
-        <div class="feature-item">
-            <div class="feature-icon">🔥</div>
-            <h3 data-i18n="feature3Title">SAUCE</h3>
-            <p data-i18n="feature3Desc">Analog-style compression and saturation. Professional sound.</p>
-        </div>
-    </div>
-
-    <!-- CARATTERISTICHE STREAMSAUCE -->
-    <div class="products-grid">
-        <div class="product-card">
-            <h3 class="product-title" data-i18n="card1Title">3 KNOBS</h3>
-            <p class="feature-desc" data-i18n="card1Desc">Clean (intelligent gate), Presence (high-shelf EQ), Sauce (compression + saturation). Turn and your voice is perfect.</p>
-        </div>
-        <div class="product-card">
-            <h3 class="product-title" data-i18n="card2Title">ADVANCED MODE</h3>
-            <p class="feature-desc" data-i18n="card2Desc">Full control over gate, compressor, EQ and gain. For when you want to get your hands dirty.</p>
-        </div>
-        <div class="product-card">
-            <h3 class="product-title" data-i18n="card3Title">TARGET LUFS</h3>
-            <p class="feature-desc" data-i18n="card3Desc">Choose output level: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfect for any platform.</p>
-        </div>
-    </div>
-
-    <!-- EMAIL SECTION (per notifiche Mac e Genesis) -->
-    <div class="email-section">
-        <h3 data-i18n="notifyTitle">📢 NOTIFY ME</h3>
-        <p data-i18n="notifySub">macOS coming within 2 months · GENESIS pre-order</p>
-        <p style="font-size:0.9rem; color:#666;" data-i18n="notifyText">Leave your email and I'll notify you as soon as they're out.</p>
-        
-        <form class="email-form" id="notifyForm">
-            <input type="email" id="notifyEmail" placeholder="Your email" required>
-            <input type="hidden" name="PRODUCT" value="notify">
-            <input type="hidden" name="SOURCE" value="sito_notifiche">
-            <button type="submit" id="notifySubmit" data-i18n="notifyButton">NOTIFY ME</button>
-        </form>
-        <div id="notifyMessage" style="margin-top:1rem; color:var(--accent-green);"></div>
-    </div>
-
-    <!-- SEZIONE PREORDINE GENESIS BUNDLE -->
-    <section class="preorder-section">
-        <h2 class="preorder-title" data-i18n="genesisTitle">K-LAB GENESIS BUNDLE</h2>
-        <p class="preorder-sub" data-i18n="genesisSub">The ultimate neural engine, light as a feather. Three bit‑depths, two preamps included.</p>
-        <div class="preorder-card">
-            <h3 data-i18n="genesisName">GENESIS BUNDLE</h3>
-            <div class="preorder-price">€20</div>
-            <div class="eta-badge" data-i18n="genesisEta">🕒 RELEASE IN 3-6 MONTHS</div>
-            <p class="preorder-desc" data-i18n="genesisDesc">
-                Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.<br>
-                Runs on any laptop, even 10 years old.
-            </p>
-            <!-- ✅ FIX: link reale Stripe al posto del link TEST -->
-            <a href="https://buy.stripe.com/8x25kD91Ten08Bjeaebsc01" class="btn-preorder" data-i18n="genesisPreorder">PRE-ORDER NOW</a>
-        </div>
-    </section>
-
-    <!-- FAQ -->
-    <div class="faq-wrapper">
-        <h2 class="faq-title" data-i18n="faqTitle">FREQUENTLY ASKED QUESTIONS</h2>
-        <div class="faq-grid">
-            <div class="faq-column">
-                <h3 data-i18n="faqPreTitle">🔍 BEFORE PURCHASE</h3>
-                <div class="faq-item">
-                    <div class="faq-question" data-i18n="faqPreQ1">Mac and Windows compatible?</div>
-                    <div class="faq-answer" data-i18n="faqPreA1">StreamSauce is available as VST3 for Windows (macOS coming soon). Genesis Bundle will follow at release.</div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" data-i18n="faqPreQ2">Are there subscriptions?</div>
-                    <div class="faq-answer" data-i18n="faqPreA2">No subscriptions. Lifetime license.</div>
-                </div>
-            </div>
-            <div class="faq-column">
-                <h3 data-i18n="faqPostTitle">⚙️ AFTER PURCHASE</h3>
-                <div class="faq-item">
-                    <div class="faq-question" data-i18n="faqPostQ1">How do I activate?</div>
-                    <div class="faq-answer" data-i18n="faqPostA1">Enter your purchase email directly in the plugin. The key is generated automatically.</div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" data-i18n="faqPostQ2">Internet required?</div>
-                    <div class="faq-answer" data-i18n="faqPostA2">No, the plugin works completely offline.</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<footer class="footer">
-    <p data-i18n="footerCopyright">© 2026 K-LAB DSP Industries. All rights reserved.</p>
-    <p>
-        <a href="#" data-i18n="footerTerms">Terms</a> · 
-        <a href="#" data-i18n="footerPrivacy">Privacy Policy</a>
-    </p>
-</footer>
-
-<script>
-    // Traduzioni complete
-    const translations = {
-        en: {
-            heroSub: "Your perfect voice in 3 clicks.",
-            heroDesc: "No more clipping, background noise, or flat vocals. With StreamSauce, 3 knobs are all you need for professional sound. No technical studies, no hours of setup.",
-            btnBuy: "BUY NOW (€10)",
-            guarantee: "🔒 30-day guarantee · Lifetime license",
-            videoCaption: "Hear the difference in 30 seconds",
-            feature1Title: "CLEAN",
-            feature1Desc: "Removes background noise and hiss. Crystal clear voice.",
-            feature2Title: "PRESENCE",
-            feature2Desc: "Clarity and brightness. Cuts through the mix effortlessly.",
-            feature3Title: "SAUCE",
-            feature3Desc: "Analog-style compression and saturation. Professional sound.",
-            card1Title: "3 KNOBS",
-            card1Desc: "Clean (intelligent gate), Presence (high-shelf EQ), Sauce (compression + saturation). Turn and your voice is perfect.",
-            card2Title: "ADVANCED MODE",
-            card2Desc: "Full control over gate, compressor, EQ and gain. For when you want to get your hands dirty.",
-            card3Title: "TARGET LUFS",
-            card3Desc: "Choose output level: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfect for any platform.",
-            notifyTitle: "📢 NOTIFY ME",
-            notifySub: "macOS coming within 2 months · GENESIS pre-order",
-            notifyText: "Leave your email and I'll notify you as soon as they're out.",
-            notifyButton: "NOTIFY ME",
-            genesisTitle: "K-LAB GENESIS BUNDLE",
-            genesisSub: "The ultimate neural engine, light as a feather. Three bit‑depths, two preamps included.",
-            genesisName: "GENESIS BUNDLE",
-            genesisEta: "🕒 RELEASE IN 3-6 MONTHS",
-            genesisDesc: "Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.\nRuns on any laptop, even 10 years old.",
-            genesisPreorder: "PRE-ORDER NOW",
-            faqTitle: "FREQUENTLY ASKED QUESTIONS",
-            faqPreTitle: "🔍 BEFORE PURCHASE",
-            faqPreQ1: "Mac and Windows compatible?",
-            faqPreA1: "StreamSauce is available as VST3 for Windows (macOS coming soon). Genesis Bundle will follow at release.",
-            faqPreQ2: "Are there subscriptions?",
-            faqPreA2: "No subscriptions. Lifetime license.",
-            faqPostTitle: "⚙️ AFTER PURCHASE",
-            faqPostQ1: "How do I activate?",
-            faqPostA1: "Enter your purchase email directly in the plugin. The key is generated automatically.",
-            faqPostQ2: "Internet required?",
-            faqPostA2: "No, the plugin works completely offline.",
-            footerCopyright: "© 2026 K-LAB DSP Industries. All rights reserved.",
-            footerTerms: "Terms",
-            footerPrivacy: "Privacy Policy"
-        },
-        it: {
-            heroSub: "La tua voce perfetta in 3 click.",
-            heroDesc: "Addio clipping, rumori di fondo e voci piatte. Con StreamSauce bastano 3 manopole per avere un suono professionale. Niente studi tecnici, niente ore di setup.",
-            btnBuy: "ACQUISTA ORA (€10)",
-            guarantee: "🔒 Garanzia 30 giorni · Licenza a vita",
-            videoCaption: "Ascolta la differenza in 30 secondi",
-            feature1Title: "CLEAN",
-            feature1Desc: "Elimina rumore di fondo e soffio. Voce cristallina.",
-            feature2Title: "PRESENCE",
-            feature2Desc: "Chiarezza e brillantezza. Taglia il mix senza sforzo.",
-            feature3Title: "SAUCE",
-            feature3Desc: "Compressione e saturazione 'analogica'. Suono professionale.",
-            card1Title: "3 MANOPOLE",
-            card1Desc: "Clean (gate intelligente), Presence (EQ high-shelf), Sauce (compressione + saturazione). Giri e la voce è perfetta.",
-            card2Title: "MODO AVANZATO",
-            card2Desc: "Controllo totale su gate, compressore, EQ e gain. Per quando vuoi sporcarti le mani.",
-            card3Title: "TARGET LUFS",
-            card3Desc: "Scegli il livello di uscita: Quiet (-18 LUFS), Normal (-14), Loud (-10). Perfetto per ogni piattaforma.",
-            notifyTitle: "📢 AVVISAMI",
-            notifySub: "macOS in arrivo entro 2 mesi · GENESIS in preordine",
-            notifyText: "Lasciami la tua email e ti avviserò appena escono.",
-            notifyButton: "AVVISAMI",
-            genesisTitle: "K-LAB GENESIS BUNDLE",
-            genesisSub: "The ultimate neural engine, light as a feather. Three bit‑depths, two preamps included.",
-            genesisName: "GENESIS BUNDLE",
-            genesisEta: "🕒 USCITA TRA 3-6 MESI",
-            genesisDesc: "Three neural resolutions (16/8/4 bit), K‑512c (API) and K‑1073MP (Neve) preamps.\nRuns on any laptop, even 10 years old.",
-            genesisPreorder: "PRE-ORDINA ORA",
-            faqTitle: "DOMANDE FREQUENTI",
-            faqPreTitle: "🔍 PRIMA DELL'ACQUISTO",
-            faqPreQ1: "Compatibile con Mac e Windows?",
-            faqPreA1: "StreamSauce è disponibile in VST3 per Windows (macOS in arrivo). Genesis Bundle seguirà alla release.",
-            faqPreQ2: "Ci sono abbonamenti?",
-            faqPreA2: "Nessun abbonamento. Licenza a vita.",
-            faqPostTitle: "⚙️ DOPO L'ACQUISTO",
-            faqPostQ1: "Come attivo il plugin?",
-            faqPostA1: "Inserisci l'email usata per l'acquisto direttamente nel plugin. La chiave viene generata automaticamente.",
-            faqPostQ2: "Serve internet?",
-            faqPostA2: "No, il plugin funziona completamente offline.",
-            footerCopyright: "© 2026 K-LAB DSP Industries. Tutti i diritti riservati.",
-            footerTerms: "Termini",
-            footerPrivacy: "Privacy Policy"
-        }
-    };
-
-    const elements = document.querySelectorAll('[data-i18n]');
-    function setLanguage(lang) {
-        if (!translations[lang]) return;
-        const t = translations[lang];
-        elements.forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (t[key]) {
-                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    el.placeholder = t[key];
-                } else if (el.tagName === 'A' && el.classList.contains('btn-preorder')) {
-                    el.innerHTML = t[key];
-                } else {
-                    el.innerHTML = t[key];
-                }
-            }
-        });
-        localStorage.setItem('preferredLang', lang);
-    }
-
-    // Imposta lingua di default (inglese)
-    const savedLang = localStorage.getItem('preferredLang') || 'en';
-    document.getElementById('langSwitcher').value = savedLang;
-    setLanguage(savedLang);
-    
-    document.getElementById('langSwitcher').addEventListener('change', function(e) {
-        setLanguage(e.target.value);
-    });
-
-    // Gestione form notifiche (invia a Telegram via Cloudflare Worker)
-    const notifyForm = document.getElementById('notifyForm');
-    const notifyMessage = document.getElementById('notifyMessage');
-
-    notifyForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const email = document.getElementById('notifyEmail').value;
-        const submitBtn = document.getElementById('notifySubmit');
-        const isIt = document.getElementById('langSwitcher').value === 'it';
-        
-        // Disabilita bottone
-        submitBtn.disabled = true;
-        submitBtn.textContent = isIt ? 'INVIO...' : 'SENDING...';
-        
-        try {
-            const formData = new FormData();
-            formData.append('EMAIL', email);
-            formData.append('PRODUCT', 'notify');
-            formData.append('SOURCE', 'sito_notifiche');
-            
-            // ✅ FIX: il worker ora risponde 200 JSON invece di fare redirect 302
-            // Il redirect causava un errore CORS perché il browser seguiva
-            // il redirect verso /grazie.html sul dominio del worker (senza CORS headers)
-            const response = await fetch('https://contactlater.accessisoftwarefrancesco.workers.dev/subscribe', {
-                method: 'POST',
-                body: formData
-            });
-            
-            if (response.ok) {
-                notifyMessage.innerHTML = isIt
-                    ? '✅ Grazie! Ti avviserò appena escono.'
-                    : '✅ Thank you! I\'ll notify you as soon as they\'re out.';
-                notifyForm.reset();
-            } else {
-                notifyMessage.innerHTML = isIt
-                    ? '❌ Errore, riprova più tardi.'
-                    : '❌ Error, please try again later.';
-            }
-        } catch (error) {
-            console.error('Errore:', error);
-            notifyMessage.innerHTML = isIt
-                ? '❌ Errore di connessione.'
-                : '❌ Connection error.';
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = isIt ? 'AVVISAMI' : 'NOTIFY ME';
-        }
-    });
-</script>
+    <footer>
+        <p>&copy; 2026 K-LAB Industries. Engineered in Italy. All rights reserved.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">VST is a trademark of Steinberg Media Technologies GmbH.</p>
+    </footer>
 
 </body>
 </html>
