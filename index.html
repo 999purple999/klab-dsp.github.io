@@ -113,13 +113,23 @@
             overflow: hidden;
         }
 
-        .card:hover {
+        .card.highlight {
             border-color: var(--neon-green-dim);
             box-shadow: 0 0 20px rgba(0, 255, 65, 0.05);
-            transform: translateY(-5px);
+            transform: scale(1.02);
+            z-index: 10;
         }
 
-        /* Flag for flagship */
+        .card:hover {
+            border-color: var(--neon-green-dim);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .card.highlight:hover {
+             transform: scale(1.02) translateY(-5px);
+        }
+
         .flag {
             position: absolute;
             top: 1rem;
@@ -135,7 +145,7 @@
         }
 
         .card-header {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .product-name {
@@ -143,11 +153,29 @@
             font-weight: 800;
             margin-bottom: 0.5rem;
         }
+        
+        /* Video Container */
+        .video-container {
+            width: 100%;
+            height: 180px;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: #000;
+        }
+        
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .product-desc {
             color: var(--text-muted);
             font-size: 0.95rem;
             height: 45px;
+            margin-bottom: 1.5rem;
         }
 
         .price-container {
@@ -222,17 +250,19 @@
             box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
         }
 
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            margin-top: 1rem;
+        /* Disabled Button Style */
+        .btn-disabled {
+            background-color: #1a1a1a;
+            color: #555555;
+            border: 1px solid #333333;
+            cursor: not-allowed;
+            font-size: 0.85rem;
         }
 
-        .btn-secondary:hover {
-            background-color: var(--panel-light);
-            color: var(--text-main);
-            border-color: var(--text-muted);
+        .btn-disabled:hover {
+            background-color: #1a1a1a;
+            color: #555555;
+            box-shadow: none;
         }
 
         /* Footer */
@@ -264,34 +294,18 @@
             
             <div class="card">
                 <div class="card-header">
-                    <h3 class="product-name">StreamSauce</h3>
-                    <p class="product-desc">The ultimate 1-click audio processor for Streamers & Podcasters.</p>
-                </div>
-                <div class="price-container">
-                    <span class="price-strike">€49</span>
-                    <span class="price-current">€29</span>
-                    <span class="price-note">Introductory Offer • Lifetime License</span>
-                </div>
-                <ul class="features">
-                    <li>3-Knob Macro Control (Clean, Presence, Sauce)</li>
-                    <li>Target LUFS Modes (Quiet, Normal, Loud)</li>
-                    <li>Integrated Loudness Metering</li>
-                    <li>Zero-latency Gate & Limiter</li>
-                    <li>Perfect for OBS, Twitch & YouTube</li>
-                </ul>
-                <a href="#" class="btn btn-primary">Get License</a>
-                <a href="#" class="btn btn-secondary">Try Demo</a>
-            </div>
-
-            <div class="card" style="border-color: var(--neon-green-dim);">
-                <div class="flag">Flagship</div>
-                <div class="card-header">
                     <h3 class="product-name">FRKX Engine</h3>
-                    <p class="product-desc">Pro Analog WaveNet Inference Player. True hardware cloning.</p>
                 </div>
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="FRKX_Engine.webm" type="video/webm">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <p class="product-desc">Pro Analog WaveNet Inference Player. True hardware cloning.</p>
                 <div class="price-container">
-                    <span class="price-strike">€149</span>
-                    <span class="price-current">€99</span>
+                    <span class="price-strike">€149.99</span>
+                    <span class="price-current">€99.99</span>
                     <span class="price-note">Includes 3 Factory Hardware Models (.frkx)</span>
                 </div>
                 <ul class="features">
@@ -301,18 +315,50 @@
                     <li>Gain Match & Soft Clipper</li>
                     <li>Load external .frkx & .json models</li>
                 </ul>
-                <a href="#" class="btn btn-primary">Get License</a>
-                <a href="#" class="btn btn-secondary">Try Demo</a>
+                <a href="#" class="btn btn-disabled" onclick="return false;">Not Available Now - Wait For Release</a>
+            </div>
+
+            <div class="card highlight">
+                <div class="flag">HOT 🔥</div>
+                <div class="card-header">
+                    <h3 class="product-name">StreamSauce</h3>
+                </div>
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="StreamSauce.webm" type="video/webm">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <p class="product-desc">The ultimate 1-click audio processor for Streamers & Podcasters.</p>
+                <div class="price-container">
+                    <span class="price-strike">€49.99</span>
+                    <span class="price-current">€29.99</span>
+                    <span class="price-note">Introductory Offer • 14 DAYS ONLY</span>
+                </div>
+                <ul class="features">
+                    <li>3-Knob Macro Control (Clean, Presence, Sauce)</li>
+                    <li>Target LUFS Modes (Quiet, Normal, Loud)</li>
+                    <li>Integrated Loudness Metering</li>
+                    <li>Zero-latency Gate & Limiter</li>
+                    <li>Perfect for OBS, Twitch & YouTube</li>
+                </ul>
+                <a href="https://buy.stripe.com/5kQ7sL1zrdiW2cVgimbsc07" class="btn btn-primary" target="_blank">Buy Now</a>
             </div>
 
             <div class="card">
                 <div class="card-header">
                     <h3 class="product-name">VFX Rack</h3>
-                    <p class="product-desc">Zero-Latency Pitch Correction meets Non-Deterministic Analog Chain.</p>
                 </div>
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="VFX_Rack.webm" type="video/webm">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <p class="product-desc">Zero-Latency Pitch Correction meets Non-Deterministic Analog Chain.</p>
                 <div class="price-container">
-                    <span class="price-strike">€129</span>
-                    <span class="price-current">€89</span>
+                    <span class="price-strike">€129.99</span>
+                    <span class="price-current">€89.99</span>
                     <span class="price-note">Introductory Offer • Lifetime License</span>
                 </div>
                 <ul class="features">
@@ -322,8 +368,7 @@
                     <li>Complete Vocal Chain (Comp, EQ, Verb)</li>
                     <li>30+ Pro Producer Presets</li>
                 </ul>
-                <a href="#" class="btn btn-primary">Get License</a>
-                <a href="#" class="btn btn-secondary">Try Demo</a>
+                <a href="#" class="btn btn-disabled" onclick="return false;">Not Available Now - Wait For Release</a>
             </div>
 
         </div>
