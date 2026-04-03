@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-LAB | Pro Audio Plugins</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff41;
+            --bg-base: #0a0a0a;
+            --bg-card: #141414;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --border-glow: 0 0 15px rgba(0, 255, 65, 0.2);
+            --danger: #ff4141;
+            --warning: #ffaa00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Nav */
+        nav {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Binaura */
+        .hero {
+            text-align: center;
+            padding: 8rem 2rem 6rem;
+            background: radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, var(--bg-base) 60%);
+            border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+            position: relative;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 6rem;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+        }
+
+        .hero p.subtitle {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .hero p.desc {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: #fff;
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(0, 255, 65, 0.1);
+            box-shadow: var(--border-glow);
+        }
+        
+        .btn-bug {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--text-muted);
+            font-size: 0.9rem;
+            padding: 1rem 1.5rem;
+        }
+        
+        .btn-bug:hover {
+            color: var(--danger);
+            border-color: var(--danger);
+            background-color: rgba(255, 65, 65, 0.1);
+        }
+
+        /* Info Section */
+        .info-section {
+            padding: 4rem 5%;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+            background: rgba(0, 255, 65, 0.02);
+        }
+
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            border-radius: 8px;
+            padding: 2.5rem;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.05);
+        }
+
+        .info-box h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .info-box p {
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .info-box .highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .info-box .warning {
+            color: var(--warning);
+            font-weight: 700;
+        }
+
+        .path-box {
+            background: #000;
+            color: var(--primary);
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            border: 1px dashed rgba(0, 255, 65, 0.5);
+            display: block;
+            text-align: center;
+            margin: 1.5rem 0;
+            word-break: break-all;
+        }
+
+        /* Products Section */
+        .products-section {
+            padding: 6rem 5%;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 4rem;
+            color: #fff;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 65, 0.2);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--border-glow);
+        }
+
+        .product-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-desc {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-right: 10px;
+        }
+
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: #050505;
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(0, 255, 65, 0.1);
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3.5rem; }
+            .hero p.subtitle { font-size: 1.2rem; }
+            .nav-links { display: none; }
+            .hero-actions { flex-direction: column; width: 100%; }
+            .hero-actions .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">K-LAB</a>
+        <div class="nav-links">
+            <a href="#info">Info</a>
+            <a href="#products">Plugins</a>
+            <a href="https://binaura.accessisoftwarefrancesco.workers.dev/api/download">Download Center</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>BINAURA</h1>
+        <p class="subtitle">ADVANCED WAVETABLE SYNTHESIZER <br><span style="color: var(--warning); font-size: 1.2rem; display: inline-block; margin-top: 10px;">[ v1.0 PUBLIC BETA - WINDOWS ONLY ]</span></p>
+        <p class="desc">The flagship VST3 synthesizer. 4 Lock-free Custom Wavetable engines, Studio-grade Oversampling, MPE Support, Analog SSI2144 Filter Emulation, and Serum-level UX. Built for modern sound design.</p>
+        
+        <div class="hero-actions">
+            <a href="https://buy.stripe.com/8x200j6TLbaOg3L3vAbsc08" class="btn btn-primary">BUY BETA ACCESS - €59</a>
+            <a href="https://binaura.accessisoftwarefrancesco.workers.dev/api/download-demo" class="btn btn-outline">DOWNLOAD DEMO</a>
+            <a href="mailto:accessisoftwarefrancesco@gmail.com?subject=BINAURA%20BUG%20REPORT&body=Describe%20the%20bug%20here:%0A%0A%0AOS%20(Windows/Mac):%0ADAW%20and%20Version:%0ASteps%20to%20reproduce:%0A%0A*Please%20attach%20screenshots%20if%20possible.*" class="btn btn-bug">REPORT BUG</a>
+        </div>
+    </section>
+
+    <section id="info" class="info-section">
+        <div class="info-box">
+            <h2>INSTALLATION & COMPATIBILITY</h2>
+            
+            <p><span class="highlight">WINDOWS INSTALLATION:</span> Simply extract the downloaded file and place the <code>.vst3</code> file in your default VST3 plugins directory:</p>
+            <div class="path-box">C:\Program Files\Common Files\VST3</div>
+            
+            <p><span class="warning">⚠️ V1.0 PUBLIC BETA IS WINDOWS ONLY (WIN ONLY FOR NOW).</span></p>
+            
+            <p><strong>MAC USERS:</strong> Full support for macOS (Apple Silicon & Intel) is coming in the <strong>v1.1 update</strong>. The estimated wait time is currently <span class="highlight">1 to 4 weeks</span>.</p>
+        </div>
+    </section>
+
+    <section id="products" class="products-section">
+        <h2 class="section-title">THE K-LAB ARSENAL</h2>
+        <div class="products-grid">
+
+            <div class="product-card">
+                <h3 class="product-title">StreamSauce</h3>
+                <p class="product-desc">The ultimate audio routing and processing utility for streamers and content creators. Take control of your audio pipeline with zero latency.</p>
+                <div class="product-price">
+                    <span class="old-price">€39</span> €29
+                </div>
+                <div class="card-actions">
+                    <a href="https://buy.stripe.com/5kQ7sL1zrdiW2cVgimbsc07" class="btn btn-primary" style="font-size: 1rem; padding: 0.8rem;">BUY STREAMSAUCE</a>
+                    <a href="https://streamsauce.accessisoftwarefrancesco.workers.dev/api/download-demo" class="btn btn-outline" style="font-size: 1rem; padding: 0.8rem;">DOWNLOAD DEMO</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <h3 class="product-title">FRXK Engine</h3>
+                <p class="product-desc">Advanced multi-effects engine. Modulate, distort, and destroy your audio with our proprietary DSP algorithms.</p>
+                <div class="product-price">
+                    <span class="old-price">€49</span> €29
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-outline" style="opacity: 0.5; cursor: not-allowed; font-size: 1rem; padding: 0.8rem;">COMING SOON</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <h3 class="product-title">FX Bundle</h3>
+                <p class="product-desc">Get all K-LAB effects (StreamSauce + FRXK Engine) in one complete powerhouse package at a discounted rate.</p>
+                <div class="product-price">
+                    <span class="old-price">€88</span> €49
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-primary" style="opacity: 0.5; cursor: not-allowed; font-size: 1rem; padding: 0.8rem;">COMING SOON</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 K-LAB DSP. All rights reserved.</p>
+        <p style="margin-top: 10px; font-size: 0.9em;">Contact: klabindustries.hq@gmail.com</p>
+    </footer>
+
+</body>
+</html>
