@@ -284,6 +284,25 @@ input:checked+.toggle-slider::before{transform:translateY(-50%) translateX(20px)
 .stat.bn .stat-num{color:var(--bn)}
 
 /* ────────────────────────────────────────────────────────────────────────── */
+/*  WAITLIST SECTION                                                           */
+/* ────────────────────────────────────────────────────────────────────────── */
+.waitlist-section{background:var(--bg);border-top:1px solid var(--border)}
+.waitlist-inner{max-width:560px;margin:0 auto;text-align:center}
+.waitlist-title{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.2rem);color:var(--text1);margin-bottom:10px;letter-spacing:.03em}
+.waitlist-sub{font-size:.9rem;color:var(--text2);margin-bottom:28px;line-height:1.6}
+.waitlist-form{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.waitlist-input{flex:1;min-width:220px;padding:11px 16px;border-radius:9px;background:var(--bg2);border:1px solid var(--border2);color:var(--text1);font-size:.88rem;font-family:'Inter',sans-serif;outline:none;transition:border-color var(--tr)}
+.waitlist-input:focus{border-color:rgba(168,85,247,.5)}
+.waitlist-input::placeholder{color:var(--text3)}
+.waitlist-btn{padding:11px 24px;border-radius:9px;background:linear-gradient(135deg,var(--kp2),var(--kp));color:#fff;font-weight:700;font-size:.88rem;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:filter var(--tr),transform var(--tr);white-space:nowrap}
+.waitlist-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.waitlist-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.waitlist-msg{margin-top:12px;font-size:.8rem;min-height:18px;font-family:var(--font-mono)}
+.waitlist-msg.ok{color:#6ee7b7}
+.waitlist-msg.err{color:#f87171}
+.waitlist-privacy{margin-top:10px;font-size:.72rem;color:var(--text3)}
+
+/* ────────────────────────────────────────────────────────────────────────── */
 /*  FOOTER                                                                     */
 /* ────────────────────────────────────────────────────────────────────────── */
 footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.5rem;background:var(--bg1)}
@@ -960,6 +979,24 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
   </div>
 </section>
 
+<!-- ── WAITLIST ──────────────────────────────────────────────────────────── -->
+<section class="section waitlist-section" id="waitlist">
+  <div class="section-inner waitlist-inner reveal">
+    <div class="hero-badge" style="margin-bottom:20px">
+      <span class="hero-badge-dot"></span>
+      iOS · macOS · Linux coming soon
+    </div>
+    <h2 class="waitlist-title">Be the first to know.</h2>
+    <p class="waitlist-sub">Get notified when iOS, macOS, and the web app launch.<br>No spam — one email when it ships.</p>
+    <form class="waitlist-form" id="waitlist-form" onsubmit="return false">
+      <input class="waitlist-input" type="email" id="waitlist-email" placeholder="your@email.com" autocomplete="email" required />
+      <button class="waitlist-btn" type="submit" id="waitlist-btn">Notify me</button>
+    </form>
+    <div class="waitlist-msg" id="waitlist-msg"></div>
+    <p class="waitlist-privacy">No spam. No account required. Unsubscribe any time.</p>
+  </div>
+</section>
+
 <!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
 <footer>
   <a href="#top" class="footer-logo">K-LAB DSP</a>
@@ -1096,6 +1133,43 @@ toggle.addEventListener('change', () => {
     if (annualEl) annualEl.textContent = annual ? val.noteA   : val.noteM;
   }
 });
+
+/* ── Waitlist form ────────────────────────────────────────────────────────── */
+const waitlistForm = document.getElementById('waitlist-form');
+const waitlistBtn  = document.getElementById('waitlist-btn');
+const waitlistMsg  = document.getElementById('waitlist-msg');
+const waitlistEmail = document.getElementById('waitlist-email');
+
+if (waitlistForm) {
+  waitlistForm.addEventListener('submit', async () => {
+    const email = waitlistEmail.value.trim();
+    if (!email) return;
+    waitlistBtn.disabled = true;
+    waitlistBtn.textContent = 'Sending…';
+    waitlistMsg.textContent = '';
+    waitlistMsg.className = 'waitlist-msg';
+    try {
+      const res = await fetch('https://k-perception-backend.accessisoftwarefrancesco.workers.dev/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        waitlistMsg.textContent = '✓ You\'re on the list. We\'ll email you when it ships.';
+        waitlistMsg.className = 'waitlist-msg ok';
+        waitlistEmail.value = '';
+        waitlistBtn.textContent = 'Done ✓';
+      } else {
+        throw new Error('Server error');
+      }
+    } catch {
+      waitlistMsg.textContent = 'Something went wrong. Try again or email us directly.';
+      waitlistMsg.className = 'waitlist-msg err';
+      waitlistBtn.disabled = false;
+      waitlistBtn.textContent = 'Notify me';
+    }
+  });
+}
 
 /* ── Nav highlight on scroll ──────────────────────────────────────────────── */
 const sections = document.querySelectorAll('section[id]');
