@@ -311,7 +311,12 @@ async function fetchBody(slug){
   return md;
 }
 
+function stripFrontmatter(md){
+  return md.replace(/^---[\s\S]*?---\s*\n?/, '');
+}
+
 function renderMd(md){
+  md = stripFrontmatter(md);
   const renderer = new marked.Renderer();
   renderer.blockquote = (q) => {
     const m = /^\s*\[!(INFO|WARN|DANGER|OK|TIP|NOTE)]\s*(.*)/is.exec(q);
