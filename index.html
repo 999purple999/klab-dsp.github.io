@@ -3,365 +3,746 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-LAB DSP — K-Perception · BINAURA · Secure Software &amp; Audio Plugins</title>
-<meta name="description" content="K-Perception: AES-256-GCM encrypted note vault with offline-first architecture, biometric unlock, and zero-knowledge cloud sync. BINAURA: professional wavetable synthesizer VST3.">
-<meta property="og:title" content="K-Perception — Zero-Knowledge Encrypted Vault">
-<meta property="og:description" content="Your notes, encrypted and yours alone. AES-256-GCM, biometric unlock, offline-first, real-time sync.">
+<title>K-Perception — Zero-Knowledge Encrypted Knowledge Vault · K-LAB DSP</title>
+<meta name="description" content="K-Perception is the only zero-knowledge note-taking platform with 7 production-grade editor modes, real-time E2EE collaboration via Y.js CRDT, and full enterprise SSO. AES-256-GCM. Offline-first. Built on Cloudflare's edge.">
+<meta property="og:title" content="K-Perception — Notion-grade features. Signal-grade privacy.">
+<meta property="og:description" content="The only encrypted knowledge platform that lets you collaborate in real time without ever exposing your content to the server. Always.">
 <meta property="og:type" content="website">
+<meta name="theme-color" content="#a855f7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  RESET & ROOT                                                               */
-/* ────────────────────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  RESET & ROOT                                                            */
+/* ─────────────────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-body{font-family:'Inter',sans-serif;background:#060810;color:#d4dff4;min-height:100dvh;overflow-x:hidden}
+body{font-family:'Inter',sans-serif;background:#05060d;color:#d4dff4;min-height:100dvh;overflow-x:hidden;cursor:default}
+::selection{background:rgba(168,85,247,.35);color:#fff}
 
 :root{
-  /* K-Perception palette */
-  --kp:#a855f7;--kp2:#7c3aed;--kp3:#c084fc;
-  --kp-glow:rgba(168,85,247,0.22);--kp-glow2:rgba(168,85,247,0.07);
-  /* BINAURA palette */
+  /* Brand */
+  --kp:#a855f7;--kp2:#7c3aed;--kp3:#c084fc;--kp4:#e9d5ff;
+  --kp-glow:rgba(168,85,247,0.25);--kp-glow2:rgba(168,85,247,0.08);
   --bn:#39FF14;--bn2:#22cc0a;
-  --bn-glow:rgba(57,255,20,0.18);--bn-glow2:rgba(57,255,20,0.05);
+  --gold:#f59e0b;--gold2:#fcd34d;
+  --emerald:#10b981;--rose:#ef4444;--indigo:#818cf8;
   /* Neutrals */
-  --bg:#060810;--bg1:#0b0e1a;--bg2:#111520;--bg3:#181d2e;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
-  --text1:#f0f4ff;--text2:#a8b4d0;--text3:#5a6485;
+  --bg:#05060d;--bg1:#0a0c18;--bg2:#0f1322;--bg3:#161b2e;--bg4:#1e2440;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.10);--border3:rgba(255,255,255,0.16);
+  --text1:#f5f7ff;--text2:#a8b4d0;--text3:#5a6485;--text4:#3d4567;
   /* Misc */
-  --r:10px;--tr:220ms cubic-bezier(0.16,1,0.3,1);
-  --font-display:'Michroma',monospace;--font-mono:'JetBrains Mono',monospace;
+  --r:10px;--r2:14px;--r3:20px;
+  --tr:280ms cubic-bezier(0.16,1,0.3,1);
+  --tr-fast:180ms cubic-bezier(0.16,1,0.3,1);
+  --font-display:'Michroma',monospace;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-grot:'Space Grotesk',sans-serif;
+  --grad-kp:linear-gradient(135deg,#c084fc 0%,#a855f7 45%,#7c3aed 100%);
+  --grad-aurora:conic-gradient(from 180deg at 50% 50%,#a855f7 0deg,#7c3aed 90deg,#3b82f6 180deg,#a855f7 270deg,#a855f7 360deg);
 }
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  SCROLL ANIMATIONS                                                          */
-/* ────────────────────────────────────────────────────────────────────────── */
-.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s var(--tr),transform 0.7s var(--tr)}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  CURSOR SPOTLIGHT                                                        */
+/* ─────────────────────────────────────────────────────────────────────── */
+.spotlight{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.10) 0%,rgba(168,85,247,.04) 30%,transparent 70%);pointer-events:none;z-index:1;mix-blend-mode:screen;transform:translate(-50%,-50%);transition:opacity .4s;will-change:transform;opacity:0}
+@media(hover:hover){.spotlight{opacity:1}}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  SCROLL ANIMATIONS                                                       */
+/* ─────────────────────────────────────────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s var(--tr),transform .8s var(--tr)}
 .reveal.visible{opacity:1;transform:none}
-.reveal-left{opacity:0;transform:translateX(-32px);transition:opacity 0.7s var(--tr),transform 0.7s var(--tr)}
+.reveal-left{opacity:0;transform:translateX(-36px);transition:opacity .8s var(--tr),transform .8s var(--tr)}
 .reveal-left.visible{opacity:1;transform:none}
-.reveal-right{opacity:0;transform:translateX(32px);transition:opacity 0.7s var(--tr),transform 0.7s var(--tr)}
+.reveal-right{opacity:0;transform:translateX(36px);transition:opacity .8s var(--tr),transform .8s var(--tr)}
 .reveal-right.visible{opacity:1;transform:none}
-.reveal-scale{opacity:0;transform:scale(0.94);transition:opacity 0.6s var(--tr),transform 0.6s var(--tr)}
+.reveal-scale{opacity:0;transform:scale(.94);transition:opacity .7s var(--tr),transform .7s var(--tr)}
 .reveal-scale.visible{opacity:1;transform:scale(1)}
-.delay-1{transition-delay:0.08s}
-.delay-2{transition-delay:0.16s}
-.delay-3{transition-delay:0.24s}
-.delay-4{transition-delay:0.32s}
-.delay-5{transition-delay:0.40s}
-.delay-6{transition-delay:0.48s}
+.delay-1{transition-delay:.06s}.delay-2{transition-delay:.14s}.delay-3{transition-delay:.22s}
+.delay-4{transition-delay:.30s}.delay-5{transition-delay:.38s}.delay-6{transition-delay:.46s}
+.delay-7{transition-delay:.54s}.delay-8{transition-delay:.62s}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  NOISE OVERLAY                                                              */
-/* ────────────────────────────────────────────────────────────────────────── */
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.025;pointer-events:none;z-index:0}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  SCROLL PROGRESS                                                         */
+/* ─────────────────────────────────────────────────────────────────────── */
+.scroll-progress{position:fixed;top:0;left:0;height:2px;z-index:200;background:var(--grad-kp);width:0%;box-shadow:0 0 12px rgba(168,85,247,.7);transition:width .1s linear}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  NAV                                                                        */
-/* ────────────────────────────────────────────────────────────────────────── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1.5rem,5vw,4rem);height:60px;background:rgba(6,8,16,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:border-color 0.3s}
-.nav-logo{font-family:var(--font-display);font-size:.95rem;letter-spacing:.18em;color:var(--text1);text-decoration:none;display:flex;align-items:center;gap:10px}
-.nav-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--kp);box-shadow:0 0 10px var(--kp);animation:pulse-dot 2.5s ease-in-out infinite}
-@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 8px var(--kp)}50%{opacity:.6;box-shadow:0 0 18px var(--kp)}}
-.nav-links{display:flex;align-items:center;gap:2rem}
-.nav-links a{color:var(--text2);font-size:.85rem;text-decoration:none;transition:color var(--tr);letter-spacing:.02em}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  NOISE                                                                   */
+/* ─────────────────────────────────────────────────────────────────────── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.03;pointer-events:none;z-index:0;mix-blend-mode:overlay}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  GRID TEXTURE                                                            */
+/* ─────────────────────────────────────────────────────────────────────── */
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(168,85,247,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(168,85,247,.06) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 80%);-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 80%);pointer-events:none;z-index:0}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  NAV                                                                     */
+/* ─────────────────────────────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1.25rem,4vw,3.5rem);height:64px;background:rgba(5,6,13,.72);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);border-bottom:1px solid var(--border);transition:border-color .3s,background .3s}
+nav.scrolled{background:rgba(5,6,13,.92);border-color:var(--border2)}
+.nav-logo{font-family:var(--font-display);font-size:.9rem;letter-spacing:.18em;color:var(--text1);text-decoration:none;display:flex;align-items:center;gap:11px;position:relative}
+.nav-logo-mark{width:24px;height:24px;border-radius:6px;background:var(--grad-kp);position:relative;box-shadow:0 0 16px rgba(168,85,247,.5);overflow:hidden}
+.nav-logo-mark::before{content:'';position:absolute;inset:2px;background:#05060d;border-radius:4px}
+.nav-logo-mark::after{content:'K';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:.78rem;color:var(--kp3);font-weight:700}
+.nav-links{display:flex;align-items:center;gap:1.8rem}
+.nav-links a{color:var(--text2);font-size:.82rem;text-decoration:none;transition:color var(--tr-fast);letter-spacing:.01em;font-weight:500}
 .nav-links a:hover{color:var(--text1)}
-.nav-cta{padding:7px 18px;border-radius:7px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.35);color:var(--kp3)!important;font-weight:600;font-size:.82rem!important;transition:background var(--tr),border-color var(--tr)!important}
-.nav-cta:hover{background:rgba(168,85,247,.28)!important;border-color:rgba(168,85,247,.6)!important}
+.nav-cta{padding:8px 18px;border-radius:8px;background:rgba(168,85,247,.14);border:1px solid rgba(168,85,247,.32);color:var(--kp3)!important;font-weight:600;font-size:.8rem!important;transition:all var(--tr-fast)!important}
+.nav-cta:hover{background:rgba(168,85,247,.26)!important;border-color:rgba(168,85,247,.55)!important;box-shadow:0 0 20px rgba(168,85,247,.25)}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  HERO                                                                       */
-/* ────────────────────────────────────────────────────────────────────────── */
-.hero{position:relative;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:80px clamp(1.5rem,5vw,4rem) 60px;overflow:hidden}
-#hero-canvas{position:absolute;inset:0;z-index:0;opacity:.55}
-.hero-bg-orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
-.hero-bg-orb--1{width:700px;height:700px;background:radial-gradient(circle,rgba(168,85,247,.18) 0%,transparent 70%);top:-200px;left:-100px;animation:orb-drift 20s ease-in-out infinite alternate}
-.hero-bg-orb--2{width:500px;height:500px;background:radial-gradient(circle,rgba(124,58,237,.12) 0%,transparent 70%);bottom:-100px;right:-50px;animation:orb-drift 15s ease-in-out infinite alternate-reverse}
-@keyframes orb-drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(60px,40px) scale(1.08)}}
-.hero-content{position:relative;z-index:1;max-width:880px}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.25);font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--kp3);margin-bottom:28px;animation:badge-in 0.8s var(--tr) both}
-@keyframes badge-in{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
-.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--kp);animation:pulse-dot 2s infinite}
-.hero-title{font-family:var(--font-display);font-size:clamp(2.8rem,8vw,6rem);line-height:.95;letter-spacing:.04em;color:var(--text1);margin-bottom:12px;animation:title-in 0.9s var(--tr) 0.1s both}
-@keyframes title-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-.hero-title span{background:linear-gradient(135deg,#c084fc 0%,#a855f7 40%,#7c3aed 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-tagline{font-size:clamp(1.05rem,2.5vw,1.35rem);color:var(--text2);font-weight:400;line-height:1.6;max-width:600px;margin:0 auto 40px;animation:title-in 0.9s var(--tr) 0.2s both}
-.hero-cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;animation:title-in 0.9s var(--tr) 0.3s both}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:9px;font-size:.9rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all var(--tr);white-space:nowrap;border:1px solid transparent;font-family:'Inter',sans-serif}
-.btn-kp{background:linear-gradient(135deg,var(--kp2),var(--kp));color:#fff;box-shadow:0 0 30px rgba(168,85,247,.3);border-color:transparent}
-.btn-kp:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(168,85,247,.45);filter:brightness(1.08)}
-.btn-kp-ghost{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--kp3)}
-.btn-kp-ghost:hover{background:rgba(168,85,247,.2);border-color:rgba(168,85,247,.5);transform:translateY(-1px)}
-.btn-bn{background:linear-gradient(135deg,var(--bn2),var(--bn));color:#060810;box-shadow:0 0 30px rgba(57,255,20,.2)}
-.btn-bn:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(57,255,20,.35);filter:brightness(1.08)}
-.btn-bn-ghost{background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.25);color:var(--bn)}
-.btn-bn-ghost:hover{background:rgba(57,255,20,.14);border-color:rgba(57,255,20,.45);transform:translateY(-1px)}
-.hero-platforms{display:flex;align-items:center;gap:16px;justify-content:center;margin-top:28px;animation:title-in 0.9s var(--tr) 0.4s both}
-.hero-platform-chip{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;color:var(--text3);font-family:var(--font-mono)}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  HERO                                                                    */
+/* ─────────────────────────────────────────────────────────────────────── */
+.hero{position:relative;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:88px clamp(1.25rem,5vw,4rem) 80px;overflow:hidden;isolation:isolate}
+#hero-canvas{position:absolute;inset:0;z-index:0;opacity:.5}
+.aurora{position:absolute;inset:-20%;z-index:0;filter:blur(110px);opacity:.55;pointer-events:none}
+.aurora-blob{position:absolute;border-radius:50%}
+.aurora-1{width:55%;height:55%;background:radial-gradient(circle,#a855f7 0%,transparent 70%);top:-15%;left:-10%;animation:drift1 22s ease-in-out infinite alternate}
+.aurora-2{width:45%;height:45%;background:radial-gradient(circle,#3b82f6 0%,transparent 70%);bottom:-10%;right:-10%;animation:drift2 18s ease-in-out infinite alternate}
+.aurora-3{width:35%;height:35%;background:radial-gradient(circle,#7c3aed 0%,transparent 70%);top:40%;right:30%;animation:drift3 26s ease-in-out infinite alternate}
+@keyframes drift1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(15%,10%) scale(1.15)}}
+@keyframes drift2{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-12%,-8%) scale(1.1)}}
+@keyframes drift3{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-20%,15%) scale(1.2)}}
+
+.hero-content{position:relative;z-index:2;max-width:1040px}
+.hero-badge{display:inline-flex;align-items:center;gap:9px;padding:7px 18px;border-radius:100px;background:rgba(168,85,247,.10);border:1px solid rgba(168,85,247,.28);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--kp3);margin-bottom:30px;animation:fade-up .9s var(--tr) both;backdrop-filter:blur(8px)}
+@keyframes fade-up{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+.hero-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--kp);box-shadow:0 0 10px var(--kp);animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 10px var(--kp)}50%{opacity:.55;box-shadow:0 0 22px var(--kp)}}
+
+.hero-title{font-family:var(--font-display);font-size:clamp(2.6rem,9.5vw,7.4rem);line-height:.92;letter-spacing:.02em;color:var(--text1);margin-bottom:18px;animation:fade-up 1s var(--tr) .1s both}
+.hero-title .word{display:inline-block}
+.hero-title .grad{background:linear-gradient(135deg,#e9d5ff 0%,#c084fc 30%,#a855f7 55%,#7c3aed 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:grad-shift 8s ease-in-out infinite}
+@keyframes grad-shift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+.hero-subtitle{font-family:var(--font-grot);font-size:clamp(1.1rem,2.6vw,1.6rem);color:var(--text1);font-weight:500;line-height:1.45;max-width:780px;margin:0 auto 14px;animation:fade-up .9s var(--tr) .2s both}
+.hero-subtitle .underline{position:relative;color:var(--kp3);font-weight:600}
+.hero-subtitle .underline::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--grad-kp);border-radius:1px;transform-origin:left;animation:underline-in 1.4s var(--tr) 1.2s both}
+@keyframes underline-in{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.hero-tagline{font-size:clamp(.95rem,1.8vw,1.05rem);color:var(--text2);font-weight:400;line-height:1.7;max-width:640px;margin:0 auto 44px;animation:fade-up .9s var(--tr) .3s both}
+
+.hero-cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;animation:fade-up .9s var(--tr) .4s both}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:13px 28px;border-radius:10px;font-size:.9rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all var(--tr);white-space:nowrap;border:1px solid transparent;font-family:'Inter',sans-serif;position:relative;overflow:hidden}
+.btn-kp{background:linear-gradient(135deg,var(--kp2) 0%,var(--kp) 50%,#9333ea 100%);background-size:200% 100%;color:#fff;box-shadow:0 0 32px rgba(168,85,247,.32),inset 0 1px 0 rgba(255,255,255,.18)}
+.btn-kp:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(168,85,247,.5),inset 0 1px 0 rgba(255,255,255,.25);background-position:100% 0}
+.btn-kp::before{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transition:left .6s}
+.btn-kp:hover::before{left:120%}
+.btn-kp-ghost{background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.28);color:var(--kp3);backdrop-filter:blur(8px)}
+.btn-kp-ghost:hover{background:rgba(168,85,247,.18);border-color:rgba(168,85,247,.5);transform:translateY(-1px);box-shadow:0 0 24px rgba(168,85,247,.18)}
+.btn-bn{background:linear-gradient(135deg,var(--bn2),var(--bn));color:#05060d;box-shadow:0 0 30px rgba(57,255,20,.25)}
+.btn-bn:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(57,255,20,.4);filter:brightness(1.08)}
+.btn-bn-ghost{background:rgba(57,255,20,.06);border-color:rgba(57,255,20,.22);color:var(--bn)}
+.btn-bn-ghost:hover{background:rgba(57,255,20,.13);border-color:rgba(57,255,20,.42);transform:translateY(-1px)}
+
+.hero-platforms{display:flex;align-items:center;gap:18px;justify-content:center;margin-top:30px;flex-wrap:wrap;animation:fade-up .9s var(--tr) .5s both}
+.hero-platform-chip{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:.04em}
 .hero-platform-chip svg{opacity:.5}
-.hero-stat-row{display:flex;gap:clamp(1.5rem,4vw,3rem);justify-content:center;margin-top:48px;animation:title-in 0.9s var(--tr) 0.5s both}
-.hero-stat{text-align:center}
-.hero-stat-num{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.2rem);color:var(--kp3);line-height:1}
-.hero-stat-label{font-size:.72rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
-.hero-scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text3);font-size:.72rem;letter-spacing:.1em;animation:scroll-bounce 2s ease-in-out infinite}
-@keyframes scroll-bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  SECTIONS                                                                   */
-/* ────────────────────────────────────────────────────────────────────────── */
+.hero-stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:clamp(1rem,3vw,2rem);justify-content:center;margin-top:60px;max-width:920px;width:100%;animation:fade-up .9s var(--tr) .6s both}
+.hero-stat{text-align:center;padding:18px 12px;border-left:1px solid var(--border2);border-right:1px solid var(--border2);position:relative}
+.hero-stat:first-child{border-left:none}.hero-stat:last-child{border-right:none}
+@media(max-width:600px){.hero-stat{border:none}}
+.hero-stat-num{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.2rem);color:var(--kp3);line-height:1;margin-bottom:8px;background:linear-gradient(180deg,#e9d5ff 0%,#a855f7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat-label{font-size:.66rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+
+.hero-scroll{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text3);font-size:.68rem;letter-spacing:.14em;animation:scroll-bounce 2s ease-in-out infinite;font-family:var(--font-mono)}
+@keyframes scroll-bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  SECTIONS                                                                */
+/* ─────────────────────────────────────────────────────────────────────── */
 section{position:relative;z-index:1}
-.section{padding:clamp(5rem,10vw,8rem) clamp(1.5rem,5vw,4rem)}
-.section-inner{max-width:1200px;margin:0 auto}
-.section-label{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}
+.section{padding:clamp(5rem,10vw,9rem) clamp(1.25rem,5vw,4rem)}
+.section-inner{max-width:1240px;margin:0 auto;position:relative;z-index:1}
+.section-label{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;font-family:var(--font-mono)}
 .section-label.kp{color:var(--kp3)}
 .section-label.bn{color:var(--bn)}
-.section-label::before{content:'';display:inline-block;width:16px;height:2px;border-radius:1px}
+.section-label::before{content:'';display:inline-block;width:18px;height:2px;border-radius:1px}
 .section-label.kp::before{background:var(--kp)}
 .section-label.bn::before{background:var(--bn)}
-.section-title{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.1;letter-spacing:.03em;margin-bottom:16px;color:var(--text1)}
-.section-sub{font-size:1rem;color:var(--text2);line-height:1.7;max-width:640px;margin-bottom:48px}
-hr.divider{border:none;border-top:1px solid var(--border);max-width:1200px;margin:0 auto}
+.section-title{font-family:var(--font-display);font-size:clamp(1.8rem,4.5vw,3.2rem);line-height:1.08;letter-spacing:.025em;margin-bottom:18px;color:var(--text1)}
+.section-title .grad{background:var(--grad-kp);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-sub{font-size:1.02rem;color:var(--text2);line-height:1.7;max-width:660px;margin-bottom:54px}
+hr.divider{border:none;border-top:1px solid var(--border);max-width:1240px;margin:0 auto}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  TICKER                                                                     */
-/* ────────────────────────────────────────────────────────────────────────── */
-.ticker-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0;background:var(--bg1)}
-.ticker-inner{display:flex;gap:0;animation:ticker 38s linear infinite;width:max-content}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  TICKER                                                                  */
+/* ─────────────────────────────────────────────────────────────────────── */
+.ticker-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 0;background:linear-gradient(90deg,#05060d,#0a0c18 50%,#05060d);position:relative}
+.ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+.ticker-wrap::before{left:0;background:linear-gradient(90deg,#05060d,transparent)}
+.ticker-wrap::after{right:0;background:linear-gradient(-90deg,#05060d,transparent)}
+.ticker-inner{display:flex;gap:0;animation:ticker 50s linear infinite;width:max-content}
 .ticker-inner:hover{animation-play-state:paused}
-.ticker-item{padding:0 2rem;font-size:.72rem;font-family:var(--font-mono);color:var(--text3);letter-spacing:.1em;white-space:nowrap}
-.ticker-item.k{color:rgba(168,85,247,.7)}
-.ticker-item.b{color:rgba(57,255,20,.6)}
+.ticker-item{padding:0 2.4rem;font-size:.74rem;font-family:var(--font-mono);color:var(--text3);letter-spacing:.12em;white-space:nowrap;font-weight:500}
+.ticker-item.k{color:rgba(192,132,252,.85)}
+.ticker-item.b{color:rgba(57,255,20,.65)}
+.ticker-item.x{color:rgba(248,113,113,.7)}
+.ticker-item.o{color:rgba(251,191,36,.75)}
 @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  FEATURE GRID                                                               */
-/* ────────────────────────────────────────────────────────────────────────── */
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px;transition:border-color var(--tr),transform var(--tr),box-shadow var(--tr)}
-.feat-card:hover{transform:translateY(-3px)}
-.feat-card.kp:hover{border-color:rgba(168,85,247,.35);box-shadow:0 8px 32px rgba(168,85,247,.08)}
-.feat-card.bn:hover{border-color:rgba(57,255,20,.25);box-shadow:0 8px 32px rgba(57,255,20,.06)}
-.feat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:18px}
-.feat-icon.kp{background:rgba(168,85,247,.12)}
-.feat-icon.bn{background:rgba(57,255,20,.08)}
-.feat-name{font-size:.88rem;font-weight:700;color:var(--text1);margin-bottom:8px}
-.feat-name.kp{color:var(--kp3)}
-.feat-name.bn{color:var(--bn)}
-.feat-desc{font-size:.8rem;color:var(--text3);line-height:1.6}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  PROBLEM / TRADE-OFF                                                     */
+/* ─────────────────────────────────────────────────────────────────────── */
+.problem{background:var(--bg)}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:48px}
+@media(max-width:900px){.problem-grid{grid-template-columns:1fr}}
+.problem-card{background:linear-gradient(180deg,var(--bg2) 0%,var(--bg1) 100%);border:1px solid var(--border);border-radius:var(--r2);padding:28px 24px;position:relative;overflow:hidden;transition:transform var(--tr),border-color var(--tr)}
+.problem-card:hover{transform:translateY(-4px);border-color:var(--border2)}
+.problem-card.broken{border-color:rgba(239,68,68,.18)}
+.problem-card.broken::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(239,68,68,.04) 0%,transparent 60%);pointer-events:none}
+.problem-card.solved{border-color:rgba(168,85,247,.45);box-shadow:0 0 60px rgba(168,85,247,.10)}
+.problem-card.solved::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(168,85,247,.08) 0%,transparent 70%);pointer-events:none}
+.problem-card-tag{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-family:var(--font-mono);margin-bottom:14px;display:inline-flex;align-items:center;gap:6px}
+.problem-card.broken .problem-card-tag{color:#fca5a5}
+.problem-card.solved .problem-card-tag{color:var(--kp3)}
+.problem-card h4{font-family:var(--font-grot);font-size:1.15rem;color:var(--text1);margin-bottom:10px;letter-spacing:.01em;font-weight:600}
+.problem-card p{font-size:.86rem;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.problem-card ul{list-style:none}
+.problem-card li{font-size:.82rem;color:var(--text3);line-height:1.7;padding-left:20px;position:relative}
+.problem-card li::before{position:absolute;left:0;font-family:var(--font-mono);font-size:.85rem}
+.problem-card.broken li::before{content:'✕';color:#fca5a5}
+.problem-card.solved li::before{content:'✓';color:var(--kp3)}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  HERO SPLIT (K-Perception showcase)                                         */
-/* ────────────────────────────────────────────────────────────────────────── */
-.showcase{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center}
-@media(max-width:800px){.showcase{grid-template-columns:1fr}}
-.showcase-copy h3{font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2rem);color:var(--text1);margin-bottom:12px;letter-spacing:.03em}
-.showcase-copy p{font-size:.9rem;color:var(--text2);line-height:1.7;margin-bottom:20px}
-.showcase-checks{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
-.showcase-check{display:flex;align-items:flex-start;gap:10px;font-size:.85rem;color:var(--text2);line-height:1.5}
-.showcase-check-icon{width:18px;height:18px;border-radius:50%;background:rgba(168,85,247,.15);color:var(--kp3);display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;margin-top:1px}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  EDITOR MODES SHOWCASE                                                   */
+/* ─────────────────────────────────────────────────────────────────────── */
+.modes-section{background:var(--bg1);overflow:hidden}
+.modes-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:32px;padding:6px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);width:fit-content;max-width:100%}
+.mode-tab{padding:10px 18px;border-radius:8px;font-size:.82rem;font-weight:600;font-family:var(--font-grot);color:var(--text3);cursor:pointer;transition:all var(--tr-fast);background:transparent;border:none;display:inline-flex;align-items:center;gap:8px}
+.mode-tab:hover{color:var(--text1);background:rgba(168,85,247,.08)}
+.mode-tab.active{background:linear-gradient(135deg,var(--kp2),var(--kp));color:#fff;box-shadow:0 0 20px rgba(168,85,247,.35)}
+.mode-tab-num{font-family:var(--font-mono);font-size:.7rem;opacity:.7}
+
+.mode-display{display:grid;grid-template-columns:1fr 1.2fr;gap:32px;align-items:stretch;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);padding:28px;min-height:420px}
+@media(max-width:900px){.mode-display{grid-template-columns:1fr}}
+.mode-info h3{font-family:var(--font-display);font-size:clamp(1.4rem,2.8vw,2rem);color:var(--text1);margin-bottom:6px;letter-spacing:.03em}
+.mode-info .mode-tech{font-family:var(--font-mono);font-size:.74rem;color:var(--kp3);margin-bottom:20px;letter-spacing:.05em}
+.mode-info p{font-size:.92rem;color:var(--text2);line-height:1.7;margin-bottom:22px}
+.mode-feats{display:flex;flex-direction:column;gap:9px}
+.mode-feat{display:flex;align-items:flex-start;gap:10px;font-size:.84rem;color:var(--text2);line-height:1.55}
+.mode-feat-dot{width:6px;height:6px;border-radius:50%;background:var(--kp);margin-top:7px;flex-shrink:0;box-shadow:0 0 8px var(--kp)}
+.mode-preview{background:var(--bg);border:1px solid var(--border2);border-radius:var(--r2);padding:22px;font-family:var(--font-mono);font-size:.78rem;line-height:1.7;color:var(--text2);overflow:hidden;position:relative}
+.mode-preview .pv-tag{position:absolute;top:14px;right:14px;font-family:var(--font-mono);font-size:.62rem;color:var(--text4);letter-spacing:.1em;text-transform:uppercase}
+.mode-preview h1,.mode-preview h2{font-family:var(--font-display);color:var(--kp3);margin-bottom:8px;letter-spacing:.02em}
+.mode-preview h1{font-size:1.05rem}.mode-preview h2{font-size:.92rem}
+.mode-preview .key{color:#a78bfa}.mode-preview .num{color:#86efac}.mode-preview .str{color:#fcd34d}
+.mode-preview .com{color:#4b5563;font-style:italic}.mode-preview .op{color:#fca5a5}
+.mode-preview .row{display:grid;grid-template-columns:30px repeat(4,1fr);font-family:var(--font-mono);font-size:.72rem;border-bottom:1px solid var(--border);padding:5px 0;color:var(--text3)}
+.mode-preview .row.head{color:var(--kp3);font-weight:600}
+.mode-preview .row span{padding:0 8px;border-right:1px solid var(--border)}
+.mode-preview .row span:first-child{color:var(--text4);text-align:center}
+.mode-preview .latex-eq{font-family:'Inter';font-size:1.4rem;color:var(--text1);text-align:center;padding:20px 0;letter-spacing:.02em}
+.mode-preview .canvas-art{height:100%;min-height:240px;background:radial-gradient(ellipse at 30% 40%,rgba(168,85,247,.18),transparent 60%),radial-gradient(ellipse at 70% 60%,rgba(124,58,237,.15),transparent 60%);border-radius:8px;position:relative;overflow:hidden}
+.mode-preview .canvas-art::before{content:'';position:absolute;top:30%;left:20%;width:60%;height:40%;border:2px solid rgba(168,85,247,.4);border-radius:50% 30% 60% 40%;transform:rotate(-12deg);filter:drop-shadow(0 0 8px rgba(168,85,247,.4))}
+.mode-preview .canvas-art::after{content:'';position:absolute;top:50%;left:40%;width:30%;height:30%;border-top:3px solid rgba(192,132,252,.6);border-radius:50%;transform:rotate(28deg)}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  K-PERCEPTION SHOWCASE                                                   */
+/* ─────────────────────────────────────────────────────────────────────── */
+.showcase{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+@media(max-width:900px){.showcase{grid-template-columns:1fr}}
+.showcase-copy h3{font-family:var(--font-display);font-size:clamp(1.5rem,3.4vw,2.4rem);color:var(--text1);margin-bottom:14px;letter-spacing:.025em;line-height:1.1}
+.showcase-copy p{font-size:.95rem;color:var(--text2);line-height:1.75;margin-bottom:22px}
+.showcase-checks{display:flex;flex-direction:column;gap:11px;margin-bottom:30px}
+.showcase-check{display:flex;align-items:flex-start;gap:11px;font-size:.88rem;color:var(--text2);line-height:1.55}
+.showcase-check-icon{width:20px;height:20px;border-radius:50%;background:rgba(168,85,247,.18);color:var(--kp3);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:1px;font-weight:700}
 .showcase-visual{position:relative}
-.vault-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:24px;font-family:var(--font-mono);position:relative;overflow:hidden}
-.vault-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(168,85,247,.06) 0%,transparent 60%);pointer-events:none}
-.vault-card-header{display:flex;align-items:center;gap:8px;margin-bottom:18px;font-size:.75rem;color:var(--text3)}
-.vault-card-dot{width:10px;height:10px;border-radius:50%;animation:pulse-dot 2.5s infinite}
-.vault-card-dot.red{background:#ff5f57}
-.vault-card-dot.yellow{background:#febc2e;animation-delay:.3s}
-.vault-card-dot.green{background:#28c840;animation-delay:.6s}
-.vault-line{font-size:.78rem;line-height:1.8;color:var(--text3)}
-.vault-line .key{color:#a78bfa}
-.vault-line .val{color:#86efac}
-.vault-line .kp-color{color:#c084fc}
-.vault-line .str{color:#fca5a5}
-.vault-line .num{color:#93c5fd}
-.vault-line .comment{color:#4b5563;font-style:italic}
-.vault-glow-line{display:inline-block;background:rgba(168,85,247,.08);border-radius:4px;padding:0 6px;margin-top:2px}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  SECURITY SECTION                                                           */
-/* ────────────────────────────────────────────────────────────────────────── */
-.security-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:40px}
-.security-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px;position:relative;overflow:hidden;transition:border-color var(--tr)}
-.security-card:hover{border-color:rgba(168,85,247,.25)}
-.security-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(168,85,247,.04) 0%,transparent 70%);pointer-events:none}
-.security-card-title{font-size:.82rem;font-weight:700;color:var(--kp3);margin-bottom:6px;font-family:var(--font-mono)}
-.security-card-desc{font-size:.78rem;color:var(--text3);line-height:1.5}
+.vault-card{background:linear-gradient(180deg,var(--bg2) 0%,var(--bg1) 100%);border:1px solid var(--border3);border-radius:16px;padding:26px;font-family:var(--font-mono);position:relative;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 60px rgba(168,85,247,.08)}
+.vault-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(168,85,247,.08) 0%,transparent 55%);pointer-events:none}
+.vault-card-header{display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:.74rem;color:var(--text3);font-family:var(--font-mono)}
+.vault-card-dot{width:11px;height:11px;border-radius:50%}
+.vault-card-dot.red{background:#ff5f57}.vault-card-dot.yellow{background:#febc2e}.vault-card-dot.green{background:#28c840}
+.vault-line{font-size:.78rem;line-height:1.85;color:var(--text3)}
+.vault-line .key{color:#a78bfa}.vault-line .val{color:#86efac}.vault-line .kp-color{color:#c084fc}
+.vault-line .str{color:#fca5a5}.vault-line .num{color:#93c5fd}.vault-line .comment{color:#4b5563;font-style:italic}
+.vault-glow-line{display:inline-block;background:rgba(168,85,247,.10);border-radius:4px;padding:0 7px;margin-top:2px}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  ARCHITECTURE FLOW                                                          */
-/* ────────────────────────────────────────────────────────────────────────── */
-.arch-flow{display:flex;align-items:center;gap:0;justify-content:center;flex-wrap:wrap;gap:0;margin:32px 0;padding:0 1rem}
-.arch-node{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 20px;font-size:.78rem;font-family:var(--font-mono);color:var(--text2);text-align:center;min-width:100px;transition:border-color var(--tr)}
-.arch-node:hover{border-color:rgba(168,85,247,.35)}
-.arch-node .arch-label{font-size:.65rem;color:var(--text3);display:block;margin-bottom:4px;letter-spacing:.06em;text-transform:uppercase}
-.arch-node .arch-name{color:var(--kp3);font-weight:600}
-.arch-arrow{color:rgba(168,85,247,.4);font-size:1.2rem;margin:0 6px;flex-shrink:0}
-.arch-badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-.arch-badge{padding:4px 10px;border-radius:5px;font-size:.7rem;font-family:var(--font-mono);background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.18);color:var(--kp3)}
+.live-encrypt{margin-top:18px;padding:16px;background:rgba(168,85,247,.04);border:1px dashed rgba(168,85,247,.25);border-radius:10px}
+.live-encrypt-label{font-size:.62rem;color:var(--kp3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-weight:700}
+.live-encrypt-row{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:.74rem}
+.live-encrypt-from{color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live-encrypt-arrow{color:var(--kp3);flex-shrink:0}
+.live-encrypt-to{color:#86efac;flex:1.4;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  PRICING                                                                    */
-/* ────────────────────────────────────────────────────────────────────────── */
-.pricing-toggle{display:flex;align-items:center;gap:12px;margin-bottom:36px}
-.pricing-toggle-label{font-size:.82rem;color:var(--text2)}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  FEATURE GRID                                                            */
+/* ─────────────────────────────────────────────────────────────────────── */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.feat-card{background:linear-gradient(180deg,var(--bg2) 0%,var(--bg1) 100%);border:1px solid var(--border);border-radius:var(--r2);padding:26px;transition:all var(--tr);position:relative;overflow:hidden}
+.feat-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity var(--tr);background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(168,85,247,.10) 0%,transparent 50%);pointer-events:none}
+.feat-card:hover::before{opacity:1}
+.feat-card:hover{transform:translateY(-4px);border-color:rgba(168,85,247,.32);box-shadow:0 14px 40px rgba(0,0,0,.4),0 0 32px rgba(168,85,247,.10)}
+.feat-card.bn:hover{border-color:rgba(57,255,20,.28);box-shadow:0 14px 40px rgba(0,0,0,.4),0 0 32px rgba(57,255,20,.08)}
+.feat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:rgba(168,85,247,.13);border:1px solid rgba(168,85,247,.22);color:var(--kp3)}
+.feat-icon.bn{background:rgba(57,255,20,.08);border-color:rgba(57,255,20,.18);color:var(--bn)}
+.feat-name{font-size:.95rem;font-weight:700;color:var(--text1);margin-bottom:9px;font-family:var(--font-grot);letter-spacing:.01em}
+.feat-desc{font-size:.85rem;color:var(--text3);line-height:1.6}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  SECURITY                                                                */
+/* ─────────────────────────────────────────────────────────────────────── */
+.security-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:54px}
+.security-card{background:linear-gradient(180deg,var(--bg2),var(--bg1));border:1px solid var(--border);border-radius:var(--r2);padding:22px;position:relative;overflow:hidden;transition:all var(--tr)}
+.security-card:hover{border-color:rgba(168,85,247,.3);transform:translateY(-3px);box-shadow:0 0 30px rgba(168,85,247,.08)}
+.security-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(168,85,247,.05) 0%,transparent 70%);pointer-events:none}
+.security-card-icon{width:36px;height:36px;border-radius:9px;background:rgba(168,85,247,.13);border:1px solid rgba(168,85,247,.22);display:flex;align-items:center;justify-content:center;color:var(--kp3);margin-bottom:14px}
+.security-card-title{font-size:.86rem;font-weight:700;color:var(--text1);margin-bottom:7px;font-family:var(--font-grot)}
+.security-card-tech{font-size:.7rem;color:var(--kp3);font-family:var(--font-mono);margin-bottom:9px;letter-spacing:.04em}
+.security-card-desc{font-size:.81rem;color:var(--text3);line-height:1.6}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  KEY HIERARCHY DIAGRAM                                                   */
+/* ─────────────────────────────────────────────────────────────────────── */
+.hierarchy{background:linear-gradient(180deg,var(--bg2),var(--bg1));border:1px solid var(--border2);border-radius:var(--r3);padding:clamp(1.6rem,4vw,2.6rem);margin:54px 0}
+.hierarchy-title{font-family:var(--font-display);font-size:1.15rem;color:var(--text1);margin-bottom:6px;letter-spacing:.04em}
+.hierarchy-sub{font-size:.86rem;color:var(--text3);margin-bottom:32px;line-height:1.6}
+.hierarchy-tree{display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-mono)}
+.h-node{padding:14px 22px;border-radius:10px;background:var(--bg);border:1px solid var(--border2);display:flex;align-items:center;gap:14px;min-width:280px;justify-content:space-between;transition:all var(--tr);position:relative}
+.h-node:hover{border-color:rgba(168,85,247,.4);box-shadow:0 0 24px rgba(168,85,247,.12);transform:translateX(0) scale(1.02)}
+.h-node-name{font-size:.78rem;font-weight:700;color:var(--kp3);letter-spacing:.04em}
+.h-node-desc{font-size:.7rem;color:var(--text3)}
+.h-node.lvl-0{border-color:rgba(168,85,247,.5)}
+.h-node.lvl-1{border-color:rgba(168,85,247,.35)}
+.h-node.lvl-2{border-color:rgba(168,85,247,.25)}
+.h-node.lvl-3{border-color:rgba(168,85,247,.18)}
+.h-node.lvl-4{border-color:rgba(168,85,247,.12)}
+.h-arrow{color:rgba(168,85,247,.5);font-family:var(--font-mono);font-size:.7rem;letter-spacing:.05em;display:flex;flex-direction:column;align-items:center;gap:2px}
+.h-arrow svg{display:block}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  ARCHITECTURE FLOW                                                       */
+/* ─────────────────────────────────────────────────────────────────────── */
+.arch-flow{display:flex;align-items:stretch;gap:0;justify-content:center;flex-wrap:wrap;margin:32px 0;padding:0 1rem;row-gap:14px}
+.arch-node{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 20px;font-size:.78rem;font-family:var(--font-mono);color:var(--text2);text-align:center;min-width:130px;transition:border-color var(--tr),transform var(--tr)}
+.arch-node:hover{border-color:rgba(168,85,247,.42);transform:translateY(-3px)}
+.arch-node .arch-label{font-size:.62rem;color:var(--text3);display:block;margin-bottom:5px;letter-spacing:.07em;text-transform:uppercase;font-weight:600}
+.arch-node .arch-name{color:var(--kp3);font-weight:600;font-size:.78rem}
+.arch-node.zero-knowledge{border-color:rgba(168,85,247,.4);background:rgba(168,85,247,.06);box-shadow:0 0 26px rgba(168,85,247,.14)}
+.arch-arrow{color:rgba(168,85,247,.5);font-size:1.4rem;margin:auto 8px;flex-shrink:0;display:flex;align-items:center}
+.arch-badge-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px;justify-content:center}
+.arch-badge{padding:5px 12px;border-radius:6px;font-size:.7rem;font-family:var(--font-mono);background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.16);color:var(--kp3);letter-spacing:.03em}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  COLLAB E2EE DEMO                                                        */
+/* ─────────────────────────────────────────────────────────────────────── */
+.collab-demo{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:18px;align-items:stretch;margin:40px 0}
+@media(max-width:900px){.collab-demo{grid-template-columns:1fr;gap:10px}}
+.collab-pane{background:linear-gradient(180deg,var(--bg2),var(--bg1));border:1px solid var(--border2);border-radius:var(--r2);padding:22px;min-height:200px;font-family:var(--font-mono);font-size:.78rem;color:var(--text3);position:relative;overflow:hidden}
+.collab-pane.client-a{border-color:rgba(168,85,247,.3)}
+.collab-pane.client-b{border-color:rgba(59,130,246,.3)}
+.collab-pane.server{border-color:rgba(239,68,68,.25);background:linear-gradient(180deg,rgba(239,68,68,.03),var(--bg1))}
+.collab-pane-label{font-size:.65rem;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;font-weight:700}
+.collab-pane.client-a .collab-pane-label{color:var(--kp3)}
+.collab-pane.client-b .collab-pane-label{color:#93c5fd}
+.collab-pane.server .collab-pane-label{color:#fca5a5}
+.collab-pane h5{font-family:var(--font-grot);font-size:.92rem;color:var(--text1);margin-bottom:12px;font-weight:600}
+.collab-pane .text-row{padding:8px 0;border-bottom:1px solid var(--border);color:var(--text2);font-size:.8rem;line-height:1.5}
+.collab-pane .text-row:last-child{border-bottom:none}
+.collab-pane .cursor{display:inline-block;width:2px;height:14px;background:var(--kp);vertical-align:middle;animation:blink 1s infinite;margin-left:1px}
+.collab-pane.client-b .cursor{background:#3b82f6}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.collab-pane.server .cipher-blob{font-size:.7rem;color:#86efac;opacity:.7;line-height:1.5;word-break:break-all;max-height:120px;overflow:hidden}
+.collab-pane.server .server-knows{margin-top:14px;font-size:.7rem;color:#fca5a5;line-height:1.6}
+.collab-pane.server .server-knows::before{content:'⚠ Server cannot read content';display:block;font-weight:700;letter-spacing:.04em;margin-bottom:6px}
+.collab-arrow-h{display:flex;align-items:center;justify-content:center;color:var(--kp3);font-family:var(--font-mono);font-size:.72rem;font-weight:600;flex-direction:column;gap:6px}
+.collab-arrow-h-line{width:32px;height:1px;background:linear-gradient(90deg,var(--kp),transparent);position:relative}
+.collab-arrow-h-line::after{content:'';position:absolute;right:-3px;top:-2px;width:5px;height:5px;border-top:1px solid var(--kp);border-right:1px solid var(--kp);transform:rotate(45deg)}
+.collab-arrow-h-tag{font-size:.6rem;color:var(--kp3);letter-spacing:.06em;white-space:nowrap}
+@media(max-width:900px){
+  .collab-arrow-h-line{width:1px;height:24px;background:linear-gradient(180deg,var(--kp),transparent);transform:rotate(0)}
+  .collab-arrow-h-line::after{right:-2px;top:auto;bottom:-3px;transform:rotate(135deg)}
+}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  COMPARISON TABLE                                                        */
+/* ─────────────────────────────────────────────────────────────────────── */
+.compare-wrap{overflow-x:auto;border:1px solid var(--border2);border-radius:var(--r2);background:linear-gradient(180deg,var(--bg2),var(--bg1));margin-top:24px}
+.compare{width:100%;border-collapse:collapse;font-family:var(--font-grot);font-size:.86rem;min-width:700px}
+.compare th,.compare td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--border)}
+.compare thead th{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-weight:700;background:var(--bg2);position:sticky;top:0}
+.compare thead th.kp-col{color:var(--kp3);background:rgba(168,85,247,.08)}
+.compare tbody td{color:var(--text2)}
+.compare tbody td:first-child{color:var(--text1);font-weight:600;font-size:.88rem}
+.compare tbody td.kp-col{background:rgba(168,85,247,.04)}
+.compare tbody tr:hover{background:rgba(168,85,247,.03)}
+.compare .check{color:var(--kp3);font-weight:700}
+.compare .cross{color:#6b7280}
+.compare .partial{color:var(--gold)}
+.compare .price{font-family:var(--font-mono);font-weight:700;font-size:.85rem}
+.compare .price.kp{color:var(--kp3)}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  PRICING                                                                 */
+/* ─────────────────────────────────────────────────────────────────────── */
+.pricing-toggle{display:flex;align-items:center;gap:14px;margin-bottom:42px}
+.pricing-toggle-label{font-size:.85rem;color:var(--text2);font-weight:500}
 .pricing-toggle-label.active{color:var(--text1);font-weight:600}
-.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle-switch{position:relative;width:46px;height:24px;flex-shrink:0}
 .toggle-switch input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;inset:0;background:rgba(168,85,247,.2);border:1px solid rgba(168,85,247,.3);border-radius:100px;cursor:pointer;transition:all .2s}
-.toggle-slider::before{content:'';position:absolute;left:3px;top:50%;transform:translateY(-50%);width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.toggle-slider{position:absolute;inset:0;background:rgba(168,85,247,.18);border:1px solid rgba(168,85,247,.32);border-radius:100px;cursor:pointer;transition:all .25s}
+.toggle-slider::before{content:'';position:absolute;left:3px;top:50%;transform:translateY(-50%);width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,.45)}
 input:checked+.toggle-slider{background:rgba(168,85,247,.4);border-color:rgba(168,85,247,.6)}
 input:checked+.toggle-slider::before{transform:translateY(-50%) translateX(20px)}
-.annual-chip{padding:3px 8px;border-radius:5px;background:rgba(168,85,247,.15);color:var(--kp3);font-size:.68rem;font-weight:700;letter-spacing:.04em}
-.pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-.pricing-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;position:relative;overflow:hidden;transition:border-color var(--tr),transform var(--tr),box-shadow var(--tr)}
-.pricing-card:hover{transform:translateY(-3px)}
-.pricing-card.featured{border-color:rgba(91,110,244,.45);box-shadow:0 0 40px rgba(91,110,244,.12)}
-.pricing-card.featured::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(91,110,244,.06) 0%,transparent 60%);pointer-events:none}
-.pricing-card.lifetime-card{border-color:rgba(245,158,11,.35)}
-.pricing-card.lifetime-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,158,11,.05) 0%,transparent 60%);pointer-events:none}
-.pricing-ribbon{position:absolute;top:12px;right:12px;padding:3px 9px;border-radius:6px;font-size:.65rem;font-weight:700;letter-spacing:.04em}
-.pricing-name{font-family:var(--font-display);font-size:.85rem;letter-spacing:.08em;margin-bottom:4px;margin-top:4px}
-.pricing-tagline{font-size:.75rem;color:var(--text3);margin-bottom:16px;line-height:1.4}
-.pricing-price{margin-bottom:20px}
-.pricing-amount{font-size:1.8rem;font-weight:800;line-height:1;color:var(--text1)}
-.pricing-period{font-size:.75rem;color:var(--text3);margin-left:2px}
-.pricing-annual-note{font-size:.7rem;color:var(--text3);margin-top:4px;min-height:16px}
-.pricing-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
-.pricing-features{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
-.pricing-feature{display:flex;align-items:flex-start;gap:7px;font-size:.76rem;color:var(--text2);line-height:1.4}
-.pricing-feature-icon{flex-shrink:0;margin-top:1px;font-size:.7rem}
+.annual-chip{padding:4px 10px;border-radius:6px;background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(124,58,237,.2));color:var(--kp3);font-size:.68rem;font-weight:700;letter-spacing:.05em;border:1px solid rgba(168,85,247,.3)}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:16px}
+.pricing-card{background:linear-gradient(180deg,var(--bg2),var(--bg1));border:1px solid var(--border);border-radius:var(--r2);padding:24px;position:relative;overflow:hidden;transition:all var(--tr)}
+.pricing-card:hover{transform:translateY(-4px);border-color:var(--border3)}
+.pricing-card.featured{border-color:rgba(129,140,248,.5);box-shadow:0 0 50px rgba(129,140,248,.14);transform:scale(1.02)}
+.pricing-card.featured::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(129,140,248,.08) 0%,transparent 60%);pointer-events:none}
+.pricing-card.lifetime-card{border-color:rgba(245,158,11,.4)}
+.pricing-card.lifetime-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,158,11,.06) 0%,transparent 60%);pointer-events:none}
+.pricing-ribbon{position:absolute;top:14px;right:14px;padding:4px 10px;border-radius:6px;font-size:.65rem;font-weight:700;letter-spacing:.04em;font-family:var(--font-mono)}
+.pricing-name{font-family:var(--font-display);font-size:.92rem;letter-spacing:.08em;margin-bottom:6px;margin-top:6px}
+.pricing-tagline{font-size:.78rem;color:var(--text3);margin-bottom:18px;line-height:1.45;min-height:36px}
+.pricing-price{margin-bottom:22px}
+.pricing-amount{font-size:2rem;font-weight:800;line-height:1;color:var(--text1);font-family:var(--font-grot);letter-spacing:-.02em}
+.pricing-period{font-size:.76rem;color:var(--text3);margin-left:3px}
+.pricing-annual-note{font-size:.72rem;color:var(--text3);margin-top:5px;min-height:18px}
+.pricing-divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.pricing-feature{display:flex;align-items:flex-start;gap:8px;font-size:.78rem;color:var(--text2);line-height:1.45}
+.pricing-feature-icon{flex-shrink:0;margin-top:1px;font-size:.72rem;font-weight:700}
 .pricing-feature.dim{color:var(--text3)}
 .pricing-feature.dim .pricing-feature-icon{opacity:.4}
-.pricing-cta{display:block;width:100%;padding:10px;border-radius:8px;font-size:.82rem;font-weight:600;text-align:center;cursor:pointer;transition:all var(--tr);font-family:'Inter',sans-serif}
-.pricing-cta.kp-fill{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);color:var(--kp3)}
-.pricing-cta.kp-fill:hover{background:rgba(168,85,247,.28);border-color:rgba(168,85,247,.55)}
-.pricing-cta.kp-solid{background:linear-gradient(135deg,var(--kp2),var(--kp));border:none;color:#fff;box-shadow:0 0 20px rgba(168,85,247,.25)}
-.pricing-cta.kp-solid:hover{box-shadow:0 0 30px rgba(168,85,247,.4);filter:brightness(1.08)}
-.pricing-cta.gold{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#f59e0b}
-.pricing-cta.gold:hover{background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.5)}
-.pricing-cta.dim-btn{background:transparent;border:1px solid var(--border2);color:var(--text3)}
+.pricing-cta{display:block;width:100%;padding:11px;border-radius:9px;font-size:.84rem;font-weight:600;text-align:center;cursor:pointer;transition:all var(--tr);font-family:'Inter',sans-serif;border:none}
+.pricing-cta.kp-fill{background:rgba(168,85,247,.13);border:1px solid rgba(168,85,247,.32);color:var(--kp3)}
+.pricing-cta.kp-fill:hover{background:rgba(168,85,247,.26);border-color:rgba(168,85,247,.55);box-shadow:0 0 20px rgba(168,85,247,.18)}
+.pricing-cta.kp-solid{background:linear-gradient(135deg,var(--kp2),var(--kp));color:#fff;box-shadow:0 0 22px rgba(168,85,247,.28)}
+.pricing-cta.kp-solid:hover{box-shadow:0 0 32px rgba(168,85,247,.45);filter:brightness(1.08);transform:translateY(-1px)}
+.pricing-cta.gold{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.32);color:#f59e0b}
+.pricing-cta.gold:hover{background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.55);box-shadow:0 0 22px rgba(245,158,11,.18)}
+.pricing-cta.dim-btn{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.pricing-cta.dim-btn:hover{background:var(--bg2);border-color:var(--border3);color:var(--text1)}
+.pricing-cta.rose{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.32);color:var(--rose)}
+.pricing-cta.rose:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.55)}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  PLATFORM SECTION                                                           */
-/* ────────────────────────────────────────────────────────────────────────── */
-.platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:32px}
-.platform-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 16px;text-align:center;transition:border-color var(--tr),transform var(--tr)}
-.platform-card:hover{border-color:rgba(168,85,247,.25);transform:translateY(-2px)}
-.platform-icon{font-size:2.2rem;margin-bottom:12px;display:block}
-.platform-name{font-size:.85rem;font-weight:700;color:var(--text1);margin-bottom:6px}
-.platform-status{font-size:.72rem;font-family:var(--font-mono)}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  PLATFORM SECTION                                                        */
+/* ─────────────────────────────────────────────────────────────────────── */
+.platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;margin-bottom:32px}
+.platform-card{background:linear-gradient(180deg,var(--bg2),var(--bg1));border:1px solid var(--border);border-radius:var(--r2);padding:22px 18px;text-align:center;transition:all var(--tr);position:relative;overflow:hidden}
+.platform-card:hover{border-color:rgba(168,85,247,.32);transform:translateY(-3px);box-shadow:0 0 30px rgba(168,85,247,.08)}
+.platform-icon{width:48px;height:48px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;background:rgba(168,85,247,.13);border:1px solid rgba(168,85,247,.22);border-radius:12px;color:var(--kp3)}
+.platform-name{font-size:.92rem;font-weight:700;color:var(--text1);margin-bottom:7px;font-family:var(--font-grot)}
+.platform-status{font-size:.7rem;font-family:var(--font-mono);letter-spacing:.04em;font-weight:600}
 .platform-status.live{color:#3fb950}
 .platform-status.soon{color:var(--text3)}
+.platform-card-desc{font-size:.74rem;color:var(--text3);margin-top:10px;line-height:1.55}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  BINAURA SECTION                                                            */
-/* ────────────────────────────────────────────────────────────────────────── */
-.binaura-hero{background:var(--bg1);border:1px solid var(--border);border-radius:16px;padding:clamp(2rem,5vw,3.5rem);display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;position:relative;overflow:hidden}
-@media(max-width:800px){.binaura-hero{grid-template-columns:1fr}}
-.binaura-hero::before{content:'';position:absolute;top:-50%;right:-30%;width:500px;height:500px;background:radial-gradient(circle,rgba(57,255,20,.06) 0%,transparent 70%);pointer-events:none}
-.bn-tag{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bn);margin-bottom:12px}
-.bn-tag::before{content:'';display:inline-block;width:12px;height:2px;background:var(--bn);border-radius:1px}
-.binaura-title{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,3rem);color:var(--text1);margin-bottom:8px;letter-spacing:.05em}
-.binaura-sub{font-size:.88rem;color:var(--text2);line-height:1.6;margin-bottom:24px}
-.binaura-specs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
-.binaura-spec{background:rgba(57,255,20,.04);border:1px solid rgba(57,255,20,.1);border-radius:8px;padding:10px 12px}
-.binaura-spec-name{font-size:.7rem;color:var(--bn);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
-.binaura-spec-val{font-size:.8rem;color:var(--text2)}
-.binaura-feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.binaura-feat{display:flex;align-items:flex-start;gap:8px;font-size:.8rem;color:var(--text2);line-height:1.4}
-.binaura-feat-check{color:var(--bn);flex-shrink:0;font-size:.7rem}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  COMPLIANCE BADGES                                                       */
+/* ─────────────────────────────────────────────────────────────────────── */
+.compliance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:32px}
+.compliance-badge{padding:18px;background:linear-gradient(180deg,var(--bg2),var(--bg1));border:1px solid var(--border);border-radius:var(--r2);text-align:center;transition:all var(--tr)}
+.compliance-badge:hover{border-color:rgba(168,85,247,.3);transform:translateY(-2px)}
+.compliance-badge-name{font-family:var(--font-display);font-size:.92rem;color:var(--kp3);letter-spacing:.06em;margin-bottom:6px}
+.compliance-badge-desc{font-size:.74rem;color:var(--text3);line-height:1.45}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  ABOUT / STATS                                                              */
-/* ────────────────────────────────────────────────────────────────────────── */
-.stats-row{display:flex;flex-wrap:wrap;gap:clamp(1.5rem,4vw,3rem);margin:32px 0}
-.stat{text-align:left}
-.stat-num{font-family:var(--font-display);font-size:clamp(2rem,4vw,2.8rem);line-height:1}
-.stat-label{font-size:.72rem;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-top:5px}
-.stat.kp .stat-num{color:var(--kp3)}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  BINAURA                                                                 */
+/* ─────────────────────────────────────────────────────────────────────── */
+.binaura-hero{background:linear-gradient(180deg,var(--bg1),var(--bg));border:1px solid var(--border);border-radius:var(--r3);padding:clamp(2rem,5vw,3.5rem);display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;position:relative;overflow:hidden}
+@media(max-width:900px){.binaura-hero{grid-template-columns:1fr}}
+.binaura-hero::before{content:'';position:absolute;top:-30%;right:-25%;width:540px;height:540px;background:radial-gradient(circle,rgba(57,255,20,.08) 0%,transparent 70%);pointer-events:none;animation:drift1 20s ease-in-out infinite alternate}
+.bn-tag{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bn);margin-bottom:14px;font-family:var(--font-mono)}
+.bn-tag::before{content:'';display:inline-block;width:14px;height:2px;background:var(--bn);border-radius:1px}
+.binaura-title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.4rem);color:var(--text1);margin-bottom:10px;letter-spacing:.05em;background:linear-gradient(135deg,#fff 0%,#86efac 50%,#39FF14 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.binaura-sub{font-size:.92rem;color:var(--text2);line-height:1.65;margin-bottom:26px}
+.binaura-specs{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:26px}
+.binaura-spec{background:rgba(57,255,20,.04);border:1px solid rgba(57,255,20,.12);border-radius:9px;padding:11px 13px;transition:border-color var(--tr)}
+.binaura-spec:hover{border-color:rgba(57,255,20,.28)}
+.binaura-spec-name{font-size:.66rem;color:var(--bn);font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;font-family:var(--font-mono)}
+.binaura-spec-val{font-size:.82rem;color:var(--text1);font-weight:600}
+.binaura-feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.binaura-feat{display:flex;align-items:flex-start;gap:9px;font-size:.82rem;color:var(--text2);line-height:1.5}
+.binaura-feat-check{color:var(--bn);flex-shrink:0;font-size:.74rem;margin-top:2px}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  ABOUT / STATS                                                           */
+/* ─────────────────────────────────────────────────────────────────────── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:clamp(1.5rem,3vw,2.4rem);margin:38px 0}
+.stat{text-align:left;border-left:1px solid var(--border2);padding-left:18px}
+@media(max-width:600px){.stat{border-left:none;padding-left:0}}
+.stat-num{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);line-height:1;letter-spacing:.02em}
+.stat-label{font-size:.72rem;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-top:8px;font-weight:600}
+.stat.kp .stat-num{background:linear-gradient(180deg,#e9d5ff,var(--kp));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .stat.bn .stat-num{color:var(--bn)}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  WAITLIST SECTION                                                           */
-/* ────────────────────────────────────────────────────────────────────────── */
-.waitlist-section{background:var(--bg);border-top:1px solid var(--border)}
-.waitlist-inner{max-width:560px;margin:0 auto;text-align:center}
-.waitlist-title{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.2rem);color:var(--text1);margin-bottom:10px;letter-spacing:.03em}
-.waitlist-sub{font-size:.9rem;color:var(--text2);margin-bottom:28px;line-height:1.6}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  WAITLIST                                                                */
+/* ─────────────────────────────────────────────────────────────────────── */
+.waitlist-section{background:linear-gradient(180deg,var(--bg) 0%,var(--bg1) 100%);border-top:1px solid var(--border);position:relative;overflow:hidden}
+.waitlist-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(168,85,247,.10) 0%,transparent 60%);pointer-events:none;filter:blur(40px)}
+.waitlist-inner{max-width:600px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.waitlist-title{font-family:var(--font-display);font-size:clamp(1.6rem,3.4vw,2.6rem);color:var(--text1);margin-bottom:12px;letter-spacing:.03em}
+.waitlist-sub{font-size:.94rem;color:var(--text2);margin-bottom:32px;line-height:1.65}
 .waitlist-form{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.waitlist-input{flex:1;min-width:220px;padding:11px 16px;border-radius:9px;background:var(--bg2);border:1px solid var(--border2);color:var(--text1);font-size:.88rem;font-family:'Inter',sans-serif;outline:none;transition:border-color var(--tr)}
-.waitlist-input:focus{border-color:rgba(168,85,247,.5)}
+.waitlist-input{flex:1;min-width:230px;padding:13px 18px;border-radius:10px;background:var(--bg2);border:1px solid var(--border2);color:var(--text1);font-size:.9rem;font-family:'Inter',sans-serif;outline:none;transition:all var(--tr)}
+.waitlist-input:focus{border-color:rgba(168,85,247,.55);box-shadow:0 0 0 3px rgba(168,85,247,.15)}
 .waitlist-input::placeholder{color:var(--text3)}
-.waitlist-btn{padding:11px 24px;border-radius:9px;background:linear-gradient(135deg,var(--kp2),var(--kp));color:#fff;font-weight:700;font-size:.88rem;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:filter var(--tr),transform var(--tr);white-space:nowrap}
-.waitlist-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.waitlist-btn{padding:13px 26px;border-radius:10px;background:linear-gradient(135deg,var(--kp2),var(--kp));color:#fff;font-weight:700;font-size:.9rem;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all var(--tr);white-space:nowrap;box-shadow:0 0 22px rgba(168,85,247,.28)}
+.waitlist-btn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 0 32px rgba(168,85,247,.45)}
 .waitlist-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.waitlist-msg{margin-top:12px;font-size:.8rem;min-height:18px;font-family:var(--font-mono)}
-.waitlist-msg.ok{color:#6ee7b7}
-.waitlist-msg.err{color:#f87171}
-.waitlist-privacy{margin-top:10px;font-size:.72rem;color:var(--text3)}
+.waitlist-msg{margin-top:14px;font-size:.82rem;min-height:20px;font-family:var(--font-mono)}
+.waitlist-msg.ok{color:#6ee7b7}.waitlist-msg.err{color:#f87171}
+.waitlist-privacy{margin-top:12px;font-size:.74rem;color:var(--text3)}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  FOOTER                                                                     */
-/* ────────────────────────────────────────────────────────────────────────── */
-footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.5rem;background:var(--bg1)}
-.footer-logo{font-family:var(--font-display);font-size:.82rem;letter-spacing:.15em;color:var(--text2);text-decoration:none}
-.footer-links{display:flex;gap:1.5rem;flex-wrap:wrap}
-.footer-links a{color:var(--text3);font-size:.8rem;text-decoration:none;transition:color var(--tr)}
-.footer-links a:hover{color:var(--text1)}
-.footer-copy{font-size:.75rem;color:var(--text3)}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  FOOTER                                                                  */
+/* ─────────────────────────────────────────────────────────────────────── */
+footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2rem;background:var(--bg)}
+.footer-grid{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem}
+@media(max-width:800px){.footer-grid{grid-template-columns:1fr 1fr;gap:2rem}}
+@media(max-width:500px){.footer-grid{grid-template-columns:1fr}}
+.footer-brand{font-family:var(--font-display);font-size:.85rem;letter-spacing:.16em;color:var(--text1);text-decoration:none;display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.footer-tagline{font-size:.82rem;color:var(--text3);line-height:1.6;max-width:320px}
+.footer-col h6{font-family:var(--font-mono);font-size:.7rem;color:var(--kp3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;font-weight:700}
+.footer-col a{display:block;color:var(--text3);font-size:.82rem;text-decoration:none;margin-bottom:8px;transition:color var(--tr-fast)}
+.footer-col a:hover{color:var(--text1)}
+.footer-bottom{max-width:1240px;margin:0 auto;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;align-items:center}
+.footer-copy{font-size:.74rem;color:var(--text3)}
+.footer-status{display:inline-flex;align-items:center;gap:7px;font-size:.74rem;color:var(--text3);font-family:var(--font-mono)}
+.footer-status-dot{width:6px;height:6px;border-radius:50%;background:#3fb950;box-shadow:0 0 8px #3fb950;animation:pulse-dot 2s infinite}
 
-/* ────────────────────────────────────────────────────────────────────────── */
-/*  RESPONSIVE                                                                 */
-/* ────────────────────────────────────────────────────────────────────────── */
-@media(max-width:640px){
-  .nav-links{display:none}
-  .hero-stat-row{gap:1.5rem}
-  .feat-grid{grid-template-columns:1fr}
-  .pricing-grid{grid-template-columns:1fr}
-  .arch-flow{flex-direction:column;gap:6px}
-  .arch-arrow{transform:rotate(90deg)}
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  RESPONSIVE                                                              */
+/* ─────────────────────────────────────────────────────────────────────── */
+@media(max-width:900px){
+  .pricing-card.featured{transform:none}
+  .stats-row{gap:1.4rem}
+  .compliance-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:760px){
+  nav{height:58px;padding:0 1.1rem}
+  .nav-logo{font-size:.78rem;letter-spacing:.14em;gap:9px}
+  .nav-logo-mark{width:22px;height:22px}
+  .nav-links{gap:.5rem}
+  .nav-links a:not(.nav-cta){display:none}
+  .nav-cta{padding:7px 14px;font-size:.74rem!important}
+
+  .hero{padding:88px 1.1rem 70px;min-height:auto}
+  .hero-badge{font-size:.66rem;padding:6px 14px;margin-bottom:22px}
+  .hero-title{font-size:clamp(2.2rem,9vw,4rem);margin-bottom:14px;letter-spacing:.015em}
+  .hero-subtitle{font-size:1.08rem;line-height:1.5}
+  .hero-tagline{font-size:.92rem;margin-bottom:32px}
+  .hero-cta-row{gap:10px;width:100%}
+  .hero-cta-row .btn{flex:1;min-width:140px;justify-content:center;padding:12px 18px;font-size:.84rem}
+  .hero-platforms{gap:14px;margin-top:24px}
+  .hero-platform-chip{font-size:.68rem}
+  .hero-stat-row{margin-top:42px;grid-template-columns:repeat(3,1fr);gap:14px}
+  .hero-stat{padding:14px 6px}
+  .hero-stat-num{font-size:1.5rem}
+  .hero-stat-label{font-size:.6rem;letter-spacing:.06em}
+  .hero-scroll{font-size:.62rem;bottom:18px}
+
+  .section{padding:4.5rem 1.1rem}
+  .section-title{font-size:1.7rem;line-height:1.15}
+  .section-sub{font-size:.92rem;margin-bottom:38px}
+  .section-label{font-size:.66rem;margin-bottom:14px}
+
+  .ticker-item{padding:0 1.4rem;font-size:.68rem}
+
+  .problem-grid{grid-template-columns:1fr;gap:14px}
+  .problem-card{padding:22px 20px}
+
+  .modes-tabs{overflow-x:auto;flex-wrap:nowrap;width:100%;justify-content:flex-start;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .modes-tabs::-webkit-scrollbar{display:none}
+  .mode-tab{flex-shrink:0;padding:9px 14px;font-size:.78rem}
+  .mode-display{padding:20px;gap:24px;min-height:auto}
+  .mode-info h3{font-size:1.4rem}
+  .mode-info p{font-size:.88rem}
+  .mode-preview{padding:18px;font-size:.72rem}
+  .mode-preview .row{font-size:.66rem;grid-template-columns:24px repeat(4,1fr)}
+  .mode-preview .row span{padding:0 5px}
+  .mode-preview .latex-eq{font-size:1.2rem;padding:14px 0}
+  .mode-preview .canvas-art{min-height:180px}
+
+  .showcase{gap:2rem}
+  .showcase-copy h3{font-size:1.55rem}
+  .showcase-copy p{font-size:.88rem}
+  .showcase-check{font-size:.82rem}
+  .vault-card{padding:20px}
+  .vault-line{font-size:.7rem}
+  .live-encrypt-row{flex-wrap:nowrap}
+  .live-encrypt-from,.live-encrypt-to{font-size:.66rem}
+
+  .feat-grid{grid-template-columns:1fr;gap:14px}
+  .feat-card{padding:22px 20px}
+
+  .security-grid{grid-template-columns:1fr;gap:12px}
+  .security-card{padding:20px}
+
+  .arch-flow{flex-direction:column;gap:8px}
+  .arch-arrow{transform:rotate(90deg);margin:0 auto;font-size:1.1rem}
+  .arch-node{width:100%;max-width:260px}
+
+  .hierarchy{padding:1.6rem 1.2rem}
+  .h-node{min-width:0;width:100%;padding:12px 16px;flex-direction:column;align-items:flex-start;gap:4px}
+  .h-node-name{font-size:.74rem}
+  .h-node-desc{font-size:.65rem}
+
+  .collab-demo{grid-template-columns:1fr;gap:8px;margin:28px 0}
+  .collab-arrow-h{padding:8px 0;gap:4px}
+  .collab-arrow-h-line{width:1px;height:30px;background:linear-gradient(180deg,var(--kp),transparent)}
+  .collab-arrow-h-line::after{right:-2px;top:auto;bottom:-3px;left:auto;transform:rotate(135deg);border-top:1px solid var(--kp);border-right:1px solid var(--kp)}
+  .collab-arrow-h-tag{font-size:.58rem}
+  .collab-pane{padding:18px;min-height:auto}
+
+  .compare-wrap{margin:0 -1.1rem;border-radius:0;border-left:none;border-right:none}
+  .compare{font-size:.78rem;min-width:560px}
+  .compare th,.compare td{padding:11px 12px}
+
+  .pricing-grid{grid-template-columns:1fr;gap:14px}
+  .pricing-card{padding:22px 20px}
+  .pricing-amount{font-size:1.85rem}
+  .pricing-toggle{margin-bottom:32px}
+  .pricing-toggle-label{font-size:.8rem}
+
+  .platform-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .platform-card{padding:18px 14px}
+  .platform-icon{width:42px;height:42px;margin-bottom:12px}
+  .platform-name{font-size:.86rem}
+
+  .compliance-grid{grid-template-columns:1fr;gap:12px}
+  .compliance-badge{padding:16px}
+
+  .binaura-hero{padding:1.6rem 1.4rem;gap:1.6rem}
+  .binaura-title{font-size:2rem}
+  .binaura-sub{font-size:.86rem}
+  .binaura-specs{grid-template-columns:1fr 1fr;gap:8px}
+  .binaura-spec{padding:9px 11px}
+  .binaura-spec-name{font-size:.62rem}
+  .binaura-spec-val{font-size:.76rem}
+  .binaura-feat-grid{grid-template-columns:1fr;gap:9px}
+  .binaura-feat{font-size:.8rem}
+
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:1.2rem}
+  .stat{border-left:none;padding-left:0}
+  .stat-num{font-size:2rem}
+  .stat-label{font-size:.66rem}
+
+  .waitlist-title{font-size:1.5rem}
+  .waitlist-sub{font-size:.86rem;margin-bottom:24px}
+  .waitlist-form{flex-direction:column;align-items:stretch;gap:10px}
+  .waitlist-input{min-width:0;width:100%;padding:12px 16px;font-size:.88rem}
+  .waitlist-btn{width:100%;padding:13px}
+
+  footer{padding:2.4rem 1.1rem 1.5rem}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1.6rem;margin-bottom:1.8rem}
+  .footer-tagline{font-size:.78rem}
+  .footer-bottom{flex-direction:column;align-items:flex-start;gap:.8rem}
+  .footer-copy,.footer-status{font-size:.7rem}
+}
+
+@media(max-width:480px){
+  .hero-title{font-size:clamp(1.85rem,8.5vw,2.4rem);letter-spacing:.01em}
+  .hero-subtitle{font-size:1rem}
+  .hero-tagline{font-size:.86rem}
+  .hero-stat-row{grid-template-columns:repeat(2,1fr)}
+  .hero-stat:nth-child(5){grid-column:span 2}
+  .hero-stat-num{font-size:1.4rem}
+  .hero-cta-row{flex-direction:column}
+  .hero-cta-row .btn{width:100%;min-width:0}
+  .hero-platforms{flex-direction:column;align-items:flex-start;gap:8px;width:100%;text-align:left;max-width:280px;margin-left:auto;margin-right:auto}
+
+  .section-title{font-size:1.5rem}
+  .section{padding:3.8rem 1rem}
+
+  .modes-tabs{padding:5px;gap:4px}
+  .mode-tab{padding:8px 12px;font-size:.74rem;gap:6px}
+  .mode-tab-num{font-size:.62rem}
+
+  .platform-grid{grid-template-columns:1fr}
+
+  .footer-grid{grid-template-columns:1fr;gap:1.4rem}
+
+  .pricing-amount{font-size:1.65rem}
+  .pricing-name{font-size:.84rem}
+
+  .vault-card-header{flex-wrap:wrap}
+  .vault-line{font-size:.66rem;line-height:1.65}
+
+  .stats-row{grid-template-columns:1fr 1fr}
+
+  .ticker-item{padding:0 1rem;font-size:.62rem}
+}
+
+/* Reduced motion respect */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .aurora-blob,.hero-badge-dot,.footer-status-dot{animation:none}
+  .ticker-inner{animation:none}
+  .reveal,.reveal-left,.reveal-right,.reveal-scale{opacity:1;transform:none}
+}
+
+/* Touch device optimisations */
+@media(hover:none){
+  .spotlight{display:none}
+  .feat-card:hover,.security-card:hover,.platform-card:hover,.pricing-card:hover,.problem-card:hover,.compliance-badge:hover,.binaura-spec:hover{transform:none}
+  .feat-card::before{display:none}
+  .ticker-inner:hover{animation-play-state:running}
 }
 </style>
 </head>
 <body>
 
-<!-- ── NAV ──────────────────────────────────────────────────────────────── -->
-<nav>
-  <a href="#" class="nav-logo">
-    <span class="nav-logo-dot"></span>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="spotlight" id="spotlight"></div>
+
+<!-- ── NAV ───────────────────────────────────────────────────────────── -->
+<nav id="mainNav">
+  <a href="#top" class="nav-logo">
+    <span class="nav-logo-mark"></span>
     K-LAB DSP
   </a>
   <div class="nav-links">
     <a href="#kperception">K-Perception</a>
+    <a href="#modes">Editors</a>
     <a href="#security">Security</a>
+    <a href="#collaboration">Collab</a>
     <a href="#pricing">Pricing</a>
     <a href="#binaura">BINAURA</a>
-    <a href="#about">About</a>
     <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=1.0.0" class="btn-kp-ghost nav-cta" target="_blank" rel="noopener noreferrer">Download</a>
   </div>
 </nav>
 
-<!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+<!-- ── HERO ──────────────────────────────────────────────────────────── -->
 <section class="hero" id="top">
   <canvas id="hero-canvas"></canvas>
-  <div class="hero-bg-orb hero-bg-orb--1"></div>
-  <div class="hero-bg-orb hero-bg-orb--2"></div>
+  <div class="aurora">
+    <div class="aurora-blob aurora-1"></div>
+    <div class="aurora-blob aurora-2"></div>
+    <div class="aurora-blob aurora-3"></div>
+  </div>
+  <div class="grid-bg"></div>
 
   <div class="hero-content">
     <div class="hero-badge">
       <span class="hero-badge-dot"></span>
-      Zero-Knowledge Encrypted Vault  ·  Early Access
+      Zero-Knowledge · End-to-End Encrypted · v2.0 Out Now
     </div>
 
-    <h1 class="hero-title">
-      K-<span>PERCEPTION</span>
+    <h1 class="hero-title" id="heroTitle">
+      <span class="word">K-</span><span class="word grad">PERCEPTION</span>
     </h1>
 
+    <p class="hero-subtitle">
+      <span class="underline">Notion-grade features.</span> <span class="underline">Signal-grade privacy.</span>
+    </p>
+
     <p class="hero-tagline">
-      Your notes are yours alone. AES-256-GCM encryption, biometric unlock,
-      offline-first architecture — the server never sees your plaintext. Ever.
+      Seven production-grade editor modes. Real-time collaboration via Y.js CRDT. Full enterprise SSO.
+      Every byte encrypted with AES-256-GCM <em>before</em> it leaves your device. The server stores ciphertext — and nothing else. Mathematically.
     </p>
 
     <div class="hero-cta-row">
@@ -375,114 +756,184 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2z"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
         Android APK
       </a>
-      <a href="#pricing" class="btn btn-kp-ghost">
-        See Plans →
-      </a>
+      <a href="#pricing" class="btn btn-kp-ghost">See plans →</a>
     </div>
 
     <div class="hero-platforms">
       <span class="hero-platform-chip">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>
-        Windows
+        Windows · Live
       </span>
       <span class="hero-platform-chip">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2z"/></svg>
-        Android
+        Android · Live
+      </span>
+      <span class="hero-platform-chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        Web (PWA) · Live
       </span>
       <span class="hero-platform-chip" style="opacity:.45">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
-        macOS &amp; iOS coming soon
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11.5l3-9 3 9M3 12l9 10 9-10"/></svg>
+        macOS · iOS soon
       </span>
     </div>
 
     <div class="hero-stat-row">
       <div class="hero-stat">
-        <div class="hero-stat-num">256</div>
+        <div class="hero-stat-num" data-count="7">7</div>
+        <div class="hero-stat-label">Editor modes</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num" data-count="256">256</div>
         <div class="hero-stat-label">AES key bits</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num" data-count="1735">1,735</div>
+        <div class="hero-stat-label">Automated tests</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num" data-count="300">300+</div>
+        <div class="hero-stat-label">Edge PoPs</div>
       </div>
       <div class="hero-stat">
         <div class="hero-stat-num">0</div>
         <div class="hero-stat-label">Bytes plaintext on server</div>
       </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">∞</div>
-        <div class="hero-stat-label">Version history (Vault+)</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">4</div>
-        <div class="hero-stat-label">Note modes</div>
-      </div>
     </div>
   </div>
 
-  <div class="hero-scroll">
-    SCROLL
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
+  <div class="hero-scroll">SCROLL<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
 </section>
 
-<!-- ── TICKER ────────────────────────────────────────────────────────────── -->
+<!-- ── TICKER ────────────────────────────────────────────────────────── -->
 <div class="ticker-wrap" aria-hidden="true">
   <div class="ticker-inner">
-    <span class="ticker-item k">K-PERCEPTION</span>
+    <span class="ticker-item k">K-PERCEPTION 2.0</span>
     <span class="ticker-item">AES-256-GCM</span>
-    <span class="ticker-item k">ZERO-KNOWLEDGE</span>
-    <span class="ticker-item">PBKDF2-SHA256</span>
-    <span class="ticker-item k">BIOMETRIC UNLOCK</span>
-    <span class="ticker-item">OFFLINE-FIRST</span>
-    <span class="ticker-item k">PKCE OAUTH</span>
-    <span class="ticker-item">REVISION HISTORY</span>
-    <span class="ticker-item k">NOTE LINKING</span>
-    <span class="ticker-item">LATEX SUPPORT</span>
-    <span class="ticker-item k">MARKDOWN EDITOR</span>
+    <span class="ticker-item k">Y.JS CRDT COLLAB</span>
+    <span class="ticker-item">PBKDF2-SHA256 · 100K ITER</span>
+    <span class="ticker-item k">7 EDITOR MODES</span>
     <span class="ticker-item">CLOUDFLARE WORKERS</span>
     <span class="ticker-item k">DURABLE OBJECTS</span>
-    <span class="ticker-item">REAL-TIME SYNC</span>
+    <span class="ticker-item">D1 · R2 · 37 MIGRATIONS</span>
+    <span class="ticker-item k">SAML 2.0 · SCIM 2.0 · OIDC</span>
+    <span class="ticker-item">HKDF KEY DERIVATION</span>
+    <span class="ticker-item k">TIPTAP V3 · CODEMIRROR</span>
+    <span class="ticker-item">KATEX · LATEX.JS · MERMAID</span>
+    <span class="ticker-item k">GDPR · HIPAA-READY</span>
+    <span class="ticker-item">1,735 AUTOMATED TESTS</span>
+    <span class="ticker-item k">ZERO-KNOWLEDGE BACKEND</span>
+    <span class="ticker-item">BIOMETRIC UNLOCK</span>
+    <span class="ticker-item k">OFFLINE-FIRST</span>
+    <span class="ticker-item">300+ EDGE POPS</span>
     <span class="ticker-item b">BINAURA VST3</span>
-    <span class="ticker-item">4 WAVETABLE ENGINES</span>
-    <span class="ticker-item b">AVX2 SIMD</span>
-    <span class="ticker-item">MPE SUPPORT</span>
-    <span class="ticker-item b">SSI2144 FILTER</span>
-    <span class="ticker-item">60 PRESETS</span>
-    <!-- duplicate for loop -->
-    <span class="ticker-item k">K-PERCEPTION</span>
+    <span class="ticker-item o">AVX2 SIMD · MPE</span>
+    <span class="ticker-item b">SSI2144 EMULATION</span>
+    <!-- duplicate -->
+    <span class="ticker-item k">K-PERCEPTION 2.0</span>
     <span class="ticker-item">AES-256-GCM</span>
-    <span class="ticker-item k">ZERO-KNOWLEDGE</span>
-    <span class="ticker-item">PBKDF2-SHA256</span>
-    <span class="ticker-item k">BIOMETRIC UNLOCK</span>
-    <span class="ticker-item">OFFLINE-FIRST</span>
-    <span class="ticker-item k">PKCE OAUTH</span>
-    <span class="ticker-item">REVISION HISTORY</span>
-    <span class="ticker-item k">NOTE LINKING</span>
-    <span class="ticker-item">LATEX SUPPORT</span>
-    <span class="ticker-item k">MARKDOWN EDITOR</span>
+    <span class="ticker-item k">Y.JS CRDT COLLAB</span>
+    <span class="ticker-item">PBKDF2-SHA256 · 100K ITER</span>
+    <span class="ticker-item k">7 EDITOR MODES</span>
     <span class="ticker-item">CLOUDFLARE WORKERS</span>
     <span class="ticker-item k">DURABLE OBJECTS</span>
-    <span class="ticker-item">REAL-TIME SYNC</span>
+    <span class="ticker-item">D1 · R2 · 37 MIGRATIONS</span>
+    <span class="ticker-item k">SAML 2.0 · SCIM 2.0 · OIDC</span>
+    <span class="ticker-item">HKDF KEY DERIVATION</span>
+    <span class="ticker-item k">TIPTAP V3 · CODEMIRROR</span>
+    <span class="ticker-item">KATEX · LATEX.JS · MERMAID</span>
+    <span class="ticker-item k">GDPR · HIPAA-READY</span>
+    <span class="ticker-item">1,735 AUTOMATED TESTS</span>
+    <span class="ticker-item k">ZERO-KNOWLEDGE BACKEND</span>
+    <span class="ticker-item">BIOMETRIC UNLOCK</span>
+    <span class="ticker-item k">OFFLINE-FIRST</span>
+    <span class="ticker-item">300+ EDGE POPS</span>
     <span class="ticker-item b">BINAURA VST3</span>
-    <span class="ticker-item">4 WAVETABLE ENGINES</span>
-    <span class="ticker-item b">AVX2 SIMD</span>
-    <span class="ticker-item">MPE SUPPORT</span>
-    <span class="ticker-item b">SSI2144 FILTER</span>
-    <span class="ticker-item">60 PRESETS</span>
+    <span class="ticker-item o">AVX2 SIMD · MPE</span>
+    <span class="ticker-item b">SSI2144 EMULATION</span>
   </div>
 </div>
 
-<!-- ── K-PERCEPTION SHOWCASE ─────────────────────────────────────────────── -->
-<section class="section" id="kperception" style="background:var(--bg)">
+<!-- ── PROBLEM / TRADE-OFF ────────────────────────────────────────────── -->
+<section class="section problem" id="kperception">
   <div class="section-inner">
+    <span class="section-label kp reveal">The trade-off no one solves</span>
+    <h2 class="section-title reveal">Pick two. <span class="grad">We picked all three.</span></h2>
+    <p class="section-sub reveal">Every modern note-taking tool forces you to choose between privacy, features, and collaboration. K-Perception eliminates the trade-off architecturally — not as a marketing claim.</p>
 
-    <div class="showcase reveal">
-      <div class="showcase-copy">
-        <span class="section-label kp">Encrypted Vault</span>
+    <div class="problem-grid">
+      <div class="problem-card broken reveal delay-1">
+        <div class="problem-card-tag">✕ Local-only tools</div>
+        <h4>Obsidian · Bear · Apple Notes</h4>
+        <p>Strong privacy because the data never leaves your device. But you lose collaboration entirely, and sync is a manual chore.</p>
+        <ul>
+          <li>No real-time collaboration</li>
+          <li>Manual sync via 3rd-party clouds</li>
+          <li>Single-device or fragile setups</li>
+        </ul>
+      </div>
+      <div class="problem-card broken reveal delay-2">
+        <div class="problem-card-tag">✕ Cloud-connected tools</div>
+        <h4>Notion · Evernote · Google Docs</h4>
+        <p>Beautiful collaboration. But the server reads every word you write — your IP, your patient notes, your sources, all in plaintext.</p>
+        <ul>
+          <li>Server reads all content in plaintext</li>
+          <li>Subpoena-vulnerable, breach-vulnerable</li>
+          <li>Vendor lock-in via proprietary cloud</li>
+        </ul>
+      </div>
+      <div class="problem-card solved reveal delay-3">
+        <div class="problem-card-tag">✓ K-Perception</div>
+        <h4>The architectural escape hatch</h4>
+        <p>Encryption happens before the network exists. Y.js CRDT + AES-256-GCM means the server brokers binary blobs it cannot interpret.</p>
+        <ul>
+          <li>Real-time multi-user collaboration</li>
+          <li>Server stores only ciphertext — provably</li>
+          <li>Works offline, syncs when ready</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EDITOR MODES ──────────────────────────────────────────────────── -->
+<section class="section modes-section" id="modes">
+  <div class="section-inner">
+    <span class="section-label kp reveal">Seven editor modes</span>
+    <h2 class="section-title reveal">One vault.<br><span class="grad">Seven production-grade editors.</span></h2>
+    <p class="section-sub reveal">No comparable encrypted app offers more than two. We ship plain text, Markdown, LaTeX, rich-text Docs, a formula-engine spreadsheet, freehand Canvas, and a publication-grade Editorial mode — under the same zero-knowledge roof.</p>
+
+    <div class="modes-tabs reveal" role="tablist">
+      <button class="mode-tab active" data-mode="plain"><span class="mode-tab-num">01</span>Plain</button>
+      <button class="mode-tab" data-mode="md"><span class="mode-tab-num">02</span>Markdown</button>
+      <button class="mode-tab" data-mode="latex"><span class="mode-tab-num">03</span>LaTeX</button>
+      <button class="mode-tab" data-mode="docs"><span class="mode-tab-num">04</span>Docs</button>
+      <button class="mode-tab" data-mode="sheets"><span class="mode-tab-num">05</span>Sheets</button>
+      <button class="mode-tab" data-mode="canvas"><span class="mode-tab-num">06</span>Canvas</button>
+      <button class="mode-tab" data-mode="editorial"><span class="mode-tab-num">07</span>Editorial</button>
+    </div>
+
+    <div class="mode-display reveal" id="modeDisplay">
+      <!-- Mode info populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ── K-PERCEPTION SHOWCASE ─────────────────────────────────────────── -->
+<section class="section" style="background:var(--bg)">
+  <div class="section-inner">
+    <div class="showcase">
+      <div class="showcase-copy reveal-left">
+        <span class="section-label kp">Encrypted vault</span>
         <h3>Your mind is private.<br>Keep it that way.</h3>
-        <p>K-Perception encrypts every note with AES-256-GCM before it leaves your device. The key is derived from your master password — the server never holds it, never sees it, and cannot decrypt your data even under subpoena.</p>
+        <p>K-Perception encrypts every note, attachment, and metadata field with AES-256-GCM <em>before</em> any network transmission. The master key is derived from your password via PBKDF2 (100,000 SHA-256 iterations) — it never leaves your device, never travels to the server, never gets logged.</p>
         <div class="showcase-checks">
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> AES-256-GCM authenticated encryption — tampering is mathematically impossible</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> PBKDF2-SHA256 key derivation — brute-force costs millions of attempts per password</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Offline-first — everything works without internet, always</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Biometric unlock — fingerprint stores key in hardware secure enclave</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Google PKCE OAuth — login is identity-only, never the vault key</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> AES-256-GCM authenticated encryption — tampering rejected at the bit level</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Per-section HKDF-derived keys — revoke access to one section without touching the rest</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Per-file Data Encryption Keys (DEK) wrapped with directory keys</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Offline-first SQLite-analog vault — works without internet, always</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Biometric unlock with hardware-backed Android Keystore enclave</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Time-limited elevation tokens for destructive ops — TOTP step-up enforced server-side</div>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
           <a href="#security" class="btn btn-kp">View security model</a>
@@ -496,14 +947,15 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
             <div class="vault-card-dot red"></div>
             <div class="vault-card-dot yellow"></div>
             <div class="vault-card-dot green"></div>
-            <span style="margin-left:8px;font-size:.68rem">vault.enc — K-Perception v6</span>
+            <span style="margin-left:8px;font-size:.7rem">vault.enc — K-Perception 2.0</span>
           </div>
           <div class="vault-line"><span class="comment">// AES-256-GCM sealed container</span></div>
           <div class="vault-line"><span class="key">format</span>: <span class="str">"enc2"</span></div>
           <div class="vault-line"><span class="key">kdf</span>: <span class="str">"PBKDF2-SHA256"</span></div>
-          <div class="vault-line"><span class="key">iterations</span>: <span class="num">310000</span></div>
+          <div class="vault-line"><span class="key">iterations</span>: <span class="num">100000</span></div>
           <div class="vault-line"><span class="key">salt</span>: <span class="kp-color">0x4f2a…8b1c</span> <span class="comment">// random/user</span></div>
           <div class="vault-line"><span class="key">iv</span>: <span class="kp-color">0x9e3d…2f7a</span> <span class="comment">// random/write</span></div>
+          <div class="vault-line"><span class="key">key_chain</span>: <span class="str">"WDK→SK_section→SK_dir→DEK"</span></div>
           <div class="vault-line">&nbsp;</div>
           <div class="vault-line vault-glow-line"><span class="comment">// Everything below is ciphertext</span></div>
           <div class="vault-line"><span class="key">ciphertext</span>: <span class="kp-color">AAEC2f8Q…[encrypted]</span></div>
@@ -511,236 +963,397 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
           <div class="vault-line">&nbsp;</div>
           <div class="vault-line"><span class="comment">// Server sees: blob size + user ID</span></div>
           <div class="vault-line"><span class="comment">// Server sees: nothing else ✓</span></div>
+
+          <div class="live-encrypt">
+            <div class="live-encrypt-label">⚡ Live encryption</div>
+            <div class="live-encrypt-row">
+              <span class="live-encrypt-from" id="liveFrom">"My therapy notes 2026-04-26..."</span>
+              <span class="live-encrypt-arrow">→</span>
+              <span class="live-encrypt-to" id="liveTo">7Bf4a8c2…d91e0fAB</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- ── FEATURES ──────────────────────────────────────────────────────────── -->
+<!-- ── FEATURES ──────────────────────────────────────────────────────── -->
 <section class="section" style="background:var(--bg1)">
   <div class="section-inner">
-    <span class="section-label kp reveal">Features</span>
-    <h2 class="section-title reveal">Everything a modern knowledge<br>vault should be.</h2>
-    <p class="section-sub reveal">Four note types, real-time sync, encrypted sharing, version history — all behind an impenetrable encryption layer.</p>
+    <span class="section-label kp reveal">Capabilities</span>
+    <h2 class="section-title reveal">Everything a modern knowledge<br><span class="grad">vault should be.</span></h2>
+    <p class="section-sub reveal">Real-time CRDT collaboration, cross-device offline-first sync, encrypted file libraries, structured citations, freehand canvas — all behind an impenetrable encryption layer the server cannot bypass.</p>
 
     <div class="feat-grid">
 
-      <div class="feat-card kp reveal delay-1">
-        <div class="feat-icon kp">📝</div>
-        <div class="feat-name kp">Four Note Modes</div>
-        <div class="feat-desc">Plain text, Markdown with live preview, LaTeX for math and science, and Hybrid document editor. Switch per-note — never locked in.</div>
+      <div class="feat-card reveal delay-1">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="feat-name">7 Editor Modes</div>
+        <div class="feat-desc">Plain, Markdown (GFM + Mermaid + KaTeX), LaTeX, TipTap Docs, Sheets with 40+ formula functions, freehand Canvas with Bézier smoothing, and publication-grade Editorial.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-2">
-        <div class="feat-icon kp">🔄</div>
-        <div class="feat-name kp">Full Revision History</div>
-        <div class="feat-desc">Every keystroke is preserved. Roll back to any point in time. Conflict resolution keeps both versions when two devices write simultaneously.</div>
+      <div class="feat-card reveal delay-2">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.87"/></svg></div>
+        <div class="feat-name">E2EE Real-Time Collaboration</div>
+        <div class="feat-desc">Y.js CRDT updates encrypted with AES-256-GCM <em>before</em> WebSocket transmission. Cloudflare Durable Objects act as blind relays — they re-broadcast binary blobs they cannot interpret.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-3">
-        <div class="feat-icon kp">☁️</div>
-        <div class="feat-name kp">Real-Time Encrypted Sync</div>
-        <div class="feat-desc">Changes land on your other devices in seconds via Cloudflare Durable Objects WebSocket channels — fully encrypted end-to-end, zero plaintext in transit.</div>
+      <div class="feat-card reveal delay-3">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></div>
+        <div class="feat-name">Offline-First Vault</div>
+        <div class="feat-desc">Encrypted SQLite-analog stored on device (IndexedDB / Capacitor). Read, write, search without any connection. Changes queue locally and flush when online.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-4">
-        <div class="feat-icon kp">🔗</div>
-        <div class="feat-name kp">Bidirectional Note Linking</div>
-        <div class="feat-desc">Wiki-style [[note links]] with automatic backlink indexing. Build connected knowledge graphs entirely inside your encrypted vault.</div>
+      <div class="feat-card reveal delay-4">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <div class="feat-name">Workspaces &amp; Sections</div>
+        <div class="feat-desc">Per-workspace WDK wrapped per member. Sections, channels, threads, files, calendars, Gantt, citations — all under one encrypted umbrella. Revoke a member: their wrapped key is deleted.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-1">
-        <div class="feat-icon kp">🔍</div>
-        <div class="feat-name kp">In-Memory Full-Text Search</div>
-        <div class="feat-desc">Search across all notes instantly. The index lives in memory only — never written to disk unencrypted, never visible to the server.</div>
+      <div class="feat-card reveal delay-1">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
+        <div class="feat-name">Encrypted Share Links</div>
+        <div class="feat-desc">Random 32-byte AES key in URL fragment — never sent to server (RFC 3986 §3.5). View / Comment / Edit perms. Optional PBKDF2 password gate. Instant revoke. Threaded comments.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-2">
-        <div class="feat-icon kp">📤</div>
-        <div class="feat-name kp">Export to Any Format</div>
-        <div class="feat-desc">PDF (themed, print-ready), HTML, plain text, Markdown, JSON, and the native KPX vault bundle. Full rendering of LaTeX math via KaTeX.</div>
+      <div class="feat-card reveal delay-2">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1l3 6 6 .75-4.5 4.5L18 19l-6-3-6 3 1.5-6.75L3 7.75 9 7z"/></svg></div>
+        <div class="feat-name">Enterprise SSO Stack</div>
+        <div class="feat-desc">SAML 2.0 (ACS + cert verify), SCIM 2.0 user/group sync (Okta, Azure AD), OIDC provider, IP allowlists, MFA enforcement, domain restrictions, GDPR delete UI, audit log.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-3">
-        <div class="feat-icon kp">🔒</div>
-        <div class="feat-name kp">Encrypted Share Links</div>
-        <div class="feat-desc">Generate an encrypted share URL with AES-256-GCM. The key lives in the URL fragment — the server never sees it. Optional password protection. Revocable instantly.</div>
+      <div class="feat-card reveal delay-3">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div class="feat-name">Edge-Native Performance</div>
+        <div class="feat-desc">Cloudflare Workers (zero cold start, V8 isolates), D1 (edge SQLite), R2 (zero egress), Durable Objects (stateful real-time). Sub-50ms latency to 95% of the global population.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-4">
-        <div class="feat-icon kp">🏷️</div>
-        <div class="feat-name kp">Tags &amp; Organisation</div>
-        <div class="feat-desc">Colour-coded tags, smart filters, pinned notes, and daily journals. Everything encrypted, everything searchable, nothing in the clear.</div>
+      <div class="feat-card reveal delay-4">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="12" y1="12" x2="16" y2="14"/></svg></div>
+        <div class="feat-name">Full Revision History</div>
+        <div class="feat-desc">Per-note revision browser (RevisionPanel desktop, RevisionSheet mobile). Roll back to any saved version. Periodic ciphertext snapshots of collab docs every 2 minutes.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-1">
-        <div class="feat-icon kp">📱</div>
-        <div class="feat-name kp">Biometric Unlock</div>
-        <div class="feat-desc">Fingerprint and face unlock on Android via platform biometric APIs. Vault key stored in secure hardware enclave — never accessible to user storage or backups.</div>
+      <div class="feat-card reveal delay-1">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+        <div class="feat-name">Knowledge Graph</div>
+        <div class="feat-desc">Force-directed visual graph of note relationships with thematic clustering and optional LLM refinement. Bidirectional [[wiki-links]] with automatic backlink indexing.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-2">
-        <div class="feat-icon kp">⚡</div>
-        <div class="feat-name kp">Offline-First Architecture</div>
-        <div class="feat-desc">The full vault is local. Search, edit, create — everything works with zero internet. Sync is a background process, not a dependency.</div>
+      <div class="feat-card reveal delay-2">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20M6 12h.01M10 12h.01M14 12h.01"/></svg></div>
+        <div class="feat-name">CLI Tools (kp-ws / kp-admin)</div>
+        <div class="feat-desc">Headless workspace automation: <code>workspace create</code>, <code>member invite</code>, <code>file upload</code>. Mirror the full <code>/admin/api/*</code> JSON surface — user mgmt, billing, audit log access.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-3">
-        <div class="feat-icon kp">👥</div>
-        <div class="feat-name kp">Team &amp; Enterprise</div>
-        <div class="feat-desc">Invite collaborators by email. Unregistered users are automatically provisioned as team members when they sign up. Revoke access instantly from the dashboard.</div>
+      <div class="feat-card reveal delay-3">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="feat-name">Compliance-Grade</div>
+        <div class="feat-desc">GDPR data deletion endpoint, HIPAA technical controls (E2EE + audit + remote wipe), SOC 2 Type II pathway, CCPA — and a Business Associate Agreement on Enterprise.</div>
       </div>
 
-      <div class="feat-card kp reveal delay-4">
-        <div class="feat-icon kp">🗄️</div>
-        <div class="feat-name kp">Structured Database Views</div>
-        <div class="feat-desc">Collections, entity records, and relational views — a full personal database behind the same encryption layer as your notes. No compromise.</div>
+      <div class="feat-card reveal delay-4">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <div class="feat-name">Portable Encrypted Format</div>
+        <div class="feat-desc">Proprietary KPX bundle for full-vault portability. Plus exports to PDF (themed, page-geometry control), HTML, JSON, Markdown, plain text. Persistent named export profiles.</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ── SECURITY ──────────────────────────────────────────────────────────── -->
+<!-- ── SECURITY ──────────────────────────────────────────────────────── -->
 <section class="section" id="security" style="background:var(--bg)">
   <div class="section-inner">
-    <span class="section-label kp reveal">Security Architecture</span>
-    <h2 class="section-title reveal">Zero-knowledge by design.<br>Not by marketing.</h2>
-    <p class="section-sub reveal">Every architectural decision passes one test: if the server and its databases were subpoenaed or breached, could plaintext content be recovered? The answer is no.</p>
+    <span class="section-label kp reveal">Security architecture</span>
+    <h2 class="section-title reveal">Zero-knowledge by design.<br><span class="grad">Not by marketing.</span></h2>
+    <p class="section-sub reveal">Every architectural decision passes one test: if the server and its databases were subpoenaed or breached, could plaintext content be recovered? The answer is no — and we can show you why.</p>
 
     <div class="security-grid">
       <div class="security-card reveal delay-1">
+        <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
         <div class="security-card-title">AES-256-GCM</div>
-        <div class="security-card-desc">Every note encrypted with AES in Galois/Counter Mode. 256-bit key provides 2²⁵⁶ brute-force space. GCM authentication tag detects any modification — even a single bit flip is rejected.</div>
+        <div class="security-card-tech">NIST-approved · NSA Suite B</div>
+        <div class="security-card-desc">Authenticated encryption via Galois/Counter Mode. 256-bit key, 2²⁵⁶ brute-force space. The GCM tag detects any modification — even a single bit-flip is rejected.</div>
       </div>
       <div class="security-card reveal delay-2">
-        <div class="security-card-title">PBKDF2-SHA256 · 310,000 iter</div>
-        <div class="security-card-desc">Master password stretched via 310k rounds of PBKDF2-SHA256. NIST SP 800-132 compliant. Unique per-user salt. Brute-forcing costs millions of operations per password attempt.</div>
+        <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg></div>
+        <div class="security-card-title">PBKDF2-SHA256 · 100K iter</div>
+        <div class="security-card-tech">NIST SP 800-132 compliant</div>
+        <div class="security-card-desc">Master password stretched through 100,000 PBKDF2-SHA256 rounds with a unique random 16-byte salt. Brute-forcing requires millions of operations <em>per password attempt</em>.</div>
       </div>
       <div class="security-card reveal delay-3">
-        <div class="security-card-title">PKCE OAuth · Google Identity</div>
-        <div class="security-card-desc">Login uses OAuth 2.0 PKCE — Proof Key for Code Exchange. Proof key is SHA-256 hashed client-side; only the hash travels to the server. Login is identity only, never the vault key.</div>
+        <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7v10l10 5 10-5V7z"/><path d="M2 7l10 5 10-5"/></svg></div>
+        <div class="security-card-title">HKDF Key Hierarchy</div>
+        <div class="security-card-tech">WDK → SK_section → SK_dir → DEK</div>
+        <div class="security-card-desc">HKDF-derived per-section and per-directory keys. Per-file Data Encryption Keys mean revocation costs only one DEK rotation — not a full vault re-encrypt.</div>
       </div>
       <div class="security-card reveal delay-4">
-        <div class="security-card-title">Biometric Enclave</div>
-        <div class="security-card-desc">Android Keystore backs biometric auth. The vault session key is stored in hardware-isolated TEE. Not accessible to user storage, backups, or ADB extraction.</div>
+        <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg></div>
+        <div class="security-card-title">PKCE OAuth · Google ID</div>
+        <div class="security-card-tech">RFC 7636 — Proof Key for Code Exchange</div>
+        <div class="security-card-desc">Login uses OAuth 2.0 PKCE. The proof key never travels to the server in plaintext. Login is identity-only and never carries the vault decryption key.</div>
       </div>
       <div class="security-card reveal delay-1">
-        <div class="security-card-title">Share Link Cryptography</div>
-        <div class="security-card-desc">Share keys use a random 256-bit key delivered via URL fragment — fragment never reaches the server. Password-protected links add PBKDF2 key stretching on top. Revocation is instant and server-side.</div>
+        <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7a7 7 0 1114 0v4a7 7 0 11-14 0V7z"/><path d="M12 11v4"/></svg></div>
+        <div class="security-card-title">Biometric Enclave</div>
+        <div class="security-card-tech">Android Keystore · TEE</div>
+        <div class="security-card-desc">Vault session key stored in hardware-isolated TEE via Capacitor biometric API. Inaccessible to user storage, full backups, or ADB extraction.</div>
       </div>
       <div class="security-card reveal delay-2">
+        <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+        <div class="security-card-title">Share Cryptography</div>
+        <div class="security-card-tech">URL #fragment — never to server</div>
+        <div class="security-card-desc">Random 32-byte key delivered via URL fragment (RFC 3986 §3.5: never in HTTP requests). Optional PBKDF2 password gate. Server-side instant revocation via revokeTokenHash.</div>
+      </div>
+      <div class="security-card reveal delay-3">
+        <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v3m0 4v.01"/><circle cx="12" cy="12" r="10"/></svg></div>
+        <div class="security-card-title">Elevation Tokens</div>
+        <div class="security-card-tech">TOTP step-up · server-validated</div>
+        <div class="security-card-desc">Destructive ops (rotate-key, remote-wipe, transfer-ownership, restore-backup) require time-limited tokens issued only after step-up. Cannot be bypassed via API manipulation.</div>
+      </div>
+      <div class="security-card reveal delay-4">
+        <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2 4 4 8-8 4 4"/><path d="M18 12l3 3"/></svg></div>
         <div class="security-card-title">Zero Server Plaintext</div>
-        <div class="security-card-desc">Cloudflare D1 + R2 store: change IDs, entity type names, byte counts, timestamps, user IDs. Never: note titles, bodies, tag names, filenames, property values, search queries, or any content.</div>
+        <div class="security-card-tech">D1 + R2 hold ciphertext only</div>
+        <div class="security-card-desc">Server stores: blob size, user ID, timestamps, change IDs. Server <em>cannot</em> read: titles, bodies, tag names, filenames, search queries, Y.js document edits.</div>
       </div>
     </div>
 
-    <div class="arch-flow reveal">
-      <div class="arch-node">
-        <span class="arch-label">Your device</span>
-        <span class="arch-name">Password</span>
+    <!-- ARCHITECTURE FLOW -->
+    <div class="reveal">
+      <h3 style="font-family:var(--font-display);font-size:1.2rem;color:var(--text1);margin-bottom:18px;letter-spacing:.04em;text-align:center">Encryption flow — your password to your other device</h3>
+      <div class="arch-flow">
+        <div class="arch-node">
+          <span class="arch-label">Your device</span>
+          <span class="arch-name">Password</span>
+        </div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">
+          <span class="arch-label">PBKDF2 100K</span>
+          <span class="arch-name">Master Key</span>
+        </div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">
+          <span class="arch-label">AES-256-GCM</span>
+          <span class="arch-name">Encrypt</span>
+        </div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node zero-knowledge">
+          <span class="arch-label">Cloudflare Edge</span>
+          <span class="arch-name">Ciphertext only</span>
+        </div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">
+          <span class="arch-label">Other device</span>
+          <span class="arch-name">Decrypt locally</span>
+        </div>
       </div>
-      <span class="arch-arrow">→</span>
-      <div class="arch-node">
-        <span class="arch-label">PBKDF2</span>
-        <span class="arch-name">Key derivation</span>
+      <div class="arch-badge-row">
+        <span class="arch-badge">Cloudflare Workers (V8 isolates)</span>
+        <span class="arch-badge">D1 (SQLite · 37 migrations)</span>
+        <span class="arch-badge">R2 (zero-egress object storage)</span>
+        <span class="arch-badge">Durable Objects (DocRoom · ChannelDoc)</span>
+        <span class="arch-badge">300+ edge PoPs</span>
+        <span class="arch-badge">Stripe Embedded Checkout</span>
+        <span class="arch-badge">SAML 2.0 ACS + cert</span>
       </div>
-      <span class="arch-arrow">→</span>
-      <div class="arch-node">
-        <span class="arch-label">AES-256-GCM</span>
-        <span class="arch-name">Encrypt</span>
+    </div>
+
+    <!-- KEY HIERARCHY -->
+    <div class="hierarchy reveal">
+      <h3 class="hierarchy-title">Workspace key hierarchy — the cryptographic moat</h3>
+      <p class="hierarchy-sub">Per-section HKDF derivation and per-file DEKs mean revoking access to one resource is a single-key operation, not a vault-wide re-encrypt. Members hold a wrapped copy of the WDK, encrypted with their own device key.</p>
+
+      <div class="hierarchy-tree">
+        <div class="h-node lvl-0">
+          <span class="h-node-name">WDK</span>
+          <span class="h-node-desc">Workspace Data Key · random AES-256</span>
+        </div>
+        <div class="h-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg><span style="font-size:.62rem">HKDF derive</span></div>
+        <div class="h-node lvl-1">
+          <span class="h-node-name">SK_section</span>
+          <span class="h-node-desc">Per logical section</span>
+        </div>
+        <div class="h-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg><span style="font-size:.62rem">HKDF derive</span></div>
+        <div class="h-node lvl-2">
+          <span class="h-node-name">SK_dir</span>
+          <span class="h-node-desc">Per directory</span>
+        </div>
+        <div class="h-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg><span style="font-size:.62rem">wrap</span></div>
+        <div class="h-node lvl-3">
+          <span class="h-node-name">DEK</span>
+          <span class="h-node-desc">Per-file Data Encryption Key</span>
+        </div>
+        <div class="h-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg><span style="font-size:.62rem">encrypt</span></div>
+        <div class="h-node lvl-4">
+          <span class="h-node-name">Ciphertext blob</span>
+          <span class="h-node-desc">→ Cloudflare R2</span>
+        </div>
       </div>
-      <span class="arch-arrow">→</span>
-      <div class="arch-node" style="border-color:rgba(168,85,247,.3)">
-        <span class="arch-label">Cloudflare</span>
-        <span class="arch-name">Ciphertext only</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── COLLAB / E2EE ─────────────────────────────────────────────────── -->
+<section class="section" id="collaboration" style="background:var(--bg1)">
+  <div class="section-inner">
+    <span class="section-label kp reveal">Real-time collaboration</span>
+    <h2 class="section-title reveal">Y.js CRDT.<br><span class="grad">The server is a blind relay.</span></h2>
+    <p class="section-sub reveal">Real-time collab without trusting the server is supposed to be impossible. We made it work. Every Y.js binary update is AES-256-GCM-encrypted with the workspace key <em>before</em> the WebSocket call. Cloudflare Durable Objects re-broadcast the bytes — they cannot interpret them.</p>
+
+    <div class="collab-demo">
+      <div class="collab-pane client-a reveal-left">
+        <div class="collab-pane-label">Client A · Anna</div>
+        <h5>Q3 product roadmap</h5>
+        <div class="text-row">- Ship encrypted backup restore<span class="cursor"></span></div>
+        <div class="text-row">- Land OIDC migration</div>
+        <div class="text-row">- Public AI Panel beta</div>
       </div>
-      <span class="arch-arrow">→</span>
-      <div class="arch-node">
-        <span class="arch-label">Your other device</span>
-        <span class="arch-name">Decrypt locally</span>
+      <div class="collab-arrow-h reveal delay-1">
+        <span class="collab-arrow-h-tag">AES-256-GCM</span>
+        <div class="collab-arrow-h-line"></div>
+        <span class="collab-arrow-h-tag">encrypted</span>
+      </div>
+      <div class="collab-pane server reveal delay-2">
+        <div class="collab-pane-label">DocRoom Durable Object</div>
+        <h5 style="color:#fca5a5">Server view — opaque relay</h5>
+        <div class="cipher-blob">
+          7Bf4a8c2d91e0fABe3f0c41ad2…<br>
+          0c7bd7c6e8f12a3401deef4cba…<br>
+          17b0d15a9ec224d9f3a17e2fff…
+        </div>
+        <div class="server-knows">
+          • doc_id (opaque)<br>
+          • update size · timestamp<br>
+          • sender session · cursor positions
+        </div>
+      </div>
+      <div class="collab-arrow-h reveal delay-3">
+        <span class="collab-arrow-h-tag">AES-256-GCM</span>
+        <div class="collab-arrow-h-line"></div>
+        <span class="collab-arrow-h-tag">decrypted</span>
+      </div>
+      <div class="collab-pane client-b reveal-right delay-4">
+        <div class="collab-pane-label">Client B · Marco</div>
+        <h5>Q3 product roadmap</h5>
+        <div class="text-row">- Ship encrypted backup restore</div>
+        <div class="text-row">- Land OIDC migration<span class="cursor"></span></div>
+        <div class="text-row">- Public AI Panel beta</div>
       </div>
     </div>
 
     <div class="arch-badge-row reveal">
-      <span class="arch-badge">Cloudflare Workers</span>
-      <span class="arch-badge">D1 SQLite (metadata only)</span>
-      <span class="arch-badge">R2 (encrypted blobs only)</span>
-      <span class="arch-badge">KV (session tokens)</span>
-      <span class="arch-badge">Durable Objects (WebSocket sync)</span>
-      <span class="arch-badge">Google OAuth 2.0 PKCE</span>
-      <span class="arch-badge">Stripe Embedded Checkout</span>
+      <span class="arch-badge">Y.js 13.6 CRDT</span>
+      <span class="arch-badge">y-websocket transport</span>
+      <span class="arch-badge">DocRoom (one DO per docId)</span>
+      <span class="arch-badge">12-byte random IV per message</span>
+      <span class="arch-badge">Awareness protocol (cursors only)</span>
+      <span class="arch-badge">Exponential reconnect 1s → 30s</span>
+      <span class="arch-badge">Periodic ciphertext snapshots</span>
     </div>
   </div>
 </section>
 
-<!-- ── PLATFORMS ─────────────────────────────────────────────────────────── -->
-<section class="section" style="background:var(--bg1)">
+<!-- ── PLATFORMS ─────────────────────────────────────────────────────── -->
+<section class="section" style="background:var(--bg)">
   <div class="section-inner">
     <span class="section-label kp reveal">Platforms</span>
-    <h2 class="section-title reveal">Your vault.<br>Every device.</h2>
-    <p class="section-sub reveal">Native applications built with Electron (desktop) and Capacitor (mobile). Identical encryption, identical feature set. No web-only compromises.</p>
+    <h2 class="section-title reveal">Your vault.<br><span class="grad">Every device.</span></h2>
+    <p class="section-sub reveal">Native apps built on Electron 28 (desktop) and Capacitor 6 (mobile). Identical encryption, identical feature surface. Web/PWA mode for browser access. Same password = same PBKDF2 key = same vault.</p>
 
     <div class="platform-grid">
       <div class="platform-card reveal delay-1">
-        <span class="platform-icon">🖥️</span>
+        <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg></div>
         <div class="platform-name">Windows</div>
-        <div class="platform-status live">● Available now</div>
-        <p style="font-size:.75rem;color:var(--text3);margin-top:8px;line-height:1.5">Full desktop app. Native file system, OS keychain, system tray sync indicator.</p>
+        <div class="platform-status live">● Live · v1.0.0</div>
+        <div class="platform-card-desc">NSIS installer, system tray, native window chrome, multi-pane shell.</div>
       </div>
       <div class="platform-card reveal delay-2">
-        <span class="platform-icon">📱</span>
+        <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg></div>
         <div class="platform-name">Android</div>
-        <div class="platform-status live">● Available now</div>
-        <p style="font-size:.75rem;color:var(--text3);margin-top:8px;line-height:1.5">Biometric unlock, background sync, Material design. APK available directly.</p>
+        <div class="platform-status live">● Live · v1.0.0</div>
+        <div class="platform-card-desc">Capacitor 6, biometric unlock, quick-capture widget, PDF intent handling.</div>
       </div>
-      <div class="platform-card reveal delay-3" style="opacity:.65">
-        <span class="platform-icon">🍏</span>
+      <div class="platform-card reveal delay-3">
+        <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+        <div class="platform-name">Web (PWA)</div>
+        <div class="platform-status live">● Live</div>
+        <div class="platform-card-desc">Browser-mode vault. Standalone share viewer at kperception-share.pages.dev.</div>
+      </div>
+      <div class="platform-card reveal delay-4" style="opacity:.7">
+        <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11.5l3-9 3 9M3 12l9 10 9-10"/></svg></div>
         <div class="platform-name">macOS</div>
-        <div class="platform-status soon">○ Coming soon</div>
-        <p style="font-size:.75rem;color:var(--text3);margin-top:8px;line-height:1.5">Planned for the next major release. Full feature parity with Windows.</p>
+        <div class="platform-status soon">○ Coming next</div>
+        <div class="platform-card-desc">Full feature parity with Windows. Same Electron core.</div>
       </div>
-      <div class="platform-card reveal delay-4" style="opacity:.65">
-        <span class="platform-icon">🍎</span>
+      <div class="platform-card reveal delay-1" style="opacity:.7">
+        <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c4 0 6 2 6 6 0 5-3 8-6 8s-6-3-6-8c0-4 2-6 6-6zM8 22h8"/></svg></div>
         <div class="platform-name">iOS</div>
-        <div class="platform-status soon">○ Coming soon</div>
-        <p style="font-size:.75rem;color:var(--text3);margin-top:8px;line-height:1.5">App Store release planned after macOS. Face ID + Secure Enclave unlock.</p>
+        <div class="platform-status soon">○ Architecture-ready</div>
+        <div class="platform-card-desc">Face ID + Secure Enclave unlock planned post-macOS.</div>
       </div>
-      <div class="platform-card reveal delay-1" style="opacity:.65">
-        <span class="platform-icon">🐧</span>
+      <div class="platform-card reveal delay-2" style="opacity:.7">
+        <div class="platform-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg></div>
         <div class="platform-name">Linux</div>
         <div class="platform-status soon">○ Planned</div>
-        <p style="font-size:.75rem;color:var(--text3);margin-top:8px;line-height:1.5">.deb and AppImage planned. Same Electron core as Windows.</p>
-      </div>
-      <div class="platform-card reveal delay-2" style="opacity:.65">
-        <span class="platform-icon">🌐</span>
-        <div class="platform-name">Web</div>
-        <div class="platform-status soon">○ Coming soon</div>
-        <p style="font-size:.75rem;color:var(--text3);margin-top:8px;line-height:1.5">Web app in development. Full sync and offline support via PWA.</p>
+        <div class="platform-card-desc">.deb and AppImage planned. Same Electron 28 core.</div>
       </div>
     </div>
 
-    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:28px" class="reveal">
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:32px" class="reveal">
       <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=1.0.0"
-         class="btn btn-kp" target="_blank" rel="noopener noreferrer">
-        Download for Windows
-      </a>
+         class="btn btn-kp" target="_blank" rel="noopener noreferrer">Download for Windows</a>
       <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/app-release.apk?v=1.0.0"
-         class="btn btn-kp-ghost" target="_blank" rel="noopener noreferrer">
-        Download Android APK
-      </a>
+         class="btn btn-kp-ghost" target="_blank" rel="noopener noreferrer">Download Android APK</a>
     </div>
   </div>
 </section>
 
-<!-- ── PRICING ───────────────────────────────────────────────────────────── -->
+<!-- ── COMPARISON TABLE ──────────────────────────────────────────────── -->
+<section class="section" style="background:var(--bg1)">
+  <div class="section-inner">
+    <span class="section-label kp reveal">Competitive landscape</span>
+    <h2 class="section-title reveal">The only product that<br><span class="grad">checks every box.</span></h2>
+    <p class="section-sub reveal">Encrypted note tools have minimal features. Feature-rich tools read your data. K-Perception is the only platform with Notion-grade depth and Signal-grade privacy.</p>
+
+    <div class="compare-wrap reveal">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th class="kp-col">K-Perception</th>
+            <th>Notion</th>
+            <th>Obsidian</th>
+            <th>Evernote</th>
+            <th>Standard Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>E2EE at rest</td><td class="kp-col"><span class="check">✓ Always</span></td><td><span class="cross">✕</span></td><td><span class="check">✓ Local</span></td><td><span class="cross">✕</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>E2EE real-time collab</td><td class="kp-col"><span class="check">✓ Y.js CRDT</span></td><td><span class="cross">✕ Server reads</span></td><td><span class="cross">✕ None</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
+          <tr><td>Rich-text editor</td><td class="kp-col"><span class="check">✓ TipTap v3</span></td><td><span class="check">✓</span></td><td><span class="partial">~ Markdown</span></td><td><span class="check">✓</span></td><td><span class="partial">Limited</span></td></tr>
+          <tr><td>Spreadsheets</td><td class="kp-col"><span class="check">✓ 40+ formulas</span></td><td><span class="check">✓</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
+          <tr><td>LaTeX rendering</td><td class="kp-col"><span class="check">✓ Full doc</span></td><td><span class="partial">Partial</span></td><td><span class="partial">Plugin</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
+          <tr><td>Freehand canvas</td><td class="kp-col"><span class="check">✓ Bézier smooth</span></td><td><span class="cross">✕</span></td><td><span class="partial">Plugin</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
+          <tr><td>Mermaid diagrams</td><td class="kp-col"><span class="check">✓ Built-in</span></td><td><span class="cross">✕</span></td><td><span class="partial">Plugin</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
+          <tr><td>SAML / SCIM enterprise</td><td class="kp-col"><span class="check">✓ Both</span></td><td><span class="check">✓</span></td><td><span class="cross">✕</span></td><td><span class="check">✓</span></td><td><span class="cross">✕</span></td></tr>
+          <tr><td>Offline-first</td><td class="kp-col"><span class="check">✓ Always</span></td><td><span class="partial">Partial</span></td><td><span class="check">✓</span></td><td><span class="partial">Partial</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>Free tier</td><td class="kp-col"><span class="check">✓ €0 forever</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>Paid base price</td><td class="kp-col"><span class="price kp">€3.49/mo</span></td><td><span class="price">€8/mo</span></td><td><span class="price">€4/mo</span></td><td><span class="price">€7.99/mo</span></td><td><span class="price">€9/mo</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ───────────────────────────────────────────────────────── -->
 <section class="section" id="pricing" style="background:var(--bg)">
   <div class="section-inner">
     <span class="section-label kp reveal">Pricing</span>
-    <h2 class="section-title reveal">Simple, honest pricing.<br>Cancel any time.</h2>
-    <p class="section-sub reveal">Start free. Upgrade when you need sync and storage. Every paid plan includes a 7-day money-back guarantee.</p>
+    <h2 class="section-title reveal">Simple, honest pricing.<br><span class="grad">Cancel any time.</span></h2>
+    <p class="section-sub reveal">Start free. Upgrade when you need sync, storage, real-time collab, or enterprise SSO. Every paid plan includes a 7-day money-back guarantee.</p>
 
     <div class="pricing-toggle reveal">
       <span class="pricing-toggle-label active" id="toggle-monthly-label">Monthly</span>
@@ -753,7 +1366,6 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
     </div>
 
     <div class="pricing-grid reveal">
-
       <!-- LOCAL -->
       <div class="pricing-card">
         <div class="pricing-name" style="color:var(--text3)">Local</div>
@@ -766,9 +1378,9 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
         <hr class="pricing-divider">
         <ul class="pricing-features">
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> AES-256-GCM, fully offline</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Unlimited notes — all 4 modes</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Export TXT, MD, JSON, KPX</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> All 7 editor modes</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> 2 share links (12h expiry)</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Export TXT, MD, JSON, KPX</li>
           <li class="pricing-feature dim"><span class="pricing-feature-icon">✕</span> No cross-device sync</li>
           <li class="pricing-feature dim"><span class="pricing-feature-icon">✕</span> No cloud backup</li>
         </ul>
@@ -777,7 +1389,7 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
 
       <!-- GUARDIAN -->
       <div class="pricing-card">
-        <div class="pricing-name" style="color:#10b981">Guardian</div>
+        <div class="pricing-name" style="color:var(--emerald)">Guardian</div>
         <div class="pricing-tagline">Sleep well. Your notes are safe.</div>
         <div class="pricing-price">
           <span class="pricing-amount" id="guardian-price">€3.49</span>
@@ -787,18 +1399,19 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
         <hr class="pricing-divider">
         <ul class="pricing-features">
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Sync across 3 devices</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> 5 GB encrypted cloud storage</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#10b981">✓</span> 30-day version history</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> 5 GB encrypted storage</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--emerald)">✓</span> 30-day version history</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Unlimited share links</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> PDF export + themes</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> PDF export with themes</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> TOTP 2FA</li>
         </ul>
         <button class="pricing-cta kp-fill" onclick="document.getElementById('kperception').scrollIntoView({behavior:'smooth'})">Get Guardian →</button>
       </div>
 
-      <!-- VAULT (featured) -->
+      <!-- VAULT -->
       <div class="pricing-card featured">
-        <span class="pricing-ribbon" style="background:rgba(91,110,244,.25);color:#818cf8;border:1px solid rgba(91,110,244,.3)">⚡ Best value</span>
-        <div class="pricing-name" style="color:#818cf8">Vault</div>
+        <span class="pricing-ribbon" style="background:rgba(129,140,248,.25);color:var(--indigo);border:1px solid rgba(129,140,248,.35)">⚡ Best value</span>
+        <div class="pricing-name" style="color:var(--indigo)">Vault</div>
         <div class="pricing-tagline">For those who take their mind seriously.</div>
         <div class="pricing-price">
           <span class="pricing-amount" id="vault-price">€7.99</span>
@@ -808,10 +1421,10 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
         <hr class="pricing-divider">
         <ul class="pricing-features">
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Guardian</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#818cf8">✓</span> 8 devices · 50 GB storage</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#818cf8">✓</span> Unlimited version history</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#818cf8">✓</span> Real-time collaboration</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Publish notes to web</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--indigo)">✓</span> 8 devices · 50 GB</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--indigo)">✓</span> Real-time E2EE collaboration</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--indigo)">✓</span> Unlimited revision history</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Knowledge Graph + LLM refinement</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Priority support</li>
         </ul>
         <button class="pricing-cta kp-solid" onclick="document.getElementById('kperception').scrollIntoView({behavior:'smooth'})">Get Vault →</button>
@@ -819,28 +1432,29 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
 
       <!-- LIFETIME -->
       <div class="pricing-card lifetime-card">
-        <span class="pricing-ribbon" style="background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25)">🔥 Limited</span>
-        <div class="pricing-name" style="color:#f59e0b">Lifetime</div>
+        <span class="pricing-ribbon" style="background:rgba(245,158,11,.14);color:var(--gold);border:1px solid rgba(245,158,11,.3)">🔥 Limited</span>
+        <div class="pricing-name" style="color:var(--gold)">Lifetime</div>
         <div class="pricing-tagline">Pay once. Own it forever.</div>
         <div class="pricing-price">
           <span class="pricing-amount">€149</span>
           <span class="pricing-period">one-time</span>
         </div>
-        <div class="pricing-annual-note" style="color:#f59e0b;font-size:.7rem">⚠ Only 47 lifetime spots remaining</div>
+        <div class="pricing-annual-note" style="color:var(--gold);font-size:.72rem">⚠ Only 47 lifetime spots remaining</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Vault — forever</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#f59e0b">✓</span> Zero recurring fees</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#f59e0b">✓</span> All future features included</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--gold)">✓</span> Zero recurring fees</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--gold)">✓</span> All future features included</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Lifetime supporter badge</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Direct developer access</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Pays for itself in 19 months</li>
         </ul>
         <button class="pricing-cta gold" onclick="document.getElementById('kperception').scrollIntoView({behavior:'smooth'})">Get Lifetime →</button>
       </div>
 
       <!-- TEAM -->
       <div class="pricing-card">
-        <div class="pricing-name" style="color:#a855f7">Team</div>
+        <div class="pricing-name" style="color:var(--kp)">Team</div>
         <div class="pricing-tagline">One vault. Your whole team.</div>
         <div class="pricing-price">
           <span class="pricing-amount" id="team-price">€6.99</span>
@@ -850,18 +1464,19 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
         <hr class="pricing-divider">
         <ul class="pricing-features">
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Vault</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#a855f7">✓</span> Shared encrypted team vault</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#a855f7">✓</span> Invite by email — auto-provision</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> 100 GB shared storage</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Admin dashboard + audit log</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--kp)">✓</span> Encrypted workspaces</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--kp)">✓</span> 100 GB shared storage</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Channels · Files · Gantt · Calendar</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> 8-tab admin console</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Webhooks · API keys</li>
         </ul>
         <button class="pricing-cta kp-fill" onclick="document.getElementById('kperception').scrollIntoView({behavior:'smooth'})">Get Team →</button>
       </div>
 
       <!-- ENTERPRISE -->
       <div class="pricing-card">
-        <div class="pricing-name" style="color:#ef4444">Enterprise</div>
-        <div class="pricing-tagline">Built for organisations that can't afford data loss.</div>
+        <div class="pricing-name" style="color:var(--rose)">Enterprise</div>
+        <div class="pricing-tagline">For organisations that can't afford a leak.</div>
         <div class="pricing-price">
           <span class="pricing-amount">€14.99</span>
           <span class="pricing-period">/user/mo</span>
@@ -870,28 +1485,63 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
         <hr class="pricing-divider">
         <ul class="pricing-features">
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Team</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#ef4444">✓</span> SSO / SAML / SCIM</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:#ef4444">✓</span> Unlimited storage + devices</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> SLA 99.9% uptime</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Custom DPA, GDPR, HIPAA</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--rose)">✓</span> SAML 2.0 · SCIM 2.0 · OIDC</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--rose)">✓</span> Unlimited storage + devices</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> IP allowlist · MFA enforcement</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> SLA 99.9% · BAA · DPA</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Dedicated account manager</li>
         </ul>
-        <button class="pricing-cta" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#ef4444" onclick="window.location.href='mailto:accessisoftwarefrancesco@gmail.com?subject=K-Perception Enterprise'">Contact Sales →</button>
+        <button class="pricing-cta rose" onclick="window.location.href='mailto:accessisoftwarefrancesco@gmail.com?subject=K-Perception Enterprise'">Contact Sales →</button>
       </div>
-
     </div>
 
-    <p style="text-align:center;font-size:.75rem;color:var(--text3);margin-top:28px;line-height:1.6" class="reveal">
+    <p style="text-align:center;font-size:.78rem;color:var(--text3);margin-top:32px;line-height:1.7" class="reveal">
       All plans include AES-256-GCM encryption and offline-first access. Your vault is yours — even offline, even if we shut down.<br>
       7-day money-back guarantee on all paid plans. No questions asked.
     </p>
   </div>
 </section>
 
-<!-- ── BINAURA ────────────────────────────────────────────────────────────── -->
-<section class="section" id="binaura" style="background:var(--bg1)">
+<!-- ── COMPLIANCE ────────────────────────────────────────────────────── -->
+<section class="section" style="background:var(--bg1)">
   <div class="section-inner">
-    <span class="section-label bn reveal">VST3 Plugin</span>
+    <span class="section-label kp reveal">Compliance posture</span>
+    <h2 class="section-title reveal">Built for regulated industries.<br><span class="grad">Audited by design.</span></h2>
+    <p class="section-sub reveal">Healthcare, legal, journalism, government — wherever data residency, audit trails, and provable encryption are non-negotiable.</p>
+
+    <div class="compliance-grid">
+      <div class="compliance-badge reveal delay-1">
+        <div class="compliance-badge-name">GDPR</div>
+        <div class="compliance-badge-desc">Data deletion endpoint, compliance tab, DPA available, content never processed in plaintext.</div>
+      </div>
+      <div class="compliance-badge reveal delay-2">
+        <div class="compliance-badge-name">HIPAA</div>
+        <div class="compliance-badge-desc">Technical controls in place: E2EE at rest + transit, audit log, MFA, remote wipe. BAA on Enterprise.</div>
+      </div>
+      <div class="compliance-badge reveal delay-3">
+        <div class="compliance-badge-name">SOC 2 Type II</div>
+        <div class="compliance-badge-desc">Audit pathway with access controls, encryption, incident hooks via outbound webhooks.</div>
+      </div>
+      <div class="compliance-badge reveal delay-4">
+        <div class="compliance-badge-name">CCPA</div>
+        <div class="compliance-badge-desc">Full user data export and deletion. We don't sell data — we couldn't even if we wanted to.</div>
+      </div>
+      <div class="compliance-badge reveal delay-1">
+        <div class="compliance-badge-name">NIST SP 800-132</div>
+        <div class="compliance-badge-desc">PBKDF2 with 100k iterations exceeds the recommended minimum.</div>
+      </div>
+      <div class="compliance-badge reveal delay-2">
+        <div class="compliance-badge-name">FIPS 140-2</div>
+        <div class="compliance-badge-desc">AES-256-GCM is FIPS-approved. Web Crypto API delegates to validated platform implementations.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BINAURA ────────────────────────────────────────────────────────── -->
+<section class="section" id="binaura" style="background:var(--bg)">
+  <div class="section-inner">
+    <span class="section-label bn reveal">VST3 plugin</span>
     <h2 class="section-title reveal">Also from K-LAB DSP:</h2>
 
     <div class="binaura-hero reveal">
@@ -907,11 +1557,11 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
           </div>
           <div class="binaura-spec">
             <div class="binaura-spec-name">CPU</div>
-            <div class="binaura-spec-val">AVX2 SIMD Optimized</div>
+            <div class="binaura-spec-val">AVX2 SIMD</div>
           </div>
           <div class="binaura-spec">
             <div class="binaura-spec-name">Oversampling</div>
-            <div class="binaura-spec-val">1x / 2x / 4x</div>
+            <div class="binaura-spec-val">1× / 2× / 4×</div>
           </div>
           <div class="binaura-spec">
             <div class="binaura-spec-name">Filter</div>
@@ -919,7 +1569,7 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
           </div>
           <div class="binaura-spec">
             <div class="binaura-spec-name">Presets</div>
-            <div class="binaura-spec-val">60 Factory Presets</div>
+            <div class="binaura-spec-val">60 Factory</div>
           </div>
           <div class="binaura-spec">
             <div class="binaura-spec-name">Format</div>
@@ -928,12 +1578,8 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
         </div>
 
         <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="https://buy.stripe.com/8x200j6TLbaOg3L3vAbsc08" class="btn btn-bn" target="_blank" rel="noopener noreferrer">
-            Buy Now — €59
-          </a>
-          <a href="https://binaura.accessisoftwarefrancesco.workers.dev/api/download-demo" class="btn btn-bn-ghost" target="_blank" rel="noopener noreferrer">
-            Download Free Demo
-          </a>
+          <a href="https://buy.stripe.com/8x200j6TLbaOg3L3vAbsc08" class="btn btn-bn" target="_blank" rel="noopener noreferrer">Buy Now — €59</a>
+          <a href="https://binaura.accessisoftwarefrancesco.workers.dev/api/download-demo" class="btn btn-bn-ghost" target="_blank" rel="noopener noreferrer">Download Free Demo</a>
         </div>
       </div>
 
@@ -942,52 +1588,52 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> AVX2 SIMD vectorization for maximum polyphony with minimal CPU load</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> PolyBLEP antialiasing across all waveforms — zero aliasing at any frequency</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> Analog Drift DDS — per-voice VCO instability simulation</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> ZDF biquad filter with SSI2144 circuit emulation, self-oscillation and key tracking</div>
+        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> ZDF biquad with SSI2144 circuit emulation, self-oscillation, key tracking</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> 8-slot modulation matrix — route any source to any parameter</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> 4 independent LFO engines with tempo sync and per-voice mode</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> Full MPE support with CC74 slide, per-note pitch bend and pressure</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> ThermalGuard DSP — auto voice limiting prevents dropouts under CPU load</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> Serum-level UX with GPU-accelerated waveform display and drag-to-assign routing</div>
+        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> GPU-accelerated waveform display and drag-to-assign routing</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── ABOUT ──────────────────────────────────────────────────────────────── -->
-<section class="section" id="about" style="background:var(--bg)">
+<!-- ── ABOUT ─────────────────────────────────────────────────────────── -->
+<section class="section" id="about" style="background:var(--bg1)">
   <div class="section-inner">
     <span class="section-label kp reveal">K-LAB DSP</span>
-    <h2 class="section-title reveal">Built for professionals<br>who demand more.</h2>
-    <p class="section-sub reveal" style="max-width:720px">K-LAB DSP is an independent studio building professional audio plugins and secure software. Every product is closed source and engineered from the ground up with performance, security, and precision as core values. No VC funding. No tracking. No compromise.</p>
+    <h2 class="section-title reveal">Built for professionals<br><span class="grad">who demand more.</span></h2>
+    <p class="section-sub reveal" style="max-width:760px">K-LAB DSP is an independent studio building professional audio plugins and secure software. Every product is closed source and engineered from the ground up with performance, security, and precision as core values. No VC funding. No tracking. No compromise.</p>
 
     <div class="stats-row">
-      <div class="stat kp reveal delay-1"><div class="stat-num">256</div><div class="stat-label">AES key bits</div></div>
-      <div class="stat kp reveal delay-2"><div class="stat-num">0</div><div class="stat-label">Bytes plaintext on server</div></div>
-      <div class="stat kp reveal delay-3"><div class="stat-num">∞</div><div class="stat-label">Offline capability</div></div>
-      <div class="stat bn reveal delay-4"><div class="stat-num">4</div><div class="stat-label">Wavetable engines</div></div>
-      <div class="stat bn reveal delay-5"><div class="stat-num">60</div><div class="stat-label">Factory presets</div></div>
-      <div class="stat bn reveal delay-6"><div class="stat-num">4×</div><div class="stat-label">Max oversampling</div></div>
+      <div class="stat kp reveal delay-1"><div class="stat-num" data-count="7">7</div><div class="stat-label">Editor modes</div></div>
+      <div class="stat kp reveal delay-2"><div class="stat-num" data-count="1735">1,735</div><div class="stat-label">Automated tests</div></div>
+      <div class="stat kp reveal delay-3"><div class="stat-num" data-count="37">37</div><div class="stat-label">DB migrations</div></div>
+      <div class="stat kp reveal delay-4"><div class="stat-num" data-count="300">300+</div><div class="stat-label">Edge PoPs</div></div>
+      <div class="stat bn reveal delay-5"><div class="stat-num" data-count="4">4</div><div class="stat-label">Wavetable engines</div></div>
+      <div class="stat bn reveal delay-6"><div class="stat-num" data-count="60">60</div><div class="stat-label">Factory presets</div></div>
     </div>
 
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px" class="reveal">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:14px" class="reveal">
       <a href="https://github.com/999purple999/klab-dsp.github.io" target="_blank" rel="noopener noreferrer" class="btn btn-kp-ghost">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.72-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.08-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013-.4c1.02.01 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.26 2.88.13 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z"/></svg>
-        View on GitHub
+        GitHub
       </a>
       <a href="mailto:accessisoftwarefrancesco@gmail.com" class="btn btn-kp-ghost">Contact</a>
     </div>
   </div>
 </section>
 
-<!-- ── WAITLIST ──────────────────────────────────────────────────────────── -->
+<!-- ── WAITLIST ──────────────────────────────────────────────────────── -->
 <section class="section waitlist-section" id="waitlist">
   <div class="section-inner waitlist-inner reveal">
-    <div class="hero-badge" style="margin-bottom:20px">
+    <div class="hero-badge" style="margin-bottom:22px">
       <span class="hero-badge-dot"></span>
       iOS · macOS · Linux coming soon
     </div>
     <h2 class="waitlist-title">Be the first to know.</h2>
-    <p class="waitlist-sub">Get notified when iOS, macOS, and the web app launch.<br>No spam — one email when it ships.</p>
+    <p class="waitlist-sub">Get notified when iOS, macOS, and Linux launch.<br>No spam — one email when it ships.</p>
     <form class="waitlist-form" id="waitlist-form" onsubmit="return false">
       <input class="waitlist-input" type="email" id="waitlist-email" placeholder="your@email.com" autocomplete="email" required />
       <button class="waitlist-btn" type="submit" id="waitlist-btn">Notify me</button>
@@ -997,37 +1643,99 @@ footer{border-top:1px solid var(--border);padding:2.5rem clamp(1.5rem,5vw,4rem);
   </div>
 </section>
 
-<!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+<!-- ── FOOTER ────────────────────────────────────────────────────────── -->
 <footer>
-  <a href="#top" class="footer-logo">K-LAB DSP</a>
-  <div class="footer-links">
-    <a href="#kperception">K-Perception</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#binaura">BINAURA</a>
-    <a href="#about">About</a>
-    <a href="https://github.com/999purple999/klab-dsp.github.io" target="_blank" rel="noopener noreferrer">GitHub</a>
-    <a href="mailto:accessisoftwarefrancesco@gmail.com">Contact</a>
+  <div class="footer-grid">
+    <div>
+      <a href="#top" class="footer-brand"><span class="nav-logo-mark"></span>K-LAB DSP</a>
+      <p class="footer-tagline">Independent studio building professional audio plugins and zero-knowledge software. No VC. No tracking. No compromise.</p>
+    </div>
+    <div class="footer-col">
+      <h6>Products</h6>
+      <a href="#kperception">K-Perception</a>
+      <a href="#binaura">BINAURA</a>
+      <a href="#modes">Editor modes</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <div class="footer-col">
+      <h6>Architecture</h6>
+      <a href="#security">Security</a>
+      <a href="#collaboration">E2EE collab</a>
+      <a href="#about">About</a>
+    </div>
+    <div class="footer-col">
+      <h6>Connect</h6>
+      <a href="https://github.com/999purple999/klab-dsp.github.io" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="mailto:accessisoftwarefrancesco@gmail.com">Contact</a>
+      <a href="#waitlist">Waitlist</a>
+    </div>
   </div>
-  <p class="footer-copy">© 2026 K-LAB DSP — All products closed source</p>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 K-LAB DSP — All products closed source</p>
+    <span class="footer-status"><span class="footer-status-dot"></span>All systems operational</span>
+  </div>
 </footer>
 
-<!-- ── SCRIPTS ────────────────────────────────────────────────────────────── -->
+<!-- ── SCRIPTS ───────────────────────────────────────────────────────── -->
 <script>
-/* ── Scroll reveal ────────────────────────────────────────────────────────── */
+/* ── Scroll progress + nav scroll ───────────────────────────────────── */
+const progress = document.getElementById('scrollProgress');
+const mainNav  = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  progress.style.width = (window.scrollY / h * 100) + '%';
+  mainNav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+/* ── Cursor spotlight ───────────────────────────────────────────────── */
+const spot = document.getElementById('spotlight');
+window.addEventListener('mousemove', e => {
+  spot.style.transform = `translate(${e.clientX}px,${e.clientY}px) translate(-50%,-50%)`;
+}, { passive: true });
+
+/* ── Reveal on scroll ───────────────────────────────────────────────── */
 const revealEls = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 revealEls.forEach(el => io.observe(el));
 
-/* ── Particle hero canvas ─────────────────────────────────────────────────── */
+/* ── Animated counters ──────────────────────────────────────────────── */
+const counters = document.querySelectorAll('[data-count]');
+const cIo = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el  = e.target;
+    const tgt = parseInt(el.dataset.count, 10);
+    const txt = el.textContent;
+    const suffix = (txt.match(/[^\d,]+$/) || [''])[0];
+    const dur = 1400;
+    const start = performance.now();
+    const fmt = n => n.toLocaleString('en-US');
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = fmt(Math.round(tgt * eased)) + suffix;
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    cIo.unobserve(el);
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => cIo.observe(c));
+
+/* ── Particle hero canvas ───────────────────────────────────────────── */
 const canvas = document.getElementById('hero-canvas');
 const ctx = canvas.getContext('2d');
 let W, H, particles = [], mouse = { x: -9999, y: -9999 };
+const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
 function resize() {
-  W = canvas.width  = canvas.offsetWidth;
-  H = canvas.height = canvas.offsetHeight;
+  W = canvas.offsetWidth;
+  H = canvas.offsetHeight;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 resize();
 window.addEventListener('resize', resize);
@@ -1039,60 +1747,65 @@ canvas.parentElement.addEventListener('mousemove', e => {
 });
 canvas.parentElement.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
 
-function randBetween(a, b) { return a + Math.random() * (b - a); }
+function rand(a, b) { return a + Math.random() * (b - a); }
 
 class Particle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x  = Math.random() * W;
-    this.y  = Math.random() * H;
-    this.vx = randBetween(-0.18, 0.18);
-    this.vy = randBetween(-0.25, -0.05);
-    this.r  = randBetween(1, 2.5);
+  constructor() { this.reset(true); }
+  reset(initial) {
+    this.x = Math.random() * W;
+    this.y = initial ? Math.random() * H : H + 20;
+    this.vx = rand(-0.18, 0.18);
+    this.vy = rand(-0.30, -0.05);
+    this.r  = rand(.8, 2.4);
     this.life = 0;
-    this.maxLife = randBetween(200, 500);
-    this.hue = randBetween(260, 290); // purple range
+    this.maxLife = rand(220, 540);
+    this.hue = rand(255, 290);
   }
   update() {
-    // Mouse repulsion
     const dx = this.x - mouse.x, dy = this.y - mouse.y;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    if (dist < 120) {
-      const force = (120 - dist) / 120 * 0.4;
-      this.vx += (dx / dist) * force;
-      this.vy += (dy / dist) * force;
+    const d  = Math.sqrt(dx*dx + dy*dy);
+    if (d < 130) {
+      const f = (130 - d) / 130 * 0.55;
+      this.vx += (dx / d) * f;
+      this.vy += (dy / d) * f;
     }
-    this.vx *= 0.995;
-    this.vy *= 0.995;
+    this.vx *= 0.992;
+    this.vy *= 0.992;
     this.x += this.vx;
     this.y += this.vy;
     this.life++;
-    if (this.life > this.maxLife || this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    if (this.life > this.maxLife || this.x < -10 || this.x > W + 10 || this.y < -10) this.reset(false);
   }
   draw() {
-    const alpha = Math.min(this.life / 60, 1) * Math.min((this.maxLife - this.life) / 60, 1) * 0.6;
+    const fadeIn  = Math.min(this.life / 60, 1);
+    const fadeOut = Math.min((this.maxLife - this.life) / 60, 1);
+    const alpha   = fadeIn * fadeOut * 0.75;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fillStyle = `hsla(${this.hue},80%,70%,${alpha})`;
+    ctx.fillStyle = `hsla(${this.hue},85%,70%,${alpha})`;
+    ctx.shadowColor = `hsla(${this.hue},85%,70%,${alpha * .8})`;
+    ctx.shadowBlur = 8;
     ctx.fill();
+    ctx.shadowBlur = 0;
   }
 }
 
-for (let i = 0; i < 140; i++) particles.push(new Particle());
+const PCOUNT = window.innerWidth < 700 ? 70 : 150;
+for (let i = 0; i < PCOUNT; i++) particles.push(new Particle());
 
 function drawConnections() {
-  const MAX_DIST = 100;
+  const MAX = 110;
   for (let i = 0; i < particles.length; i++) {
     for (let j = i + 1; j < particles.length; j++) {
       const dx = particles[i].x - particles[j].x;
       const dy = particles[i].y - particles[j].y;
       const d  = Math.sqrt(dx*dx + dy*dy);
-      if (d < MAX_DIST) {
-        const alpha = (1 - d / MAX_DIST) * 0.12;
+      if (d < MAX) {
+        const a = (1 - d / MAX) * 0.16;
         ctx.beginPath();
         ctx.moveTo(particles[i].x, particles[i].y);
         ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(168,85,247,${alpha})`;
+        ctx.strokeStyle = `rgba(192,132,252,${a})`;
         ctx.lineWidth = 0.8;
         ctx.stroke();
       }
@@ -1108,7 +1821,124 @@ function animate() {
 }
 animate();
 
-/* ── Pricing toggle ───────────────────────────────────────────────────────── */
+/* ── Editor mode tabs ───────────────────────────────────────────────── */
+const MODES = {
+  plain: {
+    title: 'Plain Text',
+    tech: 'CodeMirror · monospace · zero distractions',
+    desc: 'When you just need to think on paper. Line numbers, monospace font, no formatting baggage. Perfect for stream-of-consciousness drafts, code snippets, raw research notes.',
+    feats: ['Monospace + line numbers','Lightning-fast load','No format pollution','Encrypted just like everything else'],
+    preview: '<span class="pv-tag">plain.txt</span><div style="line-height:1.85;color:var(--text2)"><span style="color:var(--text4)">  1  </span>// Project Phoenix — internal notes\n<span style="color:var(--text4)">  2  </span>2026-04-26 · all privileged\n<span style="color:var(--text4)">  3  </span><br><span style="color:var(--text4)">  4  </span>The new architecture lets us\n<span style="color:var(--text4)">  5  </span>encrypt every Y.js update before\n<span style="color:var(--text4)">  6  </span>it leaves the device — even\n<span style="color:var(--text4)">  7  </span>collaborative ones. The DocRoom\n<span style="color:var(--text4)">  8  </span>becomes a blind relay.\n<span style="color:var(--text4)">  9  </span><br><span style="color:var(--text4)"> 10  </span>This is the moat.</div>'
+  },
+  md: {
+    title: 'Markdown',
+    tech: 'CodeMirror · GFM · KaTeX · Mermaid · highlight.js',
+    desc: 'Full GitHub-Flavored Markdown with rich live preview. Mermaid diagrams, inline KaTeX math, footnotes, syntax-highlighted code, drag-and-drop images, smart Tab handling, Zen mode.',
+    feats: ['GFM + tables + strikethrough','Mermaid (flowchart, ER, Gantt, pie)','KaTeX inline math','Reading-time + TOC','Find &amp; Replace · Zen mode'],
+    preview: '<span class="pv-tag">notes.md</span><h1># Workspace key hierarchy</h1><div style="color:var(--text2);line-height:1.8">The <span class="key">WDK</span> is wrapped per member.<br>Section keys derive via <span class="key">HKDF</span>:<br><br>```<br>WDK → SK_section → SK_dir → DEK<br>```<br><br>Inline math: <span style="color:#fcd34d">$E = mc^2$</span><br><br><span class="com">> Note: revoking a member only<br>> removes their wrapped WDK.</span></div>'
+  },
+  latex: {
+    title: 'LaTeX',
+    tech: 'KaTeX + latex.js · full document layout',
+    desc: 'Real LaTeX rendering, not just inline math. Write papers, problem sets, formal proofs with split-pane preview. Export to publication-quality PDF.',
+    feats: ['Full document layout via latex.js','Real-time split preview','PDF export · print-ready','KaTeX inline + display math'],
+    preview: '<span class="pv-tag">paper.tex</span><div style="margin-top:14px"><div style="color:var(--text3);font-size:.72rem;margin-bottom:14px">\\documentclass{article}<br>\\usepackage{amsmath}<br>\\begin{document}</div><div class="latex-eq">∇·E = ρ/ε₀</div><div style="text-align:center;color:var(--text3);font-size:.7rem;margin:8px 0">Maxwell\'s first equation</div><div class="latex-eq" style="font-size:1.2rem">∮ B·dℓ = μ₀I + μ₀ε₀ ∂Φ_E/∂t</div><div style="color:var(--text3);font-size:.72rem;margin-top:14px">\\end{document}</div></div>'
+  },
+  docs: {
+    title: 'Docs',
+    tech: 'TipTap v3 (ProseMirror) · 20+ extensions',
+    desc: 'Word-class rich text. Headings, lists, checklists, tables, code blocks, callouts, mentions, slash menu, bubble formatter — encrypted before it ever touches the network.',
+    feats: ['H1-H6, bold/italic/underline/highlight','Task lists · tables · code blocks','Slash menu + bubble menu','DocsOutline sidebar · @mentions','Drag-resize images · character count'],
+    preview: '<span class="pv-tag">project-brief.doc</span><h2>Q3 product roadmap</h2><div style="color:var(--text2);line-height:1.7;margin-top:8px"><strong style="color:var(--text1)">Owner:</strong> @anna  ·  <strong style="color:var(--text1)">Status:</strong> in progress<br><br>The encrypted backup-restore feature ships first. We will:<br><br>☑ <span style="color:var(--text2)">Land DEK refactor</span><br>☑ <span style="color:var(--text2)">Wire up R2 archive</span><br>☐ <span style="color:var(--text3)">Public AI Panel beta</span><br>☐ <span style="color:var(--text3)">SCIM Groups GA</span><br><br><span style="color:var(--kp3);font-style:italic">→ See <u>SECURITY.md</u> for the cipher details.</span></div>'
+  },
+  sheets: {
+    title: 'Sheets',
+    tech: 'Custom formula engine · 40+ functions · 500×52 grid',
+    desc: 'Real spreadsheets inside your encrypted vault. Multi-sheet tabs, cross-sheet references, currency / percentage / date formats, extendable to 500 columns × 52 rows.',
+    feats: ['40+ formula functions','Cross-sheet references (Sheet2!A1)','Currency · % · date formats','Multi-tab workbook','Encrypted cells like notes'],
+    preview: '<span class="pv-tag">budget.xlsx</span><div style="margin-top:14px"><div class="row head"><span></span><span>A · Item</span><span>B · Qty</span><span>C · €</span><span>D · Total</span></div><div class="row"><span>1</span><span>Cloudflare</span><span>1</span><span>€500</span><span style="color:#86efac">€500</span></div><div class="row"><span>2</span><span>Stripe fees</span><span>—</span><span>2.9%</span><span style="color:#86efac">€42</span></div><div class="row"><span>3</span><span>Apple Dev</span><span>1</span><span>€99</span><span style="color:#86efac">€99</span></div><div class="row"><span>4</span><span>Total</span><span></span><span></span><span style="color:var(--kp3);font-weight:700">€641</span></div><div style="margin-top:14px;color:var(--text3);font-size:.7rem">=SUM(D1:D3)  ·  encrypted before leaving device</div></div>'
+  },
+  canvas: {
+    title: 'Canvas',
+    tech: 'Custom canvas engine · Bézier stroke smoothing',
+    desc: 'Freehand drawing, sketches, mind-maps, marker annotations. Bézier curve smoothing makes a finger or stylus feel like ink. PNG and SVG export.',
+    feats: ['Bézier-smoothed pen + brush','Shape tools · text annotations','Eraser · undo/redo','PNG + SVG export','Encrypted strokes — yes, even those'],
+    preview: '<span class="pv-tag">sketch.canvas</span><div class="canvas-art"></div>'
+  },
+  editorial: {
+    title: 'Editorial',
+    tech: 'TipTap + custom layer · publication-grade',
+    desc: 'For long-form: papers, books, technical specs. Structured citations, attachment-based SVG figures, custom page geometry, severity-gated preflight checks, persistent export templates.',
+    feats: ['Structured citation manager','Attachment-based SVG figures','Custom page geometry (CSS vars)','Severity-gated preflight checks','Persistent export templates','HTML / PDF export'],
+    preview: '<span class="pv-tag">manuscript.ed</span><h1>Chapter 3 — The Cryptographic Moat</h1><div style="color:var(--text2);line-height:1.85;margin-top:10px;font-family:\'Inter\',sans-serif;font-size:.84rem">In their 2024 review, Acar et al. argued that<br>zero-knowledge architectures inevitably trade<br>collaboration for security <span style="color:var(--kp3);font-size:.72rem">[1]</span>. K-Perception<br>refutes this premise architecturally by encrypting<br>every CRDT update before transmission.<br><br><span style="color:var(--text4);font-size:.72rem;font-style:italic">[1] Acar et al., <em>SoK: A Critical Look at E2EE</em>, IEEE S&amp;P 2024</span></div>'
+  }
+};
+
+const modeDisplay = document.getElementById('modeDisplay');
+const modeTabs = document.querySelectorAll('.mode-tab');
+
+function renderMode(key) {
+  const m = MODES[key];
+  if (!m) return;
+  modeDisplay.innerHTML = `
+    <div class="mode-info">
+      <h3>${m.title}</h3>
+      <div class="mode-tech">${m.tech}</div>
+      <p>${m.desc}</p>
+      <div class="mode-feats">
+        ${m.feats.map(f => `<div class="mode-feat"><span class="mode-feat-dot"></span>${f}</div>`).join('')}
+      </div>
+    </div>
+    <div class="mode-preview">${m.preview}</div>
+  `;
+}
+renderMode('plain');
+
+modeTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    modeTabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderMode(tab.dataset.mode);
+  });
+});
+
+/* ── Live encryption typewriter ─────────────────────────────────────── */
+const liveFrom = document.getElementById('liveFrom');
+const liveTo = document.getElementById('liveTo');
+const SAMPLES = [
+  ['"My therapy notes 2026-04-26..."',  '7Bf4a8c2…d91e0f04'],
+  ['"Q3 OKRs · confidential"',           '0c7bd7c6e8f12a34…'],
+  ['"Source contact: Helen R., Berlin"', '17b0d15a9ec224d9…'],
+  ['"Patient 042 — clinical notes"',     '4a9c8b2e7f0d31c8…'],
+  ['"Investor deck draft v3"',           'cb78a014d9efb201…']
+];
+let sIdx = 0;
+function rotateLive() {
+  const [from, to] = SAMPLES[sIdx];
+  liveFrom.style.opacity = '0';
+  liveTo.style.opacity = '0';
+  setTimeout(() => {
+    liveFrom.textContent = from;
+    liveTo.textContent = to;
+    liveFrom.style.transition = 'opacity .35s';
+    liveTo.style.transition = 'opacity .35s';
+    liveFrom.style.opacity = '1';
+    liveTo.style.opacity = '1';
+  }, 250);
+  sIdx = (sIdx + 1) % SAMPLES.length;
+}
+setInterval(rotateLive, 2800);
+
+/* ── Feat card mouse-tracked glow ───────────────────────────────────── */
+document.querySelectorAll('.feat-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  });
+});
+
+/* ── Pricing toggle ─────────────────────────────────────────────────── */
 const toggle = document.getElementById('billing-toggle');
 const monthlyLabel = document.getElementById('toggle-monthly-label');
 const annualLabel  = document.getElementById('toggle-annual-label');
@@ -1123,21 +1953,20 @@ toggle.addEventListener('change', () => {
   const annual = toggle.checked;
   monthlyLabel.classList.toggle('active', !annual);
   annualLabel.classList.toggle('active',   annual);
-
   for (const [key, val] of Object.entries(pricing)) {
-    const priceEl  = document.getElementById(key + '-price');
-    const periodEl = document.getElementById(key + '-period');
-    const annualEl = document.getElementById(key + '-annual');
-    if (priceEl)  priceEl.textContent  = annual ? val.annual  : val.monthly;
-    if (periodEl) periodEl.textContent = annual ? val.periodA : val.periodM;
-    if (annualEl) annualEl.textContent = annual ? val.noteA   : val.noteM;
+    const p  = document.getElementById(key + '-price');
+    const pe = document.getElementById(key + '-period');
+    const a  = document.getElementById(key + '-annual');
+    if (p)  p.textContent  = annual ? val.annual  : val.monthly;
+    if (pe) pe.textContent = annual ? val.periodA : val.periodM;
+    if (a)  a.textContent  = annual ? val.noteA   : val.noteM;
   }
 });
 
-/* ── Waitlist form ────────────────────────────────────────────────────────── */
-const waitlistForm = document.getElementById('waitlist-form');
-const waitlistBtn  = document.getElementById('waitlist-btn');
-const waitlistMsg  = document.getElementById('waitlist-msg');
+/* ── Waitlist form ──────────────────────────────────────────────────── */
+const waitlistForm  = document.getElementById('waitlist-form');
+const waitlistBtn   = document.getElementById('waitlist-btn');
+const waitlistMsg   = document.getElementById('waitlist-msg');
 const waitlistEmail = document.getElementById('waitlist-email');
 
 if (waitlistForm) {
@@ -1171,9 +2000,9 @@ if (waitlistForm) {
   });
 }
 
-/* ── Nav highlight on scroll ──────────────────────────────────────────────── */
+/* ── Nav highlight on scroll ────────────────────────────────────────── */
 const sections = document.querySelectorAll('section[id]');
-const navLinks  = document.querySelectorAll('.nav-links a[href^="#"]');
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
 const navObserver = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
