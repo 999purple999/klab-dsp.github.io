@@ -21,7 +21,7 @@ K-Perception supports the SCIM 2.0 protocol for automated user provisioning and 
 ## Base URL
 
 ```
-https://api.kperception.app/workspaces/:workspaceId/scim/v2/
+https://k-perception-backend.accessisoftwarefrancesco.workers.dev/workspaces/:workspaceId/scim/v2/
 ```
 
 Replace `:workspaceId` with the UUID of the target workspace.

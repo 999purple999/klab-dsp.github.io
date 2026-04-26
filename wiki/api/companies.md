@@ -16,9 +16,9 @@ related: ["api-overview", "api-authentication", "api-errors", "api-pagination"]
 
 The Company API provides enterprise-tier functionality for managing multi-workspace organisations. All endpoints require a valid JWT Bearer session token. The authenticated user must be a member of the company in the role stated per endpoint.
 
-**Base path:** `https://api.kperception.app/companies`
+**Base path:** `https://k-perception-backend.accessisoftwarefrancesco.workers.dev/companies`
 
-**Auth:** `Authorization: Bearer <jwt>` for all routes (except SSO callback/ACS/metadata which are publicly reachable for IdP callbacks).
+**Auth:** `Authorization: Bearer <session-token>` for all routes (except SSO callback/ACS/metadata which are publicly reachable for IdP callbacks).
 
 **Plan requirement:** Creating a company requires an Enterprise account tier. Members of the company retain access regardless of their personal tier.
 
@@ -428,7 +428,7 @@ Returns consolidated billing data across all linked workspaces.
 }
 ```
 
-Note: `mrrCents` is currently `null`. [NEEDS-VERIFY: billing integration with Stripe is present but exact MRR computation may not be exposed via this endpoint.]
+Note: `mrrCents` is always `null` and `totalMrrCents` is always `0`. MRR computation is not implemented in the current billing route (`routeGetBilling` in `company.ts` hardcodes `mrrCents: null`).
 
 ---
 
@@ -442,15 +442,40 @@ Updates company-wide security policy.
 ```json
 {
   "policy": {
+    "password": {
+      "minLength": 12,
+      "requireDigits": true,
+      "requireSymbols": false,
+      "requireMixedCase": true,
+      "maxAgeDays": 0
+    },
+    "mfa": {
+      "enforceForAll": false,
+      "enforceForAdmins": true,
+      "allowRecoveryCodes": true
+    },
     "domains": {
-      "blockExternalInvites": true,
-      "allowedDomains": ["acme.com"]
+      "allowedDomains": ["acme.com"],
+      "blockExternalInvites": true
+    },
+    "ip": {
+      "allowlistCidrs": ["192.168.1.0/24"],
+      "allowStepUpBypass": true
+    },
+    "retention": {
+      "auditMinDays": 30,
+      "sessionIdleMinutes": 0
+    },
+    "sso": {
+      "provider": null,
+      "entityUrl": null,
+      "enforceForAll": false
     }
   }
 }
 ```
 
-[NEEDS-VERIFY: full policy schema — confirm all available policy fields in `src/shared/companyPolicy.ts`.]
+All fields are optional; unrecognised fields are dropped. The schema is defined in `src/shared/companyPolicy.ts`. Defaults on first company creation: `password.minLength=12`, `mfa.enforceForAdmins=true`, `retention.auditMinDays=30`.
 
 **Response:**
 ```json
@@ -496,7 +521,18 @@ Permanently purges a company member's personal data (GDPR right to erasure).
 
 **Request body:**
 ```json
-{ "userId": "string" }
+{ "targetUserId": "string" }
 ```
 
-[NEEDS-VERIFY: exact response shape and full side-effects of the purge operation.]
+Side effects (confirmed from `routePurgeMember` in `company.ts`):
+1. Revokes all active sessions for the target user (`UPDATE sessions SET revoked_at`).
+2. Soft-removes the user from `company_members` (sets `status = 'removed'`, `removed_at`).
+3. Immediately zeros PII in `provider_accounts` (email → `purged-{id-prefix}@deleted`, `display_name` → `'Deleted User'`).
+4. Enqueues a `purge_user` task to delete all R2 blobs and D1 rows associated with the user.
+
+**Response (200):**
+```json
+{ "ok": true, "data": { "purged": true, "targetUserId": "string" } }
+```
+
+**Errors:** `403` if caller is not `super-admin`; `404` if `targetUserId` is not a member of this company; `503` if the task queue binding is unavailable.

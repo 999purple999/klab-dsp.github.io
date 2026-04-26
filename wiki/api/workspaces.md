@@ -16,7 +16,7 @@ related: ["api-overview", "api-authentication", "api-pagination", "api-errors"]
 
 The workspace REST API exposes read access to workspace metadata and (optionally) ciphertext blob references. All endpoints are authenticated by API Key only — JWT Bearer is not accepted at `/api/v1/`.
 
-**Base path:** `https://api.kperception.app/api/v1/workspaces/:id/`
+**Base path:** `https://k-perception-backend.accessisoftwarefrancesco.workers.dev/api/v1/workspaces/:id/`
 
 All content returned is **ciphertext** or metadata only. The server has no knowledge of plaintext note content.
 

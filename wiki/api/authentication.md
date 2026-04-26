@@ -2,7 +2,7 @@
 title: "API Authentication"
 slug: "api-authentication"
 category: "API"
-tags: ["api", "authentication", "api-keys", "jwt", "bearer"]
+tags: ["api", "authentication", "api-keys", "session-token", "bearer"]
 audience: "developer"
 plan: ["team", "enterprise"]
 platforms: ["windows", "android", "web"]
@@ -15,20 +15,20 @@ related: ["api-overview", "api-workspaces", "api-errors"]
 
 # API Authentication
 
-The K-Perception API supports two authentication methods: JWT Bearer tokens for user-context calls and API Keys for workspace automation.
+The K-Perception API supports two authentication methods: session Bearer tokens for user-context calls and API Keys for workspace automation.
 
-## JWT Bearer token
+## Session Bearer token
 
-JWT Bearer tokens are issued by the authentication subsystem when a user signs in. They are used for all company and workspace management operations that require a user session.
+Session tokens are opaque random UUIDs issued by the authentication subsystem when a user signs in (`POST /auth/local/login` or `POST /auth/google/exchange`). They are stored server-side in the D1 `sessions` table — there is no JWT signature or embedded claim. Every request performs a D1 lookup to validate the token.
 
 **Header format:**
 ```
-Authorization: Bearer <jwt>
+Authorization: Bearer <session-token>
 ```
 
-JWT tokens carry the authenticated user's identity and are validated against the session store on every request. Tokens expire and must be refreshed using the session refresh endpoint.
+Session tokens carry the authenticated user's identity. TTL is 7 days for web sessions and 60 days for desktop/mobile sessions. Tokens must be refreshed via `POST /auth/session/refresh` when within 7 days of expiry.
 
-Use JWT tokens for:
+Use session tokens for:
 - All `/companies/` endpoints
 - All `/workspaces/` management endpoints (invite members, update settings, etc.)
 - Any operation that requires a specific user's identity for audit purposes

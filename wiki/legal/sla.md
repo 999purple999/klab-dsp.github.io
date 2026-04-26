@@ -12,24 +12,21 @@ source_refs:
 related:
   - "legal-overview"
   - "terms-of-service"
-  - "soc2"
 ---
 
 # Service Level Agreement
 
-The 99.9% uptime commitment is listed in the product blueprint for the Enterprise plan. Specific SLA terms (measurement methodology, credit calculation, exclusions, maintenance windows, incident response procedures, and escalation path) are governed by your Enterprise service agreement. Contact your K-Perception account manager or visit kperception.com for current details. Do not make contractual representations to customers based on this article alone.
+This article describes K-Perception's service availability commitment for Enterprise plan customers. The binding SLA terms — including the measurement methodology, credit calculation, exclusions, maintenance windows, and incident response procedures — are governed by your Enterprise service agreement.
 
-## What is the SLA?
-
-A Service Level Agreement is a contractual commitment by K-Perception to maintain a minimum level of service availability for Enterprise plan customers. The SLA defines how availability is measured, what happens when the target is not met, and how customers can claim service credits.
+Do not make contractual representations to your own customers based solely on this article. Contact your K-Perception account manager for the full SLA document.
 
 ## Uptime commitment
 
-**Enterprise plan: 99.9% monthly uptime** (as stated in the product blueprint).
+**Enterprise plan: 99.9% monthly uptime**, as described in the product blueprint.
 
-Contact your K-Perception account manager or visit kperception.com for current details on measurement period, definition of "unavailability", and which service components are covered.
+A 99.9% monthly uptime target allows for approximately 43.8 minutes of downtime per calendar month.
 
-A 99.9% monthly uptime target allows for approximately 43.8 minutes of downtime per month, or 8.7 hours per year.
+The precise definition of "downtime," the measurement window, and which service components are in scope are specified in your Enterprise service agreement. Contact your account manager for details.
 
 ## Plan availability
 
@@ -39,71 +36,59 @@ A 99.9% monthly uptime target allows for approximately 43.8 minutes of downtime 
 | Guardian | No SLA |
 | Vault | No SLA |
 | Lifetime | No SLA |
-| Team | No SLA (contact your account manager for current details) |
-| Enterprise | 99.9% monthly uptime (contact your account manager for full SLA terms) |
+| Team | No SLA — contact your account manager for current details |
+| Enterprise | 99.9% monthly uptime — full terms in your service agreement |
 
-## Service components covered
+## Service components
 
-The SLA uptime calculation generally covers the following components; contact your account manager for the definitive list:
+The uptime commitment covers K-Perception's backend API and storage services. These run on Cloudflare's globally distributed infrastructure:
 
-- Cloudflare Worker API endpoints (`/sync/*`, `/auth/*`, `/workspace/*`, `/company/*`)
-- Cloudflare R2 blob storage (reads and writes)
-- Cloudflare D1 database availability
-- Cloudflare Durable Objects (real-time collaboration DocRooms)
+- **Cloudflare Workers** — edge compute; zero cold starts, automatic global scaling.
+- **Cloudflare D1** — edge SQLite database with global read replicas.
+- **Cloudflare R2** — object storage (encrypted content blobs).
+- **Cloudflare Durable Objects** — stateful real-time relay for collaborative editing (DocRooms).
 
-The SLA does not typically cover:
+The SLA does not cover:
 
-- Client applications (desktop, Android) — these are end-user-installed software.
-- Offline-first functionality — notes can be read and edited without server availability.
+- Client applications (Windows desktop, Android) — these are installed software on devices outside K-Perception's control.
+- Offline-first functionality — notes can be read and edited locally without server connectivity.
 - Planned maintenance windows.
-- Outages caused by third-party services outside K-Perception's control (e.g., a Cloudflare network incident).
+- Outages caused by events outside K-Perception's control, including Cloudflare network incidents, Stripe outages, or internet backbone disruptions.
 
-Confirm all exclusions in your Enterprise service agreement.
+Your Enterprise service agreement specifies the complete exclusion list.
+
+## Offline-first resilience
+
+K-Perception's offline-first architecture means users can continue to read and edit notes locally when the sync API is unavailable. Changes made offline are queued and synchronised automatically when connectivity is restored. This architectural property provides meaningful resilience to API outages from a user-experience perspective, independent of the formal SLA.
 
 ## Infrastructure availability basis
 
-K-Perception's backend runs on Cloudflare's globally distributed infrastructure:
-
-- **Cloudflare Workers** — zero cold starts, automatic scaling across 300+ PoPs.
-- **Cloudflare D1** — edge SQLite with global read replicas.
-- **Cloudflare R2** — S3-compatible storage with no egress fees, exabyte scale.
-- **Cloudflare Durable Objects** — per-document stateful relay, horizontal scaling.
-
-Cloudflare's infrastructure is designed for high availability and has its own SLA commitments. K-Perception's uptime commitment is built on top of Cloudflare's infrastructure guarantees.
-
-Additionally, K-Perception's **offline-first architecture** means that users can continue to read and edit notes locally even when the sync API is unavailable. Data written offline is queued and synced when connectivity is restored. This architectural property provides meaningful resilience against API outages from a user-experience perspective.
+K-Perception's uptime commitment is built on Cloudflare's infrastructure. Cloudflare operates its own availability SLAs for Workers, D1, R2, and Durable Objects. K-Perception's commitment takes into account Cloudflare's infrastructure guarantees as the underlying layer.
 
 ## Maintenance windows
 
-Contact your account manager or visit kperception.com for current details on maintenance window scheduling, advance notice periods, and whether maintenance windows are excluded from uptime calculations.
-
-Cloudflare Workers and D1 schema migrations can typically be deployed without downtime via a zero-downtime migration strategy. This behavior may vary by deployment; verify with your account manager.
-
-## Incident response
-
-Incident response procedures, severity definitions, response times, and update frequencies are governed by your Enterprise service agreement. Contact your account manager or visit kperception.com for current details.
+[PLACEHOLDER — update before publishing: specify scheduled maintenance windows, how much advance notice is given, and whether maintenance windows are excluded from uptime calculations. Cloudflare Workers and D1 migrations can typically be performed without downtime via rolling deployments, but the policy should be documented explicitly.]
 
 ## Status page
 
-Contact your account manager or visit kperception.com for information on K-Perception's service status page and real-time availability monitoring.
+[PLACEHOLDER — update before publishing: provide the URL of K-Perception's service status page where customers can monitor real-time availability and review incident history.]
 
 ## Service credits
 
-Service credit percentages, maximum credit per month, and the claims process are governed by your Enterprise service agreement. Contact your account manager or visit kperception.com for current details.
+The credit percentage, maximum monthly credit, and claims process are specified in your Enterprise service agreement. Credits are typically applied to the next billing cycle and are the sole remedy for SLA breaches.
 
-Credits are typically applied to the next billing cycle and are the sole remedy for SLA breaches.
+To report an SLA breach and request a credit review, contact your account manager or [PLACEHOLDER — update before publishing: insert support contact email].
 
-## How to report an SLA breach
+## Incident response
 
-Contact your account manager or support@kperception.com to report an SLA breach and request a credit review. The reporting window and process are specified in your Enterprise service agreement.
+Incident severity definitions, response time targets, update frequencies, and escalation procedures are governed by your Enterprise service agreement. Contact your account manager for the current incident response procedures.
 
 ## Related articles
 
 - [Legal Overview](overview.md)
 - [Terms of Service summary](terms-of-service.md)
-- [SOC 2 Overview](../compliance/soc2.md)
 
 ## Source references
 
 - `blueprint/project_blueprint.md` §7 — "Enterprise: SLA 99.9%" listed in plan feature table
-- `blueprint/project_blueprint.md` §5.3 — Cloudflare infrastructure scalability characteristics
+- `blueprint/project_blueprint.md` §5.3 — Cloudflare infrastructure characteristics

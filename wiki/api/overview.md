@@ -20,10 +20,10 @@ The K-Perception API lets you integrate workspace data into your own tooling, au
 ## Base URL
 
 ```
-https://api.kperception.app
+https://k-perception-backend.accessisoftwarefrancesco.workers.dev
 ```
 
-All endpoints are served from this base. The current REST API version is **v1**, accessed at `/api/v1/`.
+This is the default Cloudflare Workers URL. Deployments with a custom domain may override it via the `VITE_BACKEND_URL` environment variable. All endpoints documented here are relative to this base. The current REST API version is **v1**, accessed at `/api/v1/`.
 
 ## Authentication methods
 
@@ -31,7 +31,7 @@ The API supports two authentication methods depending on the call context.
 
 | Method | Header | Use case |
 |--------|--------|----------|
-| JWT Bearer | `Authorization: Bearer <jwt>` | Interactive user sessions; company and workspace management routes |
+| Session token (opaque UUID) | `Authorization: Bearer <token>` | Interactive user sessions; company and workspace management routes |
 | API Key | `Authorization: ApiKey <key>` | Workspace automation; machine-to-machine access to `/api/v1/workspaces/` |
 
 See [API Authentication](authentication.md) for full details on obtaining credentials and scope rules.
@@ -55,7 +55,7 @@ The current stable API version is **v1**. Workspace endpoints live under `/api/v
 
 | Header | Required | Description |
 |--------|----------|-------------|
-| `Authorization` | Yes | `Bearer <jwt>` or `ApiKey <key>` depending on the endpoint |
+| `Authorization` | Yes | `Bearer <session-token>` or `ApiKey <key>` depending on the endpoint |
 | `Content-Type` | For mutations | `application/json` |
 
 ## Response envelope

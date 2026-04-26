@@ -10,6 +10,7 @@ last_reviewed: "2026-04-26"
 source_refs:
   - "private-sync-worker/src/companySso.ts"
   - "private-sync-worker/src/db.ts"
+  - "private-sync-worker/src/index.ts"
 related:
   - "legal-overview"
   - "privacy-policy"
@@ -17,79 +18,73 @@ related:
 
 # Cookie Policy
 
-This article explains how K-Perception's applications use browser storage, cookies, and related technologies. It is provided for convenience and does not replace the official Cookie Policy at kperception.com/legal/cookies [NEEDS-VERIFY URL].
+This article describes how K-Perception's applications use browser storage, cookies, and related technologies. The authoritative Cookie Policy is published at [PLACEHOLDER — update before publishing: insert canonical URL, e.g. kperception.com/legal/cookies].
 
 ## How K-Perception differs from typical web applications
 
-Most web applications rely heavily on HTTP cookies for session management and tracking. K-Perception's architecture is different in two important ways:
+Most web applications rely on HTTP cookies for session management and tracking. K-Perception's architecture differs in two important ways:
 
-1. **Authentication tokens are stored in sessionStorage, not cookies.** The JWT session token used to authenticate API calls is stored in the browser's `sessionStorage`. It is not transmitted as an HTTP cookie. This means the token is scoped to the current browser tab/window and is not accessible to cross-site requests.
+1. **Authentication tokens are stored in sessionStorage, not cookies.** The JWT session token used to authenticate API calls is stored in the browser's `sessionStorage`. It is not sent as an HTTP cookie and is not accessible to cross-site requests. The Cloudflare Worker backend is configured to authenticate exclusively via the `Authorization` request header — it does not read or set cookies for standard API requests.
 
-2. **Vault data is stored in IndexedDB.** The encrypted note vault (on web) is stored in the browser's `IndexedDB`. This is a persistent client-side database, not a cookie. It persists across sessions so that the vault is available offline.
+2. **Vault data is stored in IndexedDB, not cookies.** The encrypted note vault is stored in the browser's `IndexedDB`, a persistent client-side database. This allows the vault to be available offline without transmitting data to a server.
 
-The Cloudflare Worker backend is configured to not rely on cookies for standard API authentication (`// we never send cookies; auth is via the Authorization header`).
+## SAML SSO — the only server-set cookie
 
-## SAML SSO — the exception
+K-Perception uses a single HTTP cookie, set only during the SAML SSO authentication flow:
 
-K-Perception uses an HTTP cookie for the SAML SSO flow only. During SAML authentication:
-
-- A `session` cookie is set (`HttpOnly; Secure; SameSite=Lax; Max-Age=2592000`) to maintain the SSO session.
-- This cookie is used only in the SAML authentication context and is not used for general vault access.
+- **Name:** `session`
+- **Attributes:** `HttpOnly; Secure; SameSite=Lax; Max-Age=2592000` (30 days)
+- **Purpose:** Maintains the SAML SSO session state during enterprise single sign-on.
+- **Scope:** Used only in the SAML authentication context, not for general vault access or session management.
 
 This is the only server-set HTTP cookie in the K-Perception application.
 
 ## Storage mechanisms in use
 
-| Mechanism | Where | What is stored | Persistent? |
-|-----------|-------|---------------|------------|
-| `sessionStorage` | Web browser | JWT session token (authentication) | Per-tab; cleared when tab closes |
-| `IndexedDB` | Web browser | Encrypted vault data (notes, folders, settings); sync queue | Persistent across sessions |
+| Mechanism | Platform | What is stored | Persistence |
+|-----------|----------|---------------|-------------|
+| `sessionStorage` | Web browser | JWT session token (authentication) | Per browser tab; cleared when tab closes |
+| `IndexedDB` | Web browser | Encrypted vault data (notes, folders, settings); offline sync queue | Persistent across sessions |
 | `localStorage` | Web browser | UI preferences (theme, layout, collab pending queue) | Persistent across sessions |
-| HTTP cookie (`session`) | Web browser | SAML SSO session ID (SAML flow only) | 30 days (`Max-Age=2592000`) |
-| Capacitor Preferences | Android | Encrypted vault data (equivalent to IndexedDB on mobile) | Persistent |
+| HTTP cookie (`session`) | Web browser | SAML SSO session ID (SAML flow only) | 30 days |
+| Capacitor Preferences | Android | Encrypted vault data; application state | Persistent |
+| `sessionStorage` | Windows desktop (Electron) | JWT session token (authentication) | Per Electron window session |
+| `IndexedDB` | Windows desktop (Electron) | Encrypted vault data; offline sync queue | Persistent |
 
-## Analytics cookies
+## Analytics and tracking
 
-[NEEDS-VERIFY — whether K-Perception uses any third-party analytics (e.g., Google Analytics, Plausible, Cloudflare Web Analytics) on the marketing website or within the application. Check with the engineering team before publishing. If analytics are used, list the specific cookies/mechanisms and the opt-out method here.]
+[PLACEHOLDER — update before publishing: confirm whether any third-party analytics service (e.g. Cloudflare Web Analytics, Plausible, or similar) is used on the marketing website or within the application. If analytics are used, list the specific cookies or storage mechanisms involved and the available opt-out mechanism. If no analytics or tracking is used, state this explicitly.]
 
-## Marketing website cookies
+## Marketing website storage
 
-[NEEDS-VERIFY — cookies used on the kperception.com marketing website (as opposed to the application itself) are not visible in the application source code. Contact the web team for the marketing site cookie inventory.]
+[PLACEHOLDER — update before publishing: the storage mechanisms used on the kperception.com marketing website are separate from the application. Conduct a cookie audit of the marketing website and list all cookies, their purposes, and their retention periods before publishing.]
 
-## How to manage storage
+## Managing storage
 
 ### Clearing sessionStorage
 
-Closing the browser tab automatically clears `sessionStorage`. You can also clear it manually:
+Closing the browser tab automatically clears `sessionStorage`. To clear it manually:
 
-- Chrome/Edge: Developer Tools > Application > Session Storage > kperception.com > Clear.
-- Firefox: Developer Tools > Storage > Session Storage > kperception.com > Delete all.
+- **Chrome / Edge:** DevTools (F12) → Application → Session Storage → [origin] → Clear all values.
+- **Firefox:** DevTools (F12) → Storage → Session Storage → [origin] → Delete all.
 
-Clearing `sessionStorage` logs you out of the current session. Your encrypted vault data in `IndexedDB` is unaffected.
+Clearing `sessionStorage` ends your current session. Your encrypted vault data in `IndexedDB` is not affected.
 
-### Clearing IndexedDB (local vault)
+### Clearing IndexedDB (local vault cache)
 
-Clearing IndexedDB removes the locally cached encrypted vault. Your data is preserved on K-Perception's servers (for paid plans with cloud sync enabled). To clear IndexedDB:
+Clearing `IndexedDB` removes the locally cached encrypted vault. For paid plans with cloud sync enabled, your data remains on K-Perception's servers and will re-sync on next login.
 
-- Chrome/Edge: Developer Tools > Application > IndexedDB > kperception > Delete database.
+- **Chrome / Edge:** DevTools (F12) → Application → IndexedDB → kperception → Delete database.
 
-After clearing, you will need to log in and wait for the vault to re-sync.
+After clearing, you will need to log in again and wait for the vault to re-sync.
 
 ### Clearing the SAML session cookie
 
-You can clear the SAML session cookie through your browser's cookie manager. This will end your SSO session.
+You can delete the SAML session cookie through your browser's cookie manager. This ends your SSO session and requires re-authentication through your identity provider.
 
 ### Android
 
-On Android, K-Perception uses Capacitor Preferences for vault storage (not browser cookies or IndexedDB). Storage can be cleared via Android Settings > Apps > K-Perception > Storage > Clear Data. This removes the local vault cache; cloud-synced data is preserved.
-
-## Platform differences
-
-| Platform | Session token | Vault storage |
-|----------|--------------|--------------|
-| Web browser | sessionStorage | IndexedDB |
-| Windows desktop (Electron) | sessionStorage (Electron renderer) | IndexedDB (Electron renderer) |
-| Android | [NEEDS-VERIFY — Capacitor session storage mechanism] | Capacitor Preferences |
+On Android, K-Perception uses Capacitor Preferences for vault storage. Storage can be cleared via Android Settings → Apps → K-Perception → Storage → Clear Data. This removes the local vault cache; cloud-synced data is preserved on K-Perception's servers.
 
 ## Related articles
 
@@ -99,5 +94,5 @@ On Android, K-Perception uses Capacitor Preferences for vault storage (not brows
 ## Source references
 
 - `private-sync-worker/src/companySso.ts` lines 372, 465 — SAML `Set-Cookie` header (`HttpOnly; Secure; SameSite=Lax; Max-Age=2592000`)
-- `private-sync-worker/src/db.ts` line 128 — comment: "web: short-lived because sessions are browser-stored (localStorage / cookie)"
-- `private-sync-worker/src/index.ts` line 122 — comment: "we never send cookies; auth is via the Authorization header"
+- `private-sync-worker/src/index.ts` — comment: "we never send cookies; auth is via the Authorization header"
+- `private-sync-worker/src/db.ts` — session storage comment referencing browser-based session management

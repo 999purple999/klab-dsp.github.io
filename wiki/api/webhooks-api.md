@@ -35,7 +35,7 @@ Every webhook POST request includes these headers:
 
 | Header | Description |
 |--------|-------------|
-| `X-Kp-Event` | The event type string, e.g. `note.updated` |
+| `X-Kp-Event` | The event type string, e.g. `member_joined` |
 | `X-Kp-Delivery` | A unique UUID for this delivery attempt |
 | `X-Kp-Timestamp` | Unix timestamp (seconds) when the delivery was initiated |
 | `X-Kp-Signature` | `sha256=<HMAC-SHA256 hex>` of the request body |
@@ -141,15 +141,14 @@ Note that the client can also push custom `eventType` strings via the audit endp
 
 If the target URL does not respond with an HTTP 2xx status code within the request timeout, the delivery is retried using exponential backoff:
 
-| Attempt | Delay before retry |
-|---------|-------------------|
-| 1 (first retry) | 4 seconds |
-| 2 | 16 seconds |
-| 3 | 64 seconds |
-| 4 | 256 seconds |
-| 5 (final) | up to 1 hour (capped) |
+| Retry | Delay before retry |
+|-------|-------------------|
+| 1st retry | 4 seconds |
+| 2nd retry | 16 seconds |
+| 3rd retry | 64 seconds |
+| 4th retry (final) | 256 seconds |
 
-The formula is `min(3600, 4^attempt)` seconds. After 5 total attempts (the initial attempt plus 4 retries), the delivery is marked `giving-up` and no further retries are made.
+The formula is `min(3600, 4^attempt)` seconds. After 5 total delivery attempts (the initial attempt plus 4 retries), the delivery is marked `giving-up` and no further retries are made. Confirmed in `attemptWebhookDelivery` in `workspaceEnterprise.ts`: `if (attempt >= 5) { // give up }`.
 
 The `consecutive_failures` counter on the webhook is incremented each time a delivery reaches `giving-up` state.
 

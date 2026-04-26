@@ -11,77 +11,70 @@ source_refs:
   - "blueprint/project_blueprint.md"
 related:
   - "legal-overview"
-  - "gdpr"
   - "privacy-policy"
   - "sub-processors"
 ---
 
 # Data Processing Agreement (DPA)
 
-A Data Processing Agreement (DPA) is a legally binding contract between a data controller (your organisation) and a data processor (K-Perception) that governs how the processor handles personal data on behalf of the controller. Under GDPR (Article 28), a DPA is required whenever a processor processes personal data on behalf of a controller.
+A Data Processing Agreement (DPA) is a legally binding contract between a data controller (your organisation) and a data processor (K-Perception) that governs how the processor handles personal data on behalf of the controller. Under GDPR Article 28, a DPA is required whenever a processor processes personal data on behalf of a controller established in the EU, or processing personal data of EU residents.
 
-The DPA is described as available in the product blueprint. Contact your account manager or legal@kperception.com for the current DPA document and any questions about its terms before entering into a DPA.
+A DPA is available to Enterprise plan customers. To request the current DPA document, contact [PLACEHOLDER — update before publishing: insert legal contact email, e.g. legal@kperception.com].
 
 ## When you need a DPA
 
 You likely need a DPA with K-Perception if:
 
-- Your organisation is subject to GDPR (you are established in the EU, or you process data of EU residents).
-- You use K-Perception to process personal data belonging to individuals (employees, customers, patients, etc.).
-- You require your SaaS vendors to have a DPA in place as part of your vendor management programme.
+- Your organisation is subject to GDPR — either you are established in the EU or EEA, or you process personal data of EU or EEA residents.
+- You use K-Perception to process personal data belonging to individuals (employees, customers, or others).
+- Your vendor management or procurement programme requires executed DPAs with all SaaS providers.
 
-Even without a formal DPA requirement, organisations in regulated industries (healthcare, finance, legal) often require DPAs as part of their risk management processes.
+Organisations in regulated industries (healthcare, finance, legal) routinely require DPAs as part of their risk management processes, independent of any legal mandate.
 
 ## What the DPA covers
 
-A DPA with K-Perception should address (consistent with GDPR Article 28(3)):
+A DPA with K-Perception addresses the requirements of GDPR Article 28(3), including:
 
 - **Subject matter and duration** — the nature and purpose of the processing; the duration of the agreement.
-- **Nature of processing** — storage and retrieval of encrypted user content; management of workspace membership data.
-- **Type of personal data** — account metadata (email, display name, membership records). Note: encrypted content is not personal data accessible to K-Perception (it is ciphertext).
-- **Categories of data subjects** — your employees, collaborators, and (potentially) your customers.
-- **Obligations and rights of the controller** — what instructions the controller gives; the controller's right to audit.
-- **Processor obligations** — processing only on documented instructions; confidentiality; security measures; sub-processor management; assistance with data subject rights; deletion or return of data at contract end; audit rights.
-- **Sub-processors** — K-Perception's use of sub-processors (Cloudflare, Stripe, Google — see [Sub-processors](sub-processors.md)) and obligations to inform the controller of changes.
-- **International transfers** — Cloudflare infrastructure spans global PoPs; the DPA should address Standard Contractual Clauses (SCCs) or equivalent transfer mechanisms where applicable.
+- **Nature of processing** — storage and retrieval of encrypted user content; management of workspace membership metadata.
+- **Types of personal data** — account metadata (email address, display name, workspace membership records). Encrypted content blobs are not personal data accessible to K-Perception.
+- **Categories of data subjects** — your employees, collaborators, and, where applicable, your own customers.
+- **Controller obligations and rights** — the instructions the controller gives to the processor; the controller's right to audit.
+- **Processor obligations** — processing only on documented controller instructions; confidentiality; implementation of appropriate technical and organisational security measures; sub-processor management; assistance with data subject rights requests; deletion or return of data at contract end; cooperation with supervisory authorities.
+- **Sub-processors** — K-Perception's use of sub-processors (Cloudflare, Stripe, Google, Resend — see [Sub-processors](sub-processors.md)) and the obligation to inform the controller of intended changes.
+- **International transfers** — where personal data is transferred outside the EU/EEA (Cloudflare's global infrastructure spans data centres in multiple jurisdictions), the applicable transfer mechanism (Standard Contractual Clauses or equivalent) will be addressed in the DPA.
 
 ## K-Perception's role as data processor
 
-Under GDPR, K-Perception acts as a **data processor** for company workspace data. Your organisation is the **data controller**. K-Perception processes personal data (workspace membership metadata) only to provide the service and as directed by your configuration.
+Under GDPR, K-Perception acts as a **data processor** for workspace and company account metadata. Your organisation is the **data controller**. K-Perception processes personal data only to provide the service and as directed by your configuration.
 
-**Important limitation:** K-Perception is a data processor only for the metadata it can access. The encrypted content (notes, files, messages) is ciphertext that K-Perception cannot read. For that content, K-Perception acts as a "conduit" — it stores opaque blobs with no ability to process the underlying personal data. Many legal analyses treat this as outside the scope of traditional data processing obligations, though the legal position varies by jurisdiction.
+**Important scope limitation:** K-Perception processes only the metadata it can access in plaintext. Encrypted content (notes, files, messages, voice recordings) is stored as opaque ciphertext that K-Perception cannot read or process. Many legal analyses treat this ciphertext storage as outside the traditional scope of personal data processing by K-Perception, though the applicable legal position varies by jurisdiction. Consult your legal counsel for your specific deployment.
 
 ## How to request a DPA
 
-To request a DPA:
-
-1. Contact your K-Perception account manager or email legal@kperception.com.
-2. Request the current DPA template.
+1. Confirm you are on the Enterprise plan or are in the process of signing an Enterprise contract.
+2. Contact your K-Perception account manager or email [PLACEHOLDER — update before publishing: insert legal contact email] to request the current DPA template.
 3. Review the DPA with your legal counsel.
 4. Execute the DPA by counter-signing. Executed copies are retained by both parties.
 
-A DPA is available to **Enterprise** plan customers. Contact your account manager or legal@kperception.com to confirm DPA availability for Team plan customers.
-
 ## Sub-processor changes
 
-Under GDPR, you have the right to object to new sub-processors. K-Perception will provide advance notice of any material sub-processor changes. Contact your account manager or visit kperception.com for current details on notice periods and notification mechanisms. See [Sub-processors](sub-processors.md) for the current list.
+Under GDPR, you have the right to object to new sub-processors. K-Perception will provide advance written notice of any material sub-processor changes. [PLACEHOLDER — update before publishing: specify the notice period, e.g. 30 days.] See [Sub-processors](sub-processors.md) for the current list.
 
-## Data transfer mechanisms
+## International data transfers
 
-K-Perception uses Cloudflare infrastructure which spans global data centres. K-Perception uses Cloudflare's global infrastructure (Workers, D1, R2). Contact your account manager for EU data residency requirements, including which transfer mechanisms are used and whether Cloudflare's DPA is incorporated by reference.
+K-Perception uses Cloudflare's globally distributed infrastructure. Data written to Cloudflare D1 or R2 may be stored in or routed through data centres outside the EU/EEA. K-Perception addresses this through Cloudflare's Data Processing Addendum, which incorporates Standard Contractual Clauses. [PLACEHOLDER — update before publishing: confirm the specific transfer mechanism(s) in place and whether EU-only data residency can be configured for Enterprise customers.]
 
 ## Plan availability
 
-DPAs are available to **Enterprise** plan customers. Contact your account manager or legal@kperception.com to confirm availability for Team plan customers.
+DPAs are available to **Enterprise plan** customers. [PLACEHOLDER — update before publishing: confirm whether DPAs are also available on the Team plan.]
 
 ## Related articles
 
 - [Legal Overview](overview.md)
-- [GDPR Compliance Guide](../compliance/gdpr.md)
 - [Privacy Policy summary](privacy-policy.md)
 - [Sub-processors](sub-processors.md)
-- [Data Residency](../compliance/data-residency.md)
 
 ## Source references
 
-- `blueprint/project_blueprint.md` §4.7 — "DPA available" mention in GDPR compliance posture
+- `blueprint/project_blueprint.md` §4.7 — GDPR compliance posture; DPA availability noted
