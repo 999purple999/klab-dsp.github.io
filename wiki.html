@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-Perception Documentation · K-LAB DSP</title>
+<meta name="description" content="Complete K-Perception documentation: editor modes, workspaces, enterprise SSO, cryptographic architecture, and legal references.">
+<meta name="theme-color" content="#a855f7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:'Inter',sans-serif;background:#05060d;color:#d4dff4;min-height:100dvh;overflow-x:hidden}
+::selection{background:rgba(168,85,247,.35);color:#fff}
+
+:root{
+  --kp:#a855f7;--kp2:#7c3aed;--kp3:#c084fc;--kp4:#e9d5ff;
+  --bg:#05060d;--bg1:#0a0c18;--bg2:#0f1322;--bg3:#161b2e;--bg4:#1e2440;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.10);--border3:rgba(255,255,255,0.16);
+  --text1:#f5f7ff;--text2:#a8b4d0;--text3:#5a6485;--text4:#3d4567;
+  --r:10px;--r2:14px;--r3:20px;
+  --tr:240ms cubic-bezier(0.16,1,0.3,1);
+  --tr-fast:160ms cubic-bezier(0.16,1,0.3,1);
+  --font-display:'Michroma',monospace;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-grot:'Space Grotesk',sans-serif;
+  --grad-kp:linear-gradient(135deg,#c084fc 0%,#a855f7 45%,#7c3aed 100%);
+  --side-w:300px;
+}
+
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.03;pointer-events:none;z-index:0;mix-blend-mode:overlay}
+
+.scroll-progress{position:fixed;top:0;left:0;height:2px;z-index:200;background:var(--grad-kp);width:0%;box-shadow:0 0 12px rgba(168,85,247,.7);transition:width .1s linear}
+
+nav.topnav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1.25rem,4vw,3.5rem);height:64px;background:rgba(5,6,13,.85);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--font-display);font-size:.9rem;letter-spacing:.18em;color:var(--text1);text-decoration:none;display:flex;align-items:center;gap:11px}
+.nav-logo-mark{width:24px;height:24px;border-radius:6px;background:var(--grad-kp);position:relative;box-shadow:0 0 16px rgba(168,85,247,.5);overflow:hidden}
+.nav-logo-mark::before{content:'';position:absolute;inset:2px;background:#05060d;border-radius:4px}
+.nav-logo-mark::after{content:'K';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:.78rem;color:var(--kp3);font-weight:700}
+.nav-links{display:flex;align-items:center;gap:1.6rem}
+.nav-links a{color:var(--text2);font-size:.82rem;text-decoration:none;transition:color var(--tr-fast);font-weight:500}
+.nav-links a:hover,.nav-links a.active{color:var(--text1)}
+.nav-cta{padding:8px 16px;border-radius:8px;background:rgba(168,85,247,.14);border:1px solid rgba(168,85,247,.32);color:var(--kp3)!important;font-weight:600;font-size:.8rem!important;transition:all var(--tr-fast)!important}
+.nav-cta:hover{background:rgba(168,85,247,.26)!important;border-color:rgba(168,85,247,.55)!important}
+.nav-toggle{display:none;background:none;border:1px solid var(--border2);color:var(--text1);padding:7px 11px;border-radius:8px;cursor:pointer;font-size:.82rem}
+
+.wiki-header{padding:90px clamp(1.25rem,4vw,3.5rem) 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(168,85,247,.04),transparent)}
+.wiki-header-inner{max-width:1400px;margin:0 auto}
+.wiki-eyebrow{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--kp3);margin-bottom:10px;font-weight:700}
+.wiki-title{font-family:var(--font-display);font-size:clamp(1.6rem,3.5vw,2.6rem);color:var(--text1);letter-spacing:.03em;margin-bottom:8px}
+.wiki-title .grad{background:var(--grad-kp);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.wiki-tagline{font-size:.95rem;color:var(--text2);max-width:680px;line-height:1.6}
+
+.wiki-shell{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:var(--side-w) minmax(0,1fr);gap:0;padding:0 clamp(1.25rem,4vw,3.5rem) 80px}
+
+.wiki-sidebar{position:sticky;top:80px;align-self:start;max-height:calc(100dvh - 100px);overflow-y:auto;padding:24px 18px 24px 0;border-right:1px solid var(--border);scrollbar-width:thin;scrollbar-color:var(--border3) transparent}
+.wiki-sidebar::-webkit-scrollbar{width:6px}
+.wiki-sidebar::-webkit-scrollbar-thumb{background:var(--border3);border-radius:3px}
+
+.search-wrap{position:relative;margin-bottom:18px}
+.search-input{width:100%;padding:10px 14px 10px 36px;border-radius:9px;background:var(--bg2);border:1px solid var(--border2);color:var(--text1);font-size:.85rem;font-family:'Inter',sans-serif;outline:none;transition:all var(--tr-fast)}
+.search-input:focus{border-color:rgba(168,85,247,.5);box-shadow:0 0 0 3px rgba(168,85,247,.12)}
+.search-input::placeholder{color:var(--text3)}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.search-hint{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:var(--font-mono);font-size:.66rem;color:var(--text4);background:var(--bg3);padding:2px 6px;border-radius:4px;border:1px solid var(--border2)}
+
+.cat{margin-bottom:8px}
+.cat-summary{cursor:pointer;list-style:none;padding:8px 12px;font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);border-radius:7px;display:flex;align-items:center;gap:8px;user-select:none;transition:color var(--tr-fast)}
+.cat-summary::-webkit-details-marker{display:none}
+.cat-summary:hover{color:var(--text1)}
+.cat-summary::before{content:'›';transition:transform var(--tr-fast);font-size:1rem;line-height:0;color:var(--kp3)}
+.cat[open] > .cat-summary::before{transform:rotate(90deg)}
+.cat-summary .cat-icon{width:8px;height:8px;border-radius:2px;background:rgba(168,85,247,.5)}
+.cat-articles{padding:4px 0 4px 18px;display:flex;flex-direction:column;gap:1px}
+.cat-articles a{display:block;padding:7px 11px;font-size:.84rem;color:var(--text2);text-decoration:none;border-radius:6px;transition:all var(--tr-fast);border-left:2px solid transparent;line-height:1.4}
+.cat-articles a:hover{color:var(--text1);background:rgba(168,85,247,.06);border-left-color:rgba(168,85,247,.4)}
+.cat-articles a.active{color:var(--kp3);background:rgba(168,85,247,.1);border-left-color:var(--kp);font-weight:600}
+.cat-articles a .hl{background:rgba(252,211,77,.25);color:#fde68a;border-radius:2px;padding:0 2px}
+
+.search-empty{padding:14px;font-size:.82rem;color:var(--text3);text-align:center}
+
+.wiki-main{padding:24px 0 24px 36px;min-width:0}
+.article-meta{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:.7rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px;flex-wrap:wrap}
+.article-meta .pill{padding:3px 10px;border-radius:100px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.22);color:var(--kp3);font-weight:600}
+.article-meta .pill.team{background:rgba(168,85,247,.10);border-color:rgba(168,85,247,.3)}
+.article-meta .pill.ent{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#fca5a5}
+.article-meta .pill.legal{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.25);color:#fcd34d}
+
+article h1{font-family:var(--font-display);font-size:clamp(1.6rem,3.4vw,2.4rem);color:var(--text1);letter-spacing:.025em;line-height:1.15;margin-bottom:14px}
+article > p:first-of-type{font-size:1.05rem;color:var(--text2);line-height:1.7;margin-bottom:24px}
+article h2{font-family:var(--font-grot);font-size:1.4rem;color:var(--text1);font-weight:700;margin:36px 0 14px;letter-spacing:.005em;scroll-margin-top:90px;display:flex;align-items:center;gap:10px}
+article h2::before{content:'';display:inline-block;width:4px;height:18px;background:var(--grad-kp);border-radius:2px}
+article h3{font-family:var(--font-grot);font-size:1.05rem;color:var(--text1);font-weight:700;margin:24px 0 10px;scroll-margin-top:90px}
+article h4{font-family:var(--font-grot);font-size:.95rem;color:var(--kp3);font-weight:600;margin:18px 0 8px}
+article p{font-size:.95rem;color:var(--text2);line-height:1.75;margin-bottom:14px}
+article ul,article ol{margin:8px 0 16px 24px;color:var(--text2)}
+article ul li,article ol li{font-size:.93rem;line-height:1.7;margin-bottom:6px}
+article ul li::marker{color:var(--kp3)}
+article ol li::marker{color:var(--kp3);font-family:var(--font-mono)}
+article a{color:var(--kp3);text-decoration:none;border-bottom:1px solid rgba(168,85,247,.3);transition:border-color var(--tr-fast)}
+article a:hover{border-color:var(--kp3)}
+article strong{color:var(--text1);font-weight:700}
+article em{color:var(--text1);font-style:italic}
+article code{font-family:var(--font-mono);font-size:.86em;background:rgba(168,85,247,.08);color:var(--kp3);padding:1px 6px;border-radius:4px;border:1px solid rgba(168,85,247,.18)}
+article pre{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:18px;margin:14px 0 20px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;line-height:1.55;color:var(--text2)}
+article pre code{background:none;border:none;color:inherit;padding:0;font-size:inherit}
+article blockquote{border-left:3px solid var(--kp);padding:10px 18px;margin:14px 0;background:rgba(168,85,247,.04);border-radius:0 8px 8px 0;color:var(--text2);font-style:italic}
+article blockquote p{margin-bottom:0}
+article hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+article table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:.88rem;font-family:var(--font-grot)}
+article table th,article table td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+article table th{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--kp3);background:rgba(168,85,247,.04);font-weight:700}
+article table td{color:var(--text2)}
+article table tr:hover td{background:rgba(168,85,247,.02)}
+
+.callout{padding:14px 18px;border-radius:10px;margin:16px 0;border-left:3px solid;font-size:.9rem;line-height:1.65}
+.callout-info{background:rgba(91,140,255,.06);border-left-color:#5b8cff;color:var(--text2)}
+.callout-warn{background:rgba(245,158,11,.06);border-left-color:#f59e0b;color:var(--text2)}
+.callout-danger{background:rgba(239,68,68,.06);border-left-color:#ef4444;color:var(--text2)}
+.callout-ok{background:rgba(16,185,129,.06);border-left-color:#10b981;color:var(--text2)}
+.callout strong{color:var(--text1)}
+.callout-title{display:block;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+.callout-info .callout-title{color:#93c5fd}
+.callout-warn .callout-title{color:#fcd34d}
+.callout-danger .callout-title{color:#fca5a5}
+.callout-ok .callout-title{color:#86efac}
+
+.related{margin-top:40px;padding:18px 22px;background:linear-gradient(180deg,var(--bg2),var(--bg1));border:1px solid var(--border2);border-radius:12px}
+.related-title{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--kp3);margin-bottom:12px;font-weight:700}
+.related-list{display:flex;flex-direction:column;gap:6px}
+.related-list a{font-size:.88rem;color:var(--text2);text-decoration:none;border:none;display:flex;align-items:center;gap:8px;padding:6px 0;transition:color var(--tr-fast)}
+.related-list a:hover{color:var(--kp3)}
+.related-list a::before{content:'→';color:var(--text4);font-family:var(--font-mono);transition:color var(--tr-fast),transform var(--tr-fast)}
+.related-list a:hover::before{color:var(--kp3);transform:translateX(3px)}
+
+.article-foot{margin-top:42px;padding-top:24px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;font-size:.78rem;color:var(--text3);font-family:var(--font-mono)}
+.article-foot a{color:var(--text2);text-decoration:none;border:none}
+.article-foot a:hover{color:var(--kp3)}
+
+.wiki-home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:24px}
+.home-card{padding:20px;background:linear-gradient(180deg,var(--bg2),var(--bg1));border:1px solid var(--border);border-radius:12px;transition:all var(--tr);cursor:pointer;text-decoration:none;color:inherit;display:block;border-bottom:1px solid var(--border)!important}
+.home-card:hover{border-color:rgba(168,85,247,.32)!important;transform:translateY(-2px);box-shadow:0 8px 26px rgba(0,0,0,.4),0 0 24px rgba(168,85,247,.06)}
+.home-card-cat{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--kp3);margin-bottom:8px;font-weight:700}
+.home-card-title{font-family:var(--font-grot);font-size:1rem;color:var(--text1);font-weight:700;margin-bottom:6px}
+.home-card-desc{font-size:.82rem;color:var(--text3);line-height:1.55}
+
+.loading{padding:32px;text-align:center;color:var(--text3);font-family:var(--font-mono);font-size:.82rem}
+.loading::before{content:'';display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--kp3);box-shadow:0 0 12px var(--kp3);margin-right:10px;vertical-align:middle;animation:pulse-dot 1s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+
+footer.wiki-foot{border-top:1px solid var(--border);padding:2rem clamp(1.25rem,4vw,3.5rem);background:var(--bg)}
+.wiki-foot-inner{max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem}
+.wiki-foot-inner a{color:var(--text3);font-size:.78rem;text-decoration:none;margin-right:1rem;transition:color var(--tr-fast)}
+.wiki-foot-inner a:hover{color:var(--text1)}
+.wiki-foot-copy{font-size:.74rem;color:var(--text3);font-family:var(--font-mono)}
+
+@media(max-width:1100px){
+  :root{--side-w:260px}
+  .wiki-main{padding-left:24px}
+}
+
+@media(max-width:860px){
+  nav.topnav{padding:0 1.1rem}
+  .nav-links{display:none}
+  .nav-toggle{display:inline-flex;align-items:center;gap:6px}
+  .nav-cta{padding:7px 13px;font-size:.74rem!important}
+
+  .wiki-header{padding:84px 1.1rem 22px}
+
+  .wiki-shell{grid-template-columns:1fr;padding:0 1.1rem 60px}
+  .wiki-sidebar{position:fixed;top:0;left:-100%;width:min(85vw,320px);height:100dvh;max-height:none;background:var(--bg);border-right:1px solid var(--border2);z-index:90;padding:80px 16px 24px;transition:left var(--tr);box-shadow:8px 0 32px rgba(0,0,0,.5)}
+  .wiki-sidebar.open{left:0}
+  .wiki-sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:85;opacity:0;pointer-events:none;transition:opacity var(--tr)}
+  .wiki-sidebar-overlay.open{opacity:1;pointer-events:auto}
+
+  .wiki-main{padding:18px 0;border-left:none}
+  article h1{font-size:1.5rem}
+  article h2{font-size:1.2rem;margin:28px 0 12px}
+  article h3{font-size:1rem}
+  article p,article ul li,article ol li{font-size:.9rem}
+  article pre{padding:14px;font-size:.76rem}
+  article table{font-size:.8rem}
+  article table th,article table td{padding:8px 10px}
+
+  .mobile-side-toggle{display:inline-flex!important}
+}
+
+.mobile-side-toggle{display:none;align-items:center;gap:8px;padding:9px 14px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:9px;color:var(--kp3);font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;margin-bottom:18px;transition:all var(--tr-fast)}
+.mobile-side-toggle:hover{background:rgba(168,85,247,.2)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-mark"></span>
+    K-LAB DSP
+  </a>
+  <div class="nav-links">
+    <a href="index.html#kperception">K-Perception</a>
+    <a href="index.html#security">Security</a>
+    <a href="index.html#pricing">Pricing</a>
+    <a href="wiki.html" class="active">Docs</a>
+    <a href="index.html#binaura">BINAURA</a>
+    <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=1.0.0" class="nav-cta" target="_blank" rel="noopener noreferrer">Download</a>
+  </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰ Menu</button>
+</nav>
+
+<header class="wiki-header">
+  <div class="wiki-header-inner">
+    <div class="wiki-eyebrow">Documentation · v1.3.0</div>
+    <h1 class="wiki-title">K-Perception <span class="grad">Knowledge Base</span></h1>
+    <p class="wiki-tagline">Every feature, every workspace permission, every cryptographic primitive, every legal clause. The single source of truth for users, admins, and security teams.</p>
+  </div>
+</header>
+
+<div class="wiki-sidebar-overlay" id="sideOverlay"></div>
+
+<div class="wiki-shell">
+  <aside class="wiki-sidebar" id="wikiSidebar">
+    <div class="search-wrap">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="search-input" id="searchInput" type="search" placeholder="Search docs..." autocomplete="off">
+      <span class="search-hint">/</span>
+    </div>
+    <nav id="sideNav"><div class="loading">Loading manifest…</div></nav>
+  </aside>
+
+  <main class="wiki-main">
+    <button class="mobile-side-toggle" id="sideToggle">☰ Browse articles</button>
+    <article id="article"><div class="loading">Loading…</div></article>
+  </main>
+</div>
+
+<footer class="wiki-foot">
+  <div class="wiki-foot-inner">
+    <div>
+      <a href="index.html">← Home</a>
+      <a href="wiki.html#legal/terms-of-service">Terms</a>
+      <a href="wiki.html#legal/privacy-policy">Privacy</a>
+      <a href="wiki.html#legal/cookie-policy">Cookies</a>
+      <a href="wiki.html#legal/acceptable-use-policy">AUP</a>
+      <a href="wiki.html#legal/sla">SLA</a>
+      <a href="wiki.html#legal/data-processing-agreement">DPA</a>
+      <a href="wiki.html#legal/sub-processors">Subprocessors</a>
+      <a href="mailto:accessisoftwarefrancesco@gmail.com">Contact</a>
+    </div>
+    <span class="wiki-foot-copy">© 2026 K-LAB DSP · Documentation v1.3.0</span>
+  </div>
+</footer>
+
+<!-- marked.js for Markdown rendering (CDN, ~28KB gzipped) -->
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script>
+/* ─────────────────────────────────────────────────────── */
+/*  K-PERCEPTION WIKI ENGINE                                */
+/*  Loads wiki/manifest.json and lazy-fetches each MD file. */
+/* ─────────────────────────────────────────────────────── */
+
+const CATEGORIES = [
+  { id: 'start',    name: 'Getting Started' },
+  { id: 'editors',  name: 'Editor Modes' },
+  { id: 'org',      name: 'Notes & Organization' },
+  { id: 'sync',     name: 'Sync & Storage' },
+  { id: 'sharing',  name: 'Sharing' },
+  { id: 'collab',   name: 'Real-Time Collaboration' },
+  { id: 'ws',       name: 'Workspaces (Team)' },
+  { id: 'ent',      name: 'Enterprise' },
+  { id: 'sec',      name: 'Security & Cryptography' },
+  { id: 'auth',     name: 'Authentication' },
+  { id: 'plat',     name: 'Platforms' },
+  { id: 'cli',      name: 'CLI Tools' },
+  { id: 'comp',     name: 'Compliance' },
+  { id: 'api',      name: 'API Reference' },
+  { id: 'faq',      name: 'FAQ' },
+  { id: 'legal',    name: 'Legal' }
+];
+
+let MANIFEST = [];
+const BODY_CACHE = new Map();
+const SEARCH_CACHE = new Map();
+
+async function loadManifest(){
+  try {
+    const r = await fetch('wiki/manifest.json', { cache: 'no-cache' });
+    if (!r.ok) throw new Error('manifest.json HTTP ' + r.status);
+    MANIFEST = await r.json();
+  } catch (e) {
+    document.getElementById('sideNav').innerHTML = '<div class="search-empty">Failed to load manifest.<br>' + (e.message||'') + '</div>';
+    document.getElementById('article').innerHTML = '<h1>Documentation unavailable</h1><p>The manifest could not be loaded. If you are running this locally with <code>file://</code>, please serve via a local HTTP server (browsers block <code>fetch()</code> over <code>file://</code>).</p><p>Quick fix: run <code>python -m http.server 8080</code> or <code>npx serve .</code> in this folder, then open <code>http://localhost:8080/wiki.html</code>.</p>';
+    throw e;
+  }
+}
+
+async function fetchBody(slug){
+  if (BODY_CACHE.has(slug)) return BODY_CACHE.get(slug);
+  const r = await fetch('wiki/' + slug + '.md', { cache: 'no-cache' });
+  if (!r.ok) throw new Error('Article not found: ' + slug);
+  const md = await r.text();
+  BODY_CACHE.set(slug, md);
+  return md;
+}
+
+function renderMd(md){
+  const renderer = new marked.Renderer();
+  renderer.blockquote = (q) => {
+    const m = /^\s*\[!(INFO|WARN|DANGER|OK|TIP|NOTE)]\s*(.*)/is.exec(q);
+    if (m) {
+      const cls = { INFO:'info', NOTE:'info', TIP:'info', WARN:'warn', DANGER:'danger', OK:'ok' }[m[1].toUpperCase()] || 'info';
+      const lbl = { info:'Note', warn:'Warning', danger:'Danger', ok:'Confirmed' }[cls] || 'Note';
+      return `<div class="callout callout-${cls}"><span class="callout-title">${lbl}</span>${m[2].replace(/^<p>|<\/p>$/g,'')}</div>`;
+    }
+    return `<blockquote>${q}</blockquote>`;
+  };
+  marked.setOptions({ gfm: true, breaks: false, headerIds: true, mangle: false });
+  return marked.parse(md, { renderer });
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function highlight(title, q){
+  if (!q) return escapeHtml(title);
+  const lc = title.toLowerCase();
+  const i  = lc.indexOf(q);
+  if (i < 0) return escapeHtml(title);
+  return escapeHtml(title.slice(0,i)) + '<span class="hl">' + escapeHtml(title.slice(i,i+q.length)) + '</span>' + escapeHtml(title.slice(i+q.length));
+}
+
+async function buildSearchIndex(){
+  // Fetch every article body once for full-text search.
+  // Lazy: only fetch on first non-empty search.
+  if (SEARCH_CACHE.size) return;
+  const tasks = MANIFEST.map(async a => {
+    try { const md = await fetchBody(a.id); SEARCH_CACHE.set(a.id, md.toLowerCase()); }
+    catch { SEARCH_CACHE.set(a.id, ''); }
+  });
+  await Promise.all(tasks);
+}
+
+function renderSidebar(filter){
+  const f = (filter || '').trim().toLowerCase();
+  const nav = document.getElementById('sideNav');
+  let html = '';
+  let total = 0;
+
+  for (const cat of CATEGORIES) {
+    const arts = MANIFEST.filter(a => a.cat === cat.id);
+    let matched;
+    if (!f) matched = arts;
+    else matched = arts.filter(a =>
+      a.title.toLowerCase().includes(f) ||
+      (SEARCH_CACHE.get(a.id) || '').includes(f)
+    );
+    if (!matched.length) continue;
+    total += matched.length;
+    const open = (f || cat.id === 'start') ? 'open' : '';
+    html += `<details class="cat" ${open}><summary class="cat-summary"><span class="cat-icon"></span>${escapeHtml(cat.name)}</summary><div class="cat-articles">`;
+    for (const a of matched) {
+      html += `<a href="#${a.id}" data-id="${a.id}">${highlight(a.title, f)}</a>`;
+    }
+    html += '</div></details>';
+  }
+  if (!total) html = '<div class="search-empty">No articles match "' + escapeHtml(f) + '"</div>';
+  nav.innerHTML = html;
+  highlightActive();
+}
+
+function highlightActive(){
+  const id = (location.hash || '').replace(/^#/, '') || 'home';
+  document.querySelectorAll('#sideNav a').forEach(a => a.classList.toggle('active', a.dataset.id === id));
+}
+
+async function renderArticle(id){
+  const article = document.getElementById('article');
+  if (!id || id === 'home') return renderHome();
+  const a = MANIFEST.find(x => x.id === id);
+  if (!a) return renderHome();
+  article.innerHTML = '<div class="loading">Loading article…</div>';
+  try {
+    const md = await fetchBody(id);
+    const cat = CATEGORIES.find(c => c.id === a.cat);
+    const planPill = a.plan ? `<span class="pill ${a.plan}">${a.planLabel || a.plan}</span>` : '';
+    const platPill = a.platform ? `<span class="pill">${a.platform}</span>` : '';
+    const meta = `<div class="article-meta"><span class="pill">${cat ? escapeHtml(cat.name) : ''}</span>${planPill}${platPill}<span>Last reviewed 2026-04-26</span></div>`;
+    let related = '';
+    if (a.related && a.related.length) {
+      const items = a.related.map(rid => {
+        const r = MANIFEST.find(x => x.id === rid);
+        return r ? `<a href="#${r.id}">${escapeHtml(r.title)}</a>` : '';
+      }).filter(Boolean).join('');
+      if (items) related = `<div class="related"><div class="related-title">Related articles</div><div class="related-list">${items}</div></div>`;
+    }
+    const foot = `<div class="article-foot"><a href="#home">← Documentation home</a><span>Spotted an issue? <a href="mailto:accessisoftwarefrancesco@gmail.com?subject=K-Perception%20docs:%20${encodeURIComponent(a.title)}">Email us</a></span></div>`;
+    article.innerHTML = meta + renderMd(md) + related + foot;
+    highlightActive();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (e) {
+    article.innerHTML = `<h1>Article not found</h1><p>The file <code>wiki/${escapeHtml(id)}.md</code> could not be loaded.</p><p><a href="#home">Return to documentation home</a></p>`;
+  }
+}
+
+function renderHome(){
+  const article = document.getElementById('article');
+  let cards = '';
+  for (const cat of CATEGORIES) {
+    const arts = MANIFEST.filter(a => a.cat === cat.id);
+    if (!arts.length) continue;
+    cards += `<a href="#${arts[0].id}" class="home-card"><div class="home-card-cat">${escapeHtml(cat.name)}</div><div class="home-card-title">${escapeHtml(arts[0].title)}</div><div class="home-card-desc">${arts.length} article${arts.length>1?'s':''} in this category. Click to start reading.</div></a>`;
+  }
+  const popular = [
+    ['getting-started/overview',    'Getting Started', 'What is K-Perception?',          'A 5-minute orientation on what the product does and why it exists.'],
+    ['security/overview',           'Security',        'Cryptographic architecture',     'How AES-256-GCM, Argon2id, and HKDF combine into the zero-knowledge backend.'],
+    ['workspaces/overview',         'Workspaces',      'Workspaces overview',             'Sections, channels, files, members, groups — all encrypted under one roof.'],
+    ['enterprise/saml-okta',        'Enterprise',      'SAML 2.0 with Okta',              'Step-by-step IdP-initiated and SP-initiated SSO setup.'],
+    ['legal/terms-of-service',      'Legal',           'Terms of Service',               'The contract you accept when you create an account or download the app.'],
+    ['faq/general',                 'FAQ',             'Frequently asked questions',     'Real questions, answered with concrete detail.']
+  ].map(([id,c,t,d]) => `<a href="#${id}" class="home-card"><div class="home-card-cat">${c}</div><div class="home-card-title">${t}</div><div class="home-card-desc">${d}</div></a>`).join('');
+
+  article.innerHTML = `
+    <h1>Documentation home</h1>
+    <p>Welcome to the K-Perception knowledge base. Browse categories below or use the search bar to find specific topics. Every article is versioned to v1.3.0 and last reviewed 2026-04-26.</p>
+    <div class="callout callout-info"><span class="callout-title">Tip · keyboard shortcut</span>Press <code>/</code> anywhere on this page to focus the search.</div>
+    <h2>Browse by category</h2>
+    <div class="wiki-home-grid">${cards}</div>
+    <h2>Most popular</h2>
+    <div class="wiki-home-grid">${popular}</div>
+  `;
+  highlightActive();
+}
+
+async function init(){
+  await loadManifest();
+  renderSidebar();
+  const id = (location.hash || '').replace(/^#/, '') || 'home';
+  renderArticle(id);
+
+  let searchPrimed = false;
+  document.getElementById('searchInput').addEventListener('input', async e => {
+    const v = e.target.value;
+    if (v && !searchPrimed) {
+      searchPrimed = true;
+      buildSearchIndex().then(() => renderSidebar(v));
+    }
+    renderSidebar(v);
+  });
+
+  window.addEventListener('hashchange', () => {
+    const id = (location.hash || '').replace(/^#/, '') || 'home';
+    renderArticle(id);
+    closeSide();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      document.getElementById('searchInput').focus();
+    }
+    if (e.key === 'Escape' && document.activeElement.id === 'searchInput') document.getElementById('searchInput').blur();
+  });
+
+  const side = document.getElementById('wikiSidebar');
+  const overlay = document.getElementById('sideOverlay');
+  const open  = () => { side.classList.add('open'); overlay.classList.add('open'); };
+  const close = () => { side.classList.remove('open'); overlay.classList.remove('open'); };
+  document.getElementById('sideToggle').addEventListener('click', open);
+  document.getElementById('navToggle').addEventListener('click', open);
+  overlay.addEventListener('click', close);
+  window._closeSide = close;
+
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('scrollProgress').style.width = (window.scrollY / h * 100) + '%';
+  }, { passive: true });
+}
+
+function closeSide(){ if (window._closeSide) window._closeSide(); }
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2523 @@
+{
+  "Getting Started": [
+    {
+      "slug": "account-and-login",
+      "title": "Account setup and login",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web",
+        "macos"
+      ]
+    },
+    {
+      "slug": "choosing-a-plan",
+      "title": "Choosing a plan",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web",
+        "macos"
+      ]
+    },
+    {
+      "slug": "first-vault",
+      "title": "Creating your first vault",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web",
+        "macos"
+      ]
+    },
+    {
+      "slug": "install-android",
+      "title": "Install on Android",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "android"
+      ]
+    },
+    {
+      "slug": "install-windows",
+      "title": "Install on Windows",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "slug": "upgrading-and-billing",
+      "title": "Upgrading, downgrading, and billing",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web",
+        "macos"
+      ]
+    },
+    {
+      "slug": "web-pwa",
+      "title": "Using K-Perception in a browser (PWA)",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "web",
+        "windows",
+        "android",
+        "macos"
+      ]
+    },
+    {
+      "slug": "overview",
+      "title": "What is K-Perception?",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web",
+        "macos"
+      ]
+    }
+  ],
+  "Editors": [
+    {
+      "slug": "attachments",
+      "title": "Attachments",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "canvas",
+      "title": "Canvas editor",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "command-palette",
+      "title": "Command palette",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "docs",
+      "title": "Docs editor",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "editors-overview",
+      "title": "Editor modes overview",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "editorial",
+      "title": "Editorial editor",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "exports",
+      "title": "Exports",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "keyboard-shortcuts",
+      "title": "Keyboard shortcuts",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "web"
+      ]
+    },
+    {
+      "slug": "latex",
+      "title": "LaTeX editor",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "markdown",
+      "title": "Markdown editor",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "pdf-reader",
+      "title": "PDF reader",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "plain-text",
+      "title": "Plain text editor",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "revision-history",
+      "title": "Revision history",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "sheets",
+      "title": "Sheets editor",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "slash-commands",
+      "title": "Slash commands",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "voice-recorder",
+      "title": "Voice recorder",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "Organization": [
+    {
+      "slug": "collections",
+      "title": "Collections",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "spaces",
+      "title": "Encrypted Spaces",
+      "audience": "user",
+      "plan": [
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "folders",
+      "title": "Folders",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "knowledge-graph",
+      "title": "Knowledge Graph",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows"
+      ]
+    },
+    {
+      "slug": "pinning",
+      "title": "Pinning Notes",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "quick-capture",
+      "title": "Quick capture",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "search",
+      "title": "Search",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "tags",
+      "title": "Tags",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "trash-and-purge",
+      "title": "Trash and Auto-Purge",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "Sharing": [
+    {
+      "slug": "comments",
+      "title": "Comments on Shared Notes",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "password-protection",
+      "title": "Password-Protected Share Links",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "revocation",
+      "title": "Revoking Share Links",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "permissions",
+      "title": "Share Link Permission Levels",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "share-links",
+      "title": "Share Links",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "share-viewer",
+      "title": "Share viewer",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "web"
+      ]
+    }
+  ],
+  "Sync & Storage": [
+    {
+      "slug": "413-enforcement",
+      "title": "413 quota enforcement",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "cross-device",
+      "title": "Cross-device sync",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "kpx-format",
+      "title": "KPX encrypted export format",
+      "audience": "developer",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "merge-conflicts",
+      "title": "Merge conflicts",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "offline-first",
+      "title": "Offline-first architecture",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "pdf-import",
+      "title": "PDF import",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "android",
+        "windows",
+        "web"
+      ]
+    },
+    {
+      "slug": "pull-polling",
+      "title": "Pull sync and polling",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "storage-quotas",
+      "title": "Storage quotas",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "sync-queue",
+      "title": "Sync queue",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "Collaboration": [
+    {
+      "slug": "awareness-and-presence",
+      "title": "Awareness and presence",
+      "audience": "user",
+      "plan": [
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "deep-link-routing",
+      "title": "Deep link routing",
+      "audience": "developer",
+      "plan": [
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "docroom-protocol",
+      "title": "DocRoom protocol",
+      "audience": "developer",
+      "plan": [
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "mobile-collab-editor",
+      "title": "Mobile collaborative editor",
+      "audience": "user",
+      "plan": [
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "android"
+      ]
+    },
+    {
+      "slug": "realtime-yjs",
+      "title": "Real-time collaboration with Y.js CRDT",
+      "audience": "user",
+      "plan": [
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "reconnect-backoff",
+      "title": "Reconnect behaviour and backoff",
+      "audience": "user",
+      "plan": [
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "version-snapshots",
+      "title": "Version snapshots in collaboration",
+      "audience": "user",
+      "plan": [
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "Workspaces": [
+    {
+      "slug": "admin-console",
+      "title": "Admin console",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "workspaces/creating-a-workspace",
+      "title": "Creating a Workspace",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "workspaces/channels",
+      "title": "Encrypted Channels",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "file-versioning",
+      "title": "File version history",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "files-and-directories",
+      "title": "Files and directories",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "groups",
+      "title": "Groups",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "invitations",
+      "title": "Invitations",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "members-and-roles",
+      "title": "Members and roles",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "per-file-acl",
+      "title": "Per-file access control",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "workspaces/sections",
+      "title": "Sections",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "shared-with-me",
+      "title": "Shared with me",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "transfer-ownership",
+      "title": "Transfer workspace ownership",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "webhooks",
+      "title": "Webhooks",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-keys",
+      "title": "Workspace API keys",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "backup-restore",
+      "title": "Workspace backup and restore",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "calendar",
+      "title": "Workspace calendar",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "citations",
+      "title": "Workspace citations",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "gantt",
+      "title": "Workspace Gantt chart",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "presence",
+      "title": "Workspace presence",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "workspaces/overview",
+      "title": "Workspaces Overview",
+      "audience": "user",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "Enterprise": [
+    {
+      "slug": "audit-log",
+      "title": "Company Audit Log",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "enterprise/company-shell",
+      "title": "Company shell",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "compliance-tab",
+      "title": "Compliance Tab",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "dangerous-ops",
+      "title": "Dangerous Operations Overview",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "domain-restriction",
+      "title": "Email domain restriction",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "enterprise/overview",
+      "title": "Enterprise plan overview",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "gdpr-deletion",
+      "title": "GDPR Data Deletion",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "enterprise/ip-allowlist",
+      "title": "IP allowlist",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "mfa-enforcement",
+      "title": "MFA enforcement",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "oidc",
+      "title": "OIDC SSO for Companies",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "remote-wipe",
+      "title": "Remote Wipe",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "saml-azure-ad",
+      "title": "SAML 2.0 SSO with Azure AD (Entra ID)",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "saml-google-workspace",
+      "title": "SAML 2.0 SSO with Google Workspace",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "saml-okta",
+      "title": "SAML 2.0 SSO with Okta",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "saml-onelogin",
+      "title": "SAML 2.0 SSO with OneLogin",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "scim-overview",
+      "title": "SCIM 2.0 Provisioning Overview",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "scim-groups",
+      "title": "SCIM Group Sync",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "scim-azure-ad",
+      "title": "SCIM Provisioning with Azure AD (Entra ID)",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "scim-okta",
+      "title": "SCIM Provisioning with Okta",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "elevation-tokens",
+      "title": "TOTP Step-Up Elevation Tokens",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "rotate-key",
+      "title": "Workspace Key Rotation",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "Security": [
+    {
+      "slug": "aes-gcm-encryption",
+      "title": "AES-256-GCM Encryption",
+      "audience": "developer",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "argon2id-kdf",
+      "title": "Argon2id Key Derivation Function",
+      "audience": "developer",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "data-at-rest",
+      "title": "Data at Rest",
+      "audience": "developer",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "e2ee-collaboration",
+      "title": "End-to-End Encrypted Real-Time Collaboration",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "ip-allowlist-security",
+      "title": "IP Allowlist Security",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "threat-model",
+      "title": "K-Perception Threat Model",
+      "audience": "developer",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "security-overview",
+      "title": "Security Architecture Overview",
+      "audience": "developer",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "session-security",
+      "title": "Session Token Security",
+      "audience": "developer",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "share-link-security",
+      "title": "Share Link Security Model",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "totp-step-up",
+      "title": "TOTP Step-Up Authentication for Dangerous Operations",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "key-hierarchy",
+      "title": "Workspace Key Hierarchy",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "zero-knowledge-model",
+      "title": "Zero-Knowledge Model",
+      "audience": "developer",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "Authentication": [
+    {
+      "slug": "account-recovery",
+      "title": "Account Recovery",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "auth-overview",
+      "title": "Authentication Overview",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "biometric-unlock",
+      "title": "Biometric Unlock",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "android"
+      ]
+    },
+    {
+      "slug": "device-management",
+      "title": "Device Management",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "email-password",
+      "title": "Email + Password Authentication",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "google-oauth",
+      "title": "Google OAuth2 PKCE Authentication",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "sessions",
+      "title": "Session Management",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "totp-2fa",
+      "title": "TOTP Two-Factor Authentication",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "API": [
+    {
+      "slug": "api-authentication",
+      "title": "API Authentication",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-changelog",
+      "title": "API Changelog",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-errors",
+      "title": "API Error Reference",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-overview",
+      "title": "API Overview",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-pagination",
+      "title": "API Pagination",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-rate-limits",
+      "title": "API Rate Limits",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-companies",
+      "title": "Company API Endpoints",
+      "audience": "developer",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-scim",
+      "title": "SCIM 2.0 API",
+      "audience": "developer",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-webhooks",
+      "title": "Webhooks API Reference",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "api-workspaces",
+      "title": "Workspace API Endpoints",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "CLI": [
+    {
+      "slug": "cli-overview",
+      "title": "CLI Tools Overview",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "cli-kp-admin",
+      "title": "kp-admin CLI Reference",
+      "audience": "developer",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "cli-kp-ws",
+      "title": "kp-ws CLI Reference",
+      "audience": "developer",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "Platforms": [
+    {
+      "slug": "android",
+      "title": "Android Mobile",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "android"
+      ]
+    },
+    {
+      "slug": "cross-platform-sync",
+      "title": "Cross-Platform Sync",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "notifications",
+      "title": "Notifications",
+      "audience": "user",
+      "plan": [
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "offline-capability",
+      "title": "Offline Capability",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "platform-overview",
+      "title": "Platform Overview",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "web-pwa",
+      "title": "Web PWA",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "web"
+      ]
+    },
+    {
+      "slug": "windows",
+      "title": "Windows Desktop",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows"
+      ]
+    }
+  ],
+  "Compliance": [
+    {
+      "slug": "audit-retention",
+      "title": "Audit Log Retention",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "compliance-overview",
+      "title": "Compliance Overview",
+      "audience": "admin",
+      "plan": [
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "data-residency",
+      "title": "Data Residency",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "gdpr",
+      "title": "GDPR Compliance Guide",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "hipaa",
+      "title": "HIPAA Compliance Guide",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "soc2",
+      "title": "SOC 2 Overview",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "Legal": [
+    {
+      "slug": "acceptable-use-policy",
+      "title": "Acceptable Use Policy — Summary",
+      "audience": "admin",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "cookie-policy",
+      "title": "Cookie Policy",
+      "audience": "admin",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "data-processing-agreement",
+      "title": "Data Processing Agreement (DPA)",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "hipaa-baa",
+      "title": "HIPAA Business Associate Agreement",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "legal-overview",
+      "title": "Legal Overview",
+      "audience": "admin",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "privacy-policy",
+      "title": "Privacy Policy — Summary",
+      "audience": "admin",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "security-disclosure",
+      "title": "Security Vulnerability Disclosure Policy",
+      "audience": "admin",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "sla",
+      "title": "Service Level Agreement",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "sub-processors",
+      "title": "Sub-processors",
+      "audience": "admin",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "terms-of-service",
+      "title": "Terms of Service — Summary",
+      "audience": "admin",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "android",
+        "web"
+      ]
+    }
+  ],
+  "FAQ": [
+    {
+      "slug": "faq-billing",
+      "title": "Billing FAQ",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "faq-enterprise",
+      "title": "Enterprise FAQ",
+      "audience": "admin",
+      "plan": [
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "faq-general",
+      "title": "General FAQ",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "faq-security",
+      "title": "Security FAQ",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "android",
+        "web"
+      ]
+    },
+    {
+      "slug": "faq-troubleshooting",
+      "title": "Troubleshooting FAQ",
+      "audience": "user",
+      "plan": [
+        "local",
+        "guardian",
+        "vault",
+        "lifetime",
+        "team",
+        "enterprise"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "android",
+        "web"
+      ]
+    }
+  ]
+}

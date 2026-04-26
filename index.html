@@ -478,6 +478,30 @@ input:checked+.toggle-slider::before{transform:translateY(-50%) translateX(20px)
 .stat.bn .stat-num{color:var(--bn)}
 
 /* ─────────────────────────────────────────────────────────────────────── */
+/*  DOCS SECTION                                                             */
+/* ─────────────────────────────────────────────────────────────────────── */
+.docs-section{background:linear-gradient(180deg,var(--bg1) 0%,var(--bg) 100%);border-top:1px solid var(--border);position:relative;overflow:hidden}
+.docs-section::before{content:'';position:absolute;top:-60px;right:-120px;width:680px;height:680px;background:radial-gradient(circle,rgba(168,85,247,.07) 0%,transparent 65%);pointer-events:none;filter:blur(60px)}
+.docs-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.docs-kicker{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.docs-kicker-line{flex:0 0 28px;height:2px;background:var(--grad-kp);border-radius:2px}
+.docs-kicker-txt{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--kp3);font-weight:700}
+.docs-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.docs-copy h2{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.6rem);color:var(--text1);letter-spacing:.04em;margin-bottom:16px;line-height:1.2}
+.docs-copy p{font-size:.95rem;color:var(--text2);line-height:1.7;margin-bottom:28px;max-width:460px}
+.docs-cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.docs-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.docs-cat{display:flex;flex-direction:column;gap:5px;padding:14px 16px;border-radius:12px;background:var(--bg2);border:1px solid var(--border2);text-decoration:none;transition:all var(--tr-fast);position:relative;overflow:hidden}
+.docs-cat::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 60% 40%,rgba(168,85,247,.08),transparent 70%);opacity:0;transition:opacity var(--tr-fast)}
+.docs-cat:hover{border-color:rgba(168,85,247,.35);transform:translateY(-2px);box-shadow:0 8px 28px rgba(168,85,247,.1)}
+.docs-cat:hover::before{opacity:1}
+.docs-cat-icon{font-size:1.1rem;line-height:1;margin-bottom:2px}
+.docs-cat-name{font-size:.8rem;font-weight:700;color:var(--text1);font-family:var(--font-grot)}
+.docs-cat-count{font-size:.72rem;color:var(--text3);font-family:var(--font-mono)}
+@media(max-width:800px){.docs-grid{grid-template-columns:1fr;gap:32px}.docs-cats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.docs-cats{grid-template-columns:repeat(2,1fr)}}
+
+/* ─────────────────────────────────────────────────────────────────────── */
 /*  WAITLIST                                                                */
 /* ─────────────────────────────────────────────────────────────────────── */
 .waitlist-section{background:linear-gradient(180deg,var(--bg) 0%,var(--bg1) 100%);border-top:1px solid var(--border);position:relative;overflow:hidden}
@@ -712,6 +736,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
     <a href="#collaboration">Collab</a>
     <a href="#pricing">Pricing</a>
     <a href="#binaura">BINAURA</a>
+    <a href="wiki.html" class="nav-cta" style="margin-right:4px">Docs</a>
     <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=1.0.0" class="btn-kp-ghost nav-cta" target="_blank" rel="noopener noreferrer">Download</a>
   </div>
 </nav>
@@ -1625,6 +1650,58 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
   </div>
 </section>
 
+<!-- ── DOCUMENTATION ─────────────────────────────────────────────────── -->
+<section class="section docs-section" id="docs">
+  <div class="section-inner docs-inner reveal">
+    <div class="docs-kicker">
+      <span class="docs-kicker-line"></span>
+      <span class="docs-kicker-txt">Documentation · v1.3.0</span>
+    </div>
+    <div class="docs-grid">
+      <div class="docs-copy">
+        <h2>Every feature.<br>Fully documented.</h2>
+        <p>From cryptographic key derivation to SAML IdP setup, every corner of K-Perception has deep reference material. Search across 150+ articles, legal docs, and enterprise guides — all versioned to v1.3.0.</p>
+        <div class="docs-cta-row">
+          <a href="wiki.html" class="btn btn-kp">Open Documentation →</a>
+          <a href="wiki.html#security/zero-knowledge-model" class="btn btn-kp-ghost">Zero-Knowledge deep dive</a>
+        </div>
+      </div>
+      <div class="docs-cats">
+        <a href="wiki.html#getting-started/overview" class="docs-cat">
+          <span class="docs-cat-icon">🚀</span>
+          <span class="docs-cat-name">Getting Started</span>
+          <span class="docs-cat-count">8 articles</span>
+        </a>
+        <a href="wiki.html#editors/overview" class="docs-cat">
+          <span class="docs-cat-icon">✏️</span>
+          <span class="docs-cat-name">Editor Modes</span>
+          <span class="docs-cat-count">16 articles</span>
+        </a>
+        <a href="wiki.html#security/overview" class="docs-cat">
+          <span class="docs-cat-icon">🔐</span>
+          <span class="docs-cat-name">Security</span>
+          <span class="docs-cat-count">12 articles</span>
+        </a>
+        <a href="wiki.html#enterprise/overview" class="docs-cat">
+          <span class="docs-cat-icon">🏢</span>
+          <span class="docs-cat-name">Enterprise</span>
+          <span class="docs-cat-count">21 articles</span>
+        </a>
+        <a href="wiki.html#collaboration/realtime-yjs" class="docs-cat">
+          <span class="docs-cat-icon">⚡</span>
+          <span class="docs-cat-name">Collaboration</span>
+          <span class="docs-cat-count">7 articles</span>
+        </a>
+        <a href="wiki.html#legal/terms-of-service" class="docs-cat">
+          <span class="docs-cat-icon">📋</span>
+          <span class="docs-cat-name">Legal</span>
+          <span class="docs-cat-count">10 articles</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── WAITLIST ──────────────────────────────────────────────────────── -->
 <section class="section waitlist-section" id="waitlist">
   <div class="section-inner waitlist-inner reveal">
@@ -1662,6 +1739,13 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       <a href="#security">Security</a>
       <a href="#collaboration">E2EE collab</a>
       <a href="#about">About</a>
+    </div>
+    <div class="footer-col">
+      <h6>Docs</h6>
+      <a href="wiki.html">Documentation</a>
+      <a href="wiki.html#legal/terms-of-service">Terms of Service</a>
+      <a href="wiki.html#legal/privacy-policy">Privacy Policy</a>
+      <a href="wiki.html#faq/general">FAQ</a>
     </div>
     <div class="footer-col">
       <h6>Connect</h6>

@@ -1,0 +1,3924 @@
+[
+  {
+    "slug": "413-enforcement",
+    "title": "413 quota enforcement",
+    "category": "Sync & Storage",
+    "tags": [
+      "quota",
+      "storage",
+      "413",
+      "upload"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "413 quota enforcement What it is When an upload would push your R2 storage usage above your plan's quota limit, the Cloudflare Worker rejects the request with HTTP 413 Request Entity Too Large and a J"
+  },
+  {
+    "slug": "acceptable-use-policy",
+    "title": "Acceptable Use Policy — Summary",
+    "category": "Legal",
+    "tags": [
+      "aup",
+      "legal",
+      "abuse",
+      "security"
+    ],
+    "audience": "admin",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Acceptable Use Policy — Summary This article is a plain-language summary of K-Perception's Acceptable Use Policy (AUP). It is provided for convenience and does not replace the binding legal document. "
+  },
+  {
+    "slug": "account-recovery",
+    "title": "Account Recovery",
+    "category": "Authentication",
+    "tags": [
+      "recovery",
+      "recovery-code",
+      "vault",
+      "PBKDF2",
+      "disaster-recovery"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Account Recovery What it is K-Perception uses a 256-bit random recovery code to allow workspace owners to recover access to workspace content after losing their vault password or primary authenticatio"
+  },
+  {
+    "slug": "account-and-login",
+    "title": "Account setup and login",
+    "category": "Getting Started",
+    "tags": [
+      "account",
+      "login",
+      "oauth2",
+      "pkce",
+      "jwt",
+      "session",
+      "biometric",
+      "multi-device"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web",
+      "macos"
+    ],
+    "excerpt": "Account setup and login What it is An account in K-Perception is a server-side identity — an email address and authentication credential stored in the Cloudflare Workers backend. Your account is separ"
+  },
+  {
+    "slug": "admin-console",
+    "title": "Admin console",
+    "category": "Workspaces",
+    "tags": [
+      "admin",
+      "console",
+      "settings",
+      "management"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Admin console What it is The admin console is the central management interface for a workspace. It is accessible only to workspace Admins and the Owner. The console is implemented in and contains 11 t"
+  },
+  {
+    "slug": "aes-gcm-encryption",
+    "title": "AES-256-GCM Encryption",
+    "category": "Security",
+    "tags": [
+      "AES-GCM",
+      "encryption",
+      "authenticated-encryption",
+      "nonce",
+      "ciphertext"
+    ],
+    "audience": "developer",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "AES-256-GCM Encryption What it is K-Perception uses AES-256-GCM (Advanced Encryption Standard, 256-bit key, Galois/Counter Mode) as the single symmetric encryption algorithm throughout the system. Eve"
+  },
+  {
+    "slug": "android",
+    "title": "Android Mobile",
+    "category": "Platforms",
+    "tags": [
+      "android",
+      "mobile",
+      "capacitor",
+      "biometric",
+      "sync",
+      "keystore"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "android"
+    ],
+    "excerpt": "Android Mobile K-Perception for Android is built on Capacitor 6 (). It delivers the core note-taking experience in a mobile-optimized shell with biometric unlock, a bottom toolbar editor, and 30-secon"
+  },
+  {
+    "slug": "api-authentication",
+    "title": "API Authentication",
+    "category": "API",
+    "tags": [
+      "api",
+      "authentication",
+      "api-keys",
+      "jwt",
+      "bearer"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "API Authentication The K-Perception API supports two authentication methods: JWT Bearer tokens for user-context calls and API Keys for workspace automation. JWT Bearer token JWT Bearer tokens are issu"
+  },
+  {
+    "slug": "api-changelog",
+    "title": "API Changelog",
+    "category": "API",
+    "tags": [
+      "api",
+      "changelog",
+      "migrations",
+      "versioning"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "API Changelog This page summarises the database migrations and significant API surface changes by migration number. Each migration corresponds to a schema change deployed to the K-Perception worker. A"
+  },
+  {
+    "slug": "api-errors",
+    "title": "API Error Reference",
+    "category": "API",
+    "tags": [
+      "api",
+      "errors",
+      "error-codes",
+      "http-status"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "API Error Reference All error responses from the K-Perception API use a consistent JSON envelope: ```detailauthrequiredtwofarequiredelevationrequiredforbiddenipnotallowedmfarequirednotfoundconflicttie"
+  },
+  {
+    "slug": "api-overview",
+    "title": "API Overview",
+    "category": "API",
+    "tags": [
+      "api",
+      "authentication",
+      "rest",
+      "overview"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "API Overview The K-Perception API lets you integrate workspace data into your own tooling, automate administrative tasks, and build on top of the K-Perception platform. All content served by the API i"
+  },
+  {
+    "slug": "api-pagination",
+    "title": "API Pagination",
+    "category": "API",
+    "tags": [
+      "api",
+      "pagination",
+      "cursor",
+      "after"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "API Pagination K-Perception uses cursor-based pagination for endpoints that can return large result sets. This approach is efficient for incremental synchronisation and avoids the \"page drift\" problem"
+  },
+  {
+    "slug": "api-rate-limits",
+    "title": "API Rate Limits",
+    "category": "API",
+    "tags": [
+      "api",
+      "rate-limits",
+      "throttling",
+      "429"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "API Rate Limits K-Perception enforces sliding-window rate limits on all endpoints to protect against abuse and ensure fair access. The rate limiter is backed by a Cloudflare Durable Object () which se"
+  },
+  {
+    "slug": "argon2id-kdf",
+    "title": "Argon2id Key Derivation Function",
+    "category": "Security",
+    "tags": [
+      "Argon2id",
+      "KDF",
+      "key-derivation",
+      "PBKDF2",
+      "password-hashing",
+      "OWASP"
+    ],
+    "audience": "developer",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Argon2id Key Derivation Function What it is K-Perception uses Argon2id as the primary key derivation function (KDF) for all new vaults and account passwords. Argon2id is a memory-hard function designe"
+  },
+  {
+    "slug": "attachments",
+    "title": "Attachments",
+    "category": "Editors",
+    "tags": [
+      "attachments",
+      "files",
+      "images",
+      "audio",
+      "pdf"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Attachments What it is You can attach files of any type to any note in K-Perception. Attachments are encrypted using AES-256-GCM before upload and stored as binary blobs in Cloudflare R2. Supported ty"
+  },
+  {
+    "slug": "audit-retention",
+    "title": "Audit Log Retention",
+    "category": "Compliance",
+    "tags": [
+      "audit",
+      "retention",
+      "compliance",
+      "security",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Audit Log Retention K-Perception maintains two audit logs per organisation: a workspace-level audit log and a company-level audit log. This article explains how retention is configured, how automatic "
+  },
+  {
+    "slug": "auth-overview",
+    "title": "Authentication Overview",
+    "category": "Authentication",
+    "tags": [
+      "authentication",
+      "OAuth2",
+      "PKCE",
+      "SAML",
+      "OIDC",
+      "email-password",
+      "session"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Authentication Overview What it is Authentication in K-Perception establishes who you are to the backend server. It is separate from vault decryption: authenticating successfully gives you a session t"
+  },
+  {
+    "slug": "awareness-and-presence",
+    "title": "Awareness and presence",
+    "category": "Collaboration",
+    "tags": [
+      "presence",
+      "awareness",
+      "cursors",
+      "collaboration"
+    ],
+    "audience": "user",
+    "plan": [
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Awareness and presence What it is Awareness is the real-time display of where other collaborators are in a document — their cursor positions, selection ranges, and online status. Presence extends this"
+  },
+  {
+    "slug": "faq-billing",
+    "title": "Billing FAQ",
+    "category": "FAQ",
+    "tags": [
+      "faq",
+      "billing",
+      "plans",
+      "pricing",
+      "subscription",
+      "team",
+      "enterprise"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "macos",
+      "android",
+      "web"
+    ],
+    "excerpt": "Billing FAQ What plans are available and what do they cost? | Plan | Price | Devices | Storage | |---|---|---|---| | Local | Free | 1 | No cloud | | Guardian | €3.49/month (€29/year) | 3 | 5 GB | | Va"
+  },
+  {
+    "slug": "biometric-unlock",
+    "title": "Biometric Unlock",
+    "category": "Authentication",
+    "tags": [
+      "biometric",
+      "fingerprint",
+      "Android-Keystore",
+      "unlock",
+      "vault"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "android"
+    ],
+    "excerpt": "Biometric Unlock What it is Biometric unlock allows Android users to unlock their K-Perception vault using a fingerprint or face scan instead of entering the vault password every time the app is opene"
+  },
+  {
+    "slug": "canvas",
+    "title": "Canvas editor",
+    "category": "Editors",
+    "tags": [
+      "canvas",
+      "drawing",
+      "freehand",
+      "svg",
+      "png",
+      "bezier",
+      "sketching"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Canvas mode is a freehand drawing editor that gives you a blank infinite-scroll surface where you can draw, sketch, annotate, and create diagrams using pointer input. On Windows and the web"
+  },
+  {
+    "slug": "choosing-a-plan",
+    "title": "Choosing a plan",
+    "category": "Getting Started",
+    "tags": [
+      "plans",
+      "pricing",
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise",
+      "comparison"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web",
+      "macos"
+    ],
+    "excerpt": "Choosing a plan What it is K-Perception offers six plans spanning free personal use to enterprise compliance. Every plan unlocks all seven editor modes and the full editing experience. Plans differ in"
+  },
+  {
+    "slug": "cli-overview",
+    "title": "CLI Tools Overview",
+    "category": "CLI",
+    "tags": [
+      "cli",
+      "automation",
+      "kp-ws",
+      "kp-admin"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "CLI Tools Overview K-Perception ships two command-line tools for automation and administration: | Tool | Purpose | |------|---------| | | Workspace automation — manage members, invites, sections, back"
+  },
+  {
+    "slug": "collections",
+    "title": "Collections",
+    "category": "Organization",
+    "tags": [
+      "collections",
+      "kanban",
+      "board",
+      "gallery",
+      "calendar",
+      "list",
+      "organization"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Collections are named, curated sets of notes. A Collection acts like a playlist: you assemble notes from anywhere in your vault — across different folders, tags, and Spaces — into a single "
+  },
+  {
+    "slug": "command-palette",
+    "title": "Command palette",
+    "category": "Editors",
+    "tags": [
+      "command-palette",
+      "search",
+      "navigation",
+      "keyboard"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Command palette What it is The command palette is a fuzzy-search overlay that gives you instant keyboard-driven access to every note, editor command, workspace, and application setting in K-Perception"
+  },
+  {
+    "slug": "comments",
+    "title": "Comments on Shared Notes",
+    "category": "Sharing",
+    "tags": [
+      "comments",
+      "annotations",
+      "sharing",
+      "threaded",
+      "anonymous",
+      "collaboration"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Comments are threaded annotations that recipients of Comment-level or Edit-level share links can leave on a shared note. They appear in a comment panel alongside the rendered note content a"
+  },
+  {
+    "slug": "api-companies",
+    "title": "Company API Endpoints",
+    "category": "API",
+    "tags": [
+      "api",
+      "companies",
+      "enterprise",
+      "members",
+      "audit",
+      "policy"
+    ],
+    "audience": "developer",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Company API Endpoints The Company API provides enterprise-tier functionality for managing multi-workspace organisations. All endpoints require a valid JWT Bearer session token. The authenticated user "
+  },
+  {
+    "slug": "audit-log",
+    "title": "Company Audit Log",
+    "category": "Enterprise",
+    "tags": [
+      "audit",
+      "compliance",
+      "enterprise",
+      "security"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Company Audit Log What it is The company audit log is a tamper-evident, hash-chained record of all significant events in a K-Perception company: member additions and removals, policy changes, workspac"
+  },
+  {
+    "slug": "enterprise/company-shell",
+    "title": "Company shell",
+    "category": "Enterprise",
+    "tags": [
+      "enterprise",
+      "company",
+      "admin",
+      "workspaces",
+      "multi-workspace"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is The company shell is the organisational umbrella that sits above individual workspaces in K-Perception's enterprise tier. A company is a first-class entity with its own ID, legal name, prim"
+  },
+  {
+    "slug": "compliance-overview",
+    "title": "Compliance Overview",
+    "category": "Compliance",
+    "tags": [
+      "compliance",
+      "gdpr",
+      "hipaa",
+      "soc2",
+      "audit",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Compliance Overview K-Perception is designed for regulated industries and organisations that must demonstrate data protection controls to auditors, regulators, or enterprise procurement teams. This ar"
+  },
+  {
+    "slug": "compliance-tab",
+    "title": "Compliance Tab",
+    "category": "Enterprise",
+    "tags": [
+      "compliance",
+      "gdpr",
+      "audit",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Compliance Tab What it is The Compliance tab in the Company Admin Panel provides a centralised interface for enterprise compliance operations. It surfaces the tools that data protection officers, secu"
+  },
+  {
+    "slug": "cookie-policy",
+    "title": "Cookie Policy",
+    "category": "Legal",
+    "tags": [
+      "cookies",
+      "privacy",
+      "storage",
+      "sessionstorage",
+      "indexeddb"
+    ],
+    "audience": "admin",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Cookie Policy This article explains how K-Perception's applications use browser storage, cookies, and related technologies. It is provided for convenience and does not replace the official Cookie Poli"
+  },
+  {
+    "slug": "workspaces/creating-a-workspace",
+    "title": "Creating a Workspace",
+    "category": "Workspaces",
+    "tags": [
+      "workspace",
+      "setup",
+      "onboarding",
+      "WDK",
+      "encryption"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Creating a workspace is the act of provisioning a new shared encrypted space in K-Perception. The creation process generates the root cryptographic material (the Workspace Data Key, or WDK)"
+  },
+  {
+    "slug": "first-vault",
+    "title": "Creating your first vault",
+    "category": "Getting Started",
+    "tags": [
+      "vault",
+      "password",
+      "argon2id",
+      "recovery-code",
+      "encryption",
+      "setup",
+      "first-run"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web",
+      "macos"
+    ],
+    "excerpt": "Creating your first vault What it is A vault is the encrypted container that holds all your notes, files, and settings. Every K-Perception installation has exactly one vault. The vault is protected by"
+  },
+  {
+    "slug": "cross-device",
+    "title": "Cross-device sync",
+    "category": "Sync & Storage",
+    "tags": [
+      "sync",
+      "cross-device",
+      "multi-device",
+      "devices"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Cross-device sync What it is Cross-device sync lets you access your vault on any number of devices with the same K-Perception account. The security model is elegant: every device derives the same vaul"
+  },
+  {
+    "slug": "cross-platform-sync",
+    "title": "Cross-Platform Sync",
+    "category": "Platforms",
+    "tags": [
+      "sync",
+      "crdt",
+      "yjs",
+      "cursor",
+      "encryption",
+      "collaboration"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "macos",
+      "android",
+      "web"
+    ],
+    "excerpt": "Cross-Platform Sync K-Perception uses a cursor-based incremental sync backed by a Cloudflare Worker. Notes written on one platform appear on all other signed-in devices after the next sync cycle. The "
+  },
+  {
+    "slug": "dangerous-ops",
+    "title": "Dangerous Operations Overview",
+    "category": "Enterprise",
+    "tags": [
+      "elevation",
+      "totp",
+      "security",
+      "dangerous-ops",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Dangerous Operations Overview What it is A dangerous operation is any workspace action that is irreversible or carries significant security implications — key rotation, workspace deletion, member sess"
+  },
+  {
+    "slug": "data-at-rest",
+    "title": "Data at Rest",
+    "category": "Security",
+    "tags": [
+      "data-at-rest",
+      "D1",
+      "R2",
+      "encryption",
+      "storage",
+      "metadata"
+    ],
+    "audience": "developer",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Data at Rest What it is K-Perception stores data across three locations: Cloudflare D1 (SQLite database), Cloudflare R2 (object storage), and the local device (vault database). This article describes "
+  },
+  {
+    "slug": "data-processing-agreement",
+    "title": "Data Processing Agreement (DPA)",
+    "category": "Legal",
+    "tags": [
+      "dpa",
+      "gdpr",
+      "enterprise",
+      "legal",
+      "data-processing"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Data Processing Agreement (DPA) A Data Processing Agreement (DPA) is a legally binding contract between a data controller (your organisation) and a data processor (K-Perception) that governs how the p"
+  },
+  {
+    "slug": "data-residency",
+    "title": "Data Residency",
+    "category": "Compliance",
+    "tags": [
+      "data-residency",
+      "gdpr",
+      "cloudflare",
+      "r2",
+      "d1",
+      "privacy"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Data Residency This article describes where K-Perception stores data, what types of data are stored at each layer, and what data residency options are available. It also explains how the zero-knowledg"
+  },
+  {
+    "slug": "deep-link-routing",
+    "title": "Deep link routing",
+    "category": "Collaboration",
+    "tags": [
+      "deep-link",
+      "routing",
+      "android",
+      "electron",
+      "uri"
+    ],
+    "audience": "developer",
+    "plan": [
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Deep link routing What it is Deep link routing maps custom URL schemes to in-app navigation. When you click a link, the operating system routes it to K-Perception instead of a browser. The app reads t"
+  },
+  {
+    "slug": "device-management",
+    "title": "Device Management",
+    "category": "Authentication",
+    "tags": [
+      "device",
+      "revocation",
+      "session",
+      "security",
+      "management"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Device Management What it is Every K-Perception client (desktop app, Android app, or browser) registers as a named device when you sign in. You can view all registered devices, see when they were last"
+  },
+  {
+    "slug": "docroom-protocol",
+    "title": "DocRoom protocol",
+    "category": "Collaboration",
+    "tags": [
+      "docroom",
+      "protocol",
+      "websocket",
+      "durable-objects"
+    ],
+    "audience": "developer",
+    "plan": [
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "DocRoom protocol What it is DocRoom is a Cloudflare Durable Object — stateful compute that runs at the edge. One DocRoom instance exists per collaborative document. It acts as a blind relay: it receiv"
+  },
+  {
+    "slug": "docs",
+    "title": "Docs editor",
+    "category": "Editors",
+    "tags": [
+      "docs",
+      "tiptap",
+      "rich-text",
+      "prosemirror",
+      "formatting",
+      "slash-commands"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Docs mode is K-Perception's rich-text WYSIWYG editor, built on TipTap v3 (which wraps ProseMirror). It presents a live-editing surface with no source code visible: headings look like headin"
+  },
+  {
+    "slug": "editors-overview",
+    "title": "Editor modes overview",
+    "category": "Editors",
+    "tags": [
+      "editor",
+      "modes",
+      "overview",
+      "comparison"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is K-Perception gives you seven distinct editor modes, each optimised for a different type of content. Rather than forcing everything into a single rich-text box, the app lets you pick the edi"
+  },
+  {
+    "slug": "editorial",
+    "title": "Editorial editor",
+    "category": "Editors",
+    "tags": [
+      "editorial",
+      "citations",
+      "publication",
+      "tiptap",
+      "preflight",
+      "pdf",
+      "html",
+      "templates"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Editorial mode is K-Perception's seventh and most specialised editor. It is built on the same TipTap v3 / ProseMirror base as Docs mode, with a second layer added on top that provides struc"
+  },
+  {
+    "slug": "email-password",
+    "title": "Email + Password Authentication",
+    "category": "Authentication",
+    "tags": [
+      "email",
+      "password",
+      "Argon2id",
+      "signup",
+      "login",
+      "reset"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Email + Password Authentication What it is Email + password is the standard account credential for K-Perception. The account password authenticates you to the server and is distinct from the vault pas"
+  },
+  {
+    "slug": "domain-restriction",
+    "title": "Email domain restriction",
+    "category": "Enterprise",
+    "tags": [
+      "domain",
+      "restriction",
+      "email",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Email domain restriction What it is Email domain restriction limits which email addresses can be invited to join a company's workspaces. When enabled, only email addresses matching one of the allowed "
+  },
+  {
+    "slug": "workspaces/channels",
+    "title": "Encrypted Channels",
+    "category": "Workspaces",
+    "tags": [
+      "channels",
+      "messaging",
+      "E2EE",
+      "threads",
+      "voice",
+      "collaboration"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Channels are end-to-end encrypted text rooms within a workspace. Every message sent in a channel — including text, attachments, and voice recordings — is encrypted on the sender's device be"
+  },
+  {
+    "slug": "spaces",
+    "title": "Encrypted Spaces",
+    "category": "Organization",
+    "tags": [
+      "spaces",
+      "encryption",
+      "partitioning",
+      "passphrase",
+      "EncryptedSpaceGate"
+    ],
+    "audience": "user",
+    "plan": [
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is A Space is a separately encrypted partition within your vault. While the vault key (derived from your account password via PBKDF2) protects everything in your default vault, each Space has "
+  },
+  {
+    "slug": "e2ee-collaboration",
+    "title": "End-to-End Encrypted Real-Time Collaboration",
+    "category": "Security",
+    "tags": [
+      "E2EE",
+      "collaboration",
+      "Y.js",
+      "CRDT",
+      "DocRoom",
+      "real-time",
+      "WebSocket"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "End-to-End Encrypted Real-Time Collaboration What it is K-Perception's real-time co-editing feature allows multiple users to edit the same document simultaneously. Collaboration uses Y.js CRDT (Confli"
+  },
+  {
+    "slug": "faq-enterprise",
+    "title": "Enterprise FAQ",
+    "category": "FAQ",
+    "tags": [
+      "faq",
+      "enterprise",
+      "saml",
+      "scim",
+      "oidc",
+      "sso",
+      "mfa",
+      "gdpr",
+      "audit",
+      "admin"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "macos",
+      "android",
+      "web"
+    ],
+    "excerpt": "Enterprise FAQ What is included in the Enterprise plan? The Enterprise plan (€14.99/user/month) includes everything in Team plus: - SAML 2.0 SSO — federated authentication via your IdP - SCIM 2.0 prov"
+  },
+  {
+    "slug": "enterprise/overview",
+    "title": "Enterprise plan overview",
+    "category": "Enterprise",
+    "tags": [
+      "enterprise",
+      "overview",
+      "company",
+      "compliance",
+      "sso"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is The Enterprise plan is K-Perception's top-tier offering, designed for organisations that require centralised identity management, regulatory compliance, and administrative control across ma"
+  },
+  {
+    "slug": "exports",
+    "title": "Exports",
+    "category": "Editors",
+    "tags": [
+      "export",
+      "pdf",
+      "html",
+      "markdown",
+      "kpx"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Exports What it is You can export any note from K-Perception in multiple formats. Exports produce a decrypted, portable copy of your note — the exported file does not contain any encryption layer from"
+  },
+  {
+    "slug": "file-versioning",
+    "title": "File version history",
+    "category": "Workspaces",
+    "tags": [
+      "versioning",
+      "files",
+      "history",
+      "workspace"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "File version history What it is Every upload to a workspace file creates an immutable new version. Previous versions are retained in Cloudflare R2, allowing you to restore any past state of a file wit"
+  },
+  {
+    "slug": "files-and-directories",
+    "title": "Files and directories",
+    "category": "Workspaces",
+    "tags": [
+      "files",
+      "directories",
+      "encryption",
+      "dek",
+      "workspace"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Files and directories What it is The workspace file system is a hierarchical tree of directories containing encrypted file blobs. Each file is encrypted with its own per-file Data Encryption Key (DEK)"
+  },
+  {
+    "slug": "folders",
+    "title": "Folders",
+    "category": "Organization",
+    "tags": [
+      "folders",
+      "organization",
+      "hierarchy",
+      "CRDT",
+      "mobile"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Folders are the primary hierarchical container in K-Perception. Every note lives in exactly one folder at any given time (or in the implicit Root / Unfiled location if no folder has been as"
+  },
+  {
+    "slug": "gdpr",
+    "title": "GDPR Compliance Guide",
+    "category": "Compliance",
+    "tags": [
+      "gdpr",
+      "privacy",
+      "data-erasure",
+      "right-to-access",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "GDPR Compliance Guide This article describes how K-Perception supports GDPR obligations for organisations that process EU personal data. It covers the technical capabilities available to company admin"
+  },
+  {
+    "slug": "gdpr-deletion",
+    "title": "GDPR Data Deletion",
+    "category": "Enterprise",
+    "tags": [
+      "gdpr",
+      "compliance",
+      "privacy",
+      "enterprise",
+      "data-deletion"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "GDPR Data Deletion What it is K-Perception provides two GDPR compliance operations at the company level: 1. Data export — generates a JSON report of all company member PII (names, emails, roles, dates"
+  },
+  {
+    "slug": "faq-general",
+    "title": "General FAQ",
+    "category": "FAQ",
+    "tags": [
+      "faq",
+      "general",
+      "encryption",
+      "plans",
+      "editors",
+      "offline",
+      "zero-knowledge"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "macos",
+      "android",
+      "web"
+    ],
+    "excerpt": "General FAQ Is K-Perception truly zero-knowledge? Yes — mathematically, not just contractually. Your vault password never leaves your device. All encryption and decryption happen locally. The Cloudfla"
+  },
+  {
+    "slug": "google-oauth",
+    "title": "Google OAuth2 PKCE Authentication",
+    "category": "Authentication",
+    "tags": [
+      "Google",
+      "OAuth2",
+      "PKCE",
+      "SSO",
+      "authentication"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Google OAuth2 PKCE Authentication What it is K-Perception supports Sign in with Google using the OAuth2 authorization code flow with PKCE (Proof Key for Code Exchange). No Google client secret is stor"
+  },
+  {
+    "slug": "groups",
+    "title": "Groups",
+    "category": "Workspaces",
+    "tags": [
+      "groups",
+      "permissions",
+      "membership",
+      "workspace"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Groups What it is A group is a named membership bundle backed by a workspace section. The key identity means the group's encryption key IS the section key for that group's backing section. Members in "
+  },
+  {
+    "slug": "hipaa-baa",
+    "title": "HIPAA Business Associate Agreement",
+    "category": "Legal",
+    "tags": [
+      "hipaa",
+      "baa",
+      "healthcare",
+      "enterprise",
+      "legal"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "HIPAA Business Associate Agreement A Business Associate Agreement (BAA) is described as available on the Enterprise plan in the product blueprint. Contact your account manager or legal@kperception.com"
+  },
+  {
+    "slug": "hipaa",
+    "title": "HIPAA Compliance Guide",
+    "category": "Compliance",
+    "tags": [
+      "hipaa",
+      "healthcare",
+      "phi",
+      "baa",
+      "enterprise",
+      "security"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "HIPAA Compliance Guide This article describes how K-Perception's architecture aligns with HIPAA Technical Safeguard requirements for covered entities and business associates. It does not constitute le"
+  },
+  {
+    "slug": "install-android",
+    "title": "Install on Android",
+    "category": "Getting Started",
+    "tags": [
+      "install",
+      "android",
+      "apk",
+      "biometric",
+      "widget",
+      "capacitor",
+      "mobile"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "android"
+    ],
+    "excerpt": "Install on Android What it is The Android version of K-Perception is a native app built on Capacitor 6, Vite, and React 18. It wraps the same cryptographic core and editor set as the desktop app, pack"
+  },
+  {
+    "slug": "install-windows",
+    "title": "Install on Windows",
+    "category": "Getting Started",
+    "tags": [
+      "install",
+      "windows",
+      "electron",
+      "setup",
+      "enterprise",
+      "silent-install"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "excerpt": "Install on Windows What it is The Windows version of K-Perception is a native Electron 28 desktop application distributed as an NSIS installer (). It runs on Windows 10 version 1903 or later and Windo"
+  },
+  {
+    "slug": "invitations",
+    "title": "Invitations",
+    "category": "Workspaces",
+    "tags": [
+      "invitations",
+      "invite",
+      "members",
+      "workspace"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Invitations What it is K-Perception supports four invitation methods for adding members to a workspace: email invite, invite link, bulk invite (CSV), and quorum invite (requires approval from multiple"
+  },
+  {
+    "slug": "enterprise/ip-allowlist",
+    "title": "IP allowlist",
+    "category": "Enterprise",
+    "tags": [
+      "enterprise",
+      "security",
+      "ip-allowlist",
+      "network",
+      "access-control"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is The IP allowlist enforces source-IP-based access control at the Cloudflare Worker edge. Requests arriving from IP addresses that do not match any configured CIDR entry are rejected before t"
+  },
+  {
+    "slug": "ip-allowlist-security",
+    "title": "IP Allowlist Security",
+    "category": "Security",
+    "tags": [
+      "IP-allowlist",
+      "CIDR",
+      "network-security",
+      "workspace",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "IP Allowlist Security What it is The IP allowlist is a network-layer access control feature for workspaces. When enabled, the Cloudflare Worker rejects all workspace API requests from IP addresses not"
+  },
+  {
+    "slug": "threat-model",
+    "title": "K-Perception Threat Model",
+    "category": "Security",
+    "tags": [
+      "threat-model",
+      "security",
+      "attack-surface",
+      "privacy",
+      "risk"
+    ],
+    "audience": "developer",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "K-Perception Threat Model Scope This document describes what K-Perception is designed to protect against, what it explicitly does not protect against, and the assumptions the security model depends on"
+  },
+  {
+    "slug": "keyboard-shortcuts",
+    "title": "Keyboard shortcuts",
+    "category": "Editors",
+    "tags": [
+      "keyboard",
+      "shortcuts",
+      "hotkeys",
+      "accessibility"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "web"
+    ],
+    "excerpt": "Keyboard shortcuts What it is K-Perception defines a consistent set of keyboard shortcuts across all editor modes and application screens. This article is the single authoritative reference for every "
+  },
+  {
+    "slug": "knowledge-graph",
+    "title": "Knowledge Graph",
+    "category": "Organization",
+    "tags": [
+      "knowledge-graph",
+      "graph",
+      "visualization",
+      "links",
+      "desktop-only",
+      "D3"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "excerpt": "What it is The Knowledge Graph is a force-directed interactive visualisation of the connections between your notes. Every note appears as a node; every link between notes appears as an edge. You can n"
+  },
+  {
+    "slug": "cli-kp-admin",
+    "title": "kp-admin CLI Reference",
+    "category": "CLI",
+    "tags": [
+      "cli",
+      "kp-admin",
+      "platform-admin",
+      "users",
+      "workspaces",
+      "audit"
+    ],
+    "audience": "developer",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "kp-admin CLI Reference is the platform administration CLI for K-Perception. It provides operator-level access to user management, workspace management, storage statistics, and the platform audit log. "
+  },
+  {
+    "slug": "cli-kp-ws",
+    "title": "kp-ws CLI Reference",
+    "category": "CLI",
+    "tags": [
+      "cli",
+      "kp-ws",
+      "workspace",
+      "automation",
+      "members",
+      "backups"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "kp-ws CLI Reference is the workspace automation CLI for K-Perception. It lets administrators manage workspace members, invites, sections, backups, and TOTP configuration from the command line. Authent"
+  },
+  {
+    "slug": "kpx-format",
+    "title": "KPX encrypted export format",
+    "category": "Sync & Storage",
+    "tags": [
+      "kpx",
+      "export",
+      "backup",
+      "format",
+      "encryption"
+    ],
+    "audience": "developer",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "KPX encrypted export format What it is KPX (K-Perception Encrypted Export) is the proprietary portable vault backup format. A file is a ZIP archive containing all your notes and attachments, each indi"
+  },
+  {
+    "slug": "latex",
+    "title": "LaTeX editor",
+    "category": "Editors",
+    "tags": [
+      "latex",
+      "katex",
+      "latex.js",
+      "math",
+      "pdf",
+      "preview"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is LaTeX mode is a full document-composition editor for LaTeX source. It combines a CodeMirror 6 source editor with a real-time preview pane that renders your LaTeX using two complementary tec"
+  },
+  {
+    "slug": "legal-overview",
+    "title": "Legal Overview",
+    "category": "Legal",
+    "tags": [
+      "legal",
+      "terms",
+      "privacy",
+      "dpa",
+      "compliance"
+    ],
+    "audience": "admin",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Legal Overview This article provides a guide to the legal documents that govern use of K-Perception. It does not replace those documents — always refer to the official versions published at kperceptio"
+  },
+  {
+    "slug": "markdown",
+    "title": "Markdown editor",
+    "category": "Editors",
+    "tags": [
+      "markdown",
+      "gfm",
+      "preview",
+      "katex",
+      "mermaid",
+      "codemirror",
+      "split-pane"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Markdown mode is K-Perception's second editor mode. It pairs a CodeMirror 6 source pane with a custom rendering pipeline that produces a live HTML preview. The source format is GitHub Flavo"
+  },
+  {
+    "slug": "members-and-roles",
+    "title": "Members and roles",
+    "category": "Workspaces",
+    "tags": [
+      "members",
+      "roles",
+      "permissions",
+      "workspace"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Members and roles What it is Every workspace has a membership list. Each member is assigned one of six roles: owner, admin, editor, commenter, viewer, or guest. Roles determine what actions a member c"
+  },
+  {
+    "slug": "merge-conflicts",
+    "title": "Merge conflicts",
+    "category": "Sync & Storage",
+    "tags": [
+      "merge",
+      "conflict",
+      "sync",
+      "offline"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Merge conflicts What it is A merge conflict occurs when two devices edit the same note while both are offline (or out of sync), and both push their changes to the server before receiving each other's "
+  },
+  {
+    "slug": "mfa-enforcement",
+    "title": "MFA enforcement",
+    "category": "Enterprise",
+    "tags": [
+      "mfa",
+      "totp",
+      "2fa",
+      "enforcement",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "MFA enforcement What it is MFA enforcement requires all members of a company to have TOTP 2-factor authentication enabled. When a company admin enables enforcement, any member who does not yet have TO"
+  },
+  {
+    "slug": "mobile-collab-editor",
+    "title": "Mobile collaborative editor",
+    "category": "Collaboration",
+    "tags": [
+      "mobile",
+      "collaboration",
+      "android",
+      "yjs"
+    ],
+    "audience": "user",
+    "plan": [
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "android"
+    ],
+    "excerpt": "Mobile collaborative editor What it is The MobileCollabEditor is the Android-optimised collaborative editing experience. It provides full Y.js-backed real-time co-editing with a textarea-based input ("
+  },
+  {
+    "slug": "notifications",
+    "title": "Notifications",
+    "category": "Platforms",
+    "tags": [
+      "notifications",
+      "workspace",
+      "bell",
+      "system-notifications"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "macos",
+      "android",
+      "web"
+    ],
+    "excerpt": "Notifications K-Perception delivers workspace and collaboration notifications through an in-app notification bell. System-level (OS) push notifications are not confirmed in the current source; contact"
+  },
+  {
+    "slug": "offline-capability",
+    "title": "Offline Capability",
+    "category": "Platforms",
+    "tags": [
+      "offline",
+      "sync-queue",
+      "indexeddb",
+      "vault",
+      "local-first"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "macos",
+      "android",
+      "web"
+    ],
+    "excerpt": "Offline Capability K-Perception is designed as a local-first application. All note reading and editing works offline on every platform. Cloud sync only activates when a network connection is available"
+  },
+  {
+    "slug": "offline-first",
+    "title": "Offline-first architecture",
+    "category": "Sync & Storage",
+    "tags": [
+      "offline",
+      "sync",
+      "vault",
+      "local-storage"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Offline-first architecture What it is K-Perception is built offline-first: your vault is stored entirely on your device, encrypted, and the application operates fully without any internet connection. "
+  },
+  {
+    "slug": "oidc",
+    "title": "OIDC SSO for Companies",
+    "category": "Enterprise",
+    "tags": [
+      "oidc",
+      "sso",
+      "openid-connect",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "OIDC SSO for Companies What it is OpenID Connect (OIDC) is a modern identity protocol built on top of OAuth 2.0. K-Perception supports OIDC as an alternative to SAML 2.0 for company-level single sign-"
+  },
+  {
+    "slug": "password-protection",
+    "title": "Password-Protected Share Links",
+    "category": "Sharing",
+    "tags": [
+      "password",
+      "PBKDF2",
+      "encryption",
+      "share-links",
+      "security",
+      "zero-knowledge"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Password protection is an optional second layer of encryption on a share link. When enabled, the 32-byte AES-256-GCM share key that decrypts the note content is itself encrypted (wrapped) u"
+  },
+  {
+    "slug": "pdf-import",
+    "title": "PDF import",
+    "category": "Sync & Storage",
+    "tags": [
+      "pdf",
+      "import",
+      "android",
+      "intent"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "android",
+      "windows",
+      "web"
+    ],
+    "excerpt": "PDF import What it is PDF import lets you send a PDF file from another Android app directly into K-Perception using the standard Android \"Open with\" / share sheet mechanism. When you open a PDF in K-P"
+  },
+  {
+    "slug": "pdf-reader",
+    "title": "PDF reader",
+    "category": "Editors",
+    "tags": [
+      "pdf",
+      "reader",
+      "viewer",
+      "attachments"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "PDF reader What it is K-Perception includes an integrated PDF viewer powered by pdfjs-dist 4.10.38 (Mozilla PDF.js). When you click a PDF attachment in the AttachmentStrip, the PDF opens in the inline"
+  },
+  {
+    "slug": "per-file-acl",
+    "title": "Per-file access control",
+    "category": "Workspaces",
+    "tags": [
+      "acl",
+      "permissions",
+      "files",
+      "access-control"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Per-file access control What it is Per-file ACL (Access Control List) lets workspace admins grant or restrict access to individual files and directories, independently of the broader section or worksp"
+  },
+  {
+    "slug": "pinning",
+    "title": "Pinning Notes",
+    "category": "Organization",
+    "tags": [
+      "pin",
+      "pinning",
+      "note-list",
+      "organization",
+      "quick-access"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Pinning a note causes it to float to the top of any note list view, above all un-pinned notes. Pinned notes are visually distinguished with a pin icon and remain at the top regardless of th"
+  },
+  {
+    "slug": "plain-text",
+    "title": "Plain text editor",
+    "category": "Editors",
+    "tags": [
+      "plain",
+      "text",
+      "codemirror",
+      "monospace",
+      "raw"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Plain text mode is the simplest editor in K-Perception. It is a CodeMirror 6 instance configured with a monospace font, line numbers, and no rendering layer — what you type is exactly what "
+  },
+  {
+    "slug": "platform-overview",
+    "title": "Platform Overview",
+    "category": "Platforms",
+    "tags": [
+      "platforms",
+      "desktop",
+      "mobile",
+      "web",
+      "pwa",
+      "electron",
+      "capacitor"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "macos",
+      "android",
+      "web"
+    ],
+    "excerpt": "Platform Overview K-Perception runs on three platform families. All of them share the same cryptographic core (Argon2id key derivation, AES-256-GCM encryption), the same 7 editor modes, and the same C"
+  },
+  {
+    "slug": "privacy-policy",
+    "title": "Privacy Policy — Summary",
+    "category": "Legal",
+    "tags": [
+      "privacy",
+      "gdpr",
+      "data-collection",
+      "zero-knowledge"
+    ],
+    "audience": "admin",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Privacy Policy — Summary This article is a plain-language summary of K-Perception's Privacy Policy. It is provided for convenience and does not replace the binding legal document. Always refer to the "
+  },
+  {
+    "slug": "pull-polling",
+    "title": "Pull sync and polling",
+    "category": "Sync & Storage",
+    "tags": [
+      "sync",
+      "polling",
+      "pull",
+      "realtime"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Pull sync and polling What it is Pull sync is the mechanism by which K-Perception fetches changes made on other devices and applies them to the local vault. There are two implementations: a polling mo"
+  },
+  {
+    "slug": "quick-capture",
+    "title": "Quick capture",
+    "category": "Organization",
+    "tags": [
+      "quick-capture",
+      "widget",
+      "deep-link",
+      "mobile"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Quick capture What it is Quick capture is a deep-link mechanism that lets you create a new note instantly from outside the app — from an Android home-screen widget, a system shortcut, or a deep link i"
+  },
+  {
+    "slug": "realtime-yjs",
+    "title": "Real-time collaboration with Y.js CRDT",
+    "category": "Collaboration",
+    "tags": [
+      "collaboration",
+      "yjs",
+      "crdt",
+      "realtime",
+      "e2ee"
+    ],
+    "audience": "user",
+    "plan": [
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Real-time collaboration with Y.js CRDT What it is K-Perception uses Y.js (version 13.6.30) for real-time collaborative editing. Y.js implements Conflict-free Replicated Data Types (CRDTs) — a mathemat"
+  },
+  {
+    "slug": "reconnect-backoff",
+    "title": "Reconnect behaviour and backoff",
+    "category": "Collaboration",
+    "tags": [
+      "reconnect",
+      "backoff",
+      "websocket",
+      "resilience"
+    ],
+    "audience": "user",
+    "plan": [
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Reconnect behaviour and backoff What it is When a collaborative WebSocket connection drops — due to network interruption, device sleep, server restart, or idle timeout — K-Perception automatically att"
+  },
+  {
+    "slug": "remote-wipe",
+    "title": "Remote Wipe",
+    "category": "Enterprise",
+    "tags": [
+      "remote-wipe",
+      "sessions",
+      "security",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Remote Wipe What it is Remote wipe revokes all active sessions and device trust records for a specific workspace member. The affected user is logged out of every device — Windows desktop, Android, and"
+  },
+  {
+    "slug": "revision-history",
+    "title": "Revision history",
+    "category": "Editors",
+    "tags": [
+      "revision",
+      "history",
+      "version",
+      "rollback"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Revision history What it is Every time K-Perception saves a note, it stores the previous version as a revision. You can browse the full revision history for any note and restore any past version. Each"
+  },
+  {
+    "slug": "revocation",
+    "title": "Revoking Share Links",
+    "category": "Sharing",
+    "tags": [
+      "revocation",
+      "sharing",
+      "security",
+      "access-control",
+      "share-links"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Revoking a share link is the act of permanently invalidating it so that no one — including people who already have the URL — can use it to access the shared note content again. Revocation i"
+  },
+  {
+    "slug": "saml-azure-ad",
+    "title": "SAML 2.0 SSO with Azure AD (Entra ID)",
+    "category": "Enterprise",
+    "tags": [
+      "saml",
+      "azure-ad",
+      "entra-id",
+      "sso",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SAML 2.0 SSO with Azure AD (Entra ID) What it is This article walks you through connecting Microsoft Azure Active Directory (now called Microsoft Entra ID) as a SAML 2.0 Identity Provider for K-Percep"
+  },
+  {
+    "slug": "saml-google-workspace",
+    "title": "SAML 2.0 SSO with Google Workspace",
+    "category": "Enterprise",
+    "tags": [
+      "saml",
+      "google-workspace",
+      "sso",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SAML 2.0 SSO with Google Workspace What it is This article walks you through connecting Google Workspace as a SAML 2.0 Identity Provider for K-Perception. After completing this setup, members of your "
+  },
+  {
+    "slug": "saml-okta",
+    "title": "SAML 2.0 SSO with Okta",
+    "category": "Enterprise",
+    "tags": [
+      "saml",
+      "okta",
+      "sso",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SAML 2.0 SSO with Okta What it is This article walks you through connecting Okta as a SAML 2.0 Identity Provider (IdP) for K-Perception. After completing this setup, members of your Okta organisation "
+  },
+  {
+    "slug": "saml-onelogin",
+    "title": "SAML 2.0 SSO with OneLogin",
+    "category": "Enterprise",
+    "tags": [
+      "saml",
+      "onelogin",
+      "sso",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SAML 2.0 SSO with OneLogin What it is This article walks you through connecting OneLogin as a SAML 2.0 Identity Provider for K-Perception. After completing this setup, members of your OneLogin directo"
+  },
+  {
+    "slug": "api-scim",
+    "title": "SCIM 2.0 API",
+    "category": "API",
+    "tags": [
+      "api",
+      "scim",
+      "provisioning",
+      "enterprise",
+      "idp"
+    ],
+    "audience": "developer",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SCIM 2.0 API K-Perception supports the SCIM 2.0 protocol for automated user provisioning and deprovisioning. This allows identity providers (Okta, Azure AD, etc.) to manage workspace membership withou"
+  },
+  {
+    "slug": "scim-overview",
+    "title": "SCIM 2.0 Provisioning Overview",
+    "category": "Enterprise",
+    "tags": [
+      "scim",
+      "provisioning",
+      "enterprise",
+      "directory-sync"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SCIM 2.0 Provisioning Overview What it is SCIM (System for Cross-domain Identity Management) 2.0 is a standardised protocol that lets your Identity Provider (IdP) automatically provision, update, and "
+  },
+  {
+    "slug": "scim-groups",
+    "title": "SCIM Group Sync",
+    "category": "Enterprise",
+    "tags": [
+      "scim",
+      "groups",
+      "provisioning",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SCIM Group Sync What it is K-Perception supports SCIM 2.0 Group provisioning alongside User provisioning. When your IdP pushes a Group to K-Perception, a new workspace group is created automatically. "
+  },
+  {
+    "slug": "scim-azure-ad",
+    "title": "SCIM Provisioning with Azure AD (Entra ID)",
+    "category": "Enterprise",
+    "tags": [
+      "scim",
+      "azure-ad",
+      "entra-id",
+      "provisioning",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SCIM Provisioning with Azure AD (Entra ID) What it is This article describes how to configure Microsoft Azure Active Directory (Entra ID) to automatically provision and deprovision K-Perception worksp"
+  },
+  {
+    "slug": "scim-okta",
+    "title": "SCIM Provisioning with Okta",
+    "category": "Enterprise",
+    "tags": [
+      "scim",
+      "okta",
+      "provisioning",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SCIM Provisioning with Okta What it is This article describes how to configure Okta to automatically provision and deprovision K-Perception workspace members using SCIM 2.0. After setup, users assigne"
+  },
+  {
+    "slug": "search",
+    "title": "Search",
+    "category": "Organization",
+    "tags": [
+      "search",
+      "full-text",
+      "tag-search",
+      "filtering",
+      "command-palette"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Search in K-Perception is a fully client-side, zero-knowledge operation. All search — including full-text content search — is performed after the vault is decrypted locally. The server neve"
+  },
+  {
+    "slug": "workspaces/sections",
+    "title": "Sections",
+    "category": "Workspaces",
+    "tags": [
+      "sections",
+      "encryption",
+      "SK_section",
+      "HKDF",
+      "access-control"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is A section is the fundamental cryptographic partition of a K-Perception workspace. Every piece of content in a workspace — documents, files, channel messages, calendar events, Gantt tasks, c"
+  },
+  {
+    "slug": "security-overview",
+    "title": "Security Architecture Overview",
+    "category": "Security",
+    "tags": [
+      "zero-knowledge",
+      "encryption",
+      "architecture",
+      "key-hierarchy",
+      "trust-model"
+    ],
+    "audience": "developer",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Security Architecture Overview What it is K-Perception is built on a zero-knowledge, end-to-end encrypted (E2EE) architecture. Every piece of user content — notes, files, channel messages, workspace m"
+  },
+  {
+    "slug": "faq-security",
+    "title": "Security FAQ",
+    "category": "FAQ",
+    "tags": [
+      "faq",
+      "security",
+      "encryption",
+      "argon2id",
+      "aes-gcm",
+      "zero-knowledge",
+      "e2ee"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "macos",
+      "android",
+      "web"
+    ],
+    "excerpt": "Security FAQ What encryption does K-Perception use? K-Perception uses two cryptographic primitives: - Argon2id — memory-hard key derivation function (KDF) to derive the vault key from your vault passw"
+  },
+  {
+    "slug": "security-disclosure",
+    "title": "Security Vulnerability Disclosure Policy",
+    "category": "Legal",
+    "tags": [
+      "security",
+      "disclosure",
+      "vulnerability",
+      "bug-bounty",
+      "responsible-disclosure"
+    ],
+    "audience": "admin",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Security Vulnerability Disclosure Policy K-Perception takes security seriously. If you believe you have found a security vulnerability in the K-Perception application, infrastructure, or any related s"
+  },
+  {
+    "slug": "sla",
+    "title": "Service Level Agreement",
+    "category": "Legal",
+    "tags": [
+      "sla",
+      "uptime",
+      "enterprise",
+      "availability",
+      "incident-response"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Service Level Agreement The 99.9% uptime commitment is listed in the product blueprint for the Enterprise plan. Specific SLA terms (measurement methodology, credit calculation, exclusions, maintenance"
+  },
+  {
+    "slug": "sessions",
+    "title": "Session Management",
+    "category": "Authentication",
+    "tags": [
+      "session",
+      "token",
+      "TTL",
+      "revocation",
+      "device",
+      "storage"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Session Management What it is A session represents an authenticated connection between a specific device and the K-Perception backend. Sessions are created after successful authentication and expire a"
+  },
+  {
+    "slug": "session-security",
+    "title": "Session Token Security",
+    "category": "Security",
+    "tags": [
+      "session",
+      "token",
+      "authentication",
+      "secure-storage",
+      "revocation"
+    ],
+    "audience": "developer",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Session Token Security What it is After a successful authentication (Google OAuth, email+password, SAML, or OIDC), the K-Perception backend issues a session token. This token is an opaque UUID stored "
+  },
+  {
+    "slug": "permissions",
+    "title": "Share Link Permission Levels",
+    "category": "Sharing",
+    "tags": [
+      "permissions",
+      "view",
+      "comment",
+      "edit",
+      "access-control",
+      "sharing"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Every K-Perception share link carries an embedded permission level that determines what the recipient can do at the share viewer. There are three levels: View, Comment, and Edit. The permis"
+  },
+  {
+    "slug": "share-link-security",
+    "title": "Share Link Security Model",
+    "category": "Security",
+    "tags": [
+      "share-link",
+      "encryption",
+      "URL-fragment",
+      "PBKDF2",
+      "E2EE"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Share Link Security Model What it is Share links allow a K-Perception user to share a note with anyone — even people without a K-Perception account — while maintaining end-to-end encryption. The serve"
+  },
+  {
+    "slug": "share-links",
+    "title": "Share Links",
+    "category": "Sharing",
+    "tags": [
+      "sharing",
+      "encryption",
+      "AES-256-GCM",
+      "zero-knowledge",
+      "share-links",
+      "cryptography"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is A share link is a URL that gives anyone who holds it access to a specific note, at a specific permission level (View, Comment, or Edit), for a configurable period of time. The defining prop"
+  },
+  {
+    "slug": "share-viewer",
+    "title": "Share viewer",
+    "category": "Sharing",
+    "tags": [
+      "share-viewer",
+      "public",
+      "collab",
+      "web"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "web"
+    ],
+    "excerpt": "Share viewer What it is The share viewer is a static Cloudflare Pages web application hosted at kperception-share.pages.dev. When you share a note with someone, the link you send them opens this viewe"
+  },
+  {
+    "slug": "shared-with-me",
+    "title": "Shared with me",
+    "category": "Workspaces",
+    "tags": [
+      "sharing",
+      "files",
+      "cross-workspace",
+      "access"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Shared with me What it is \"Shared with me\" is a dedicated view showing files that other workspace members have shared directly with you via per-file ACL. It aggregates files shared across all your wor"
+  },
+  {
+    "slug": "sheets",
+    "title": "Sheets editor",
+    "category": "Editors",
+    "tags": [
+      "sheets",
+      "spreadsheet",
+      "formulas",
+      "grid",
+      "csv",
+      "functions"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Sheets mode is a spreadsheet editor built into K-Perception. It presents a 500-column by 52-row grid (extendable in both directions) with a formula bar, multi-sheet tabs, and a custom formu"
+  },
+  {
+    "slug": "slash-commands",
+    "title": "Slash commands",
+    "category": "Editors",
+    "tags": [
+      "slash-commands",
+      "docs",
+      "editorial",
+      "shortcuts"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Slash commands What it is Slash commands are inline insertion triggers available in the Docs and Editorial editor modes. When you type at the start of an empty block (or after pressing Enter on a new "
+  },
+  {
+    "slug": "soc2",
+    "title": "SOC 2 Overview",
+    "category": "Compliance",
+    "tags": [
+      "soc2",
+      "security",
+      "audit",
+      "enterprise",
+      "trust-service-criteria"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "SOC 2 Overview All statements in this article describe technical controls that are present in the system; they do not constitute a representation that K-Perception is SOC 2 certified. Contact your K-P"
+  },
+  {
+    "slug": "storage-quotas",
+    "title": "Storage quotas",
+    "category": "Sync & Storage",
+    "tags": [
+      "storage",
+      "quota",
+      "billing",
+      "limits"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Storage quotas What it is Storage quota is the maximum amount of cloud storage your account can use. Quota is consumed by encrypted note blobs and attachment blobs stored in Cloudflare R2. Metadata ro"
+  },
+  {
+    "slug": "sub-processors",
+    "title": "Sub-processors",
+    "category": "Legal",
+    "tags": [
+      "sub-processors",
+      "gdpr",
+      "privacy",
+      "cloudflare",
+      "stripe",
+      "google"
+    ],
+    "audience": "admin",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Sub-processors A sub-processor is a third-party organisation that K-Perception engages to process personal data in connection with providing the service. Under GDPR Article 28(2), K-Perception is requ"
+  },
+  {
+    "slug": "sync-queue",
+    "title": "Sync queue",
+    "category": "Sync & Storage",
+    "tags": [
+      "sync",
+      "queue",
+      "offline",
+      "operations"
+    ],
+    "audience": "user",
+    "plan": [
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Sync queue What it is The sync queue is a persistent local list of operations that have been applied to the local vault but not yet confirmed by the server. Every create, update, and delete action pro"
+  },
+  {
+    "slug": "tags",
+    "title": "Tags",
+    "category": "Organization",
+    "tags": [
+      "tags",
+      "metadata",
+      "search",
+      "organization",
+      "filtering"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is Tags are short, user-defined labels you attach to notes to describe their topic, status, project, or any other classification that matters to you. Unlike folders, a single note can carry an"
+  },
+  {
+    "slug": "terms-of-service",
+    "title": "Terms of Service — Summary",
+    "category": "Legal",
+    "tags": [
+      "terms",
+      "legal",
+      "account",
+      "acceptable-use"
+    ],
+    "audience": "admin",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Terms of Service — Summary This article is a plain-language summary of the key points in K-Perception's Terms of Service. It is provided for convenience and does not replace the binding legal document"
+  },
+  {
+    "slug": "totp-step-up",
+    "title": "TOTP Step-Up Authentication for Dangerous Operations",
+    "category": "Security",
+    "tags": [
+      "TOTP",
+      "step-up",
+      "2FA",
+      "elevation",
+      "dangerous-ops",
+      "workspace"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "TOTP Step-Up Authentication for Dangerous Operations What it is K-Perception requires a TOTP step-up challenge before any workspace member can perform a \"dangerous operation\" — an irreversible or high"
+  },
+  {
+    "slug": "elevation-tokens",
+    "title": "TOTP Step-Up Elevation Tokens",
+    "category": "Enterprise",
+    "tags": [
+      "totp",
+      "2fa",
+      "elevation",
+      "step-up",
+      "security",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "TOTP Step-Up Elevation Tokens What it is TOTP (Time-based One-Time Password) step-up is a second authentication challenge required before K-Perception allows a dangerous operation. Even if an attacker"
+  },
+  {
+    "slug": "totp-2fa",
+    "title": "TOTP Two-Factor Authentication",
+    "category": "Authentication",
+    "tags": [
+      "TOTP",
+      "2FA",
+      "authenticator",
+      "backup-codes",
+      "login",
+      "step-up"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "TOTP Two-Factor Authentication What it is K-Perception supports TOTP (Time-based One-Time Password) two-factor authentication. TOTP is used in K-Perception primarily as a step-up mechanism for dangero"
+  },
+  {
+    "slug": "transfer-ownership",
+    "title": "Transfer workspace ownership",
+    "category": "Workspaces",
+    "tags": [
+      "ownership",
+      "transfer",
+      "admin",
+      "workspace"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Transfer workspace ownership What it is Ownership transfer moves the Owner role from the current owner to another existing Admin member. This is the only way to change who holds the Owner role. It req"
+  },
+  {
+    "slug": "trash-and-purge",
+    "title": "Trash and Auto-Purge",
+    "category": "Organization",
+    "tags": [
+      "trash",
+      "delete",
+      "purge",
+      "recovery",
+      "retention",
+      "tombstone"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is When you delete a note in K-Perception, it is not immediately destroyed. Instead, it is moved to the Trash — a soft-delete state where the note is hidden from normal views but still stored,"
+  },
+  {
+    "slug": "faq-troubleshooting",
+    "title": "Troubleshooting FAQ",
+    "category": "FAQ",
+    "tags": [
+      "faq",
+      "troubleshooting",
+      "sync",
+      "saml",
+      "errors",
+      "login",
+      "export",
+      "quota"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "macos",
+      "android",
+      "web"
+    ],
+    "excerpt": "Troubleshooting FAQ Sync is stuck — what do I do? Symptoms: Notes edited on one device are not appearing on another, or the sync indicator shows a pending queue that never clears. Steps: 1. Check your"
+  },
+  {
+    "slug": "upgrading-and-billing",
+    "title": "Upgrading, downgrading, and billing",
+    "category": "Getting Started",
+    "tags": [
+      "billing",
+      "upgrade",
+      "downgrade",
+      "stripe",
+      "subscription",
+      "invoice",
+      "refund",
+      "seats",
+      "cancel"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web",
+      "macos"
+    ],
+    "excerpt": "Upgrading, downgrading, and billing What it is Billing in K-Perception is handled by Stripe. When you subscribe to a paid plan, you create a Stripe customer linked to your K-Perception account. Stripe"
+  },
+  {
+    "slug": "web-pwa",
+    "title": "Using K-Perception in a browser (PWA)",
+    "category": "Getting Started",
+    "tags": [
+      "pwa",
+      "browser",
+      "web",
+      "indexeddb",
+      "offline",
+      "chrome",
+      "firefox",
+      "edge"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "web",
+      "windows",
+      "android",
+      "macos"
+    ],
+    "excerpt": "Using K-Perception in a browser (PWA) What it is K-Perception runs as a Progressive Web App (PWA) at . A PWA is a web application that behaves like a native app: it can be installed to your home scree"
+  },
+  {
+    "slug": "version-snapshots",
+    "title": "Version snapshots in collaboration",
+    "category": "Collaboration",
+    "tags": [
+      "snapshots",
+      "versions",
+      "collaboration",
+      "history"
+    ],
+    "audience": "user",
+    "plan": [
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Version snapshots in collaboration What it is DocRoom automatically saves a ciphertext snapshot of the collaborative document to Cloudflare R2 every 2 minutes if the document has changed. Snapshots ca"
+  },
+  {
+    "slug": "voice-recorder",
+    "title": "Voice recorder",
+    "category": "Editors",
+    "tags": [
+      "voice",
+      "audio",
+      "recording",
+      "attachments"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Voice recorder What it is The built-in voice recorder lets you record audio memos and attach them directly to a note or send them as voice messages in workspace channels. Recordings are encrypted with"
+  },
+  {
+    "slug": "web-pwa",
+    "title": "Web PWA",
+    "category": "Platforms",
+    "tags": [
+      "web",
+      "pwa",
+      "browser",
+      "indexeddb",
+      "localstorage",
+      "offline"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "web"
+    ],
+    "excerpt": "Web PWA K-Perception is available as a Progressive Web App (PWA) at . It runs entirely in the browser — no installation required — and can be installed to your home screen or taskbar for an app-like e"
+  },
+  {
+    "slug": "webhooks",
+    "title": "Webhooks",
+    "category": "Workspaces",
+    "tags": [
+      "webhooks",
+      "integrations",
+      "events",
+      "automation"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Webhooks What it is Webhooks deliver real-time notifications of workspace events to an external HTTP endpoint you control. When a defined event occurs (e.g. a file is uploaded, a member joins), the Wo"
+  },
+  {
+    "slug": "api-webhooks",
+    "title": "Webhooks API Reference",
+    "category": "API",
+    "tags": [
+      "api",
+      "webhooks",
+      "events",
+      "hmac",
+      "signatures"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Webhooks API Reference K-Perception can deliver HTTP POST notifications to a URL of your choice when events occur in a workspace. Each delivery is signed with HMAC-SHA256 so you can verify it originat"
+  },
+  {
+    "slug": "overview",
+    "title": "What is K-Perception?",
+    "category": "Getting Started",
+    "tags": [
+      "overview",
+      "architecture",
+      "privacy",
+      "editors",
+      "pricing",
+      "zero-knowledge"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web",
+      "macos"
+    ],
+    "excerpt": "What is K-Perception? What it is K-Perception is a zero-knowledge, end-to-end encrypted personal knowledge management system. It lets you write, organise, and share information across seven specialise"
+  },
+  {
+    "slug": "windows",
+    "title": "Windows Desktop",
+    "category": "Platforms",
+    "tags": [
+      "windows",
+      "desktop",
+      "electron",
+      "installation",
+      "ipc",
+      "safeStorage"
+    ],
+    "audience": "user",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "excerpt": "Windows Desktop K-Perception for Windows is built on Electron 28 and distributed as a signed NSIS installer (, x64). It delivers a full-featured experience including native PDF export, LaTeX compilati"
+  },
+  {
+    "slug": "api-workspaces",
+    "title": "Workspace API Endpoints",
+    "category": "API",
+    "tags": [
+      "api",
+      "workspaces",
+      "notes",
+      "members",
+      "sections"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Workspace API Endpoints (v1) The workspace REST API exposes read access to workspace metadata and (optionally) ciphertext blob references. All endpoints are authenticated by API Key only — JWT Bearer "
+  },
+  {
+    "slug": "api-keys",
+    "title": "Workspace API keys",
+    "category": "Workspaces",
+    "tags": [
+      "api",
+      "api-keys",
+      "automation",
+      "developer"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Workspace API keys What it is Workspace API keys are long-lived programmatic access tokens for the K-Perception workspace API. Unlike session tokens (which are short-lived and tied to a user login), A"
+  },
+  {
+    "slug": "backup-restore",
+    "title": "Workspace backup and restore",
+    "category": "Workspaces",
+    "tags": [
+      "backup",
+      "restore",
+      "disaster-recovery",
+      "workspace"
+    ],
+    "audience": "admin",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Workspace backup and restore What it is Workspace backups are ciphertext-only snapshots of all workspace data (D1 metadata rows + R2 blobs) taken at a specific point in time. \"Ciphertext-only\" means t"
+  },
+  {
+    "slug": "calendar",
+    "title": "Workspace calendar",
+    "category": "Workspaces",
+    "tags": [
+      "calendar",
+      "events",
+      "schedule",
+      "workspace"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Workspace calendar What it is The workspace calendar is a shared team calendar where events are encrypted with an AES-256-GCM key derived from the workspace section key. Team members with calendar acc"
+  },
+  {
+    "slug": "citations",
+    "title": "Workspace citations",
+    "category": "Workspaces",
+    "tags": [
+      "citations",
+      "references",
+      "editorial",
+      "workspace"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Workspace citations What it is The workspace citation registry is a shared, encrypted database of structured citations — journal articles, books, reports, URLs — that all workspace members can referen"
+  },
+  {
+    "slug": "gantt",
+    "title": "Workspace Gantt chart",
+    "category": "Workspaces",
+    "tags": [
+      "gantt",
+      "project",
+      "timeline",
+      "tasks"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Workspace Gantt chart What it is The workspace Gantt chart is a project timeline view where tasks are plotted on a horizontal timeline. Tasks, their durations, assignees, and dependencies are all encr"
+  },
+  {
+    "slug": "key-hierarchy",
+    "title": "Workspace Key Hierarchy",
+    "category": "Security",
+    "tags": [
+      "key-hierarchy",
+      "WDK",
+      "HKDF",
+      "DEK",
+      "workspace",
+      "encryption"
+    ],
+    "audience": "developer",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Workspace Key Hierarchy What it is K-Perception uses a layered key hierarchy so that access to one key does not expose all content. A compromise of a per-file DEK exposes only that file. A compromise "
+  },
+  {
+    "slug": "rotate-key",
+    "title": "Workspace Key Rotation",
+    "category": "Enterprise",
+    "tags": [
+      "key-rotation",
+      "wdk",
+      "encryption",
+      "security",
+      "enterprise"
+    ],
+    "audience": "admin",
+    "plan": [
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Workspace Key Rotation What it is Workspace key rotation replaces the Workspace Data Key (WDK) — the master symmetric key used to encrypt all workspace content — with a new key. After rotation, all ex"
+  },
+  {
+    "slug": "presence",
+    "title": "Workspace presence",
+    "category": "Workspaces",
+    "tags": [
+      "presence",
+      "online",
+      "status",
+      "workspace"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Workspace presence What it is Workspace presence shows which team members are currently online and, optionally, which document or channel they are viewing. Presence is managed by the PresenceHub Durab"
+  },
+  {
+    "slug": "workspaces/overview",
+    "title": "Workspaces Overview",
+    "category": "Workspaces",
+    "tags": [
+      "workspace",
+      "collaboration",
+      "encryption",
+      "team",
+      "overview"
+    ],
+    "audience": "user",
+    "plan": [
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "What it is A K-Perception Workspace is a shared, fully end-to-end encrypted environment for teams. Every document, file, channel message, calendar event, and Gantt task stored inside a workspace is en"
+  },
+  {
+    "slug": "zero-knowledge-model",
+    "title": "Zero-Knowledge Model",
+    "category": "Security",
+    "tags": [
+      "zero-knowledge",
+      "E2EE",
+      "encryption",
+      "key-derivation",
+      "privacy"
+    ],
+    "audience": "developer",
+    "plan": [
+      "local",
+      "guardian",
+      "vault",
+      "lifetime",
+      "team",
+      "enterprise"
+    ],
+    "platforms": [
+      "windows",
+      "android",
+      "web"
+    ],
+    "excerpt": "Zero-Knowledge Model What it is \"Zero-knowledge\" in K-Perception means that the server is cryptographically incapable of reading user content — not merely contractually prohibited from doing so. This "
+  }
+]

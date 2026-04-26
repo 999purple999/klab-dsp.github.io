@@ -1,0 +1,976 @@
+{
+  "version": "1.0",
+  "generated": "2026-04-26",
+  "article_count": 157,
+  "base_url": "/wiki",
+  "default_theme": "light",
+  "features": {
+    "search": true,
+    "toc": true,
+    "breadcrumbs": true,
+    "prev_next": true,
+    "edit_link": false
+  },
+  "categories_order": [
+    "Getting Started",
+    "Editors",
+    "Organization",
+    "Sharing",
+    "Sync and Storage",
+    "Collaboration",
+    "Workspaces",
+    "Enterprise",
+    "Security",
+    "Authentication",
+    "API",
+    "CLI",
+    "Platforms",
+    "Compliance",
+    "Legal",
+    "FAQ"
+  ],
+  "articles": [
+    {
+      "path": "api/authentication.md",
+      "title": "API Authentication",
+      "slug": "api-authentication",
+      "category": "API"
+    },
+    {
+      "path": "api/changelog.md",
+      "title": "API Changelog",
+      "slug": "api-changelog",
+      "category": "API"
+    },
+    {
+      "path": "api/companies.md",
+      "title": "Company API Endpoints",
+      "slug": "api-companies",
+      "category": "API"
+    },
+    {
+      "path": "api/errors.md",
+      "title": "API Error Reference",
+      "slug": "api-errors",
+      "category": "API"
+    },
+    {
+      "path": "api/overview.md",
+      "title": "API Overview",
+      "slug": "api-overview",
+      "category": "API"
+    },
+    {
+      "path": "api/pagination.md",
+      "title": "API Pagination",
+      "slug": "api-pagination",
+      "category": "API"
+    },
+    {
+      "path": "api/rate-limits.md",
+      "title": "API Rate Limits",
+      "slug": "api-rate-limits",
+      "category": "API"
+    },
+    {
+      "path": "api/scim.md",
+      "title": "SCIM 2.0 API",
+      "slug": "api-scim",
+      "category": "API"
+    },
+    {
+      "path": "api/webhooks-api.md",
+      "title": "Webhooks API Reference",
+      "slug": "api-webhooks",
+      "category": "API"
+    },
+    {
+      "path": "api/workspaces.md",
+      "title": "Workspace API Endpoints",
+      "slug": "api-workspaces",
+      "category": "API"
+    },
+    {
+      "path": "authentication/account-recovery.md",
+      "title": "Account Recovery",
+      "slug": "account-recovery",
+      "category": "Authentication"
+    },
+    {
+      "path": "authentication/biometric-unlock.md",
+      "title": "Biometric Unlock",
+      "slug": "biometric-unlock",
+      "category": "Authentication"
+    },
+    {
+      "path": "authentication/device-management.md",
+      "title": "Device Management",
+      "slug": "device-management",
+      "category": "Authentication"
+    },
+    {
+      "path": "authentication/email-password.md",
+      "title": "Email + Password Authentication",
+      "slug": "email-password",
+      "category": "Authentication"
+    },
+    {
+      "path": "authentication/google-oauth.md",
+      "title": "Google OAuth2 PKCE Authentication",
+      "slug": "google-oauth",
+      "category": "Authentication"
+    },
+    {
+      "path": "authentication/overview.md",
+      "title": "Authentication Overview",
+      "slug": "auth-overview",
+      "category": "Authentication"
+    },
+    {
+      "path": "authentication/sessions.md",
+      "title": "Session Management",
+      "slug": "sessions",
+      "category": "Authentication"
+    },
+    {
+      "path": "authentication/totp-2fa.md",
+      "title": "TOTP Two-Factor Authentication",
+      "slug": "totp-2fa",
+      "category": "Authentication"
+    },
+    {
+      "path": "cli/kp-admin.md",
+      "title": "kp-admin CLI Reference",
+      "slug": "cli-kp-admin",
+      "category": "CLI"
+    },
+    {
+      "path": "cli/kp-ws.md",
+      "title": "kp-ws CLI Reference",
+      "slug": "cli-kp-ws",
+      "category": "CLI"
+    },
+    {
+      "path": "cli/overview.md",
+      "title": "CLI Tools Overview",
+      "slug": "cli-overview",
+      "category": "CLI"
+    },
+    {
+      "path": "collaboration/awareness-and-presence.md",
+      "title": "Awareness and presence",
+      "slug": "awareness-and-presence",
+      "category": "Collaboration"
+    },
+    {
+      "path": "collaboration/deep-link-routing.md",
+      "title": "Deep link routing",
+      "slug": "deep-link-routing",
+      "category": "Collaboration"
+    },
+    {
+      "path": "collaboration/docroom-protocol.md",
+      "title": "DocRoom protocol",
+      "slug": "docroom-protocol",
+      "category": "Collaboration"
+    },
+    {
+      "path": "collaboration/mobile-collab-editor.md",
+      "title": "Mobile collaborative editor",
+      "slug": "mobile-collab-editor",
+      "category": "Collaboration"
+    },
+    {
+      "path": "collaboration/realtime-yjs.md",
+      "title": "Real-time collaboration with Y.js CRDT",
+      "slug": "realtime-yjs",
+      "category": "Collaboration"
+    },
+    {
+      "path": "collaboration/reconnect-backoff.md",
+      "title": "Reconnect behaviour and backoff",
+      "slug": "reconnect-backoff",
+      "category": "Collaboration"
+    },
+    {
+      "path": "collaboration/version-snapshots.md",
+      "title": "Version snapshots in collaboration",
+      "slug": "version-snapshots",
+      "category": "Collaboration"
+    },
+    {
+      "path": "compliance/audit-retention.md",
+      "title": "Audit Log Retention",
+      "slug": "audit-retention",
+      "category": "Compliance"
+    },
+    {
+      "path": "compliance/data-residency.md",
+      "title": "Data Residency",
+      "slug": "data-residency",
+      "category": "Compliance"
+    },
+    {
+      "path": "compliance/gdpr.md",
+      "title": "GDPR Compliance Guide",
+      "slug": "gdpr",
+      "category": "Compliance"
+    },
+    {
+      "path": "compliance/hipaa.md",
+      "title": "HIPAA Compliance Guide",
+      "slug": "hipaa",
+      "category": "Compliance"
+    },
+    {
+      "path": "compliance/overview.md",
+      "title": "Compliance Overview",
+      "slug": "compliance-overview",
+      "category": "Compliance"
+    },
+    {
+      "path": "compliance/soc2.md",
+      "title": "SOC 2 Overview",
+      "slug": "soc2",
+      "category": "Compliance"
+    },
+    {
+      "path": "editors/attachments.md",
+      "title": "Attachments",
+      "slug": "attachments",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/canvas.md",
+      "title": "Canvas editor",
+      "slug": "canvas",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/command-palette.md",
+      "title": "Command palette",
+      "slug": "command-palette",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/docs.md",
+      "title": "Docs editor",
+      "slug": "docs",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/editorial.md",
+      "title": "Editorial editor",
+      "slug": "editorial",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/exports.md",
+      "title": "Exports",
+      "slug": "exports",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/keyboard-shortcuts.md",
+      "title": "Keyboard shortcuts",
+      "slug": "keyboard-shortcuts",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/latex.md",
+      "title": "LaTeX editor",
+      "slug": "latex",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/markdown.md",
+      "title": "Markdown editor",
+      "slug": "markdown",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/overview.md",
+      "title": "Editor modes overview",
+      "slug": "editors-overview",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/pdf-reader.md",
+      "title": "PDF reader",
+      "slug": "pdf-reader",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/plain-text.md",
+      "title": "Plain text editor",
+      "slug": "plain-text",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/revision-history.md",
+      "title": "Revision history",
+      "slug": "revision-history",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/sheets.md",
+      "title": "Sheets editor",
+      "slug": "sheets",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/slash-commands.md",
+      "title": "Slash commands",
+      "slug": "slash-commands",
+      "category": "Editors"
+    },
+    {
+      "path": "editors/voice-recorder.md",
+      "title": "Voice recorder",
+      "slug": "voice-recorder",
+      "category": "Editors"
+    },
+    {
+      "path": "enterprise/audit-log.md",
+      "title": "Company Audit Log",
+      "slug": "audit-log",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/company-shell.md",
+      "title": "Company shell",
+      "slug": "enterprise/company-shell",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/compliance-tab.md",
+      "title": "Compliance Tab",
+      "slug": "compliance-tab",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/dangerous-ops.md",
+      "title": "Dangerous Operations Overview",
+      "slug": "dangerous-ops",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/domain-restriction.md",
+      "title": "Email domain restriction",
+      "slug": "domain-restriction",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/elevation-tokens.md",
+      "title": "TOTP Step-Up Elevation Tokens",
+      "slug": "elevation-tokens",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/gdpr-deletion.md",
+      "title": "GDPR Data Deletion",
+      "slug": "gdpr-deletion",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/ip-allowlist.md",
+      "title": "IP allowlist",
+      "slug": "enterprise/ip-allowlist",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/mfa-enforcement.md",
+      "title": "MFA enforcement",
+      "slug": "mfa-enforcement",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/oidc.md",
+      "title": "OIDC SSO for Companies",
+      "slug": "oidc",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/overview.md",
+      "title": "Enterprise plan overview",
+      "slug": "enterprise/overview",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/remote-wipe.md",
+      "title": "Remote Wipe",
+      "slug": "remote-wipe",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/rotate-key.md",
+      "title": "Workspace Key Rotation",
+      "slug": "rotate-key",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/saml-azure-ad.md",
+      "title": "SAML 2.0 SSO with Azure AD (Entra ID)",
+      "slug": "saml-azure-ad",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/saml-google-workspace.md",
+      "title": "SAML 2.0 SSO with Google Workspace",
+      "slug": "saml-google-workspace",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/saml-okta.md",
+      "title": "SAML 2.0 SSO with Okta",
+      "slug": "saml-okta",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/saml-onelogin.md",
+      "title": "SAML 2.0 SSO with OneLogin",
+      "slug": "saml-onelogin",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/scim-azure-ad.md",
+      "title": "SCIM Provisioning with Azure AD (Entra ID)",
+      "slug": "scim-azure-ad",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/scim-groups.md",
+      "title": "SCIM Group Sync",
+      "slug": "scim-groups",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/scim-okta.md",
+      "title": "SCIM Provisioning with Okta",
+      "slug": "scim-okta",
+      "category": "Enterprise"
+    },
+    {
+      "path": "enterprise/scim-overview.md",
+      "title": "SCIM 2.0 Provisioning Overview",
+      "slug": "scim-overview",
+      "category": "Enterprise"
+    },
+    {
+      "path": "faq/billing.md",
+      "title": "Billing FAQ",
+      "slug": "faq-billing",
+      "category": "FAQ"
+    },
+    {
+      "path": "faq/enterprise.md",
+      "title": "Enterprise FAQ",
+      "slug": "faq-enterprise",
+      "category": "FAQ"
+    },
+    {
+      "path": "faq/general.md",
+      "title": "General FAQ",
+      "slug": "faq-general",
+      "category": "FAQ"
+    },
+    {
+      "path": "faq/security.md",
+      "title": "Security FAQ",
+      "slug": "faq-security",
+      "category": "FAQ"
+    },
+    {
+      "path": "faq/troubleshooting.md",
+      "title": "Troubleshooting FAQ",
+      "slug": "faq-troubleshooting",
+      "category": "FAQ"
+    },
+    {
+      "path": "getting-started/account-and-login.md",
+      "title": "Account setup and login",
+      "slug": "account-and-login",
+      "category": "Getting Started"
+    },
+    {
+      "path": "getting-started/choosing-a-plan.md",
+      "title": "Choosing a plan",
+      "slug": "choosing-a-plan",
+      "category": "Getting Started"
+    },
+    {
+      "path": "getting-started/first-vault.md",
+      "title": "Creating your first vault",
+      "slug": "first-vault",
+      "category": "Getting Started"
+    },
+    {
+      "path": "getting-started/install-android.md",
+      "title": "Install on Android",
+      "slug": "install-android",
+      "category": "Getting Started"
+    },
+    {
+      "path": "getting-started/install-windows.md",
+      "title": "Install on Windows",
+      "slug": "install-windows",
+      "category": "Getting Started"
+    },
+    {
+      "path": "getting-started/overview.md",
+      "title": "What is K-Perception?",
+      "slug": "overview",
+      "category": "Getting Started"
+    },
+    {
+      "path": "getting-started/upgrading-and-billing.md",
+      "title": "Upgrading, downgrading, and billing",
+      "slug": "upgrading-and-billing",
+      "category": "Getting Started"
+    },
+    {
+      "path": "getting-started/web-pwa.md",
+      "title": "Using K-Perception in a browser (PWA)",
+      "slug": "web-pwa",
+      "category": "Getting Started"
+    },
+    {
+      "path": "legal/acceptable-use-policy.md",
+      "title": "Acceptable Use Policy — Summary",
+      "slug": "acceptable-use-policy",
+      "category": "Legal"
+    },
+    {
+      "path": "legal/cookie-policy.md",
+      "title": "Cookie Policy",
+      "slug": "cookie-policy",
+      "category": "Legal"
+    },
+    {
+      "path": "legal/data-processing-agreement.md",
+      "title": "Data Processing Agreement (DPA)",
+      "slug": "data-processing-agreement",
+      "category": "Legal"
+    },
+    {
+      "path": "legal/hipaa-baa.md",
+      "title": "HIPAA Business Associate Agreement",
+      "slug": "hipaa-baa",
+      "category": "Legal"
+    },
+    {
+      "path": "legal/overview.md",
+      "title": "Legal Overview",
+      "slug": "legal-overview",
+      "category": "Legal"
+    },
+    {
+      "path": "legal/privacy-policy.md",
+      "title": "Privacy Policy — Summary",
+      "slug": "privacy-policy",
+      "category": "Legal"
+    },
+    {
+      "path": "legal/security-disclosure.md",
+      "title": "Security Vulnerability Disclosure Policy",
+      "slug": "security-disclosure",
+      "category": "Legal"
+    },
+    {
+      "path": "legal/sla.md",
+      "title": "Service Level Agreement",
+      "slug": "sla",
+      "category": "Legal"
+    },
+    {
+      "path": "legal/sub-processors.md",
+      "title": "Sub-processors",
+      "slug": "sub-processors",
+      "category": "Legal"
+    },
+    {
+      "path": "legal/terms-of-service.md",
+      "title": "Terms of Service — Summary",
+      "slug": "terms-of-service",
+      "category": "Legal"
+    },
+    {
+      "path": "organization/collections.md",
+      "title": "Collections",
+      "slug": "collections",
+      "category": "Organization"
+    },
+    {
+      "path": "organization/folders.md",
+      "title": "Folders",
+      "slug": "folders",
+      "category": "Organization"
+    },
+    {
+      "path": "organization/knowledge-graph.md",
+      "title": "Knowledge Graph",
+      "slug": "knowledge-graph",
+      "category": "Organization"
+    },
+    {
+      "path": "organization/pinning.md",
+      "title": "Pinning Notes",
+      "slug": "pinning",
+      "category": "Organization"
+    },
+    {
+      "path": "organization/quick-capture.md",
+      "title": "Quick capture",
+      "slug": "quick-capture",
+      "category": "Organization"
+    },
+    {
+      "path": "organization/search.md",
+      "title": "Search",
+      "slug": "search",
+      "category": "Organization"
+    },
+    {
+      "path": "organization/spaces.md",
+      "title": "Encrypted Spaces",
+      "slug": "spaces",
+      "category": "Organization"
+    },
+    {
+      "path": "organization/tags.md",
+      "title": "Tags",
+      "slug": "tags",
+      "category": "Organization"
+    },
+    {
+      "path": "organization/trash-and-purge.md",
+      "title": "Trash and Auto-Purge",
+      "slug": "trash-and-purge",
+      "category": "Organization"
+    },
+    {
+      "path": "platforms/android.md",
+      "title": "Android Mobile",
+      "slug": "android",
+      "category": "Platforms"
+    },
+    {
+      "path": "platforms/cross-platform-sync.md",
+      "title": "Cross-Platform Sync",
+      "slug": "cross-platform-sync",
+      "category": "Platforms"
+    },
+    {
+      "path": "platforms/notifications.md",
+      "title": "Notifications",
+      "slug": "notifications",
+      "category": "Platforms"
+    },
+    {
+      "path": "platforms/offline-capability.md",
+      "title": "Offline Capability",
+      "slug": "offline-capability",
+      "category": "Platforms"
+    },
+    {
+      "path": "platforms/overview.md",
+      "title": "Platform Overview",
+      "slug": "platform-overview",
+      "category": "Platforms"
+    },
+    {
+      "path": "platforms/web-pwa.md",
+      "title": "Web PWA",
+      "slug": "web-pwa",
+      "category": "Platforms"
+    },
+    {
+      "path": "platforms/windows.md",
+      "title": "Windows Desktop",
+      "slug": "windows",
+      "category": "Platforms"
+    },
+    {
+      "path": "security/aes-gcm-encryption.md",
+      "title": "AES-256-GCM Encryption",
+      "slug": "aes-gcm-encryption",
+      "category": "Security"
+    },
+    {
+      "path": "security/argon2id-kdf.md",
+      "title": "Argon2id Key Derivation Function",
+      "slug": "argon2id-kdf",
+      "category": "Security"
+    },
+    {
+      "path": "security/data-at-rest.md",
+      "title": "Data at Rest",
+      "slug": "data-at-rest",
+      "category": "Security"
+    },
+    {
+      "path": "security/e2ee-collaboration.md",
+      "title": "End-to-End Encrypted Real-Time Collaboration",
+      "slug": "e2ee-collaboration",
+      "category": "Security"
+    },
+    {
+      "path": "security/ip-allowlist-security.md",
+      "title": "IP Allowlist Security",
+      "slug": "ip-allowlist-security",
+      "category": "Security"
+    },
+    {
+      "path": "security/key-hierarchy.md",
+      "title": "Workspace Key Hierarchy",
+      "slug": "key-hierarchy",
+      "category": "Security"
+    },
+    {
+      "path": "security/overview.md",
+      "title": "Security Architecture Overview",
+      "slug": "security-overview",
+      "category": "Security"
+    },
+    {
+      "path": "security/session-security.md",
+      "title": "Session Token Security",
+      "slug": "session-security",
+      "category": "Security"
+    },
+    {
+      "path": "security/share-link-security.md",
+      "title": "Share Link Security Model",
+      "slug": "share-link-security",
+      "category": "Security"
+    },
+    {
+      "path": "security/threat-model.md",
+      "title": "K-Perception Threat Model",
+      "slug": "threat-model",
+      "category": "Security"
+    },
+    {
+      "path": "security/totp-step-up.md",
+      "title": "TOTP Step-Up Authentication for Dangerous Operations",
+      "slug": "totp-step-up",
+      "category": "Security"
+    },
+    {
+      "path": "security/zero-knowledge-model.md",
+      "title": "Zero-Knowledge Model",
+      "slug": "zero-knowledge-model",
+      "category": "Security"
+    },
+    {
+      "path": "sharing/comments.md",
+      "title": "Comments on Shared Notes",
+      "slug": "comments",
+      "category": "Sharing"
+    },
+    {
+      "path": "sharing/password-protection.md",
+      "title": "Password-Protected Share Links",
+      "slug": "password-protection",
+      "category": "Sharing"
+    },
+    {
+      "path": "sharing/permissions.md",
+      "title": "Share Link Permission Levels",
+      "slug": "permissions",
+      "category": "Sharing"
+    },
+    {
+      "path": "sharing/revocation.md",
+      "title": "Revoking Share Links",
+      "slug": "revocation",
+      "category": "Sharing"
+    },
+    {
+      "path": "sharing/share-links.md",
+      "title": "Share Links",
+      "slug": "share-links",
+      "category": "Sharing"
+    },
+    {
+      "path": "sharing/share-viewer.md",
+      "title": "Share viewer",
+      "slug": "share-viewer",
+      "category": "Sharing"
+    },
+    {
+      "path": "sync-and-storage/413-enforcement.md",
+      "title": "413 quota enforcement",
+      "slug": "413-enforcement",
+      "category": "Sync and Storage"
+    },
+    {
+      "path": "sync-and-storage/cross-device.md",
+      "title": "Cross-device sync",
+      "slug": "cross-device",
+      "category": "Sync and Storage"
+    },
+    {
+      "path": "sync-and-storage/kpx-format.md",
+      "title": "KPX encrypted export format",
+      "slug": "kpx-format",
+      "category": "Sync and Storage"
+    },
+    {
+      "path": "sync-and-storage/merge-conflicts.md",
+      "title": "Merge conflicts",
+      "slug": "merge-conflicts",
+      "category": "Sync and Storage"
+    },
+    {
+      "path": "sync-and-storage/offline-first.md",
+      "title": "Offline-first architecture",
+      "slug": "offline-first",
+      "category": "Sync and Storage"
+    },
+    {
+      "path": "sync-and-storage/pdf-import.md",
+      "title": "PDF import",
+      "slug": "pdf-import",
+      "category": "Sync and Storage"
+    },
+    {
+      "path": "sync-and-storage/pull-polling.md",
+      "title": "Pull sync and polling",
+      "slug": "pull-polling",
+      "category": "Sync and Storage"
+    },
+    {
+      "path": "sync-and-storage/storage-quotas.md",
+      "title": "Storage quotas",
+      "slug": "storage-quotas",
+      "category": "Sync and Storage"
+    },
+    {
+      "path": "sync-and-storage/sync-queue.md",
+      "title": "Sync queue",
+      "slug": "sync-queue",
+      "category": "Sync and Storage"
+    },
+    {
+      "path": "workspaces/admin-console.md",
+      "title": "Admin console",
+      "slug": "admin-console",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/api-keys.md",
+      "title": "Workspace API keys",
+      "slug": "api-keys",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/backup-restore.md",
+      "title": "Workspace backup and restore",
+      "slug": "backup-restore",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/calendar.md",
+      "title": "Workspace calendar",
+      "slug": "calendar",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/channels.md",
+      "title": "Encrypted Channels",
+      "slug": "workspaces/channels",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/citations.md",
+      "title": "Workspace citations",
+      "slug": "citations",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/creating-a-workspace.md",
+      "title": "Creating a Workspace",
+      "slug": "workspaces/creating-a-workspace",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/file-versioning.md",
+      "title": "File version history",
+      "slug": "file-versioning",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/files-and-directories.md",
+      "title": "Files and directories",
+      "slug": "files-and-directories",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/gantt.md",
+      "title": "Workspace Gantt chart",
+      "slug": "gantt",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/groups.md",
+      "title": "Groups",
+      "slug": "groups",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/invitations.md",
+      "title": "Invitations",
+      "slug": "invitations",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/members-and-roles.md",
+      "title": "Members and roles",
+      "slug": "members-and-roles",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/overview.md",
+      "title": "Workspaces Overview",
+      "slug": "workspaces/overview",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/per-file-acl.md",
+      "title": "Per-file access control",
+      "slug": "per-file-acl",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/presence.md",
+      "title": "Workspace presence",
+      "slug": "presence",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/sections.md",
+      "title": "Sections",
+      "slug": "workspaces/sections",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/shared-with-me.md",
+      "title": "Shared with me",
+      "slug": "shared-with-me",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/transfer-ownership.md",
+      "title": "Transfer workspace ownership",
+      "slug": "transfer-ownership",
+      "category": "Workspaces"
+    },
+    {
+      "path": "workspaces/webhooks.md",
+      "title": "Webhooks",
+      "slug": "webhooks",
+      "category": "Workspaces"
+    }
+  ]
+}
