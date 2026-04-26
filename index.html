@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-Perception — Zero-Knowledge Encrypted Knowledge Vault · K-LAB DSP</title>
+<title>K-Perception · Zero-Knowledge Encrypted Knowledge Vault · K-LAB DSP</title>
 <meta name="description" content="K-Perception is the only zero-knowledge note-taking platform with 7 production-grade editor modes, real-time E2EE collaboration via Y.js CRDT, and full enterprise SSO. AES-256-GCM. Offline-first. Built on Cloudflare's edge.">
-<meta property="og:title" content="K-Perception — Notion-grade features. Signal-grade privacy.">
+<meta property="og:title" content="K-Perception · Notion-grade features. Signal-grade privacy.">
 <meta property="og:description" content="The only encrypted knowledge platform that lets you collaborate in real time without ever exposing your content to the server. Always.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#a855f7">
@@ -742,7 +742,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
 
     <p class="hero-tagline">
       Seven production-grade editor modes. Real-time collaboration via Y.js CRDT. Full enterprise SSO.
-      Every byte encrypted with AES-256-GCM <em>before</em> it leaves your device. The server stores ciphertext — and nothing else. Mathematically.
+      Every byte encrypted with AES-256-GCM <em>before</em> it leaves your device. The server stores ciphertext, nothing else. Mathematically.
     </p>
 
     <div class="hero-cta-row">
@@ -859,7 +859,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
   <div class="section-inner">
     <span class="section-label kp reveal">The trade-off no one solves</span>
     <h2 class="section-title reveal">Pick two. <span class="grad">We picked all three.</span></h2>
-    <p class="section-sub reveal">Every modern note-taking tool forces you to choose between privacy, features, and collaboration. K-Perception eliminates the trade-off architecturally — not as a marketing claim.</p>
+    <p class="section-sub reveal">Every modern note-taking tool forces you to choose between privacy, features, and collaboration. K-Perception eliminates the trade-off architecturally, not as a marketing claim.</p>
 
     <div class="problem-grid">
       <div class="problem-card broken reveal delay-1">
@@ -875,7 +875,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       <div class="problem-card broken reveal delay-2">
         <div class="problem-card-tag">✕ Cloud-connected tools</div>
         <h4>Notion · Evernote · Google Docs</h4>
-        <p>Beautiful collaboration. But the server reads every word you write — your IP, your patient notes, your sources, all in plaintext.</p>
+        <p>Beautiful collaboration. But the server reads every word you write: your IP, your patient notes, your sources, all in plaintext.</p>
         <ul>
           <li>Server reads all content in plaintext</li>
           <li>Subpoena-vulnerable, breach-vulnerable</li>
@@ -888,7 +888,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         <p>Encryption happens before the network exists. Y.js CRDT + AES-256-GCM means the server brokers binary blobs it cannot interpret.</p>
         <ul>
           <li>Real-time multi-user collaboration</li>
-          <li>Server stores only ciphertext — provably</li>
+          <li>Server stores only ciphertext, provably</li>
           <li>Works offline, syncs when ready</li>
         </ul>
       </div>
@@ -901,7 +901,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
   <div class="section-inner">
     <span class="section-label kp reveal">Seven editor modes</span>
     <h2 class="section-title reveal">One vault.<br><span class="grad">Seven production-grade editors.</span></h2>
-    <p class="section-sub reveal">No comparable encrypted app offers more than two. We ship plain text, Markdown, LaTeX, rich-text Docs, a formula-engine spreadsheet, freehand Canvas, and a publication-grade Editorial mode — under the same zero-knowledge roof.</p>
+    <p class="section-sub reveal">No comparable encrypted app offers more than two. We ship plain text, Markdown, LaTeX, rich-text Docs, a formula-engine spreadsheet, freehand Canvas, and a publication-grade Editorial mode, all under the same zero-knowledge roof.</p>
 
     <div class="modes-tabs reveal" role="tablist">
       <button class="mode-tab active" data-mode="plain"><span class="mode-tab-num">01</span>Plain</button>
@@ -926,14 +926,14 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       <div class="showcase-copy reveal-left">
         <span class="section-label kp">Encrypted vault</span>
         <h3>Your mind is private.<br>Keep it that way.</h3>
-        <p>K-Perception encrypts every note, attachment, and metadata field with AES-256-GCM <em>before</em> any network transmission. The master key is derived from your password via PBKDF2 (100,000 SHA-256 iterations) — it never leaves your device, never travels to the server, never gets logged.</p>
+        <p>K-Perception encrypts every note, attachment, and metadata field with AES-256-GCM <em>before</em> any network transmission. The master key is derived from your password via PBKDF2 (100,000 SHA-256 iterations). It never leaves your device, never travels to the server, never gets logged.</p>
         <div class="showcase-checks">
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> AES-256-GCM authenticated encryption — tampering rejected at the bit level</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Per-section HKDF-derived keys — revoke access to one section without touching the rest</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> AES-256-GCM authenticated encryption. Tampering rejected at the bit level</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Per-section HKDF-derived keys. Revoke one section without touching the rest</div>
           <div class="showcase-check"><span class="showcase-check-icon">✓</span> Per-file Data Encryption Keys (DEK) wrapped with directory keys</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Offline-first SQLite-analog vault — works without internet, always</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Offline-first SQLite-analog vault. Works without internet, always</div>
           <div class="showcase-check"><span class="showcase-check-icon">✓</span> Biometric unlock with hardware-backed Android Keystore enclave</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Time-limited elevation tokens for destructive ops — TOTP step-up enforced server-side</div>
+          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Time-limited elevation tokens for destructive ops. TOTP step-up enforced server-side</div>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
           <a href="#security" class="btn btn-kp">View security model</a>
@@ -947,7 +947,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
             <div class="vault-card-dot red"></div>
             <div class="vault-card-dot yellow"></div>
             <div class="vault-card-dot green"></div>
-            <span style="margin-left:8px;font-size:.7rem">vault.enc — K-Perception v1.3.0</span>
+            <span style="margin-left:8px;font-size:.7rem">vault.enc · K-Perception v1.3.0</span>
           </div>
           <div class="vault-line"><span class="comment">// AES-256-GCM sealed container</span></div>
           <div class="vault-line"><span class="key">format</span>: <span class="str">"enc2"</span></div>
@@ -983,7 +983,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
   <div class="section-inner">
     <span class="section-label kp reveal">Capabilities</span>
     <h2 class="section-title reveal">Everything a modern knowledge<br><span class="grad">vault should be.</span></h2>
-    <p class="section-sub reveal">Real-time CRDT collaboration, cross-device offline-first sync, encrypted file libraries, structured citations, freehand canvas — all behind an impenetrable encryption layer the server cannot bypass.</p>
+    <p class="section-sub reveal">Real-time CRDT collaboration, cross-device offline-first sync, encrypted file libraries, structured citations, freehand canvas. All behind an impenetrable encryption layer the server cannot bypass.</p>
 
     <div class="feat-grid">
 
@@ -996,7 +996,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       <div class="feat-card reveal delay-2">
         <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.87"/></svg></div>
         <div class="feat-name">E2EE Real-Time Collaboration</div>
-        <div class="feat-desc">Y.js CRDT updates encrypted with AES-256-GCM <em>before</em> WebSocket transmission. Cloudflare Durable Objects act as blind relays — they re-broadcast binary blobs they cannot interpret.</div>
+        <div class="feat-desc">Y.js CRDT updates encrypted with AES-256-GCM <em>before</em> WebSocket transmission. Cloudflare Durable Objects act as blind relays. They re-broadcast binary blobs they cannot interpret.</div>
       </div>
 
       <div class="feat-card reveal delay-3">
@@ -1008,13 +1008,13 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       <div class="feat-card reveal delay-4">
         <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg></div>
         <div class="feat-name">Workspaces &amp; Sections</div>
-        <div class="feat-desc">Per-workspace WDK wrapped per member. Sections, channels, threads, files, calendars, Gantt, citations — all under one encrypted umbrella. Revoke a member: their wrapped key is deleted.</div>
+        <div class="feat-desc">Per-workspace WDK wrapped per member. Sections, channels, threads, files, calendars, Gantt, citations, all under one encrypted umbrella. Revoke a member: their wrapped key is deleted.</div>
       </div>
 
       <div class="feat-card reveal delay-1">
         <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
         <div class="feat-name">Encrypted Share Links</div>
-        <div class="feat-desc">Random 32-byte AES key in URL fragment — never sent to server (RFC 3986 §3.5). View / Comment / Edit perms. Optional PBKDF2 password gate. Instant revoke. Threaded comments.</div>
+        <div class="feat-desc">Random 32-byte AES key in URL fragment, never sent to server (RFC 3986 §3.5). View / Comment / Edit perms. Optional PBKDF2 password gate. Instant revoke. Threaded comments.</div>
       </div>
 
       <div class="feat-card reveal delay-2">
@@ -1044,13 +1044,13 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       <div class="feat-card reveal delay-2">
         <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20M6 12h.01M10 12h.01M14 12h.01"/></svg></div>
         <div class="feat-name">CLI Tools (kp-ws / kp-admin)</div>
-        <div class="feat-desc">Headless workspace automation: <code>workspace create</code>, <code>member invite</code>, <code>file upload</code>. Mirror the full <code>/admin/api/*</code> JSON surface — user mgmt, billing, audit log access.</div>
+        <div class="feat-desc">Headless workspace automation: <code>workspace create</code>, <code>member invite</code>, <code>file upload</code>. Mirror the full <code>/admin/api/*</code> JSON surface: user mgmt, billing, audit log access.</div>
       </div>
 
       <div class="feat-card reveal delay-3">
         <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <div class="feat-name">Compliance-Grade</div>
-        <div class="feat-desc">GDPR data deletion endpoint, HIPAA technical controls (E2EE + audit + remote wipe), SOC 2 Type II pathway, CCPA — and a Business Associate Agreement on Enterprise.</div>
+        <div class="feat-desc">GDPR data deletion endpoint, HIPAA technical controls (E2EE + audit + remote wipe), SOC 2 Type II pathway, CCPA, plus a Business Associate Agreement on Enterprise.</div>
       </div>
 
       <div class="feat-card reveal delay-4">
@@ -1068,14 +1068,14 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
   <div class="section-inner">
     <span class="section-label kp reveal">Security architecture</span>
     <h2 class="section-title reveal">Zero-knowledge by design.<br><span class="grad">Not by marketing.</span></h2>
-    <p class="section-sub reveal">Every architectural decision passes one test: if the server and its databases were subpoenaed or breached, could plaintext content be recovered? The answer is no — and we can show you why.</p>
+    <p class="section-sub reveal">Every architectural decision passes one test: if the server and its databases were subpoenaed or breached, could plaintext content be recovered? The answer is no, and we can show you why.</p>
 
     <div class="security-grid">
       <div class="security-card reveal delay-1">
         <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
         <div class="security-card-title">AES-256-GCM</div>
         <div class="security-card-tech">NIST-approved · NSA Suite B</div>
-        <div class="security-card-desc">Authenticated encryption via Galois/Counter Mode. 256-bit key, 2²⁵⁶ brute-force space. The GCM tag detects any modification — even a single bit-flip is rejected.</div>
+        <div class="security-card-desc">Authenticated encryption via Galois/Counter Mode. 256-bit key, 2²⁵⁶ brute-force space. The GCM tag detects any modification: even a single bit-flip is rejected.</div>
       </div>
       <div class="security-card reveal delay-2">
         <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg></div>
@@ -1087,12 +1087,12 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7v10l10 5 10-5V7z"/><path d="M2 7l10 5 10-5"/></svg></div>
         <div class="security-card-title">HKDF Key Hierarchy</div>
         <div class="security-card-tech">WDK → SK_section → SK_dir → DEK</div>
-        <div class="security-card-desc">HKDF-derived per-section and per-directory keys. Per-file Data Encryption Keys mean revocation costs only one DEK rotation — not a full vault re-encrypt.</div>
+        <div class="security-card-desc">HKDF-derived per-section and per-directory keys. Per-file Data Encryption Keys mean revocation costs only one DEK rotation, not a full vault re-encrypt.</div>
       </div>
       <div class="security-card reveal delay-4">
         <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg></div>
         <div class="security-card-title">PKCE OAuth · Google ID</div>
-        <div class="security-card-tech">RFC 7636 — Proof Key for Code Exchange</div>
+        <div class="security-card-tech">RFC 7636 · Proof Key for Code Exchange</div>
         <div class="security-card-desc">Login uses OAuth 2.0 PKCE. The proof key never travels to the server in plaintext. Login is identity-only and never carries the vault decryption key.</div>
       </div>
       <div class="security-card reveal delay-1">
@@ -1104,7 +1104,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       <div class="security-card reveal delay-2">
         <div class="security-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
         <div class="security-card-title">Share Cryptography</div>
-        <div class="security-card-tech">URL #fragment — never to server</div>
+        <div class="security-card-tech">URL #fragment · never to server</div>
         <div class="security-card-desc">Random 32-byte key delivered via URL fragment (RFC 3986 §3.5: never in HTTP requests). Optional PBKDF2 password gate. Server-side instant revocation via revokeTokenHash.</div>
       </div>
       <div class="security-card reveal delay-3">
@@ -1123,7 +1123,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
 
     <!-- ARCHITECTURE FLOW -->
     <div class="reveal">
-      <h3 style="font-family:var(--font-display);font-size:1.2rem;color:var(--text1);margin-bottom:18px;letter-spacing:.04em;text-align:center">Encryption flow — your password to your other device</h3>
+      <h3 style="font-family:var(--font-display);font-size:1.2rem;color:var(--text1);margin-bottom:18px;letter-spacing:.04em;text-align:center">Encryption flow · your password to your other device</h3>
       <div class="arch-flow">
         <div class="arch-node">
           <span class="arch-label">Your device</span>
@@ -1163,7 +1163,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
 
     <!-- KEY HIERARCHY -->
     <div class="hierarchy reveal">
-      <h3 class="hierarchy-title">Workspace key hierarchy — the cryptographic moat</h3>
+      <h3 class="hierarchy-title">Workspace key hierarchy · the cryptographic moat</h3>
       <p class="hierarchy-sub">Per-section HKDF derivation and per-file DEKs mean revoking access to one resource is a single-key operation, not a vault-wide re-encrypt. Members hold a wrapped copy of the WDK, encrypted with their own device key.</p>
 
       <div class="hierarchy-tree">
@@ -1201,7 +1201,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
   <div class="section-inner">
     <span class="section-label kp reveal">Real-time collaboration</span>
     <h2 class="section-title reveal">Y.js CRDT.<br><span class="grad">The server is a blind relay.</span></h2>
-    <p class="section-sub reveal">Real-time collab without trusting the server is supposed to be impossible. We made it work. Every Y.js binary update is AES-256-GCM-encrypted with the workspace key <em>before</em> the WebSocket call. Cloudflare Durable Objects re-broadcast the bytes — they cannot interpret them.</p>
+    <p class="section-sub reveal">Real-time collab without trusting the server is supposed to be impossible. We made it work. Every Y.js binary update is AES-256-GCM-encrypted with the workspace key <em>before</em> the WebSocket call. Cloudflare Durable Objects re-broadcast the bytes. They cannot interpret them.</p>
 
     <div class="collab-demo">
       <div class="collab-pane client-a reveal-left">
@@ -1218,7 +1218,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       </div>
       <div class="collab-pane server reveal delay-2">
         <div class="collab-pane-label">DocRoom Durable Object</div>
-        <h5 style="color:#fca5a5">Server view — opaque relay</h5>
+        <h5 style="color:#fca5a5">Server view · opaque relay</h5>
         <div class="cipher-blob">
           7Bf4a8c2d91e0fABe3f0c41ad2…<br>
           0c7bd7c6e8f12a3401deef4cba…<br>
@@ -1395,7 +1395,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           <span class="pricing-amount" id="guardian-price">€3.49</span>
           <span class="pricing-period" id="guardian-period">/month</span>
         </div>
-        <div class="pricing-annual-note" id="guardian-annual">or €29/year — save 30%</div>
+        <div class="pricing-annual-note" id="guardian-annual">or €29/year · save 30%</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Sync across 3 devices</li>
@@ -1417,7 +1417,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           <span class="pricing-amount" id="vault-price">€7.99</span>
           <span class="pricing-period" id="vault-period">/month</span>
         </div>
-        <div class="pricing-annual-note" id="vault-annual">or €67/year — save 30%</div>
+        <div class="pricing-annual-note" id="vault-annual">or €67/year · save 30%</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Guardian</li>
@@ -1442,7 +1442,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         <div class="pricing-annual-note" style="color:var(--gold);font-size:.72rem">⚠ Only 47 lifetime spots remaining</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Vault — forever</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Vault, forever</li>
           <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--gold)">✓</span> Zero recurring fees</li>
           <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--gold)">✓</span> All future features included</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Lifetime supporter badge</li>
@@ -1496,7 +1496,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
     </div>
 
     <p style="text-align:center;font-size:.78rem;color:var(--text3);margin-top:32px;line-height:1.7" class="reveal">
-      All plans include AES-256-GCM encryption and offline-first access. Your vault is yours — even offline, even if we shut down.<br>
+      All plans include AES-256-GCM encryption and offline-first access. Your vault is yours, even offline, even if we shut down.<br>
       7-day money-back guarantee on all paid plans. No questions asked.
     </p>
   </div>
@@ -1507,7 +1507,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
   <div class="section-inner">
     <span class="section-label kp reveal">Compliance posture</span>
     <h2 class="section-title reveal">Built for regulated industries.<br><span class="grad">Audited by design.</span></h2>
-    <p class="section-sub reveal">Healthcare, legal, journalism, government — wherever data residency, audit trails, and provable encryption are non-negotiable.</p>
+    <p class="section-sub reveal">Healthcare, legal, journalism, government. Wherever data residency, audit trails, and provable encryption are non-negotiable.</p>
 
     <div class="compliance-grid">
       <div class="compliance-badge reveal delay-1">
@@ -1524,7 +1524,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       </div>
       <div class="compliance-badge reveal delay-4">
         <div class="compliance-badge-name">CCPA</div>
-        <div class="compliance-badge-desc">Full user data export and deletion. We don't sell data — we couldn't even if we wanted to.</div>
+        <div class="compliance-badge-desc">Full user data export and deletion. We don't sell data. We couldn't even if we wanted to.</div>
       </div>
       <div class="compliance-badge reveal delay-1">
         <div class="compliance-badge-name">NIST SP 800-132</div>
@@ -1578,7 +1578,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         </div>
 
         <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="https://buy.stripe.com/8x200j6TLbaOg3L3vAbsc08" class="btn btn-bn" target="_blank" rel="noopener noreferrer">Buy Now — €59</a>
+          <a href="https://buy.stripe.com/8x200j6TLbaOg3L3vAbsc08" class="btn btn-bn" target="_blank" rel="noopener noreferrer">Buy Now · €59</a>
           <a href="https://binaura.accessisoftwarefrancesco.workers.dev/api/download-demo" class="btn btn-bn-ghost" target="_blank" rel="noopener noreferrer">Download Free Demo</a>
         </div>
       </div>
@@ -1586,13 +1586,13 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       <div class="binaura-feat-grid">
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> 4 lock-free wavetable oscillator engines with independent tuning, pan and phase</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> AVX2 SIMD vectorization for maximum polyphony with minimal CPU load</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> PolyBLEP antialiasing across all waveforms — zero aliasing at any frequency</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> Analog Drift DDS — per-voice VCO instability simulation</div>
+        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> PolyBLEP antialiasing across all waveforms. Zero aliasing at any frequency</div>
+        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> Analog Drift DDS · per-voice VCO instability simulation</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> ZDF biquad with SSI2144 circuit emulation, self-oscillation, key tracking</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> 8-slot modulation matrix — route any source to any parameter</div>
+        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> 8-slot modulation matrix · route any source to any parameter</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> 4 independent LFO engines with tempo sync and per-voice mode</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> Full MPE support with CC74 slide, per-note pitch bend and pressure</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> ThermalGuard DSP — auto voice limiting prevents dropouts under CPU load</div>
+        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> ThermalGuard DSP · auto voice limiting prevents dropouts under CPU load</div>
         <div class="binaura-feat"><span class="binaura-feat-check">✓</span> GPU-accelerated waveform display and drag-to-assign routing</div>
       </div>
     </div>
@@ -1633,7 +1633,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       iOS · macOS · Linux coming soon
     </div>
     <h2 class="waitlist-title">Be the first to know.</h2>
-    <p class="waitlist-sub">Get notified when iOS, macOS, and Linux launch.<br>No spam — one email when it ships.</p>
+    <p class="waitlist-sub">Get notified when iOS, macOS, and Linux launch.<br>No spam. One email when it ships.</p>
     <form class="waitlist-form" id="waitlist-form" onsubmit="return false">
       <input class="waitlist-input" type="email" id="waitlist-email" placeholder="your@email.com" autocomplete="email" required />
       <button class="waitlist-btn" type="submit" id="waitlist-btn">Notify me</button>
@@ -1671,7 +1671,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
     </div>
   </div>
   <div class="footer-bottom">
-    <p class="footer-copy">© 2026 K-LAB DSP — All products closed source</p>
+    <p class="footer-copy">© 2026 K-LAB DSP · All products closed source</p>
     <span class="footer-status"><span class="footer-status-dot"></span>All systems operational</span>
   </div>
 </footer>
@@ -1828,7 +1828,7 @@ const MODES = {
     tech: 'CodeMirror · monospace · zero distractions',
     desc: 'When you just need to think on paper. Line numbers, monospace font, no formatting baggage. Perfect for stream-of-consciousness drafts, code snippets, raw research notes.',
     feats: ['Monospace + line numbers','Lightning-fast load','No format pollution','Encrypted just like everything else'],
-    preview: '<span class="pv-tag">plain.txt</span><div style="line-height:1.85;color:var(--text2)"><span style="color:var(--text4)">  1  </span>// Project Phoenix — internal notes\n<span style="color:var(--text4)">  2  </span>2026-04-26 · all privileged\n<span style="color:var(--text4)">  3  </span><br><span style="color:var(--text4)">  4  </span>The new architecture lets us\n<span style="color:var(--text4)">  5  </span>encrypt every Y.js update before\n<span style="color:var(--text4)">  6  </span>it leaves the device — even\n<span style="color:var(--text4)">  7  </span>collaborative ones. The DocRoom\n<span style="color:var(--text4)">  8  </span>becomes a blind relay.\n<span style="color:var(--text4)">  9  </span><br><span style="color:var(--text4)"> 10  </span>This is the moat.</div>'
+    preview: '<span class="pv-tag">plain.txt</span><div style="line-height:1.85;color:var(--text2)"><span style="color:var(--text4)">  1  </span>// Project Phoenix · internal notes\n<span style="color:var(--text4)">  2  </span>2026-04-26 · all privileged\n<span style="color:var(--text4)">  3  </span><br><span style="color:var(--text4)">  4  </span>The new architecture lets us\n<span style="color:var(--text4)">  5  </span>encrypt every Y.js update before\n<span style="color:var(--text4)">  6  </span>it leaves the device, even\n<span style="color:var(--text4)">  7  </span>collaborative ones. The DocRoom\n<span style="color:var(--text4)">  8  </span>becomes a blind relay.\n<span style="color:var(--text4)">  9  </span><br><span style="color:var(--text4)"> 10  </span>This is the moat.</div>'
   },
   md: {
     title: 'Markdown',
@@ -1847,7 +1847,7 @@ const MODES = {
   docs: {
     title: 'Docs',
     tech: 'TipTap v3 (ProseMirror) · 20+ extensions',
-    desc: 'Word-class rich text. Headings, lists, checklists, tables, code blocks, callouts, mentions, slash menu, bubble formatter — encrypted before it ever touches the network.',
+    desc: 'Word-class rich text. Headings, lists, checklists, tables, code blocks, callouts, mentions, slash menu, bubble formatter. Encrypted before it ever touches the network.',
     feats: ['H1-H6, bold/italic/underline/highlight','Task lists · tables · code blocks','Slash menu + bubble menu','DocsOutline sidebar · @mentions','Drag-resize images · character count'],
     preview: '<span class="pv-tag">project-brief.doc</span><h2>Q3 product roadmap</h2><div style="color:var(--text2);line-height:1.7;margin-top:8px"><strong style="color:var(--text1)">Owner:</strong> @anna  ·  <strong style="color:var(--text1)">Status:</strong> in progress<br><br>The encrypted backup-restore feature ships first. We will:<br><br>☑ <span style="color:var(--text2)">Land DEK refactor</span><br>☑ <span style="color:var(--text2)">Wire up R2 archive</span><br>☐ <span style="color:var(--text3)">Public AI Panel beta</span><br>☐ <span style="color:var(--text3)">SCIM Groups GA</span><br><br><span style="color:var(--kp3);font-style:italic">→ See <u>SECURITY.md</u> for the cipher details.</span></div>'
   },
@@ -1856,13 +1856,13 @@ const MODES = {
     tech: 'Custom formula engine · 40+ functions · 500×52 grid',
     desc: 'Real spreadsheets inside your encrypted vault. Multi-sheet tabs, cross-sheet references, currency / percentage / date formats, extendable to 500 columns × 52 rows.',
     feats: ['40+ formula functions','Cross-sheet references (Sheet2!A1)','Currency · % · date formats','Multi-tab workbook','Encrypted cells like notes'],
-    preview: '<span class="pv-tag">budget.xlsx</span><div style="margin-top:14px"><div class="row head"><span></span><span>A · Item</span><span>B · Qty</span><span>C · €</span><span>D · Total</span></div><div class="row"><span>1</span><span>Cloudflare</span><span>1</span><span>€500</span><span style="color:#86efac">€500</span></div><div class="row"><span>2</span><span>Stripe fees</span><span>—</span><span>2.9%</span><span style="color:#86efac">€42</span></div><div class="row"><span>3</span><span>Apple Dev</span><span>1</span><span>€99</span><span style="color:#86efac">€99</span></div><div class="row"><span>4</span><span>Total</span><span></span><span></span><span style="color:var(--kp3);font-weight:700">€641</span></div><div style="margin-top:14px;color:var(--text3);font-size:.7rem">=SUM(D1:D3)  ·  encrypted before leaving device</div></div>'
+    preview: '<span class="pv-tag">budget.xlsx</span><div style="margin-top:14px"><div class="row head"><span></span><span>A · Item</span><span>B · Qty</span><span>C · €</span><span>D · Total</span></div><div class="row"><span>1</span><span>Cloudflare</span><span>1</span><span>€500</span><span style="color:#86efac">€500</span></div><div class="row"><span>2</span><span>Stripe fees</span><span></span><span>2.9%</span><span style="color:#86efac">€42</span></div><div class="row"><span>3</span><span>Apple Dev</span><span>1</span><span>€99</span><span style="color:#86efac">€99</span></div><div class="row"><span>4</span><span>Total</span><span></span><span></span><span style="color:var(--kp3);font-weight:700">€641</span></div><div style="margin-top:14px;color:var(--text3);font-size:.7rem">=SUM(D1:D3)  ·  encrypted before leaving device</div></div>'
   },
   canvas: {
     title: 'Canvas',
     tech: 'Custom canvas engine · Bézier stroke smoothing',
     desc: 'Freehand drawing, sketches, mind-maps, marker annotations. Bézier curve smoothing makes a finger or stylus feel like ink. PNG and SVG export.',
-    feats: ['Bézier-smoothed pen + brush','Shape tools · text annotations','Eraser · undo/redo','PNG + SVG export','Encrypted strokes — yes, even those'],
+    feats: ['Bézier-smoothed pen + brush','Shape tools · text annotations','Eraser · undo/redo','PNG + SVG export','Encrypted strokes (yes, even those)'],
     preview: '<span class="pv-tag">sketch.canvas</span><div class="canvas-art"></div>'
   },
   editorial: {
@@ -1870,7 +1870,7 @@ const MODES = {
     tech: 'TipTap + custom layer · publication-grade',
     desc: 'For long-form: papers, books, technical specs. Structured citations, attachment-based SVG figures, custom page geometry, severity-gated preflight checks, persistent export templates.',
     feats: ['Structured citation manager','Attachment-based SVG figures','Custom page geometry (CSS vars)','Severity-gated preflight checks','Persistent export templates','HTML / PDF export'],
-    preview: '<span class="pv-tag">manuscript.ed</span><h1>Chapter 3 — The Cryptographic Moat</h1><div style="color:var(--text2);line-height:1.85;margin-top:10px;font-family:\'Inter\',sans-serif;font-size:.84rem">In their 2024 review, Acar et al. argued that<br>zero-knowledge architectures inevitably trade<br>collaboration for security <span style="color:var(--kp3);font-size:.72rem">[1]</span>. K-Perception<br>refutes this premise architecturally by encrypting<br>every CRDT update before transmission.<br><br><span style="color:var(--text4);font-size:.72rem;font-style:italic">[1] Acar et al., <em>SoK: A Critical Look at E2EE</em>, IEEE S&amp;P 2024</span></div>'
+    preview: '<span class="pv-tag">manuscript.ed</span><h1>Chapter 3 · The Cryptographic Moat</h1><div style="color:var(--text2);line-height:1.85;margin-top:10px;font-family:\'Inter\',sans-serif;font-size:.84rem">In their 2024 review, Acar et al. argued that<br>zero-knowledge architectures inevitably trade<br>collaboration for security <span style="color:var(--kp3);font-size:.72rem">[1]</span>. K-Perception<br>refutes this premise architecturally by encrypting<br>every CRDT update before transmission.<br><br><span style="color:var(--text4);font-size:.72rem;font-style:italic">[1] Acar et al., <em>SoK: A Critical Look at E2EE</em>, IEEE S&amp;P 2024</span></div>'
   }
 };
 
@@ -1909,7 +1909,7 @@ const SAMPLES = [
   ['"My therapy notes 2026-04-26..."',  '7Bf4a8c2…d91e0f04'],
   ['"Q3 OKRs · confidential"',           '0c7bd7c6e8f12a34…'],
   ['"Source contact: Helen R., Berlin"', '17b0d15a9ec224d9…'],
-  ['"Patient 042 — clinical notes"',     '4a9c8b2e7f0d31c8…'],
+  ['"Patient 042 · clinical notes"',     '4a9c8b2e7f0d31c8…'],
   ['"Investor deck draft v3"',           'cb78a014d9efb201…']
 ];
 let sIdx = 0;
@@ -1944,8 +1944,8 @@ const monthlyLabel = document.getElementById('toggle-monthly-label');
 const annualLabel  = document.getElementById('toggle-annual-label');
 
 const pricing = {
-  guardian: { monthly: '€3.49', annual: '€2.42', periodM: '/month', periodA: '/month', noteM: 'or €29/year — save 30%', noteA: 'billed €29/year' },
-  vault:    { monthly: '€7.99', annual: '€5.58', periodM: '/month', periodA: '/month', noteM: 'or €67/year — save 30%', noteA: 'billed €67/year' },
+  guardian: { monthly: '€3.49', annual: '€2.42', periodM: '/month', periodA: '/month', noteM: 'or €29/year · save 30%', noteA: 'billed €29/year' },
+  vault:    { monthly: '€7.99', annual: '€5.58', periodM: '/month', periodA: '/month', noteM: 'or €67/year · save 30%', noteA: 'billed €67/year' },
   team:     { monthly: '€6.99', annual: '€4.92', periodM: '/user/mo', periodA: '/user/mo', noteM: 'or €59/user/year', noteA: 'billed €59/user/year' },
 };
 
