@@ -737,8 +737,8 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
     <a href="#pricing">Pricing</a>
     <a href="#binaura">BINAURA</a>
     <a href="wiki.html" class="nav-cta" style="margin-right:4px">Docs</a>
-    <a href="mailto:klabindustries.hq@gmail.com?subject=K-Perception%20Bug%20Report&body=Version:%20v1.3.0%0AOS:%0ADescription:" class="nav-cta" style="margin-right:4px;background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.32);color:#f87171!important">Report a bug</a>
-    <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=1.4.0" class="btn-kp-ghost nav-cta" target="_blank" rel="noopener noreferrer">Download</a>
+    <a href="mailto:klabindustries.hq@gmail.com?subject=K-Perception%20Bug%20Report&body=Version:%20v2.0.0%0AOS:%0ADescription:" class="nav-cta" style="margin-right:4px;background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.32);color:#f87171!important">Report a bug</a>
+    <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=2.0.0" class="btn-kp-ghost nav-cta" target="_blank" rel="noopener noreferrer">Download</a>
   </div>
 </nav>
 
@@ -755,7 +755,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
   <div class="hero-content">
     <div class="hero-badge">
       <span class="hero-badge-dot"></span>
-      Open Beta · Zero-Knowledge · v1.3.0
+      Open Beta · Zero-Knowledge · v2.0.0
     </div>
 
     <h1 class="hero-title" id="heroTitle">
@@ -772,12 +772,12 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
     </p>
 
     <div class="hero-cta-row">
-      <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=1.4.0"
+      <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=2.0.0"
          class="btn btn-kp" target="_blank" rel="noopener noreferrer">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         Download for Windows
       </a>
-      <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/app-release.apk?v=1.4.0"
+      <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/app-release.apk?v=2.0.0"
          class="btn btn-kp-ghost" target="_blank" rel="noopener noreferrer">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2z"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
         Android APK
@@ -1329,9 +1329,9 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
     </div>
 
     <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:32px" class="reveal">
-      <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=1.4.0"
+      <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=2.0.0"
          class="btn btn-kp" target="_blank" rel="noopener noreferrer">Download for Windows</a>
-      <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/app-release.apk?v=1.4.0"
+      <a href="https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/app-release.apk?v=2.0.0"
          class="btn btn-kp-ghost" target="_blank" rel="noopener noreferrer">Download Android APK</a>
     </div>
   </div>
@@ -1410,7 +1410,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           <li class="pricing-feature dim"><span class="pricing-feature-icon">✕</span> No cross-device sync</li>
           <li class="pricing-feature dim"><span class="pricing-feature-icon">✕</span> No cloud backup</li>
         </ul>
-        <button class="pricing-cta dim-btn" onclick="window.location.href='https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=1.4.0'">Download Free</button>
+        <button class="pricing-cta dim-btn" onclick="window.location.href='https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=2.0.0'">Download Free</button>
       </div>
 
       <!-- GUARDIAN -->
@@ -1431,7 +1431,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> PDF export with themes</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> TOTP 2FA</li>
         </ul>
-        <button class="pricing-cta kp-fill" onclick="document.getElementById('kperception').scrollIntoView({behavior:'smooth'})">Get Guardian →</button>
+        <button class="pricing-cta kp-fill" onclick="kpCheckout('guardian')">Get Guardian →</button>
       </div>
 
       <!-- VAULT -->
@@ -1453,7 +1453,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Knowledge Graph + LLM refinement</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Priority support</li>
         </ul>
-        <button class="pricing-cta kp-solid" onclick="document.getElementById('kperception').scrollIntoView({behavior:'smooth'})">Get Vault →</button>
+        <button class="pricing-cta kp-solid" onclick="kpCheckout('vault')">Get Vault →</button>
       </div>
 
       <!-- LIFETIME -->
@@ -1475,7 +1475,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Direct developer access</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Pays for itself in 19 months</li>
         </ul>
-        <button class="pricing-cta gold" onclick="document.getElementById('kperception').scrollIntoView({behavior:'smooth'})">Get Lifetime →</button>
+        <button class="pricing-cta gold" onclick="kpCheckout('lifetime')">Get Lifetime →</button>
       </div>
 
       <!-- TEAM -->
@@ -1496,7 +1496,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> 8-tab admin console</li>
           <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Webhooks · API keys</li>
         </ul>
-        <button class="pricing-cta kp-fill" onclick="document.getElementById('kperception').scrollIntoView({behavior:'smooth'})">Get Team →</button>
+        <button class="pricing-cta kp-fill" onclick="kpCheckout('team')">Get Team →</button>
       </div>
 
       <!-- ENTERPRISE -->
@@ -2023,6 +2023,33 @@ document.querySelectorAll('.feat-card').forEach(card => {
   });
 });
 
+/* ── Stripe checkout ────────────────────────────────────────────────── */
+const KP_WORKER = 'https://k-perception-backend.accessisoftwarefrancesco.workers.dev';
+const ANNUAL_PLANS = { guardian: 'guardian_annual', vault: 'vault_annual', team: 'team_annual' };
+let currentBillingCycle = 'monthly'; // updated by toggle
+
+async function kpCheckout(plan) {
+  const btn = event && event.target;
+  const orig = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+  // Use annual variant if toggle is on
+  const resolvedPlan = (currentBillingCycle === 'annual' && ANNUAL_PLANS[plan])
+    ? ANNUAL_PLANS[plan] : plan;
+  try {
+    const res = await fetch(KP_WORKER + '/billing/public-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: resolvedPlan }),
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Server error');
+    const { url } = await res.json();
+    window.location.href = url;
+  } catch (e) {
+    alert('Could not open checkout: ' + e.message + '\nPlease try again.');
+    if (btn) { btn.disabled = false; btn.textContent = orig; }
+  }
+}
+
 /* ── Pricing toggle ─────────────────────────────────────────────────── */
 const toggle = document.getElementById('billing-toggle');
 const monthlyLabel = document.getElementById('toggle-monthly-label');
@@ -2036,6 +2063,7 @@ const pricing = {
 
 toggle.addEventListener('change', () => {
   const annual = toggle.checked;
+  currentBillingCycle = annual ? 'annual' : 'monthly';
   monthlyLabel.classList.toggle('active', !annual);
   annualLabel.classList.toggle('active',   annual);
   for (const [key, val] of Object.entries(pricing)) {
