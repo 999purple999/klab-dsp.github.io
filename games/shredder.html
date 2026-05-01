@@ -3,261 +3,224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>The Encryption Shredder — K-Perception</title>
+<title>Doc Shredder — K-Perception</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Inter',system-ui,sans-serif;touch-action:none}
-canvas{position:absolute;top:0;left:0;width:100%;height:100%}
-#ui{position:fixed;bottom:0;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;pointer-events:none;z-index:10}
-#hint{font-size:clamp(13px,3vw,16px);color:rgba(255,255,255,0.6);letter-spacing:.08em;text-transform:uppercase}
-#msg{font-size:clamp(15px,3.5vw,20px);font-weight:700;color:#BF00FF;text-shadow:0 0 20px #BF00FF,0 0 40px rgba(191,0,255,0.4);text-align:center;opacity:0;transition:opacity .5s;max-width:600px;line-height:1.4}
-#cta{pointer-events:auto;display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#BF00FF,#7c3aed);color:#fff;font-weight:700;font-size:clamp(13px,3vw,15px);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:8px;box-shadow:0 0 30px rgba(191,0,255,0.5);transition:all .2s;opacity:0}
-#cta:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(191,0,255,0.8)}
-#progress-ring{position:fixed;top:20px;right:20px;z-index:10}
+html,body{width:100%;height:100%;background:#050508;overflow:hidden;font-family:'JetBrains Mono','Courier New',monospace;touch-action:none}
+canvas{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
+#ui{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:26px;gap:14px;z-index:10;pointer-events:none}
+#hint{font-size:clamp(11px,2.5vw,14px);color:rgba(255,255,255,0.38);letter-spacing:.1em;text-transform:uppercase}
+#btn{pointer-events:auto;padding:13px 44px;background:linear-gradient(135deg,#BF00FF,#7c3aed);color:#fff;font-weight:800;font-size:clamp(14px,3vw,17px);letter-spacing:.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:10px;box-shadow:0 0 40px rgba(191,0,255,0.5);transition:all .15s;font-family:'JetBrains Mono',monospace}
+#btn:hover{box-shadow:0 0 70px rgba(191,0,255,0.85);transform:translateY(-2px)}
+#btn.go{background:linear-gradient(135deg,#FF2222,#aa0000);box-shadow:0 0 60px rgba(255,34,34,0.7);pointer-events:none}
+#cta{pointer-events:auto;display:inline-block;padding:11px 30px;background:linear-gradient(135deg,#BF00FF,#7c3aed);color:#fff;font-weight:700;font-size:clamp(12px,2.5vw,14px);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:8px;box-shadow:0 0 30px rgba(191,0,255,0.4);transition:all .2s;opacity:0;font-family:'JetBrains Mono',monospace}
+#cta:hover{transform:translateY(-2px)}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<canvas id="c2"></canvas>
 <div id="ui">
-  <div id="msg"></div>
-  <div id="hint">Drag to shred Big Tech 🗡️</div>
-  <a id="cta" href="https://klab-dsp.github.io" target="_blank">Try K-Perception →</a>
+  <div id="hint">Your sensitive data is exposed — shred it now</div>
+  <button id="btn">⚡ SHRED DOCUMENT</button>
+  <a id="cta" href="https://999purple999.github.io/klab-dsp.github.io/" target="_blank">Try K-Perception →</a>
 </div>
-<svg id="progress-ring" width="56" height="56" viewBox="0 0 56 56">
-  <circle cx="28" cy="28" r="22" fill="none" stroke="rgba(191,0,255,0.15)" stroke-width="3"/>
-  <circle id="pring" cx="28" cy="28" r="22" fill="none" stroke="#BF00FF" stroke-width="3"
-    stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="138.2"
-    transform="rotate(-90 28 28)" style="transition:stroke-dashoffset .1s"/>
-</svg>
-
 <script>
 (function(){
-const cv  = document.getElementById('c');
-const cv2 = document.getElementById('c2');
-const ctx = cv.getContext('2d');
-const ctx2= cv2.getContext('2d');
-const msg = document.getElementById('msg');
-const cta = document.getElementById('cta');
-const hint= document.getElementById('hint');
-const pring = document.getElementById('pring');
+const cv=document.getElementById('c');
+const ctx=cv.getContext('2d');
+const btn=document.getElementById('btn');
+const cta=document.getElementById('cta');
+const hint=document.getElementById('hint');
 
-let W, H, DPR;
-function resize(){
-  DPR = Math.min(window.devicePixelRatio||1, 2);
-  W = cv.width  = cv2.width  = window.innerWidth  * DPR;
-  H = cv.height = cv2.height = window.innerHeight * DPR;
-  cv.style.width = cv2.style.width  = window.innerWidth+'px';
-  cv.style.height= cv2.style.height = window.innerHeight+'px';
-  buildLogo();
+let W,H,DPR;
+
+const CODE=[
+  '// CONFIDENTIAL — user_data.json','{',
+  '  "user_id":     "u_8f3a9c2d1b47ee",',
+  '  "email":       "alice@corporation.com",',
+  '  "password":    "S3cur3P@$$word!99",',
+  '  "credit_card": "4532-1234-5678-9012",',
+  '  "cvv":         "847",',
+  '  "ssn":         "078-05-1120",',
+  '  "api_key":     "sk-live-abc123xQRstuVWXyz",',
+  '  "session_tok": "eyJhbGciOiJIUzI1NiJ9...",',
+  '  "location":    {"lat": 48.8566, "lng": 2.3522},',
+  '  "health": {',
+  '    "diagnosis":  "type-2-diabetes",',
+  '    "meds":       ["metformin","insulin"]',
+  '  },',
+  '  "slack_token": "xoxb-123456-supersecret",',
+  '  "github_pat":  "ghp_xxxxxxxxxxxxxxxxxxxxxxxx",',
+  '  "stripe_key":  "sk_live_zzzzzzzzzzzzzzzzzzzz",',
+  '  "ssh_key":     "-----BEGIN RSA PRIVATE KEY-----",',
+  '  "db_pass":     "Pr0d-DB-P@$$w0rd!2024",',
+  '  "face_data":   "<binary blob: 45 KB>",',
+  '  "biometrics":  "<binary blob: 128 KB>"',
+  '}',
+];
+
+const SENSITIVE=['email','password','credit_card','cvv','ssn','api_key','session','diagnosis','slack','github','stripe','ssh_key','db_pass','face_data','biometrics'];
+
+let offDoc,offBg;
+
+function buildOffscreens(){
+  // Document layer (what gets shredded)
+  offDoc=document.createElement('canvas');
+  offDoc.width=W;offDoc.height=H;
+  const dc=offDoc.getContext('2d');
+
+  dc.fillStyle='#0d1117';dc.fillRect(0,0,W,H);
+  dc.fillStyle='#161b22';dc.fillRect(0,0,W,42*DPR);
+  [{x:13,c:'#FF5F57'},{x:29,c:'#FFBD2E'},{x:45,c:'#28CA41'}].forEach(({x,c})=>{
+    dc.fillStyle=c;dc.beginPath();dc.arc(x*DPR,21*DPR,5*DPR,0,Math.PI*2);dc.fill();
+  });
+  dc.fillStyle='#0d1117';dc.fillRect(66*DPR,5*DPR,160*DPR,31*DPR);
+  dc.fillStyle='#8b949e';dc.font=`${11*DPR}px monospace`;
+  dc.textBaseline='middle';dc.textAlign='left';
+  dc.fillText('user_data.json',76*DPR,21*DPR);
+  dc.fillStyle='#FF4444';dc.beginPath();dc.arc(213*DPR,21*DPR,4*DPR,0,Math.PI*2);dc.fill();
+
+  const lH=Math.max(19,(H/DPR-48)/CODE.length);
+  CODE.forEach((line,i)=>{
+    const y=(46+i*lH)*DPR;
+    dc.fillStyle='#3d444d';dc.font=`${10*DPR}px monospace`;
+    dc.textAlign='right';dc.fillText(String(i+1),36*DPR,y+lH*DPR*0.5);
+    dc.textAlign='left';
+    const hot=SENSITIVE.some(s=>line.toLowerCase().includes(s));
+    let col=hot?'#FF5555':line.startsWith('//')?'#8b949e':line.includes('"')?'#79c0ff':'#e6edf3';
+    if(hot){dc.fillStyle='rgba(255,68,68,0.1)';dc.fillRect(44*DPR,y,W-44*DPR,lH*DPR);}
+    dc.fillStyle=col;dc.font=`${Math.min(12,lH*0.6)*DPR}px monospace`;
+    dc.fillText(line,48*DPR,y+lH*DPR*0.5);
+  });
+
+  // Revealed K-Perception background
+  offBg=document.createElement('canvas');
+  offBg.width=W;offBg.height=H;
+  const bc=offBg.getContext('2d');
+  const bg=bc.createRadialGradient(W/2,H*0.42,0,W/2,H*0.42,Math.max(W,H)*0.65);
+  bg.addColorStop(0,'#1e0040');bg.addColorStop(1,'#050508');
+  bc.fillStyle=bg;bc.fillRect(0,0,W,H);
+  bc.strokeStyle='rgba(191,0,255,0.06)';bc.lineWidth=1;
+  for(let x=0;x<W;x+=46*DPR){bc.beginPath();bc.moveTo(x,0);bc.lineTo(x,H);bc.stroke();}
+  for(let y=0;y<H;y+=46*DPR){bc.beginPath();bc.moveTo(0,y);bc.lineTo(W,y);bc.stroke();}
+  const orb=bc.createRadialGradient(W/2,H*0.42,0,W/2,H*0.42,W*0.38);
+  orb.addColorStop(0,'rgba(191,0,255,0.28)');orb.addColorStop(1,'rgba(191,0,255,0)');
+  bc.fillStyle=orb;bc.fillRect(0,0,W,H);
+  const fs=Math.min(W*0.095,70*DPR);
+  bc.font=`800 ${fs}px "Inter",system-ui,sans-serif`;
+  bc.textAlign='center';bc.textBaseline='middle';
+  bc.shadowBlur=70*DPR;bc.shadowColor='#BF00FF';
+  bc.fillStyle='#BF00FF';bc.fillText('K-PERCEPTION',W/2,H*0.38);
+  bc.shadowBlur=25*DPR;
+  bc.font=`700 ${fs*0.28}px "Inter",system-ui,sans-serif`;
+  bc.fillStyle='rgba(255,255,255,0.88)';bc.fillText('YOUR DATA. YOUR DEVICE. YOUR RULES.',W/2,H*0.52);
+  bc.shadowBlur=0;
+  bc.font=`400 ${fs*0.19}px "JetBrains Mono",monospace`;
+  bc.fillStyle='rgba(0,255,65,0.8)';bc.fillText('End-to-End Encrypted  ·  100% Local  ·  Zero Cloud',W/2,H*0.60);
+  bc.font=`400 ${fs*0.155}px "JetBrains Mono",monospace`;
+  bc.fillStyle='rgba(191,0,255,0.55)';bc.fillText('DOCUMENT DESTROYED. DATA PROTECTED.',W/2,H*0.68);
 }
-window.addEventListener('resize', resize);
 
-// ── VS Code logo (drawn on cv2 = background layer) ──────────────────────────
-let logoImg = null;
-const STRIP_H = 18; // px (logical)
-let strips = [];
-let revealAlpha = 0;
+const STRIP_H=22;
+let strips=[],shredding=false,done=false;
+const sparks=[];
 
-function drawVSCodeLogo(c, size, cx, cy){
-  const r = size/2;
-  // Outer square
-  c.fillStyle = '#0078D7';
-  c.beginPath();
-  c.roundRect(cx-r, cy-r, size, size, size*0.12);
-  c.fill();
-  // White symbol (simplified VS Code icon)
-  c.fillStyle = '#fff';
-  c.font = `bold ${size*0.62}px monospace`;
-  c.textAlign = 'center';
-  c.textBaseline = 'middle';
-  c.fillText('</', cx-size*0.05, cy+size*0.02);
-  // Corner marker
-  c.fillStyle = 'rgba(255,255,255,0.4)';
-  c.beginPath();
-  c.moveTo(cx+r*0.55, cy-r);
-  c.lineTo(cx+r, cy-r);
-  c.lineTo(cx+r, cy-r*0.45);
-  c.fill();
-}
-
-function buildLogo(){
-  const logicW = window.innerWidth, logicH = window.innerHeight;
-  const sz = Math.min(logicW, logicH) * 0.38;
-  const cx = logicW/2, cy = logicH*0.42;
-
-  // Draw background (K-Perception reveal layer)
-  ctx2.clearRect(0,0,W,H);
-  ctx2.scale(DPR, DPR);
-
-  // K-Perception gradient bg
-  const grad = ctx2.createRadialGradient(cx,cy,0,cx,cy,sz*1.2);
-  grad.addColorStop(0,'rgba(191,0,255,0.18)');
-  grad.addColorStop(1,'rgba(0,0,0,0)');
-  ctx2.fillStyle = grad;
-  ctx2.fillRect(0,0,logicW,logicH);
-
-  // K-Perception logo text (beneath)
-  ctx2.fillStyle = '#BF00FF';
-  ctx2.font = `800 ${sz*0.18}px "Space Grotesk","Inter",sans-serif`;
-  ctx2.textAlign = 'center';
-  ctx2.textBaseline = 'middle';
-  ctx2.shadowBlur = 40;
-  ctx2.shadowColor = '#BF00FF';
-  ctx2.fillText('K-PERCEPTION', cx, cy);
-  ctx2.shadowBlur = 0;
-  ctx2.font = `500 ${sz*0.09}px "Inter",sans-serif`;
-  ctx2.fillStyle = '#00FF41';
-  ctx2.fillText('100% E2E ENCRYPTED · LOCAL IS FREE', cx, cy+sz*0.22);
-  ctx2.setTransform(1,0,0,1,0,0);
-
-  // Offscreen logo canvas
-  const off = document.createElement('canvas');
-  off.width = W; off.height = H;
-  const oc = off.getContext('2d');
-  oc.scale(DPR, DPR);
-  drawVSCodeLogo(oc, sz, cx, cy);
-  oc.setTransform(1,0,0,1,0,0);
-
-  // Build strips
-  const sH = STRIP_H * DPR;
-  strips = [];
-  for(let y=0; y<H; y+=sH){
-    const imgData = oc.getImageData(0, y, W, Math.min(sH, H-y));
+function buildStrips(){
+  strips=[];
+  const n=Math.ceil(window.innerHeight/STRIP_H)+2;
+  for(let i=0;i<n;i++){
+    const dir=(i%2===0)?-1:1;
     strips.push({
-      y, imgData,
-      vy: 0, ay: 0.4 + Math.random()*0.6,
-      angle: (Math.random()-0.5)*0.12,
-      av: (Math.random()-0.5)*0.006,
-      alive: true, shredded: false,
-      alpha: 1
+      origY:i*STRIP_H,dx:0,dy:0,
+      vx:dir*(5+Math.random()*4.5),
+      vy:0.08+Math.random()*0.15,
+      ay:0.018+Math.random()*0.022,
+      alpha:1,dir,
+      delay:i*3+Math.floor(Math.random()*5),
     });
   }
 }
 
-// ── Input ────────────────────────────────────────────────────────────────────
-let mouseY = -999, isDragging = false, shredCount = 0;
-let lastShredY = -999;
-
-function shredAt(logicY){
-  const py = logicY * DPR;
-  let hit = false;
-  for(const s of strips){
-    if(!s.shredded && Math.abs(s.y - py) < STRIP_H*DPR*0.8){
-      s.shredded = true;
-      s.vy = (Math.random()+0.5)*3;
-      shredCount++;
-      hit = true;
-    }
-  }
-  if(hit) lastShredY = logicY;
-  return hit;
-}
-
-cv.addEventListener('mousedown', e=>{ isDragging=true; shredAt(e.clientY); });
-cv.addEventListener('mousemove', e=>{
-  mouseY = e.clientY;
-  if(isDragging) shredAt(e.clientY);
-});
-cv.addEventListener('mouseup', ()=>isDragging=false);
-cv.addEventListener('touchstart', e=>{ e.preventDefault(); isDragging=true; shredAt(e.touches[0].clientY); },{passive:false});
-cv.addEventListener('touchmove', e=>{ e.preventDefault(); if(isDragging) shredAt(e.touches[0].clientY); },{passive:false});
-cv.addEventListener('touchend', ()=>isDragging=false);
-
-// ── Particles ────────────────────────────────────────────────────────────────
-const particles = [];
-function spawnParticles(x, y){
-  for(let i=0;i<8;i++){
-    const a = Math.random()*Math.PI*2;
-    const sp = 1+Math.random()*4;
-    particles.push({x:x*DPR, y:y*DPR, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp-2,
-      alpha:1, r:2+Math.random()*3, color:Math.random()<0.6?'#BF00FF':'#00FF41'});
+function spawnSparks(lx,ly){
+  for(let i=0;i<10;i++){
+    const a=Math.random()*Math.PI*2,sp=1.5+Math.random()*5;
+    sparks.push({
+      x:lx*DPR,y:ly*DPR,
+      vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,
+      alpha:0.9,r:1+Math.random()*3,
+      color:Math.random()<0.5?'#FF5555':'#BF00FF',
+    });
   }
 }
 
-// ── Render loop ───────────────────────────────────────────────────────────────
-let prevShred = 0;
 function frame(){
   requestAnimationFrame(frame);
-  ctx.clearRect(0,0,W,H);
+  ctx.drawImage(offBg,0,0);
 
-  // Background gradient
-  const bg = ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#050508');
-  bg.addColorStop(1,'#0a0512');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0,0,W,H);
-
-  // Reveal K-Perception beneath
-  const total = strips.length;
-  const shredded = strips.filter(s=>s.shredded).length;
-  revealAlpha = Math.min(1, shredded/total * 1.4);
-  if(revealAlpha > 0){
-    ctx.globalAlpha = revealAlpha;
-    ctx.drawImage(cv2, 0, 0);
-    ctx.globalAlpha = 1;
-  }
-
-  // Cursor blade
-  if(mouseY > 0){
-    ctx.strokeStyle = `rgba(191,0,255,${isDragging?0.9:0.3})`;
-    ctx.lineWidth = isDragging ? 3*DPR : 1.5*DPR;
-    ctx.shadowBlur = isDragging ? 20 : 0;
-    ctx.shadowColor = '#BF00FF';
-    ctx.beginPath(); ctx.moveTo(0, mouseY*DPR); ctx.lineTo(W, mouseY*DPR); ctx.stroke();
-    ctx.shadowBlur = 0;
-  }
-
-  // Update + draw strips
-  for(const s of strips){
-    if(s.shredded){
-      s.vy += s.ay; s.y += s.vy; s.angle += s.av;
-      s.alpha = Math.max(0, 1 - (s.y-H*0.6)/(H*0.4));
+  if(!shredding&&!done){
+    ctx.drawImage(offDoc,0,0);
+  } else {
+    let allGone=true;
+    for(const s of strips){
+      if(s.delay>0)s.delay--;
+      if(s.delay>0||s.alpha>0.01){
+        allGone=false;
+        if(s.delay>0){
+          // Draw strip in place from source doc
+          ctx.drawImage(offDoc,0,s.origY*DPR,W,STRIP_H*DPR,0,s.origY*DPR,W,STRIP_H*DPR);
+          continue;
+        }
+        s.dx+=s.vx;s.dy+=s.vy;s.vy+=s.ay;
+        s.alpha=Math.max(0,1-Math.abs(s.dx)/(window.innerWidth*0.42));
+        if(Math.random()<0.035){
+          const edgeX=s.dir<0?Math.max(0,s.dx+20):Math.min(window.innerWidth,window.innerWidth+s.dx-20);
+          spawnSparks(edgeX,s.origY+s.dy+STRIP_H/2);
+        }
+        if(s.alpha>0.01){
+          ctx.globalAlpha=s.alpha;
+          // drawImage respects destination coords — strips slide left/right correctly
+          ctx.drawImage(offDoc,0,s.origY*DPR,W,STRIP_H*DPR,
+            s.dx*DPR,(s.origY+s.dy)*DPR,W,STRIP_H*DPR);
+          ctx.globalAlpha=1;
+        }
+      }
     }
-    if(s.alpha <= 0) continue;
-    ctx.save();
-    ctx.globalAlpha = s.alpha;
-    const cx2 = W/2, cy2 = s.y + STRIP_H*DPR/2;
-    ctx.translate(cx2, cy2);
-    ctx.rotate(s.angle);
-    ctx.translate(-cx2, -cy2);
-    ctx.putImageData(s.imgData, 0, s.y);
-    ctx.restore();
-
-    // Spawn particles on fresh shred
-    if(s.shredded && s.vy < 3 && s.vy > 2.5 && prevShred !== shredCount){
-      spawnParticles(window.innerWidth/2, s.y/DPR);
+    for(let i=sparks.length-1;i>=0;i--){
+      const p=sparks[i];
+      p.x+=p.vx;p.y+=p.vy;p.vy+=0.2;p.alpha-=0.024;
+      if(p.alpha<=0){sparks.splice(i,1);continue;}
+      ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;
+      ctx.shadowBlur=8;ctx.shadowColor=p.color;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+      ctx.shadowBlur=0;ctx.globalAlpha=1;
+    }
+    if(allGone&&!done){
+      done=true;
+      btn.style.display='none';hint.style.display='none';
+      cta.style.opacity='1';
     }
   }
-  prevShred = shredCount;
 
-  // Particles
-  for(let i=particles.length-1;i>=0;i--){
-    const p=particles[i];
-    p.x+=p.vx; p.y+=p.vy; p.vy+=0.15; p.alpha-=0.025;
-    if(p.alpha<=0){particles.splice(i,1);continue;}
-    ctx.globalAlpha=p.alpha;
-    ctx.fillStyle=p.color;
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r*DPR,0,Math.PI*2);ctx.fill();
-    ctx.globalAlpha=1;
-  }
-
-  // Progress ring
-  const pct = shredded/total;
-  pring.style.strokeDashoffset = 138.2*(1-pct);
-
-  // Messages
-  if(pct > 0.8 && msg.style.opacity === '0'){
-    msg.textContent = 'Tired of being watched? Shred Big Tech. 100% E2E Encrypted. 🔒';
-    msg.style.opacity = '1';
-    hint.style.opacity = '0';
-    cta.style.opacity = '1';
-  } else if(pct > 0.3 && pct <= 0.8){
-    msg.textContent = 'Keep going... destroy the surveillance. 🔥';
-    msg.style.opacity = '1';
-  }
+  ctx.globalAlpha=0.35;
+  ctx.font=`600 ${12*DPR}px "JetBrains Mono",monospace`;
+  ctx.textAlign='right';ctx.textBaseline='bottom';
+  ctx.fillStyle='#BF00FF';ctx.fillText('K-PERCEPTION',W-16*DPR,H-16*DPR);
+  ctx.globalAlpha=1;
 }
 
+btn.addEventListener('click',()=>{
+  if(shredding)return;
+  shredding=true;
+  btn.classList.add('go');btn.textContent='🔥 SHREDDING...';
+});
+
+function resize(){
+  DPR=Math.min(window.devicePixelRatio||1,2);
+  W=cv.width=window.innerWidth*DPR;H=cv.height=window.innerHeight*DPR;
+  cv.style.width=window.innerWidth+'px';cv.style.height=window.innerHeight+'px';
+  buildOffscreens();buildStrips();
+}
+window.addEventListener('resize',()=>{if(!shredding)resize();});
 resize();
 requestAnimationFrame(frame);
 })();

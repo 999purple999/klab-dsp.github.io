@@ -3,197 +3,232 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Fluid Collab — K-Perception</title>
+<title>Tool Galaxy — K-Perception</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Inter',system-ui,sans-serif;touch-action:none}
 canvas{display:block;width:100%;height:100%}
-#hud{position:fixed;top:20px;left:0;right:0;display:flex;justify-content:center;gap:24px;z-index:10;pointer-events:none}
-.user-badge{display:flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(0,0,0,0.7);border-radius:20px;font-size:clamp(11px,2.5vw,13px);letter-spacing:.06em;border:1px solid rgba(255,255,255,0.1)}
-.user-dot{width:10px;height:10px;border-radius:50%;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 #ui{position:fixed;bottom:24px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:14px;pointer-events:none;z-index:10}
 #tagline{font-size:clamp(14px,3vw,20px);font-weight:700;color:#fff;text-shadow:0 0 20px rgba(191,0,255,0.6);text-align:center;opacity:0;transition:opacity .6s;max-width:500px}
 #cta{pointer-events:auto;display:inline-block;padding:12px 30px;background:linear-gradient(135deg,#BF00FF,#7c3aed);color:#fff;font-weight:700;font-size:clamp(12px,2.5vw,14px);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:8px;box-shadow:0 0 30px rgba(191,0,255,0.4);transition:all .2s;opacity:0}
 #cta:hover{transform:translateY(-2px)}
-#hint{font-size:clamp(11px,2.5vw,14px);color:rgba(255,255,255,0.4);letter-spacing:.06em;text-align:center;text-transform:uppercase}
+#hint{font-size:clamp(11px,2.5vw,13px);color:rgba(255,255,255,0.35);letter-spacing:.07em;text-align:center;text-transform:uppercase}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="hud">
-  <div class="user-badge"><span class="user-dot" style="background:#BF00FF;box-shadow:0 0 8px #BF00FF"></span><span style="color:#BF00FF">You</span></div>
-  <div class="user-badge"><span class="user-dot" style="background:#00FF41;box-shadow:0 0 8px #00FF41"></span><span style="color:#00FF41">alice@klab</span></div>
-  <div class="user-badge"><span class="user-dot" style="background:#00FFFF;box-shadow:0 0 8px #00FFFF"></span><span style="color:#00FFFF">bob@klab</span></div>
-</div>
 <div id="ui">
-  <div id="tagline">Code Together. 2 Coffees. Zero Latency. ☕☕</div>
-  <div id="hint">Paint with your cursor — others paint in real time</div>
-  <a id="cta" href="https://klab-dsp.github.io" target="_blank">Try K-Perception →</a>
+  <div id="tagline">Every Tool in One Galaxy. Zero Subscriptions. 🌌</div>
+  <div id="hint">Move to attract · Click to explode · Watch them orbit</div>
+  <a id="cta" href="https://999purple999.github.io/klab-dsp.github.io/" target="_blank">Try K-Perception →</a>
 </div>
 <script>
 (function(){
-const cv = document.getElementById('c');
-const ctx = cv.getContext('2d');
-const tagline = document.getElementById('tagline');
-const cta = document.getElementById('cta');
+const cv=document.getElementById('c');
+const ctx=cv.getContext('2d');
+const tagline=document.getElementById('tagline');
+const cta=document.getElementById('cta');
 
-let W, H, DPR;
+let W,H,DPR,lW,lH;
 function resize(){
   DPR=Math.min(window.devicePixelRatio||1,2);
-  W=cv.width=window.innerWidth*DPR; H=cv.height=window.innerHeight*DPR;
-  cv.style.width=window.innerWidth+'px'; cv.style.height=window.innerHeight+'px';
+  W=cv.width=window.innerWidth*DPR;H=cv.height=window.innerHeight*DPR;
+  cv.style.width=window.innerWidth+'px';cv.style.height=window.innerHeight+'px';
+  lW=window.innerWidth;lH=window.innerHeight;
+  updateZones();
 }
-window.addEventListener('resize', resize);
+window.addEventListener('resize',resize);
 
-// ── Trail system ──────────────────────────────────────────────────────────────
-const MAX_PTS = 3000;
-const FADE_MS = 4000;
-
-const trails = []; // {x, y, r, color, alpha, born, userId}
-
-function addTrail(x, y, color, userId, pressure=1){
-  const r = (6+pressure*6)*DPR;
-  trails.push({x:x*DPR, y:y*DPR, r, color, alpha:0.85, born:performance.now(), userId});
-  if(trails.length>MAX_PTS) trails.splice(0, trails.length-MAX_PTS);
-}
-
-// ── Bot cursors ───────────────────────────────────────────────────────────────
-const bots = [
-  {x:100,y:200,vx:1.8,vy:1.2,color:'#00FF41',phase:0,amp:120,freq:0.9,userId:1},
-  {x:300,y:400,vx:-1.2,vy:1.9,color:'#00FFFF',phase:1.5,amp:90,freq:1.3,userId:2},
+// ── Zones ─────────────────────────────────────────────────────────────────────
+const ZONE_DEF=[
+  {name:'DOCS',   fx:0.22,fy:0.28,color:'#BF00FF',rgb:'191,0,255'},
+  {name:'SHEETS', fx:0.78,fy:0.28,color:'#00FF41',rgb:'0,255,65'},
+  {name:'IDE',    fx:0.50,fy:0.50,color:'#00FFFF',rgb:'0,255,255'},
+  {name:'COLLAB', fx:0.22,fy:0.72,color:'#FF8C00',rgb:'255,140,0'},
+  {name:'CANVAS', fx:0.78,fy:0.72,color:'#FF3366',rgb:'255,51,102'},
 ];
+const zones=ZONE_DEF.map(z=>({...z,x:0,y:0}));
+function updateZones(){zones.forEach(z=>{z.x=z.fx*lW;z.y=z.fy*lH;});}
 
-let botFrame=0;
-function tickBots(t){
-  const lW=window.innerWidth, lH=window.innerHeight;
-  for(const b of bots){
-    b.x += b.vx + Math.sin(t*b.freq+b.phase)*2;
-    b.y += b.vy + Math.cos(t*b.freq*0.7+b.phase)*2;
-    if(b.x<60||b.x>lW-60){ b.vx*=-1; b.x=Math.max(60,Math.min(lW-60,b.x)); }
-    if(b.y<60||b.y>lH-120){ b.vy*=-1; b.y=Math.max(60,Math.min(lH-120,b.y)); }
-    if(botFrame%2===0) addTrail(b.x, b.y, b.color, b.userId);
+// ── Particles ─────────────────────────────────────────────────────────────────
+const N=350;
+const particles=[];
+function initParticles(){
+  particles.length=0;
+  for(let i=0;i<N;i++){
+    const zi=i%5;
+    const z=zones[zi];
+    const angle=Math.random()*Math.PI*2;
+    const dist=20+Math.random()*90;
+    const orbitA=Math.random()*Math.PI*2;
+    const orbitSpd=0.6+Math.random()*1.0;
+    particles.push({
+      x:z.x+Math.cos(angle)*dist,
+      y:z.y+Math.sin(angle)*dist,
+      vx:Math.cos(orbitA)*orbitSpd,
+      vy:Math.sin(orbitA)*orbitSpd,
+      zi,
+      depth:0.3+Math.random()*0.7, // 0.3 (far) to 1.0 (close)
+      r:1.2+Math.random()*2.2,
+      phase:Math.random()*Math.PI*2,
+    });
   }
-  botFrame++;
 }
 
-// ── Mouse / touch ──────────────────────────────────────────────────────────────
-let painting=false, mx=0, my=0;
-cv.addEventListener('mousedown', e=>{ painting=true; mx=e.clientX; my=e.clientY; });
-cv.addEventListener('mousemove', e=>{
-  mx=e.clientX; my=e.clientY;
-  if(painting) addTrail(mx, my, '#BF00FF', 0, 1.0);
-});
-cv.addEventListener('mouseup', ()=>painting=false);
-cv.addEventListener('mouseleave', ()=>painting=false);
+// ── Input ─────────────────────────────────────────────────────────────────────
+let mx=-9999,my=-9999;
+let exploding=false,exX=0,exY=0,exTimer=0;
 
-cv.addEventListener('touchstart', e=>{ e.preventDefault(); painting=true; mx=e.touches[0].clientX; my=e.touches[0].clientY; addTrail(mx,my,'#BF00FF',0,1.0); },{passive:false});
-cv.addEventListener('touchmove', e=>{ e.preventDefault();
-  for(const t of e.touches){
-    addTrail(t.clientX, t.clientY, '#BF00FF', 0, 0.8+Math.random()*0.4);
-  }
-},{passive:false});
-cv.addEventListener('touchend', e=>{ e.preventDefault(); painting=false; },{passive:false});
+cv.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+cv.addEventListener('mouseleave',()=>{mx=-9999;my=-9999;});
+cv.addEventListener('touchmove',e=>{e.preventDefault();mx=e.touches[0].clientX;my=e.touches[0].clientY;},{passive:false});
+cv.addEventListener('touchend',()=>{mx=-9999;my=-9999;});
+cv.addEventListener('click',e=>{exX=e.clientX;exY=e.clientY;exploding=true;exTimer=50;});
+cv.addEventListener('touchstart',e=>{exX=e.touches[0].clientX;exY=e.touches[0].clientY;exploding=true;exTimer=50;mx=exX;my=exY;});
 
-// ── Draw cursor ───────────────────────────────────────────────────────────────
-function drawCursor(lx, ly, color, label){
-  const cx=lx*DPR, cy=ly*DPR;
-  ctx.save();
-  ctx.beginPath(); ctx.arc(cx,cy,8*DPR,0,Math.PI*2);
-  ctx.fillStyle=color; ctx.shadowBlur=12; ctx.shadowColor=color;
-  ctx.fill(); ctx.shadowBlur=0;
-  // Cursor label
-  ctx.font=`600 ${11*DPR}px "Inter",sans-serif`;
-  ctx.textAlign='left'; ctx.textBaseline='middle';
-  ctx.fillStyle=color; ctx.fillText(label||'', cx+12*DPR, cy);
-  ctx.restore();
-}
+// ── Physics ───────────────────────────────────────────────────────────────────
+const SPRING=0.0028,DAMP=0.965,MOUSE_R=190,MOUSE_F=0.06,EXPLODE_F=22,EXPLODE_R=320;
 
-// ── Particles for trail overlap ───────────────────────────────────────────────
-const sparks=[];
-function checkOverlap(){
-  const recent=trails.slice(-8);
-  for(let i=0;i<recent.length-1;i++){
-    const a=recent[i], b=recent[recent.length-1];
-    if(a.userId!==b.userId){
-      const dx=a.x-b.x, dy=a.y-b.y;
-      if(dx*dx+dy*dy<(30*DPR)*(30*DPR)){
-        for(let k=0;k<6;k++){
-          const angle=Math.random()*Math.PI*2, sp=1.5+Math.random()*3;
-          sparks.push({x:(a.x+b.x)/2,y:(a.y+b.y)/2,vx:Math.cos(angle)*sp,vy:Math.sin(angle)*sp,
-            alpha:1,r:3+Math.random()*4,color:'#BF00FF'});
-        }
+function tickPhysics(){
+  updateZones();
+  const ef=exploding&&exTimer>0?1:0;
+  if(ef&&exTimer>0)exTimer--;
+  if(exTimer===0)exploding=false;
+
+  for(const p of particles){
+    const z=zones[p.zi];
+    // Spring to home zone
+    const springX=(z.x-p.x)*SPRING;
+    const springY=(z.y-p.y)*SPRING;
+    p.vx+=springX;p.vy+=springY;
+
+    // Mouse attract
+    if(mx>-9000){
+      const mdx=mx-p.x,mdy=my-p.y;
+      const md=Math.sqrt(mdx*mdx+mdy*mdy)||1;
+      if(md<MOUSE_R){
+        const mf=MOUSE_F*(1-md/MOUSE_R);
+        p.vx+=mdx/md*mf*md*0.01;
+        p.vy+=mdy/md*mf*md*0.01;
       }
     }
+
+    // Click explode
+    if(ef){
+      const edx=p.x-exX,edy=p.y-exY;
+      const ed=Math.sqrt(edx*edx+edy*edy)||1;
+      if(ed<EXPLODE_R){
+        const ef2=EXPLODE_F*(1-ed/EXPLODE_R);
+        p.vx+=edx/ed*ef2;p.vy+=edy/ed*ef2;
+      }
+    }
+
+    p.vx*=DAMP;p.vy*=DAMP;
+    p.x+=p.vx;p.y+=p.vy;
+
+    // Soft boundary
+    if(p.x<10)p.vx+=0.5;if(p.x>lW-10)p.vx-=0.5;
+    if(p.y<10)p.vy+=0.5;if(p.y>lH-10)p.vy-=0.5;
   }
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
-let t0=null, frames=0;
+function drawZoneLabel(z,t){
+  const cx=z.x*DPR,cy=z.y*DPR;
+  const pulse=0.75+0.25*Math.sin(t*2.5+z.fx*6);
+  const fs=Math.min(22,lW*0.04)*DPR;
+  ctx.save();
+  ctx.font=`800 ${fs}px "Space Grotesk","Inter",sans-serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.shadowBlur=28*DPR;ctx.shadowColor=z.color;
+  ctx.fillStyle=`rgba(${z.rgb},${0.65*pulse})`;
+  ctx.fillText(z.name,cx,cy);
+  ctx.shadowBlur=0;
+  // Orbit ring
+  ctx.strokeStyle=`rgba(${z.rgb},${0.1*pulse})`;
+  ctx.lineWidth=1.2*DPR;
+  ctx.beginPath();ctx.arc(cx,cy,80*DPR,0,Math.PI*2);ctx.stroke();
+  ctx.restore();
+}
+
+function drawMouseGlow(t){
+  if(mx<-9000)return;
+  const cx=mx*DPR,cy=my*DPR,r=MOUSE_R*DPR;
+  const pulse=0.8+0.2*Math.sin(t*5);
+  ctx.save();
+  const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+  grad.addColorStop(0,`rgba(191,0,255,${0.15*pulse})`);
+  grad.addColorStop(0.5,`rgba(191,0,255,${0.05*pulse})`);
+  grad.addColorStop(1,'rgba(191,0,255,0)');
+  ctx.fillStyle=grad;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle=`rgba(191,0,255,${0.4*pulse})`;
+  ctx.lineWidth=1.5*DPR;ctx.shadowBlur=16;ctx.shadowColor='#BF00FF';
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+  ctx.shadowBlur=0;ctx.restore();
+}
+
+function drawExplosion(t){
+  if(!exploding)return;
+  const age=1-(exTimer/50);
+  const r=EXPLODE_R*DPR*age;
+  ctx.save();
+  ctx.strokeStyle=`rgba(191,0,255,${0.6*(1-age)})`;
+  ctx.lineWidth=3*DPR*(1-age*0.5);
+  ctx.shadowBlur=30*DPR*(1-age);ctx.shadowColor='#BF00FF';
+  ctx.beginPath();ctx.arc(exX*DPR,exY*DPR,r,0,Math.PI*2);ctx.stroke();
+  ctx.shadowBlur=0;ctx.restore();
+}
+
+let t0=null,frames=0;
 function frame(ts){
   requestAnimationFrame(frame);
-  if(!t0) t0=ts;
+  if(!t0)t0=ts;
   const t=(ts-t0)*0.001;
-
-  tickBots(t);
-  checkOverlap();
   frames++;
 
-  // Fade background slowly for trail fade
-  ctx.fillStyle='rgba(5,5,8,0.08)';
-  ctx.fillRect(0,0,W,H);
+  tickPhysics();
 
-  // On first frame: black fill
-  if(frames===1){ ctx.fillStyle='#050508'; ctx.fillRect(0,0,W,H); }
+  // Trail fade (creates motion blur / comet trails)
+  ctx.fillStyle='rgba(5,5,8,0.12)';ctx.fillRect(0,0,W,H);
 
-  // Draw trails
-  const now=performance.now();
-  for(let i=0;i<trails.length;i++){
-    const p=trails[i];
-    const age=(now-p.born)/FADE_MS;
-    if(age>=1){ trails.splice(i,1); i--; continue; }
-    const a=p.alpha*(1-age);
-    ctx.globalAlpha=a;
-    ctx.fillStyle=p.color;
-    ctx.shadowBlur=p.r*0.8;
-    ctx.shadowColor=p.color;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+  // First frame: solid black
+  if(frames===1){ctx.fillStyle='#050508';ctx.fillRect(0,0,W,H);}
+
+  // Zone labels (drawn under particles)
+  for(const z of zones)drawZoneLabel(z,t);
+
+  // Mouse glow
+  drawMouseGlow(t);
+
+  // Particles
+  for(const p of particles){
+    const z=zones[p.zi];
+    const depth=p.depth*(0.7+0.3*Math.sin(t*0.4+p.phase));
+    const r=p.r*depth*DPR;
+    const alpha=0.35+depth*0.6;
+    const cx=p.x*DPR,cy=p.y*DPR;
+    ctx.globalAlpha=alpha;
+    ctx.fillStyle=z.color;
+    ctx.shadowBlur=r*3;ctx.shadowColor=z.color;
+    ctx.beginPath();ctx.arc(cx,cy,Math.max(0.5,r),0,Math.PI*2);ctx.fill();
     ctx.shadowBlur=0;
-    ctx.globalAlpha=1;
   }
+  ctx.globalAlpha=1;
 
-  // Sparks
-  for(let i=sparks.length-1;i>=0;i--){
-    const p=sparks[i];
-    p.x+=p.vx; p.y+=p.vy; p.alpha-=0.025;
-    if(p.alpha<=0){sparks.splice(i,1);continue;}
-    ctx.globalAlpha=p.alpha; ctx.fillStyle=p.color;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
-    ctx.globalAlpha=1;
-  }
-
-  // Bot cursors
-  for(const b of bots) drawCursor(b.x, b.y, b.color);
-
-  // User cursor
-  if(mx>0) drawCursor(mx, my, '#BF00FF', 'you');
-
-  // Overlay message
-  if(trails.length > 60 && frames===62){
-    tagline.style.opacity='1';
-    cta.style.opacity='1';
-  }
+  // Explosion ring
+  drawExplosion(t);
 
   // Signature
   ctx.globalAlpha=0.35;
   ctx.font=`600 ${12*DPR}px "JetBrains Mono",monospace`;
   ctx.textAlign='right';ctx.textBaseline='bottom';
-  ctx.fillStyle='#BF00FF';
-  ctx.fillText('K-PERCEPTION',W-16*DPR,H-16*DPR);
+  ctx.fillStyle='#BF00FF';ctx.fillText('K-PERCEPTION',W-16*DPR,H-16*DPR);
   ctx.globalAlpha=1;
+
+  if(frames===80){tagline.style.opacity='1';cta.style.opacity='1';}
 }
 
-resize();
+resize();initParticles();
 requestAnimationFrame(frame);
 })();
 </script>
