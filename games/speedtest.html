@@ -3,208 +3,314 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Hacker Speed Test — K-Perception</title>
+<title>Data Breach Interceptor — K-Perception</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'JetBrains Mono','Courier New',monospace;touch-action:none}
-canvas{position:absolute;top:0;left:0;width:100%;height:100%}
-#overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:10;gap:18px}
-#round-label{font-size:clamp(10px,2vw,13px);color:rgba(191,0,255,0.55);letter-spacing:.15em;text-transform:uppercase}
-#score-display{font-size:clamp(13px,3vw,17px);color:rgba(0,255,65,0.8);letter-spacing:.08em;text-align:center;min-height:28px;transition:color .2s}
-#btn{pointer-events:auto;width:clamp(160px,38vw,250px);height:clamp(64px,13vh,84px);
-  background:linear-gradient(135deg,rgba(191,0,255,0.14),rgba(124,58,237,0.14));
-  border:2px solid #BF00FF;border-radius:12px;cursor:pointer;
-  font-family:'JetBrains Mono',monospace;font-size:clamp(15px,3.2vw,21px);font-weight:800;
-  color:#BF00FF;letter-spacing:.12em;text-transform:uppercase;
-  box-shadow:0 0 30px rgba(191,0,255,0.4),inset 0 0 30px rgba(191,0,255,0.05);
-  transition:all .1s;position:relative;overflow:hidden}
-#btn:hover{box-shadow:0 0 60px rgba(191,0,255,0.7),inset 0 0 40px rgba(191,0,255,0.1);transform:scale(1.03)}
-#btn:active{transform:scale(0.97)}
-#btn.ready{border-color:#FF0044;color:#FF0044;box-shadow:0 0 80px rgba(255,0,68,0.9),inset 0 0 50px rgba(255,0,68,0.12);animation:redpulse 0.35s infinite alternate}
-#btn.encrypting{border-color:#00FF41;color:#00FF41;box-shadow:0 0 60px rgba(0,255,65,0.7),inset 0 0 40px rgba(0,255,65,0.1);animation:none}
-@keyframes redpulse{from{box-shadow:0 0 50px rgba(255,0,68,0.7)}to{box-shadow:0 0 110px rgba(255,0,68,1)}}
-#result{font-size:clamp(20px,5.5vw,40px);font-weight:800;color:#00FF41;text-shadow:0 0 30px #00FF41;opacity:0;transition:opacity .25s;letter-spacing:.05em;text-align:center}
-#tagline{font-size:clamp(11px,2.5vw,15px);color:rgba(255,255,255,0.45);letter-spacing:.06em;text-align:center;max-width:420px}
-#best{font-size:clamp(10px,2vw,13px);color:rgba(191,0,255,0.6);letter-spacing:.1em;min-height:18px}
-#cta{pointer-events:auto;display:inline-block;padding:12px 30px;background:linear-gradient(135deg,#BF00FF,#7c3aed);color:#fff;font-weight:700;font-size:clamp(12px,2.5vw,14px);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:8px;box-shadow:0 0 30px rgba(191,0,255,0.4);transition:all .2s;opacity:0}
+html,body{width:100%;height:100%;background:#050508;overflow:hidden;font-family:'JetBrains Mono','Courier New',monospace;touch-action:none;user-select:none}
+canvas{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
+#hud{position:fixed;top:0;left:0;right:0;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:10;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,0.9),transparent)}
+.hud-block{display:flex;flex-direction:column;align-items:center}
+.hud-lbl{font-size:clamp(8px,1.6vw,10px);letter-spacing:.18em;text-transform:uppercase;opacity:.5;margin-bottom:2px}
+.hud-val{font-size:clamp(20px,4vw,32px);font-weight:800;line-height:1;letter-spacing:.04em}
+#score-lbl{color:#BF00FF}#score-val{color:#BF00FF;text-shadow:0 0 18px #BF00FF}
+#streak-lbl{color:#FF8C00}#streak-val{color:#FF8C00;text-shadow:0 0 14px #FF8C00}
+#lives-area{display:flex;gap:10px;align-items:center}
+.life{font-size:clamp(20px,3.5vw,26px);transition:all .3s}
+.life.lost{opacity:.15;filter:grayscale(1)}
+#wave-lbl{color:#00FF41}#wave-val{color:#00FF41;text-shadow:0 0 14px #00FF41}
+#center{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(20px,5.5vw,48px);font-weight:800;letter-spacing:.08em;text-align:center;pointer-events:none;z-index:15;opacity:0;transition:opacity .18s;text-shadow:0 0 40px currentColor;white-space:nowrap}
+#screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;z-index:20;background:rgba(5,5,8,0.96);transition:opacity .3s}
+#s-title{font-size:clamp(28px,7.5vw,68px);font-weight:800;text-shadow:0 0 50px currentColor,0 0 100px rgba(191,0,255,.35);letter-spacing:.07em;text-align:center;line-height:1.12}
+#s-sub{font-size:clamp(12px,2.4vw,16px);color:rgba(255,255,255,.5);letter-spacing:.07em;text-align:center;max-width:460px;line-height:1.7}
+#s-score{font-size:clamp(14px,2.8vw,20px);color:rgba(255,255,255,.7);letter-spacing:.07em;display:none}
+#s-best{font-size:clamp(11px,1.9vw,14px);color:rgba(191,0,255,.65);letter-spacing:.1em;display:none}
+#s-btn{padding:15px 54px;color:#fff;font-weight:800;font-size:clamp(14px,3vw,19px);letter-spacing:.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:12px;transition:all .15s;font-family:'JetBrains Mono',monospace}
+#s-btn:hover{transform:translateY(-3px)}
+#cta{display:none;padding:10px 28px;background:linear-gradient(135deg,#BF00FF,#7c3aed);color:#fff;font-weight:700;font-size:clamp(11px,2vw,13px);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:8px;box-shadow:0 0 20px rgba(191,0,255,.4);transition:all .2s;font-family:'JetBrains Mono',monospace}
 #cta:hover{transform:translateY(-2px)}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="overlay">
-  <div id="round-label">ROUND <span id="rnum">1</span></div>
-  <div id="score-display">WATCH THE DATA STREAM... THEN CLICK!</div>
-  <button id="btn">ENCRYPT</button>
-  <div id="result"></div>
-  <div id="best"></div>
-  <div id="tagline">Faster than the Cloud. Safer than VS Code.</div>
+<div id="hud">
+  <div class="hud-block"><div class="hud-lbl" id="score-lbl">SCORE</div><div class="hud-val" id="score-val">0</div></div>
+  <div class="hud-block"><div class="hud-lbl" id="streak-lbl">STREAK</div><div class="hud-val" id="streak-val">×1</div></div>
+  <div id="lives-area"><span class="life" id="l0">🛡</span><span class="life" id="l1">🛡</span><span class="life" id="l2">🛡</span></div>
+  <div class="hud-block"><div class="hud-lbl" id="wave-lbl">WAVE</div><div class="hud-val" id="wave-val">—</div></div>
+</div>
+<div id="center"></div>
+<div id="screen">
+  <div id="s-title" style="color:#BF00FF">DATA BREACH<br>INTERCEPTOR</div>
+  <div id="s-sub">Stolen data packets are crossing your firewall.<br>Click them before they reach the server.<br><span style="color:#FF3333;font-weight:700">3 leaks = BREACH COMPLETE.</span></div>
+  <div id="s-score"></div><div id="s-best"></div>
+  <button id="s-btn" style="background:linear-gradient(135deg,#BF00FF,#7c3aed);box-shadow:0 0 50px rgba(191,0,255,.6)">ENGAGE FIREWALL</button>
   <a id="cta" href="https://999purple999.github.io/klab-dsp.github.io/" target="_blank">Try K-Perception →</a>
 </div>
 <script>
 (function(){
 const cv=document.getElementById('c');
 const ctx=cv.getContext('2d');
-const btn=document.getElementById('btn');
-const result=document.getElementById('result');
-const scoreDisp=document.getElementById('score-display');
+const scoreVal=document.getElementById('score-val');
+const streakVal=document.getElementById('streak-val');
+const waveVal=document.getElementById('wave-val');
+const lifeEls=[document.getElementById('l0'),document.getElementById('l1'),document.getElementById('l2')];
+const centerEl=document.getElementById('center');
+const screen=document.getElementById('screen');
+const sTitle=document.getElementById('s-title');
+const sSub=document.getElementById('s-sub');
+const sScore=document.getElementById('s-score');
+const sBest=document.getElementById('s-best');
+const sBtn=document.getElementById('s-btn');
 const cta=document.getElementById('cta');
-const rnum=document.getElementById('rnum');
-const bestEl=document.getElementById('best');
 
-let W,H,DPR;
+let W,H,DPR,lW,lH;
 function resize(){
   DPR=Math.min(window.devicePixelRatio||1,2);
   W=cv.width=window.innerWidth*DPR;H=cv.height=window.innerHeight*DPR;
   cv.style.width=window.innerWidth+'px';cv.style.height=window.innerHeight+'px';
-  buildStreams();
+  lW=window.innerWidth;lH=window.innerHeight;
 }
 window.addEventListener('resize',resize);
 
-const STRINGS=[
-  'password: hunter2!Secure','api_key: sk-live-abc123xQ','email: alice@corp.com',
-  'token: eyJhbGci...aZ3','CC: 4532-1234-5678','SSN: 078-05-1120',
-  'session: a8f3bb2c...','auth: Bearer xyz9abc','db_pass: Pr0d-P@$$!',
-  'private_key: -----BEGIN RSA','slack: xoxb-supersecret','stripe: sk_live_zzzz',
-  'health: {condition:htn}','source: github.com/corp','git_secret: ghp_xxxx',
-  'telemetry: {user_id}','crash: {stack_trace}','location: 48.8566N',
-  'face_data: <binary>','biometric: <128KB>','ssh: id_rsa_PRIVATE',
-  'cookie: session_abc','device_id: AA:BB:CC','voiceprint: <wav>',
+const DATA=[
+  {label:'PASSWORD',t:3},{label:'EMAIL',t:1},{label:'CC #',t:2},{label:'SSN',t:3},
+  {label:'API KEY',t:2},{label:'SESSION',t:1},{label:'SSH KEY',t:3},{label:'DB PASS',t:3},
+  {label:'GITHUB',t:2},{label:'STRIPE',t:3},{label:'HEALTH',t:2},{label:'FACE',t:3},
+  {label:'LOCATION',t:1},{label:'COOKIE',t:1},{label:'SLACK',t:2},{label:'BIOMET.',t:3},
 ];
+const PALETTE=['#FF8C00','#FF4422','#FF0066','#FF2200','#FF5500'];
 
-let streams=[];
-let encrypted=false;
-let clickTime=0,waitStart=0;
-let round=1,scores=[];
-let state='watching';
-let speedMultiplier=1.0;
+let gState='start';
+let score=0,best=0,streak=1,lives=3,wave=0;
+let packets=[],parts=[],floats=[];
+let queue=[],qTimer=0,qInterval=1400;
+let waveBreak=0,serverFlash=0;
+let centerTimer=null;
 
-function buildStreams(){
-  const lW=window.innerWidth,lH=window.innerHeight;
-  const cols=Math.max(2,Math.floor(lW/300));
-  const colW=lW/cols;
-  streams=[];
-  for(let c=0;c<cols;c++){
-    const count=4+Math.floor(Math.random()*4);
-    for(let i=0;i<count;i++){
-      streams.push({
-        x:(c+0.5)*colW+(Math.random()-0.5)*colW*0.3,
-        y:Math.random()*lH*2-lH,
-        str:STRINGS[Math.floor(Math.random()*STRINGS.length)],
-        speed:(45+Math.random()*30)*speedMultiplier,
-        alpha:0.5+Math.random()*0.5,
-        size:11+Math.random()*6,encProgress:0,
-      });
-    }
+function flash(text,color,dur){
+  clearTimeout(centerTimer);
+  centerEl.textContent=text;centerEl.style.color=color;centerEl.style.opacity='1';
+  centerTimer=setTimeout(()=>centerEl.style.opacity='0',dur||1200);
+}
+
+function updateLives(){lifeEls.forEach((el,i)=>el.classList.toggle('lost',i>=lives));}
+
+function hexPx(lx,ly,r){
+  ctx.beginPath();
+  for(let i=0;i<6;i++){
+    const a=i*Math.PI/3-Math.PI/6;
+    const px=(lx+r*Math.cos(a))*DPR,py=(ly+r*Math.sin(a))*DPR;
+    i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+  }
+  ctx.closePath();
+}
+
+function boom(lx,ly,col,n){
+  n=n||22;
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,sp=2+Math.random()*10;
+    parts.push({x:lx*DPR,y:ly*DPR,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,alpha:1,r:2+Math.random()*5,col});
   }
 }
 
-let readyDelay=1400+Math.random()*2400;
+function addFloat(lx,ly,txt,col){
+  floats.push({x:lx,y:ly,txt,col,alpha:1,vy:-1.8});
+}
 
-btn.addEventListener('click',()=>{
-  if(state==='watching'||state==='ready'){
-    state='encrypting';encrypted=true;clickTime=performance.now();
-    btn.classList.remove('ready');btn.classList.add('encrypting');btn.textContent='ENCRYPTING...';
+function startWave(){
+  wave++;waveVal.textContent=wave;
+  const boss=wave>1&&wave%5===0;
+  const cnt=Math.min(4+Math.floor(wave*1.2),18);
+  qInterval=Math.max(300,1500-wave*90);
+  queue=[];for(let i=0;i<cnt;i++)queue.push({boss:boss&&i===0,t:i*qInterval});
+  qTimer=0;gState='playing';
+  flash(`WAVE ${wave}${boss?' — ⚠ BOSS':' — GO!'}`,boss?'#FFD700':'#00FF41',1600);
+}
+
+function spawnPkt(boss){
+  const d=DATA[Math.floor(Math.random()*DATA.length)];
+  const baseR=Math.max(17,42-wave*1.8);
+  const r=boss?baseR*2:baseR;
+  const spd=Math.max(60,(95+wave*24)*(boss?0.5:0.8+Math.random()*0.4));
+  const col=boss?'#FFD700':PALETTE[d.t-1+Math.floor(Math.random()*2)];
+  packets.push({
+    x:-r-40,y:68+Math.random()*(lH-136),
+    vx:spd,vy:(Math.random()-0.5)*35,
+    r,hp:boss?3:1,maxHp:boss?3:1,
+    lbl:d.label,col,boss,flash:0,
+    trail:[],
+  });
+}
+
+function tryHit(lx,ly){
+  if(gState!=='playing')return;
+  let hit=false;
+  for(let i=packets.length-1;i>=0;i--){
+    const p=packets[i];
+    const d=Math.hypot(p.x-lx,p.y-ly);
+    if(d<p.r+16){
+      p.hp--;p.flash=10;hit=true;
+      if(p.hp<=0){
+        streak++;
+        const pts=Math.round((120+p.maxHp*180)*Math.min(streak,30));
+        score+=pts;scoreVal.textContent=score.toLocaleString();
+        streakVal.textContent=`×${streak}`;
+        boom(lx,ly,p.boss?'#FFD700':'#00FF41',p.boss?40:22);
+        addFloat(lx,ly,`+${pts.toLocaleString()}`,p.boss?'#FFD700':'#00FF41');
+        if(streak===5)flash('STREAK ×5 🔥','#FF8C00',1100);
+        else if(streak===10)flash('×10 — ON FIRE!! 🔥','#FF3333',1200);
+        else if(streak===25)flash('×25 — LEGENDARY ⚡','#BF00FF',1500);
+        packets.splice(i,1);
+      }else boom(lx,ly,'#FFFFFF',10);
+      break;
+    }
   }
-});
+  if(!hit){streak=1;streakVal.textContent='×1';}
+}
 
-function resetRound(){
-  encrypted=false;state='watching';
-  readyDelay=1000+Math.random()*2200-round*60; // gets harder
-  if(readyDelay<600)readyDelay=600;
-  waitStart=performance.now();
-  btn.classList.remove('encrypting','ready');btn.textContent='ENCRYPT';
-  result.style.opacity='0';
-  for(const s of streams){s.encProgress=0;}
+cv.addEventListener('click',e=>tryHit(e.clientX,e.clientY));
+cv.addEventListener('touchstart',e=>{e.preventDefault();tryHit(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+
+function endGame(){
+  gState='gameover';if(score>best)best=score;
+  sTitle.textContent='BREACH COMPLETE';sTitle.style.color='#FF2222';
+  sTitle.style.textShadow='0 0 50px #FF2222,0 0 100px rgba(255,34,34,.4)';
+  sSub.innerHTML='All firewall layers compromised.<br>Your data has been exfiltrated.';
+  sScore.textContent=`Score: ${score.toLocaleString()}`;sScore.style.display='block';
+  if(best>0){sBest.textContent=`BEST: ${best.toLocaleString()}`;sBest.style.display='block';}
+  sBtn.textContent='TRY AGAIN';
+  sBtn.style.background='linear-gradient(135deg,#FF2222,#aa0000)';
+  sBtn.style.boxShadow='0 0 50px rgba(255,34,34,.6)';
+  cta.style.display='inline-block';screen.style.display='flex';
+}
+
+function resetGame(){
+  score=0;streak=1;lives=3;wave=0;packets=[];parts=[];floats=[];queue=[];serverFlash=0;
+  scoreVal.textContent='0';streakVal.textContent='×1';waveVal.textContent='—';
+  updateLives();
+  sTitle.style.color='#BF00FF';sTitle.style.textShadow='0 0 50px #BF00FF,0 0 100px rgba(191,0,255,.35)';
+  sBtn.style.background='linear-gradient(135deg,#BF00FF,#7c3aed)';
+  sBtn.style.boxShadow='0 0 50px rgba(191,0,255,.6)';
+  screen.style.display='none';startWave();
+}
+sBtn.addEventListener('click',resetGame);
+
+function drawBg(){
+  ctx.fillStyle='#050508';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(191,0,255,0.04)';ctx.lineWidth=1;
+  const gs=50*DPR;
+  for(let x=0;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  ctx.fillStyle='rgba(0,0,0,0.055)';
+  for(let y=0;y<H;y+=3*DPR)ctx.fillRect(0,y,W,1.5*DPR);
+  // Firewall
+  const fwG=ctx.createLinearGradient(0,0,36*DPR,0);
+  fwG.addColorStop(0,'rgba(0,255,65,0.28)');fwG.addColorStop(1,'rgba(0,255,65,0)');
+  ctx.fillStyle=fwG;ctx.fillRect(0,0,36*DPR,H);
+  ctx.strokeStyle='rgba(0,255,65,0.55)';ctx.lineWidth=2.5*DPR;
+  ctx.beginPath();ctx.moveTo(4*DPR,0);ctx.lineTo(4*DPR,H);ctx.stroke();
+  ctx.fillStyle='rgba(0,255,65,0.7)';
+  ctx.font=`700 ${9*DPR}px "JetBrains Mono",monospace`;ctx.textAlign='left';ctx.textBaseline='top';
+  ctx.save();ctx.translate(14*DPR,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('FIREWALL',0,0);ctx.restore();
+  // Server
+  const sf=serverFlash>0?serverFlash/40:0;
+  const svG=ctx.createLinearGradient(W,0,W-36*DPR,0);
+  svG.addColorStop(0,`rgba(255,34,34,${0.2+sf*0.5})`);svG.addColorStop(1,'rgba(255,34,34,0)');
+  ctx.fillStyle=svG;ctx.fillRect(W-36*DPR,0,36*DPR,H);
+  ctx.strokeStyle=`rgba(255,34,34,${0.45+sf*0.55})`;ctx.lineWidth=2.5*DPR;
+  ctx.beginPath();ctx.moveTo(W-4*DPR,0);ctx.lineTo(W-4*DPR,H);ctx.stroke();
+  ctx.fillStyle=`rgba(255,34,34,${0.65+sf*0.35})`;
+  ctx.font=`700 ${9*DPR}px "JetBrains Mono",monospace`;
+  ctx.save();ctx.translate(W-14*DPR,H/2);ctx.rotate(Math.PI/2);ctx.fillText('SERVER',0,0);ctx.restore();
+  if(serverFlash>0){
+    ctx.fillStyle=`rgba(255,0,0,${(serverFlash/40)*0.18})`;ctx.fillRect(0,0,W,H);
+    serverFlash--;
+  }
+}
+
+function drawPacket(p){
+  p.trail.forEach((pos,i)=>{
+    const tf=1-(i+1)/(p.trail.length+1);
+    ctx.globalAlpha=tf*0.22;
+    ctx.strokeStyle=p.col;ctx.lineWidth=1.5*DPR;
+    hexPx(pos.x,pos.y,p.r*tf*0.8);ctx.stroke();
+  });
+  ctx.globalAlpha=1;
+  const fl=p.flash>0;if(fl)p.flash--;
+  ctx.shadowBlur=(fl?44:22)*DPR;ctx.shadowColor=fl?'#FFFFFF':p.col;
+  hexPx(p.x,p.y,p.r);
+  const fg=ctx.createRadialGradient(p.x*DPR,p.y*DPR,0,p.x*DPR,p.y*DPR,p.r*DPR);
+  fg.addColorStop(0,fl?'rgba(255,255,255,0.28)':`${p.col}1A`);fg.addColorStop(1,'rgba(5,5,8,0.96)');
+  ctx.fillStyle=fg;ctx.fill();
+  ctx.strokeStyle=fl?'#FFFFFF':p.col;ctx.lineWidth=2.5*DPR;ctx.stroke();
+  ctx.shadowBlur=0;
+  // Label
+  const fs=Math.max(9,Math.min(p.r*0.44,13))*DPR;
+  ctx.font=`700 ${fs}px "JetBrains Mono",monospace`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle=fl?'#FFFFFF':p.col;ctx.shadowBlur=8*DPR;ctx.shadowColor=p.col;
+  ctx.fillText(p.lbl,p.x*DPR,p.y*DPR);ctx.shadowBlur=0;
+  // Boss HP bar
+  if(p.boss&&p.maxHp>1){
+    const bw=p.r*1.7*DPR,bh=7*DPR,bx=p.x*DPR-bw/2,by=(p.y-p.r-16)*DPR;
+    ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(bx,by,bw,bh);
+    ctx.fillStyle=p.hp===3?'#00FF41':p.hp===2?'#FF8C00':'#FF2222';
+    ctx.fillRect(bx,by,bw*(p.hp/p.maxHp),bh);
+    ctx.strokeStyle='rgba(255,255,255,0.25)';ctx.lineWidth=1;ctx.strokeRect(bx,by,bw,bh);
+  }
 }
 
 let t0=null;
 function frame(ts){
   requestAnimationFrame(frame);
-  if(!t0){t0=ts;waitStart=ts;}
+  if(!t0)t0=ts;
   const dt=Math.min((ts-t0)*0.001,0.05);t0=ts;
+  drawBg();
 
-  if(state==='watching'){
-    if(ts-waitStart>readyDelay){
-      state='ready';clickTime=ts;
-      scoreDisp.textContent='⚡ NOW! ENCRYPT THE DATA!';
-      scoreDisp.style.color='#FF0044';
-      btn.classList.add('ready');
+  if(gState==='playing'){
+    qTimer+=dt*1000;
+    while(queue.length>0&&qTimer>=queue[0].t){spawnPkt(queue[0].boss);queue.shift();}
+    for(let i=packets.length-1;i>=0;i--){
+      const p=packets[i];
+      p.trail.unshift({x:p.x,y:p.y});if(p.trail.length>9)p.trail.pop();
+      p.x+=p.vx*dt;p.y+=p.vy*dt;
+      if(p.y<p.r+62||p.y>lH-p.r-10)p.vy*=-1;
+      if(p.x>lW+p.r+50){
+        lives--;updateLives();serverFlash=45;streak=1;streakVal.textContent='×1';
+        boom(lW+20,p.y,'#FF2222',16);packets.splice(i,1);
+        if(lives<=0){setTimeout(endGame,350);}
+      }
+    }
+    if(queue.length===0&&packets.length===0&&gState==='playing'){
+      gState='wavebreak';waveBreak=130;
+      flash(`WAVE ${wave} CLEAR ✓`,lives===3?'#00FF41':'#FF8C00',2000);
     }
   }
 
-  if(state==='encrypting'){
-    let allDone=true;
-    for(const s of streams){
-      s.encProgress=Math.min(1,s.encProgress+dt*3.5);
-      if(s.encProgress<1)allDone=false;
-    }
-    if(allDone&&result.style.opacity==='0'){
-      const raw=clickTime-(waitStart+readyDelay);
-      const ms=Math.max(0,parseFloat(raw.toFixed(1)));
-      scores.push(ms);
-      const best=Math.min(...scores);
-      let rating='OK 👍';
-      if(ms<120)rating='LEGENDARY ⚡';
-      else if(ms<200)rating='LIGHTNING 🔥';
-      else if(ms<350)rating='FAST ✓';
-      else if(ms>650)rating='TOO SLOW 🐢';
-      result.textContent=`${ms}ms — ${rating}`;
-      result.style.opacity='1';
-      scoreDisp.textContent=`Encrypted in ${ms}ms — Faster than the Cloud.`;
-      scoreDisp.style.color='rgba(0,255,65,0.8)';
-      if(scores.length>1)bestEl.textContent=`PERSONAL BEST: ${best}ms`;
-      if(round>=3)cta.style.opacity='1';
-      btn.textContent='PLAY AGAIN';
-      btn.classList.remove('encrypting');
-      state='result';
-      setTimeout(()=>{
-        if(state==='result'){
-          round++;rnum.textContent=round;
-          speedMultiplier=Math.min(2.5,1+round*0.18);
-          buildStreams();resetRound();
-          scoreDisp.textContent='WATCH THE DATA STREAM... THEN CLICK!';
-          scoreDisp.style.color='rgba(0,255,65,0.8)';
-        }
-      },2800);
-    }
-  }
+  if(gState==='wavebreak'){waveBreak--;if(waveBreak<=0)startWave();}
 
-  ctx.fillStyle='rgba(2,4,6,0.88)';ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle='rgba(191,0,255,0.03)';ctx.lineWidth=1;
-  const gs=50*DPR;
-  for(let x=0;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
-  for(let y=0;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  for(const p of packets)drawPacket(p);
 
-  const lH=window.innerHeight;
-  for(const s of streams){
-    if(state!=='encrypting'&&state!=='result')s.y+=s.speed*dt;
-    if(s.y>lH+40){s.y=-60;s.str=STRINGS[Math.floor(Math.random()*STRINGS.length)];s.encProgress=0;}
-    const ep=s.encProgress;
-    const n=Math.floor(s.str.length*ep);
-    const displayStr='●'.repeat(n)+s.str.slice(n);
-    const col=ep>0.85?'#00FF41':ep>0.4?'#88FF88':'#FF3333';
-    ctx.font=`${s.size*DPR}px "JetBrains Mono",monospace`;
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.globalAlpha=s.alpha;
-    ctx.shadowBlur=ep>0?14*DPR:0;ctx.shadowColor=ep>0?'#00FF41':'#FF3333';
-    ctx.fillStyle=col;ctx.fillText(displayStr,s.x*DPR,s.y*DPR);
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.18;p.alpha-=0.026;
+    if(p.alpha<=0){parts.splice(i,1);continue;}
+    ctx.globalAlpha=p.alpha;ctx.fillStyle=p.col;
+    ctx.shadowBlur=8;ctx.shadowColor=p.col;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
     ctx.shadowBlur=0;ctx.globalAlpha=1;
   }
 
-  if(state==='encrypting'){
-    const age=Math.min(1,(ts-clickTime)*0.001*2.5);
-    if(age<1){ctx.fillStyle=`rgba(0,255,65,${0.14*(1-age)})`;ctx.fillRect(0,0,W,H);}
-  }
-  if(state==='ready'){
-    const pulse=0.5+0.5*Math.sin(ts*0.012);
-    ctx.fillStyle=`rgba(255,0,68,${0.07*pulse})`;ctx.fillRect(0,0,W,H);
-    // Danger scanline
-    ctx.strokeStyle=`rgba(255,0,68,${0.18*pulse})`;ctx.lineWidth=2*DPR;
-    ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
+  const ffs=Math.max(14,Math.min(lW*0.042,22))*DPR;
+  for(let i=floats.length-1;i>=0;i--){
+    const f=floats[i];f.y+=f.vy;f.alpha-=0.024;
+    if(f.alpha<=0){floats.splice(i,1);continue;}
+    ctx.globalAlpha=f.alpha;ctx.font=`800 ${ffs}px "JetBrains Mono",monospace`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle=f.col;ctx.shadowBlur=14;ctx.shadowColor=f.col;
+    ctx.fillText(f.txt,f.x*DPR,f.y*DPR);ctx.shadowBlur=0;ctx.globalAlpha=1;
   }
 
-  ctx.globalAlpha=0.35;
+  ctx.globalAlpha=0.3;
   ctx.font=`600 ${12*DPR}px "JetBrains Mono",monospace`;
   ctx.textAlign='right';ctx.textBaseline='bottom';
   ctx.fillStyle='#BF00FF';ctx.fillText('K-PERCEPTION',W-16*DPR,H-16*DPR);
