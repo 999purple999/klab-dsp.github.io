@@ -8,23 +8,25 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#050508;overflow:hidden;font-family:'JetBrains Mono','Courier New',monospace;touch-action:none;user-select:none}
 canvas{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
-#hud{position:fixed;top:0;left:0;right:0;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:10;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,0.9),transparent)}
-.hud-block{display:flex;flex-direction:column;align-items:center}
-.hud-lbl{font-size:clamp(8px,1.6vw,10px);letter-spacing:.18em;text-transform:uppercase;opacity:.5;margin-bottom:2px}
-.hud-val{font-size:clamp(20px,4vw,32px);font-weight:800;line-height:1;letter-spacing:.04em}
+#hud{position:fixed;top:0;left:0;right:0;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:10;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,0.92),transparent)}
+.hud-block{display:flex;flex-direction:column;align-items:center;min-width:52px}
+.hud-lbl{font-size:clamp(7px,1.4vw,10px);letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:1px}
+.hud-val{font-size:clamp(17px,3.5vw,30px);font-weight:800;line-height:1;letter-spacing:.04em}
 #score-lbl{color:#BF00FF}#score-val{color:#BF00FF;text-shadow:0 0 18px #BF00FF}
 #streak-lbl{color:#FF8C00}#streak-val{color:#FF8C00;text-shadow:0 0 14px #FF8C00}
-#lives-area{display:flex;gap:10px;align-items:center}
-.life{font-size:clamp(20px,3.5vw,26px);transition:all .3s}
+#lives-area{display:flex;gap:8px;align-items:center}
+.life{font-size:clamp(18px,3.2vw,24px);transition:all .3s}
 .life.lost{opacity:.15;filter:grayscale(1)}
 #wave-lbl{color:#00FF41}#wave-val{color:#00FF41;text-shadow:0 0 14px #00FF41}
-#center{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(20px,5.5vw,48px);font-weight:800;letter-spacing:.08em;text-align:center;pointer-events:none;z-index:15;opacity:0;transition:opacity .18s;text-shadow:0 0 40px currentColor;white-space:nowrap}
-#screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;z-index:20;background:rgba(5,5,8,0.96);transition:opacity .3s}
-#s-title{font-size:clamp(28px,7.5vw,68px);font-weight:800;text-shadow:0 0 50px currentColor,0 0 100px rgba(191,0,255,.35);letter-spacing:.07em;text-align:center;line-height:1.12}
-#s-sub{font-size:clamp(12px,2.4vw,16px);color:rgba(255,255,255,.5);letter-spacing:.07em;text-align:center;max-width:460px;line-height:1.7}
-#s-score{font-size:clamp(14px,2.8vw,20px);color:rgba(255,255,255,.7);letter-spacing:.07em;display:none}
-#s-best{font-size:clamp(11px,1.9vw,14px);color:rgba(191,0,255,.65);letter-spacing:.1em;display:none}
-#s-btn{padding:15px 54px;color:#fff;font-weight:800;font-size:clamp(14px,3vw,19px);letter-spacing:.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:12px;transition:all .15s;font-family:'JetBrains Mono',monospace}
+#speed-bar-wrap{position:fixed;top:58px;left:0;right:0;height:3px;background:rgba(255,255,255,0.06);z-index:10;pointer-events:none}
+#speed-bar{height:100%;width:0%;background:linear-gradient(90deg,#FF8C00,#FF2222);transition:width .15s,background .15s;box-shadow:0 0 8px #FF2222}
+#center{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(18px,5vw,44px);font-weight:800;letter-spacing:.08em;text-align:center;pointer-events:none;z-index:15;opacity:0;transition:opacity .18s;text-shadow:0 0 40px currentColor;white-space:nowrap}
+#screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:20;background:rgba(5,5,8,0.96);transition:opacity .3s}
+#s-title{font-size:clamp(26px,7vw,64px);font-weight:800;text-shadow:0 0 50px currentColor,0 0 100px rgba(191,0,255,.35);letter-spacing:.07em;text-align:center;line-height:1.12}
+#s-sub{font-size:clamp(11px,2.2vw,15px);color:rgba(255,255,255,.5);letter-spacing:.07em;text-align:center;max-width:440px;line-height:1.7;padding:0 16px}
+#s-score{font-size:clamp(13px,2.6vw,19px);color:rgba(255,255,255,.7);letter-spacing:.07em;display:none}
+#s-best{font-size:clamp(10px,1.8vw,13px);color:rgba(191,0,255,.65);letter-spacing:.1em;display:none}
+#s-btn{padding:14px 48px;color:#fff;font-weight:800;font-size:clamp(13px,2.8vw,18px);letter-spacing:.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:12px;transition:all .15s;font-family:'JetBrains Mono',monospace}
 #s-btn:hover{transform:translateY(-3px)}
 #cta{display:none;padding:10px 28px;background:linear-gradient(135deg,#BF00FF,#7c3aed);color:#fff;font-weight:700;font-size:clamp(11px,2vw,13px);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:8px;box-shadow:0 0 20px rgba(191,0,255,.4);transition:all .2s;font-family:'JetBrains Mono',monospace}
 #cta:hover{transform:translateY(-2px)}
@@ -38,10 +40,11 @@ canvas{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
   <div id="lives-area"><span class="life" id="l0">🛡</span><span class="life" id="l1">🛡</span><span class="life" id="l2">🛡</span></div>
   <div class="hud-block"><div class="hud-lbl" id="wave-lbl">WAVE</div><div class="hud-val" id="wave-val">—</div></div>
 </div>
+<div id="speed-bar-wrap"><div id="speed-bar"></div></div>
 <div id="center"></div>
 <div id="screen">
   <div id="s-title" style="color:#BF00FF">DATA BREACH<br>INTERCEPTOR</div>
-  <div id="s-sub">Stolen data packets are crossing your firewall.<br>Click them before they reach the server.<br><span style="color:#FF3333;font-weight:700">3 leaks = BREACH COMPLETE.</span></div>
+  <div id="s-sub">Stolen data packets are crossing your firewall.<br>Tap them before they reach the server.<br><span style="color:#FF3333;font-weight:700">3 leaks = BREACH COMPLETE. Errors spike speed!</span></div>
   <div id="s-score"></div><div id="s-best"></div>
   <button id="s-btn" style="background:linear-gradient(135deg,#BF00FF,#7c3aed);box-shadow:0 0 50px rgba(191,0,255,.6)">ENGAGE FIREWALL</button>
   <a id="cta" href="https://999purple999.github.io/klab-dsp.github.io/" target="_blank">Try K-Perception →</a>
@@ -62,6 +65,10 @@ const sScore=document.getElementById('s-score');
 const sBest=document.getElementById('s-best');
 const sBtn=document.getElementById('s-btn');
 const cta=document.getElementById('cta');
+const speedBar=document.getElementById('speed-bar');
+
+const isMobile='ontouchstart' in window||navigator.maxTouchPoints>0;
+const HIT_PAD=isMobile?38:18;
 
 let W,H,DPR,lW,lH;
 function resize(){
@@ -85,6 +92,7 @@ let score=0,best=0,streak=1,lives=3,wave=0;
 let packets=[],parts=[],floats=[];
 let queue=[],qTimer=0,qInterval=1400;
 let waveBreak=0,serverFlash=0;
+let waveSpeedMult=1.0;
 let centerTimer=null;
 
 function flash(text,color,dur){
@@ -94,6 +102,15 @@ function flash(text,color,dur){
 }
 
 function updateLives(){lifeEls.forEach((el,i)=>el.classList.toggle('lost',i>=lives));}
+
+function updateSpeedBar(){
+  const pct=Math.min(100,((waveSpeedMult-1.0)/1.0)*100);
+  speedBar.style.width=pct+'%';
+  if(pct<30)speedBar.style.background='linear-gradient(90deg,#FF8C00,#FF5500)';
+  else if(pct<65)speedBar.style.background='linear-gradient(90deg,#FF5500,#FF2222)';
+  else speedBar.style.background='linear-gradient(90deg,#FF2222,#FF0066)';
+  speedBar.style.boxShadow=pct>10?`0 0 ${8+pct*0.2}px #FF2222`:'none';
+}
 
 function hexPx(lx,ly,r){
   ctx.beginPath();
@@ -117,11 +134,21 @@ function addFloat(lx,ly,txt,col){
   floats.push({x:lx,y:ly,txt,col,alpha:1,vy:-1.8});
 }
 
+function bumpSpeed(){
+  waveSpeedMult=Math.min(2.0,waveSpeedMult+0.15);
+  for(const p of packets){
+    const cap=Math.max(60,(95+wave*24)*waveSpeedMult*(p.boss?0.5:1.4));
+    p.vx=Math.min(p.vx*1.14,cap);
+  }
+  updateSpeedBar();
+}
+
 function startWave(){
   wave++;waveVal.textContent=wave;
+  waveSpeedMult=1.0;updateSpeedBar();
   const boss=wave>1&&wave%5===0;
   const cnt=Math.min(4+Math.floor(wave*1.2),18);
-  qInterval=Math.max(300,1500-wave*90);
+  qInterval=Math.max(280,1500-wave*90);
   queue=[];for(let i=0;i<cnt;i++)queue.push({boss:boss&&i===0,t:i*qInterval});
   qTimer=0;gState='playing';
   flash(`WAVE ${wave}${boss?' — ⚠ BOSS':' — GO!'}`,boss?'#FFD700':'#00FF41',1600);
@@ -129,12 +156,13 @@ function startWave(){
 
 function spawnPkt(boss){
   const d=DATA[Math.floor(Math.random()*DATA.length)];
-  const baseR=Math.max(17,42-wave*1.8);
-  const r=boss?baseR*2:baseR;
-  const spd=Math.max(60,(95+wave*24)*(boss?0.5:0.8+Math.random()*0.4));
+  const baseR=Math.max(isMobile?22:17,(isMobile?48:42)-wave*1.8);
+  const r=boss?baseR*1.85:baseR;
+  const spd=(Math.max(60,(95+wave*24))*(boss?0.5:0.8+Math.random()*0.4))*waveSpeedMult;
   const col=boss?'#FFD700':PALETTE[d.t-1+Math.floor(Math.random()*2)];
+  const hudH=isMobile?72:80;
   packets.push({
-    x:-r-40,y:68+Math.random()*(lH-136),
+    x:-r-40,y:hudH+Math.random()*(lH-hudH-20),
     vx:spd,vy:(Math.random()-0.5)*35,
     r,hp:boss?3:1,maxHp:boss?3:1,
     lbl:d.label,col,boss,flash:0,
@@ -148,7 +176,7 @@ function tryHit(lx,ly){
   for(let i=packets.length-1;i>=0;i--){
     const p=packets[i];
     const d=Math.hypot(p.x-lx,p.y-ly);
-    if(d<p.r+16){
+    if(d<p.r+HIT_PAD){
       p.hp--;p.flash=10;hit=true;
       if(p.hp<=0){
         streak++;
@@ -165,7 +193,11 @@ function tryHit(lx,ly){
       break;
     }
   }
-  if(!hit){streak=1;streakVal.textContent='×1';}
+  if(!hit){
+    streak=1;streakVal.textContent='×1';
+    bumpSpeed();
+    flash('MISS! SPEED UP!','#FF5500',700);
+  }
 }
 
 cv.addEventListener('click',e=>tryHit(e.clientX,e.clientY));
@@ -186,6 +218,7 @@ function endGame(){
 
 function resetGame(){
   score=0;streak=1;lives=3;wave=0;packets=[];parts=[];floats=[];queue=[];serverFlash=0;
+  waveSpeedMult=1.0;updateSpeedBar();
   scoreVal.textContent='0';streakVal.textContent='×1';waveVal.textContent='—';
   updateLives();
   sTitle.style.color='#BF00FF';sTitle.style.textShadow='0 0 50px #BF00FF,0 0 100px rgba(191,0,255,.35)';
@@ -226,6 +259,11 @@ function drawBg(){
     ctx.fillStyle=`rgba(255,0,0,${(serverFlash/40)*0.18})`;ctx.fillRect(0,0,W,H);
     serverFlash--;
   }
+  // Speed warning overlay
+  if(waveSpeedMult>1.5){
+    const si=Math.sin(Date.now()*0.008)*(waveSpeedMult-1.5)*0.5;
+    ctx.fillStyle=`rgba(255,34,34,${si*0.06})`;ctx.fillRect(0,0,W,H);
+  }
 }
 
 function drawPacket(p){
@@ -244,13 +282,11 @@ function drawPacket(p){
   ctx.fillStyle=fg;ctx.fill();
   ctx.strokeStyle=fl?'#FFFFFF':p.col;ctx.lineWidth=2.5*DPR;ctx.stroke();
   ctx.shadowBlur=0;
-  // Label
-  const fs=Math.max(9,Math.min(p.r*0.44,13))*DPR;
+  const fs=Math.max(8,Math.min(p.r*0.44,isMobile?14:13))*DPR;
   ctx.font=`700 ${fs}px "JetBrains Mono",monospace`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillStyle=fl?'#FFFFFF':p.col;ctx.shadowBlur=8*DPR;ctx.shadowColor=p.col;
   ctx.fillText(p.lbl,p.x*DPR,p.y*DPR);ctx.shadowBlur=0;
-  // Boss HP bar
   if(p.boss&&p.maxHp>1){
     const bw=p.r*1.7*DPR,bh=7*DPR,bx=p.x*DPR-bw/2,by=(p.y-p.r-16)*DPR;
     ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(bx,by,bw,bh);
@@ -274,10 +310,13 @@ function frame(ts){
       const p=packets[i];
       p.trail.unshift({x:p.x,y:p.y});if(p.trail.length>9)p.trail.pop();
       p.x+=p.vx*dt;p.y+=p.vy*dt;
-      if(p.y<p.r+62||p.y>lH-p.r-10)p.vy*=-1;
+      const hudH=isMobile?72:80;
+      if(p.y<p.r+hudH||p.y>lH-p.r-10)p.vy*=-1;
       if(p.x>lW+p.r+50){
         lives--;updateLives();serverFlash=45;streak=1;streakVal.textContent='×1';
         boom(lW+20,p.y,'#FF2222',16);packets.splice(i,1);
+        bumpSpeed();
+        flash('BREACH! SPEED UP!','#FF2222',900);
         if(lives<=0){setTimeout(endGame,350);}
       }
     }
