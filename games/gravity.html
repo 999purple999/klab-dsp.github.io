@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Gravity Sandbox — K-Perception</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Inter',system-ui,sans-serif;touch-action:none;user-select:none}
+canvas{display:block;width:100%;height:100%}
+#ui{position:fixed;bottom:24px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:14px;pointer-events:none;z-index:10}
+#tagline{font-size:clamp(13px,3vw,18px);font-weight:700;color:#BF00FF;text-shadow:0 0 20px #BF00FF;text-align:center;opacity:0;transition:opacity .6s}
+#sub{font-size:clamp(11px,2.5vw,14px);color:rgba(255,255,255,0.5);text-align:center;letter-spacing:.06em}
+#cta{pointer-events:auto;display:inline-block;padding:12px 30px;background:linear-gradient(135deg,#BF00FF,#7c3aed);color:#fff;font-weight:700;font-size:clamp(12px,2.5vw,14px);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:8px;box-shadow:0 0 30px rgba(191,0,255,0.4);transition:all .2s;opacity:0}
+#cta:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(191,0,255,0.7)}
+#hint{position:fixed;top:20px;left:0;right:0;text-align:center;font-size:clamp(12px,2.5vw,14px);color:rgba(255,255,255,0.4);letter-spacing:.08em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hint">Click · Drag · Shake 🎲</div>
+<div id="ui">
+  <div id="tagline">One Tool. Zero Bloat. Full Power. 🏎️</div>
+  <div id="sub">Local is FREE · E2E Encrypted · Real-time Collab</div>
+  <a id="cta" href="https://klab-dsp.github.io" target="_blank">Try K-Perception →</a>
+</div>
+<script>
+(function(){
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+const tagline = document.getElementById('tagline');
+const cta = document.getElementById('cta');
+
+let W, H, DPR;
+function resize(){
+  DPR = Math.min(window.devicePixelRatio||1,2);
+  W = cv.width  = window.innerWidth  * DPR;
+  H = cv.height = window.innerHeight * DPR;
+  cv.style.width = window.innerWidth+'px';
+  cv.style.height= window.innerHeight+'px';
+}
+window.addEventListener('resize', resize);
+
+// ── Box definitions ───────────────────────────────────────────────────────────
+const LABELS = [
+  {text:'DOCS',    color:'#BF00FF', glow:'rgba(191,0,255,0.4)'},
+  {text:'SHEETS',  color:'#00FF41', glow:'rgba(0,255,65,0.4)'},
+  {text:'IDE',     color:'#00FFFF', glow:'rgba(0,255,255,0.4)'},
+  {text:'COLLAB',  color:'#FF8C00', glow:'rgba(255,140,0,0.4)'},
+  {text:'CANVAS',  color:'#BF00FF', glow:'rgba(191,0,255,0.4)'},
+  {text:'CODE',    color:'#00FF41', glow:'rgba(0,255,65,0.4)'},
+];
+
+let boxes = [];
+
+function initBoxes(){
+  boxes = LABELS.map((lb, i) => {
+    const bw = Math.min(W/DPR * 0.22, 160);
+    const bh = bw * 0.48;
+    return {
+      x: 80 + (i % 3) * (W/DPR * 0.33),
+      y: 60 + Math.floor(i/3) * 180,
+      vx: (Math.random()-0.5)*3,
+      vy: Math.random()*2,
+      w: bw, h: bh,
+      angle: (Math.random()-0.5)*0.3,
+      av: (Math.random()-0.5)*0.03,
+      label: lb.text, color: lb.color, glow: lb.glow,
+      dragging: false, touchId: -1,
+    };
+  });
+}
+
+// ── Physics ───────────────────────────────────────────────────────────────────
+const GRAVITY = 0.45;
+const BOUNCE  = 0.55;
+const FRICTION = 0.992;
+const A_FRICTION = 0.94;
+
+function tick(){
+  const lW = W/DPR, lH = H/DPR;
+  for(const b of boxes){
+    if(b.dragging) continue;
+    b.vy += GRAVITY;
+    b.vx *= FRICTION;
+    b.vy *= FRICTION;
+    b.av *= A_FRICTION;
+    b.x += b.vx;
+    b.y += b.vy;
+    b.angle += b.av;
+
+    // Floor
+    if(b.y + b.h > lH - 40){
+      b.y = lH - 40 - b.h;
+      b.vy *= -BOUNCE;
+      b.vx += (Math.random()-0.5)*0.5;
+      b.av += (Math.random()-0.5)*0.04;
+      if(Math.abs(b.vy) < 1) b.vy = 0;
+    }
+    // Walls
+    if(b.x < 0){ b.x=0; b.vx*=-BOUNCE; b.av+=(Math.random()-0.5)*0.05; }
+    if(b.x+b.w > lW){ b.x=lW-b.w; b.vx*=-BOUNCE; b.av+=(Math.random()-0.5)*0.05; }
+    // Ceiling
+    if(b.y < 0){ b.y=0; b.vy*=-BOUNCE; }
+  }
+
+  // Box-box AABB collision (simplified, axis-aligned)
+  for(let i=0;i<boxes.length;i++){
+    for(let j=i+1;j<boxes.length;j++){
+      const a=boxes[i], b2=boxes[j];
+      if(a.dragging||b2.dragging) continue;
+      const dx=(a.x+a.w/2)-(b2.x+b2.w/2);
+      const dy=(a.y+a.h/2)-(b2.y+b2.h/2);
+      const minX=a.w/2+b2.w/2, minY=a.h/2+b2.h/2;
+      if(Math.abs(dx)<minX && Math.abs(dy)<minY){
+        const ox=minX-Math.abs(dx), oy=minY-Math.abs(dy);
+        if(ox<oy){
+          const sx=dx<0?-1:1;
+          a.x+=sx*ox*0.5; b2.x-=sx*ox*0.5;
+          const t=a.vx; a.vx=b2.vx*BOUNCE; b2.vx=t*BOUNCE;
+          a.av+=(Math.random()-0.5)*0.03; b2.av+=(Math.random()-0.5)*0.03;
+        } else {
+          const sy=dy<0?-1:1;
+          a.y+=sy*oy*0.5; b2.y-=sy*oy*0.5;
+          const t=a.vy; a.vy=b2.vy*BOUNCE; b2.vy=t*BOUNCE;
+        }
+      }
+    }
+  }
+}
+
+// ── Draw ─────────────────────────────────────────────────────────────────────
+function drawBox(b){
+  const s = DPR;
+  ctx.save();
+  ctx.translate((b.x+b.w/2)*s, (b.y+b.h/2)*s);
+  ctx.rotate(b.angle);
+
+  const bw=b.w*s, bh=b.h*s;
+  const r = 12*s;
+
+  // Glow
+  ctx.shadowBlur = 30*s;
+  ctx.shadowColor = b.glow;
+
+  // Body
+  ctx.fillStyle = 'rgba(5,5,10,0.92)';
+  ctx.beginPath();
+  ctx.roundRect(-bw/2,-bh/2,bw,bh,r);
+  ctx.fill();
+
+  // Border
+  ctx.strokeStyle = b.color;
+  ctx.lineWidth = 2*s;
+  ctx.shadowBlur = 16*s;
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+
+  // Label
+  const fs = Math.min(bh*0.42, bw*0.22);
+  ctx.font = `800 ${fs}px "Space Grotesk","Inter",sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = b.color;
+  ctx.fillText(b.label, 0, 0);
+
+  ctx.restore();
+}
+
+// ── Input ─────────────────────────────────────────────────────────────────────
+let dragBox = null, dragOx=0, dragOy=0, dragVx=0, dragVy=0, dragPx=0, dragPy=0;
+
+function hitTest(lx, ly){
+  for(let i=boxes.length-1;i>=0;i--){
+    const b=boxes[i];
+    if(lx>=b.x&&lx<=b.x+b.w&&ly>=b.y&&ly<=b.y+b.h) return b;
+  }
+  return null;
+}
+
+function startDrag(lx, ly){
+  const b = hitTest(lx, ly);
+  if(!b) return;
+  dragBox = b;
+  b.dragging = true;
+  dragOx = lx - b.x; dragOy = ly - b.y;
+  dragPx = lx; dragPy = ly;
+  dragVx = 0; dragVy = 0;
+}
+
+function moveDrag(lx, ly){
+  if(!dragBox) return;
+  dragVx = lx - dragPx; dragVy = ly - dragPy;
+  dragPx = lx; dragPy = ly;
+  dragBox.x = lx - dragOx;
+  dragBox.y = ly - dragOy;
+  dragBox.av *= 0.8;
+}
+
+function endDrag(){
+  if(!dragBox) return;
+  dragBox.vx = dragVx * 1.2;
+  dragBox.vy = dragVy * 1.2;
+  dragBox.av = (Math.random()-0.5)*0.1;
+  dragBox.dragging = false;
+  dragBox = null;
+}
+
+cv.addEventListener('mousedown', e=>startDrag(e.clientX, e.clientY));
+cv.addEventListener('mousemove', e=>moveDrag(e.clientX, e.clientY));
+cv.addEventListener('mouseup', endDrag);
+cv.addEventListener('touchstart', e=>{e.preventDefault();startDrag(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+cv.addEventListener('touchmove', e=>{e.preventDefault();moveDrag(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+cv.addEventListener('touchend', e=>{e.preventDefault();endDrag();},{passive:false});
+
+// Double-click / double-tap = shake
+cv.addEventListener('dblclick', shake);
+let lastTap=0;
+cv.addEventListener('touchend', e=>{
+  const now=Date.now();
+  if(now-lastTap<350) shake();
+  lastTap=now;
+});
+
+function shake(){
+  for(const b of boxes){
+    b.vx = (Math.random()-0.5)*20;
+    b.vy = -(Math.random()*15+8);
+    b.av = (Math.random()-0.5)*0.3;
+  }
+}
+
+// ── Grid + particles ─────────────────────────────────────────────────────────
+const sparks = [];
+function spawnSpark(x, y, col){
+  for(let i=0;i<6;i++){
+    const a=Math.random()*Math.PI*2, sp=1+Math.random()*3;
+    sparks.push({x:x*DPR,y:y*DPR,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,
+      alpha:1,r:2+Math.random()*3,color:col});
+  }
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+let frames = 0;
+function frame(){
+  requestAnimationFrame(frame);
+  tick();
+  frames++;
+
+  ctx.fillStyle = 'rgba(5,5,8,0.88)';
+  ctx.fillRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(191,0,255,0.04)';
+  ctx.lineWidth = 1;
+  const gs = 50*DPR;
+  for(let x=0;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  // Floor line
+  ctx.strokeStyle = 'rgba(191,0,255,0.25)';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0,(H/DPR-40)*DPR); ctx.lineTo(W,(H/DPR-40)*DPR); ctx.stroke();
+
+  boxes.forEach(drawBox);
+
+  // Sparks
+  for(let i=sparks.length-1;i>=0;i--){
+    const p=sparks[i];
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.alpha-=0.03;
+    if(p.alpha<=0){sparks.splice(i,1);continue;}
+    ctx.globalAlpha=p.alpha; ctx.fillStyle=p.color;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=1;
+  }
+
+  // Signature
+  ctx.globalAlpha=0.35;
+  ctx.font=`600 ${12*DPR}px "JetBrains Mono",monospace`;
+  ctx.textAlign='right'; ctx.textBaseline='bottom';
+  ctx.fillStyle='#BF00FF';
+  ctx.fillText('K-PERCEPTION',W-16*DPR,H-16*DPR);
+  ctx.globalAlpha=1;
+
+  if(frames===120){ tagline.style.opacity='1'; cta.style.opacity='1'; }
+}
+
+resize();
+initBoxes();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Hacker Speed Test — K-Perception</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'JetBrains Mono','Courier New',monospace;touch-action:none}
+canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+#overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:10;gap:20px}
+#score-display{font-size:clamp(13px,3vw,18px);color:rgba(0,255,65,0.8);letter-spacing:.08em;text-align:center;min-height:30px}
+#btn{pointer-events:auto;width:clamp(160px,35vw,240px);height:clamp(60px,12vh,80px);
+  background:linear-gradient(135deg,rgba(191,0,255,0.15),rgba(124,58,237,0.15));
+  border:2px solid #BF00FF;border-radius:12px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:clamp(14px,3vw,20px);font-weight:700;
+  color:#BF00FF;letter-spacing:.12em;text-transform:uppercase;
+  box-shadow:0 0 30px rgba(191,0,255,0.4),inset 0 0 30px rgba(191,0,255,0.05);
+  transition:all .1s;position:relative;overflow:hidden}
+#btn:hover{box-shadow:0 0 60px rgba(191,0,255,0.7),inset 0 0 40px rgba(191,0,255,0.1);transform:scale(1.03)}
+#btn:active{transform:scale(0.97)}
+#btn.encrypting{border-color:#00FF41;color:#00FF41;box-shadow:0 0 60px rgba(0,255,65,0.7),inset 0 0 40px rgba(0,255,65,0.1)}
+#result{font-size:clamp(18px,5vw,36px);font-weight:800;color:#00FF41;text-shadow:0 0 30px #00FF41;opacity:0;transition:opacity .3s;letter-spacing:.05em;text-align:center}
+#tagline{font-size:clamp(11px,2.5vw,15px);color:rgba(255,255,255,0.5);letter-spacing:.06em;text-align:center;max-width:400px}
+#cta{pointer-events:auto;display:inline-block;padding:12px 30px;background:linear-gradient(135deg,#BF00FF,#7c3aed);color:#fff;font-weight:700;font-size:clamp(12px,2.5vw,14px);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:8px;box-shadow:0 0 30px rgba(191,0,255,0.4);transition:all .2s;opacity:0}
+#cta:hover{transform:translateY(-2px)}
+#round{position:fixed;top:20px;right:20px;font-size:clamp(11px,2.5vw,14px);color:rgba(191,0,255,0.6);z-index:10;letter-spacing:.1em}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="round">ROUND <span id="rnum">1</span></div>
+<div id="overlay">
+  <div id="score-display">WATCH THE DATA STREAM... THEN CLICK!</div>
+  <button id="btn">ENCRYPT</button>
+  <div id="result"></div>
+  <div id="tagline">Faster than the Cloud. Safer than VS Code.</div>
+  <a id="cta" href="https://klab-dsp.github.io" target="_blank">Try K-Perception →</a>
+</div>
+
+<script>
+(function(){
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+const btn = document.getElementById('btn');
+const result = document.getElementById('result');
+const scoreDisp = document.getElementById('score-display');
+const cta = document.getElementById('cta');
+const rnum = document.getElementById('rnum');
+
+let W, H, DPR;
+function resize(){
+  DPR=Math.min(window.devicePixelRatio||1,2);
+  W=cv.width=window.innerWidth*DPR; H=cv.height=window.innerHeight*DPR;
+  cv.style.width=window.innerWidth+'px'; cv.style.height=window.innerHeight+'px';
+  buildStreams();
+}
+window.addEventListener('resize', resize);
+
+// ── Data strings ──────────────────────────────────────────────────────────────
+const STRINGS = [
+  'password: hunter2','api_key: sk-abc123xQ','email: user@corp.com',
+  'token: eyJhbGci...','CC: 4532-1234-5678','SSN: 078-05-1120',
+  'session: a8f3...','auth: Bearer xyz9','db_pass: p@$$w0rd',
+  'private_key: -----','slack_token: xoxb-','stripe: sk_live_abc',
+  'health_data: {vital','source_code: MIT','git_commit: a1b2c3',
+  'telemetry: {"user"','crash_report: {id:','location: 48.8566',
+];
+
+// ── Stream state ──────────────────────────────────────────────────────────────
+let streams = [];
+let encrypted = false;
+let encryptTime = 0;
+let clickTime = 0;
+let waitStart = 0;
+let round = 1;
+let scores = [];
+let state = 'watching'; // watching | ready | encrypting | result
+
+const STREAM_COLS = 2;
+const STREAM_SPEED_BASE = 45; // logical px/s
+
+function buildStreams(){
+  const lW = window.innerWidth, lH = window.innerHeight;
+  const cols = Math.max(2, Math.floor(lW / 320));
+  const colW = lW / cols;
+  streams = [];
+  for(let c=0;c<cols;c++){
+    const count = 4+Math.floor(Math.random()*4);
+    for(let i=0;i<count;i++){
+      streams.push({
+        col: c, colW, lW, lH,
+        x: (c+0.5)*colW + (Math.random()-0.5)*colW*0.3,
+        y: Math.random()*lH*2 - lH,
+        str: STRINGS[Math.floor(Math.random()*STRINGS.length)],
+        speed: STREAM_SPEED_BASE*(0.7+Math.random()*0.8),
+        alpha: 0.5+Math.random()*0.5,
+        size: 11+Math.random()*6,
+        encrypted: false,
+        encProgress: 0,
+      });
+    }
+  }
+}
+
+// ── Encrypt effect ────────────────────────────────────────────────────────────
+const ENCRYPTED_CHARS = '●●●●●●●●●●●●●●●';
+
+function maskString(s, progress){
+  const n = Math.floor(s.length * progress);
+  return '●'.repeat(n) + s.slice(n);
+}
+
+// ── Game logic ────────────────────────────────────────────────────────────────
+let t0 = null;
+let readyDelay = 1500 + Math.random()*2500; // randomize when data starts
+
+btn.addEventListener('click', ()=>{
+  if(state==='watching' || state==='ready'){
+    state='encrypting';
+    encrypted=true;
+    clickTime = performance.now();
+    btn.classList.add('encrypting');
+    btn.textContent='ENCRYPTING...';
+  }
+});
+
+function resetRound(){
+  encrypted=false;
+  state='watching';
+  readyDelay = 1200 + Math.random()*2500;
+  waitStart = performance.now();
+  btn.classList.remove('encrypting');
+  btn.textContent='ENCRYPT';
+  result.style.opacity='0';
+  for(const s of streams){ s.encrypted=false; s.encProgress=0; }
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function frame(ts){
+  requestAnimationFrame(frame);
+  if(!t0){ t0=ts; waitStart=ts; }
+  const dt = Math.min((ts-t0)*0.001, 0.05);
+  t0=ts;
+
+  // State machine
+  if(state==='watching'){
+    if(ts-waitStart > readyDelay){
+      state='ready';
+      scoreDisp.textContent='⚡ CLICK NOW!';
+      clickTime=ts;
+    }
+  }
+
+  if(state==='encrypting'){
+    // All streams encrypt
+    let allDone=true;
+    for(const s of streams){
+      s.encProgress=Math.min(1, s.encProgress+dt*4);
+      if(s.encProgress<1) allDone=false;
+    }
+    if(allDone && result.style.opacity==='0'){
+      const ms = (clickTime - (waitStart+readyDelay)).toFixed(1);
+      const displayMs = Math.abs(parseFloat(ms));
+      scores.push(displayMs);
+      let rating='GOOD';
+      if(displayMs<150) rating='LIGHTNING ⚡'; else if(displayMs<300) rating='FAST 🔥'; else if(displayMs<500) rating='OK 👍'; else rating='TOO SLOW 🐢';
+      result.textContent=`${displayMs}ms — ${rating}`;
+      result.style.opacity='1';
+      scoreDisp.textContent=`Encrypted in ${displayMs}ms. Faster than the Cloud.`;
+      if(round>=3){ cta.style.opacity='1'; }
+      btn.textContent='PLAY AGAIN';
+      btn.classList.remove('encrypting');
+      state='result';
+      setTimeout(()=>{
+        if(state==='result'){ round++; rnum.textContent=round; resetRound(); scoreDisp.textContent='WATCH THE DATA STREAM... THEN CLICK!'; }
+      }, 3000);
+    }
+  }
+
+  // Draw background
+  ctx.fillStyle='rgba(2,4,6,0.9)';
+  ctx.fillRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle='rgba(191,0,255,0.03)';
+  ctx.lineWidth=1;
+  const gs=50*DPR;
+  for(let x=0;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  // Streams
+  const lH=window.innerHeight;
+  for(const s of streams){
+    if(state!=='encrypting' && state!=='result') s.y+=s.speed*dt;
+    if(s.y > lH+40){ s.y=-60; s.str=STRINGS[Math.floor(Math.random()*STRINGS.length)]; s.encProgress=0; }
+
+    const cy=s.y*DPR, cx=s.x*DPR;
+    const ep=s.encProgress;
+    const displayStr = ep>0 ? maskString(s.str, ep) : s.str;
+    const col = ep>0.8 ? '#00FF41' : ep>0.3 ? '#88FF88' : '#FF3333';
+
+    ctx.font=`${s.size*DPR}px "JetBrains Mono",monospace`;
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.globalAlpha=s.alpha;
+    ctx.shadowBlur=ep>0?12*DPR:0;
+    ctx.shadowColor=ep>0?'#00FF41':'#FF3333';
+    ctx.fillStyle=col;
+    ctx.fillText(displayStr, cx, cy);
+    ctx.shadowBlur=0;
+    ctx.globalAlpha=1;
+  }
+
+  // Flash on encrypt
+  if(state==='encrypting'){
+    const age=Math.min(1,(ts-clickTime)*0.001*3);
+    if(age<1){
+      ctx.fillStyle=`rgba(0,255,65,${0.12*(1-age)})`;
+      ctx.fillRect(0,0,W,H);
+    }
+  }
+
+  // Ready flash
+  if(state==='ready'){
+    const pulse=0.5+0.5*Math.sin((ts*0.008));
+    ctx.fillStyle=`rgba(191,0,255,${0.06*pulse})`;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  // Signature
+  ctx.globalAlpha=0.35;
+  ctx.font=`600 ${12*DPR}px "JetBrains Mono",monospace`;
+  ctx.textAlign='right';ctx.textBaseline='bottom';
+  ctx.fillStyle='#BF00FF';
+  ctx.fillText('K-PERCEPTION',W-16*DPR,H-16*DPR);
+  ctx.globalAlpha=1;
+}
+
+resize();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
