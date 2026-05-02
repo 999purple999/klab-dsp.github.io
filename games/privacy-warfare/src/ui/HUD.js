@@ -27,7 +27,8 @@ export function updateScore(score) {
 }
 
 export function updateCredits(credits) {
-  document.getElementById('credits-hud').textContent = '⬡ ' + credits;
+  const el = document.getElementById('credits-val');
+  if (el) el.textContent = credits;
 }
 
 export function showMsg(title, sub, dur) {
