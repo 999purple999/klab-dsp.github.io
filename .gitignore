@@ -1,0 +1,18 @@
+# Build artifacts
+node_modules/
+dist/
+.vite/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Local dev
+*.local
+.env
+.env.*
+
+# Internal analysis docs (not for public repo)
+games/privacy-warfare/STATUS.md

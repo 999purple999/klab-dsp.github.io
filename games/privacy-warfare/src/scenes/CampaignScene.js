@@ -1081,7 +1081,6 @@ export class CampaignScene {
     const z = this.selectedZone;
     if (!this.save.isZoneUnlocked(z)) return;
     const waveNum = z * 10 + 1;
-    this.gameScene.wave = waveNum;
 
     const origKillBoss = this.gameScene._killBoss?.bind(this.gameScene);
     if (origKillBoss) {
@@ -1093,6 +1092,6 @@ export class CampaignScene {
         this.gameScene._killBoss = origKillBoss;
       };
     }
-    this.gameScene.startGame();
+    this.gameScene.startCampaignLevel(waveNum);
   }
 }

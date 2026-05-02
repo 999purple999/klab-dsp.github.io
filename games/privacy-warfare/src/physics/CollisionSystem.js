@@ -43,18 +43,27 @@ export class CollisionSystem {
   _segmentAABB(x1, y1, x2, y2, minX, minY, maxX, maxY) {
     const dx = x2 - x1, dy = y2 - y1;
     let tmin = 0, tmax = 1;
-    const check = (p, q) => {
-      if (Math.abs(p) < 1e-10) return q >= 0;
-      const t1 = q / p, t2 = (q + (p > 0 ? maxX - minX : minY - maxY)) / p;
-      if (p < 0) { tmin = Math.max(tmin, t2); tmax = Math.min(tmax, t1); }
-      else       { tmin = Math.max(tmin, t1); tmax = Math.min(tmax, t2); }
-      return tmin <= tmax;
-    };
-    void dx; void dy; void tmin; void tmax; void check;
-    // Semplificato: usa bounding box check
-    const segMinX = Math.min(x1, x2), segMaxX = Math.max(x1, x2);
-    const segMinY = Math.min(y1, y2), segMaxY = Math.max(y1, y2);
-    return !(segMaxX < minX || segMinX > maxX || segMaxY < minY || segMinY > maxY);
+
+    // Slab test — X axis
+    if (Math.abs(dx) < 1e-10) {
+      if (x1 < minX || x1 > maxX) return false;
+    } else {
+      const t1 = (minX - x1) / dx, t2 = (maxX - x1) / dx;
+      tmin = Math.max(tmin, Math.min(t1, t2));
+      tmax = Math.min(tmax, Math.max(t1, t2));
+      if (tmin > tmax) return false;
+    }
+
+    // Slab test — Y axis
+    if (Math.abs(dy) < 1e-10) {
+      if (y1 < minY || y1 > maxY) return false;
+    } else {
+      const t1 = (minY - y1) / dy, t2 = (maxY - y1) / dy;
+      tmin = Math.max(tmin, Math.min(t1, t2));
+      tmax = Math.min(tmax, Math.max(t1, t2));
+    }
+
+    return tmin <= tmax;
   }
 
   // Distanza punto da rettangolo

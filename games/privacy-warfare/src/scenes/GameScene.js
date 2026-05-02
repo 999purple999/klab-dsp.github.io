@@ -16,6 +16,8 @@ import { updateHpHud, setWpn, updateScore, updateCredits, showMsg, showStreak,
          updateWeaponCD, updateCombo } from '../ui/HUD.js';
 import { renderMM } from '../ui/MiniMap.js';
 import { getHiScore, setHiScore, getCredits, setCredits } from '../data/Storage.js';
+import { MasterySystem } from '../data/MasterySystem.js';
+import { Progression }   from '../data/Progression.js';
 
 // ─── Player skins
 const SKINS = ['#BF00FF', '#00FFFF', '#FF2266', '#00FF41', '#FF8800'];
@@ -157,11 +159,12 @@ export class GameScene {
     this.KEYS = {};
     this.isMouseDown = false;
 
-    // fetch power multiplier
-    fetch('https://api.github.com/repos/999purple999/klab-dsp.github.io')
-      .then(r => r.json())
-      .then(d => { this.powerMult = 1 + ((d.stargazers_count || 0) + (d.forks_count || 0)) * 0.05; })
-      .catch(() => {});
+    this.mastery     = new MasterySystem();
+    this.progression = new Progression();
+    this.vortexList     = [];
+    this.timeLoopProjs  = [];
+    this.drones         = [];
+    this.paused         = false;
   }
 
   // ─── called by Game on each resize
@@ -187,8 +190,9 @@ export class GameScene {
   enter() {}
   exit()  {}
 
-  startGame() {
+  startGame(startWave = 1) {
     this.running = true;
+    this.paused = false;
     this.score = 0; this.wave = 0; this.combo = 1; this.comboTimer = 0; this.credits = getCredits() + 50;
     this.hp = 3; this.maxHp = 3; this.speed = 260; this.killStreak = 0; this.streakTimer = 0;
     this.ghostActive = false; this.invincible = 0; this.dashTimer = 0; this.dashTrail = [];
@@ -197,6 +201,7 @@ export class GameScene {
     this.abilityCDMult = 1; this.ghostBonusTime = 0; this.comboDecayMult = 1; this.chainExtraTargets = 0;
     this.EYES.length = 0; this.PARTS.length = 0; this.BEAMS.length = 0;
     this.EPROJS.length = 0; this.DEAD_EYES.length = 0; this.FLOATS.length = 0;
+    this.vortexList.length = 0; this.timeLoopProjs.length = 0; this.drones.length = 0;
     this.boss = null; this.bhActive = false; this.nukeCharging = false; this.nukeRad = 0; this.chainSegs = [];
     WPNS.forEach((w, i) => { if (i < BASE_CD.length) { w.cd = BASE_CD[i]; w.dmg = BASE_DMG[i]; w.rng = BASE_RNG[i]; } });
     this.wpnCDs.fill(0); this.skinIdx = 0; this.wpnIdx = 0;
@@ -212,8 +217,10 @@ export class GameScene {
     document.getElementById('nuke-charge').style.display = 'none';
     document.getElementById('ov-score').style.display = 'none';
     document.getElementById('ov-hi').style.display = 'none';
-    this._startWave(1);
+    this._startWave(startWave);
   }
+
+  startCampaignLevel(waveNum) { this.startGame(waveNum); }
 
   gameOver() {
     this.running = false;
@@ -263,6 +270,9 @@ export class GameScene {
     this.nextMapIdx = Math.floor(Math.random() * MAPS.length);
     const hs = getHiScore();
     if (this.score > hs) setHiScore(this.score);
+    this.mastery.setStat('maxWave', this.wave);
+    const leveled = this.progression.addXP(100);
+    if (leveled) setTimeout(() => showMsg('LEVEL UP', 'Rank ' + this.progression.level), 200);
     showMsg('WAVE ' + this.wave + ' CLEARED', 'Opening Skill Matrix…');
     setTimeout(() => { if (this.running && this.betweenWaves) this._openSkillModal(); }, 900);
   }
@@ -402,6 +412,10 @@ export class GameScene {
     }
     updateScore(this.score);
     updateCredits(this.credits);
+    this.mastery.updateStat('kills', 1);
+    this.mastery.setStat('maxCombo', Math.floor(this.combo));
+    const _leveled = this.progression.addXP(Math.round(pts * 0.5));
+    if (_leveled) showMsg('LEVEL UP', 'Rank ' + this.progression.level);
   }
 
   _killBoss() {
@@ -415,6 +429,8 @@ export class GameScene {
     updateScore(this.score);
     updateCredits(this.credits);
     this.boss = null; SFX.kill(); showMsg('BOSS ELIMINATED', 'Threat Neutralized');
+    this.mastery.updateStat('bossKills', 1);
+    this.progression.addXP(500);
   }
 
   _hurtPlayer() {
@@ -454,6 +470,7 @@ export class GameScene {
     this.dashTimer = 0.35; this.invincible = 0.45; this.dashTrail = [];
     const dx = this.wMX - this.px, dy = this.wMY - this.py, d = Math.hypot(dx, dy) || 1;
     this.dashVX = dx / d * 720; this.dashVY = dy / d * 720;
+    this.mastery.updateStat('dashes', 1);
   }
 
   useOverclock() {
@@ -490,6 +507,15 @@ export class GameScene {
   }
 
   _fire() {
+    // Weapons 10-14 have custom mechanics
+    switch (this.wpnIdx) {
+      case 10: this._firePlasmaVortex(); return;
+      case 11: this._fireLaserPrism();   return;
+      case 12: this._fireTimeLoop();     return;
+      case 13: this._fireDataCorrupt();  return;
+      case 14: this._fireDroneSwarm();   return;
+    }
+
     const w = WPNS[this.wpnIdx];
     const dx = this.wMX - this.px, dy = this.wMY - this.py, dist2 = Math.hypot(dx, dy) || 1;
     const ux = dx / dist2, uy = dy / dist2;
@@ -549,6 +575,62 @@ export class GameScene {
       if (t) { t.virus = 12; this._damageE(t, w.dmg * this.powerMult, false); }
       else if (this.boss && d2(this.boss.x, this.boss.y, this.wMX, this.wMY) < this.boss.sz + 22) this.boss.virus = 7;
     }
+  }
+
+  // ── Plasma Vortex (10): slow pull-orb that explodes after 1.5 s
+  _firePlasmaVortex() {
+    SFX.shoot();
+    this.vortexList.push({ x: this.wMX, y: this.wMY, timer: 1.5 });
+    showMsg('PLASMA VORTEX', 'Gravity Singularity');
+  }
+
+  // ── Laser Prism (11): beam that bounces off world edges up to 3 times
+  _fireLaserPrism() {
+    SFX.beam();
+    const w = WPNS[11];
+    const dx = this.wMX - this.px, dy = this.wMY - this.py, dist = Math.hypot(dx, dy) || 1;
+    let ux = dx / dist, uy = dy / dist;
+    let ox = this.px, oy = this.py;
+    const segLen = w.rng * 0.45;
+    for (let b = 0; b < 3; b++) {
+      const ex = ox + ux * segLen, ey = oy + uy * segLen;
+      this._addBeam(ox, oy, ex, ey, w.col, 0.18, 3);
+      this._hitDir(ox, oy, ux, uy, segLen, w.dmg, 12);
+      // Reflect off world bounds
+      let nx = ex, ny = ey;
+      if (ex < 40 || ex > this.WW - 40) { ux = -ux; nx = Math.max(40, Math.min(this.WW - 40, ex)); }
+      if (ey < 40 || ey > this.WH - 40) { uy = -uy; ny = Math.max(40, Math.min(this.WH - 40, ey)); }
+      ox = nx; oy = ny;
+    }
+  }
+
+  // ── Time Loop (12): projectile that reverses direction after 1 s
+  _fireTimeLoop() {
+    SFX.shoot();
+    const w = WPNS[12];
+    const dx = this.wMX - this.px, dy = this.wMY - this.py, dist = Math.hypot(dx, dy) || 1;
+    const spd = 380;
+    this.timeLoopProjs.push({ x: this.px, y: this.py, vx: dx / dist * spd, vy: dy / dist * spd, timer: 1.0, returning: false, dmg: w.dmg });
+  }
+
+  // ── Data Corrupt (13): aggressive virus targeting up to 2 nearby enemies
+  _fireDataCorrupt() {
+    SFX.shoot();
+    const w = WPNS[13];
+    const sorted = [...this.EYES].sort((a, b) => d2(a.x, a.y, this.wMX, this.wMY) - d2(b.x, b.y, this.wMX, this.wMY));
+    sorted.slice(0, 2).forEach(t => { t.virus = Math.max(t.virus, 15); this._damageE(t, w.dmg * this.powerMult * 2, false); });
+    if (this.boss && d2(this.boss.x, this.boss.y, this.wMX, this.wMY) < this.boss.sz + 30)
+      this.boss.virus = Math.max(this.boss.virus || 0, 10);
+  }
+
+  // ── Drone Swarm MK2 (14): deploys 3 orbiting attack drones for 8 s
+  _fireDroneSwarm() {
+    SFX.shoot();
+    for (let i = 0; i < 3; i++) {
+      const ang = (i / 3) * Math.PI * 2;
+      this.drones.push({ x: this.px + Math.cos(ang) * 35, y: this.py + Math.sin(ang) * 35, timer: 8.0, shootCd: 0.4 + i * 0.15 });
+    }
+    showMsg('DRONE SWARM MK2', '3 Drones Deployed');
   }
 
   _hitDir(ox, oy, dirx, diry, rng, dmg, tol, onHit) {
@@ -620,6 +702,7 @@ export class GameScene {
     this.credits -= item.cost;
     item.apply(this);
     SFX.upgrade();
+    setCredits(this.credits);
     document.getElementById('sh-cr').textContent = this.credits;
     updateCredits(this.credits);
   }
@@ -627,6 +710,7 @@ export class GameScene {
   // ─── Main update
   update(dt) {
     if (!this.running) return;
+    if (this.paused) { this._render(); this._renderMiniMap(); return; }
     if (this.skillModal || this.shopModal) return;
     this._isFiring = false;
     if (this.isMouseDown) this.tryFire();
@@ -767,6 +851,47 @@ export class GameScene {
     // Chain + wave ring
     if (this.chainSegs.length) { this.chainLife -= dt; if (this.chainLife <= 0) this.chainSegs = []; }
     if (this.waveRing)          { this.waveRingTimer -= dt; if (this.waveRingTimer <= 0) this.waveRing = false; }
+
+    // Plasma Vortex: pull enemies, explode on expiry
+    for (let i = this.vortexList.length - 1; i >= 0; i--) {
+      const v = this.vortexList[i];
+      v.timer -= dt;
+      this.EYES.forEach(e => { const dx = v.x - e.x, dy = v.y - e.y, dist = Math.hypot(dx, dy) || 1; if (dist < 160) { e.x += dx / dist * 85 * dt; e.y += dy / dist * 85 * dt; } });
+      if (this.boss) { const dx = v.x - this.boss.x, dy = v.y - this.boss.y, dist = Math.hypot(dx, dy) || 1; if (dist < 160) { this.boss.x += dx / dist * 32 * dt; this.boss.y += dy / dist * 32 * dt; } }
+      if (v.timer <= 0) {
+        this.EYES.forEach(e => { if (d2(e.x, e.y, v.x, v.y) < 120) this._damageE(e, WPNS[10].dmg * this.powerMult, true); });
+        if (this.boss && d2(this.boss.x, this.boss.y, v.x, v.y) < 120) this._hurtBoss(WPNS[10].dmg * this.powerMult);
+        this._burst(v.x, v.y, '#FF44FF', 22, 150); this._shakeDir(v.x, v.y, 12); this.flashAlpha = 0.2;
+        this.vortexList.splice(i, 1);
+      }
+    }
+
+    // Time Loop projectiles: advance, reverse after 1 s
+    for (let i = this.timeLoopProjs.length - 1; i >= 0; i--) {
+      const p = this.timeLoopProjs[i];
+      p.x += p.vx * dt; p.y += p.vy * dt; p.timer -= dt;
+      if (!p.returning && p.timer <= 0) { p.vx = -p.vx; p.vy = -p.vy; p.returning = true; p.timer = 1.0; }
+      this.EYES.forEach(e => { if (d2(p.x, p.y, e.x, e.y) < e.sz + 8) this._damageE(e, p.dmg * this.powerMult, false); });
+      if (this.boss && d2(p.x, p.y, this.boss.x, this.boss.y) < this.boss.sz + 10) this._hurtBoss(p.dmg * this.powerMult);
+      if (p.timer <= 0 || p.x < 0 || p.x > this.WW || p.y < 0 || p.y > this.WH) this.timeLoopProjs.splice(i, 1);
+    }
+
+    // Drones: orbit player, shoot nearest enemy
+    for (let i = this.drones.length - 1; i >= 0; i--) {
+      const dr = this.drones[i];
+      dr.timer -= dt;
+      if (dr.timer <= 0) { this.drones.splice(i, 1); continue; }
+      const ang = (this._T() + i * 2.094) * 2.2;
+      dr.x += (this.px + Math.cos(ang) * 55 - dr.x) * 7 * dt;
+      dr.y += (this.py + Math.sin(ang) * 55 - dr.y) * 7 * dt;
+      dr.shootCd -= dt;
+      if (dr.shootCd <= 0 && this.EYES.length > 0) {
+        dr.shootCd = 0.6;
+        const target = this.EYES.reduce((a, b) => d2(a.x, a.y, dr.x, dr.y) < d2(b.x, b.y, dr.x, dr.y) ? a : b);
+        this._addBeam(dr.x, dr.y, target.x, target.y, WPNS[14].col, 0.1, 1.5);
+        this._damageE(target, WPNS[14].dmg * this.powerMult, false);
+      }
+    }
 
     // Ambient particles
     AMBIENT.forEach(a => {
@@ -1013,6 +1138,41 @@ export class GameScene {
       ctx.strokeStyle = WPNS[4].col + '88'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(wx(this.waveRingX), wy(this.waveRingY), p2 * 210 * DPR, 0, Math.PI * 2); ctx.stroke();
     }
+
+    // Plasma vortex orbs
+    this.vortexList.forEach(v => {
+      const vox = wx(v.x), voy = wy(v.y);
+      const pct = 1 - v.timer / 1.5;
+      const r   = pct * 80 * DPR;
+      const pulse = 0.6 + 0.4 * Math.sin(this._T() * 5);
+      ctx.strokeStyle = '#FF44FF'; ctx.lineWidth = 2.5; ctx.shadowBlur = 30; ctx.shadowColor = '#FF44FF';
+      ctx.globalAlpha = 0.85 * pulse;
+      ctx.beginPath(); ctx.arc(vox, voy, r, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = 0.4 * pulse;
+      ctx.beginPath(); ctx.arc(vox, voy, r * 0.5, 0, Math.PI * 2); ctx.stroke();
+      ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+    });
+
+    // Time loop projectiles
+    this.timeLoopProjs.forEach(p => {
+      if (!onScreen(p.x, p.y, 14)) return;
+      ctx.fillStyle = WPNS[12].col; ctx.shadowBlur = 20; ctx.shadowColor = WPNS[12].col;
+      ctx.beginPath(); ctx.arc(wx(p.x), wy(p.y), 7 * DPR, 0, Math.PI * 2); ctx.fill();
+      if (p.returning) { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(wx(p.x), wy(p.y), 10 * DPR, 0, Math.PI * 2); ctx.stroke(); }
+      ctx.shadowBlur = 0;
+    });
+
+    // Drones
+    this.drones.forEach((dr, idx) => {
+      if (!onScreen(dr.x, dr.y, 14)) return;
+      const drx = wx(dr.x), dry = wy(dr.y);
+      const spinA = this._T() * 4 + idx * 2.094;
+      ctx.globalAlpha = Math.min(1, dr.timer);
+      ctx.fillStyle = WPNS[14].col; ctx.shadowBlur = 22; ctx.shadowColor = WPNS[14].col;
+      ctx.beginPath();
+      for (let k = 0; k < 4; k++) { const a = k / 4 * Math.PI * 2 + spinA; ctx[k ? 'lineTo' : 'moveTo'](drx + Math.cos(a) * 7 * DPR, dry + Math.sin(a) * 7 * DPR); }
+      ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+    });
 
     // Chain lightning
     ctx.shadowBlur = 14; ctx.shadowColor = '#FFFF00';

@@ -15,6 +15,8 @@ import { MenuScene }    from '../scenes/MenuScene.js';
 import { CampaignScene } from '../scenes/CampaignScene.js';
 import { BootScene }    from '../scenes/BootScene.js';
 import { initMenuModals } from '../ui/MenuModals.js';
+import { PauseScene }    from '../scenes/PauseScene.js';
+import { submitScore, isAuthenticated } from '../utils/CloudAPI.js';
 
 export class Game {
   constructor() {
@@ -30,6 +32,11 @@ export class Game {
     this.campaignScene = new CampaignScene(this.cv, this.ctx, this.gameScene);
     this.bootScene     = new BootScene(this);
     this.menuScene     = new MenuScene(this);
+    this.pauseScene    = new PauseScene(
+      this.cv, this.ctx,
+      () => { this.gameScene.paused = false; },
+      () => { this.gameScene.paused = false; this.gameScene.gameOver(); }
+    );
 
     this._resize();
     this._initInput();
@@ -53,6 +60,7 @@ export class Game {
 
       if (this.gameScene.running) {
         this.gameScene.update(dt);
+        if (this.gameScene.paused) this.pauseScene.update(dt);
       } else {
         // Drive active scene (menu, campaign, etc.)
         this.scenes.update(dt);
@@ -107,6 +115,16 @@ export class Game {
     document.addEventListener('keydown', e => {
       if (!this.gameScene.running) return;
       const k = e.key;
+      // P / Escape toggles pause (PauseScene handles its own keys when active)
+      if ((k.toLowerCase() === 'p' || k === 'Escape') && !this.gameScene.skillModal && !this.gameScene.shopModal) {
+        if (!this.gameScene.paused) {
+          this.gameScene.paused = true;
+          this.pauseScene.enter();
+        }
+        e.preventDefault();
+        return;
+      }
+      if (this.gameScene.paused) return;
       if (k >= '1' && k <= '9') { this.gameScene.wpnIdx = +k - 1; setWpn(this.gameScene.wpnIdx, WPNS); e.preventDefault(); }
       if (k === '0')              { this.gameScene.wpnIdx = 9;      setWpn(9, WPNS); e.preventDefault(); }
       // Q/E cycle through all unlocked weapons (supports 20+)
@@ -126,6 +144,11 @@ export class Game {
   }
 
   _onGameOver({ score, wave, hiScore }) {
+    this.pauseScene.exit();
+    if (isAuthenticated()) {
+      const username = localStorage.getItem('pw_username') || 'Anonymous';
+      submitScore(Math.floor(score), wave, username);
+    }
     document.getElementById('ov-title').textContent = 'SYSTEM BREACH';
     document.getElementById('ov-sub').textContent   = 'Your data has been compromised';
     const os = document.getElementById('ov-score'), oh = document.getElementById('ov-hi');
