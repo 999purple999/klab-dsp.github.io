@@ -125,7 +125,7 @@ export class GameScene {
     // weapons
     this.WPNS    = WPNS;
     this.wpnIdx  = 0;
-    this.wpnCDs  = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this.wpnCDs  = new Array(WPNS.length).fill(0);
     this.powerMult = 1;
 
     // special weapon state
@@ -195,7 +195,7 @@ export class GameScene {
     this.EYES.length = 0; this.PARTS.length = 0; this.BEAMS.length = 0;
     this.EPROJS.length = 0; this.DEAD_EYES.length = 0; this.FLOATS.length = 0;
     this.boss = null; this.bhActive = false; this.nukeCharging = false; this.nukeRad = 0; this.chainSegs = [];
-    WPNS.forEach((w, i) => { w.cd = BASE_CD[i]; w.dmg = BASE_DMG[i]; w.rng = BASE_RNG[i]; });
+    WPNS.forEach((w, i) => { if (i < BASE_CD.length) { w.cd = BASE_CD[i]; w.dmg = BASE_DMG[i]; w.rng = BASE_RNG[i]; } });
     this.wpnCDs.fill(0); this.skinIdx = 0; this.wpnIdx = 0;
     this.camX = (this.WW - this.lW) / 2; this.camY = (this.WH - this.lH) / 2;
     this.px = this.WW / 2; this.py = this.WH / 2;

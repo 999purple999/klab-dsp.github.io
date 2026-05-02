@@ -9,11 +9,12 @@ import { getAC }        from '../audio/AudioManager.js';
 import { buildMapAssets } from '../mapgen/MapData.js';
 import { setCameraState } from '../rendering/Camera.js';
 import { setWpn }       from '../ui/HUD.js';
-import { WPNS }         from '../entities/Weapon/WeaponDefinitions.js';
+import { WPNS, loadWeaponUnlocks } from '../entities/Weapon/WeaponDefinitions.js';
 import { GameScene }    from '../scenes/GameScene.js';
 import { MenuScene }    from '../scenes/MenuScene.js';
 import { CampaignScene } from '../scenes/CampaignScene.js';
 import { BootScene }    from '../scenes/BootScene.js';
+import { initMenuModals } from '../ui/MenuModals.js';
 
 export class Game {
   constructor() {
@@ -33,6 +34,8 @@ export class Game {
     this._resize();
     this._initInput();
     this._initShopEvents();
+    loadWeaponUnlocks();
+    initMenuModals(this.gameScene);
 
     window.addEventListener('resize', () => this._resize());
 
@@ -105,8 +108,9 @@ export class Game {
       const k = e.key;
       if (k >= '1' && k <= '9') { this.gameScene.wpnIdx = +k - 1; setWpn(this.gameScene.wpnIdx, WPNS); e.preventDefault(); }
       if (k === '0')              { this.gameScene.wpnIdx = 9;      setWpn(9, WPNS); e.preventDefault(); }
-      if (k.toLowerCase() === 'q') { this.gameScene.wpnIdx = (this.gameScene.wpnIdx + 9) % 10; setWpn(this.gameScene.wpnIdx, WPNS); }
-      if (k.toLowerCase() === 'e') { this.gameScene.wpnIdx = (this.gameScene.wpnIdx + 1) % 10; setWpn(this.gameScene.wpnIdx, WPNS); }
+      // Q/E cycle through all unlocked weapons (supports 20+)
+      if (k.toLowerCase() === 'q') { this.gameScene.wpnIdx = (this.gameScene.wpnIdx + WPNS.length - 1) % WPNS.length; setWpn(this.gameScene.wpnIdx, WPNS); }
+      if (k.toLowerCase() === 'e') { this.gameScene.wpnIdx = (this.gameScene.wpnIdx + 1) % WPNS.length; setWpn(this.gameScene.wpnIdx, WPNS); }
       if (k.toLowerCase() === 'f') this.gameScene.useBomb();
       if (k.toLowerCase() === 'g') this.gameScene.useKP();
       if (k.toLowerCase() === 'x') this.gameScene.useDash();

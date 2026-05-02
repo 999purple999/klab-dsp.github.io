@@ -1,0 +1,26 @@
+name            = "pw-api"
+compatibility_date = "2024-09-01"
+main            = "src/index.js"
+
+# ── KV Namespaces ─────────────────────────────────────────────────────────────
+# Create these with: npx wrangler kv:namespace create SAVES
+#                    npx wrangler kv:namespace create LEADERBOARD
+[[kv_namespaces]]
+binding = "SAVES"
+id      = "REPLACE_WITH_SAVES_KV_ID"
+
+[[kv_namespaces]]
+binding = "LEADERBOARD"
+id      = "REPLACE_WITH_LB_KV_ID"
+
+# ── Environment Variables (set secrets via: npx wrangler secret put JWT_SECRET) ──
+[vars]
+GITHUB_CLIENT_ID = "REPLACE_WITH_GITHUB_CLIENT_ID"
+GAME_ORIGIN      = "https://999purple999.github.io"
+# Set these as secrets (not in wrangler.toml):
+#   npx wrangler secret put JWT_SECRET
+#   npx wrangler secret put GITHUB_CLIENT_SECRET
+
+# ── Build ─────────────────────────────────────────────────────────────────────
+[build]
+command = ""
