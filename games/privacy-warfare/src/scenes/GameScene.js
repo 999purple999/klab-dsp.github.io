@@ -3,6 +3,7 @@
 // Pure structural refactor of the original monolithic IIFE.
 
 import { SFX, getAC } from '../audio/AudioManager.js';
+import { renderPlayer } from '../entities/PlayerVisual.js';
 import { MAPS, STARS, BLDGS, WEB_LINES, AMBIENT, OBSTACLES,
          buildMapAssets, buildObstacles, resolveObstaclePos } from '../mapgen/MapData.js';
 import { WPNS, BASE_CD, BASE_DMG, BASE_RNG } from '../entities/Weapon/WeaponDefinitions.js';
@@ -100,6 +101,8 @@ export class GameScene {
     this.speed = 260;
     this.ghostActive = false; this.ghostTimer = 0; this.invincible = 0;
     this.dashTimer = 0; this.dashVX = 0; this.dashVY = 0; this.dashTrail = [];
+    this.sprintTimer = 0; // Shift sprint boost
+    this._isFiring = false;
     this.overclockActive = false; this.overclockTimer = 0;
     this.empShieldActive = false; this.empShieldTimer = 0;
     this.timeWarpActive  = false; this.timeWarpTimer  = 0;
@@ -483,7 +486,8 @@ export class GameScene {
   // ─── Weapons fire
   tryFire() {
     if (this.empToggle && this.weather === 'EMP') return;
-    if (this.wpnCDs[this.wpnIdx] > 0) return;
+    if (this.wpnCDs[this.wpnIdx] > 0) { this._isFiring = false; return; }
+    this._isFiring = true;
     this._fire();
     this.wpnCDs[this.wpnIdx] = WPNS[this.wpnIdx].cd;
   }
@@ -627,6 +631,7 @@ export class GameScene {
   update(dt) {
     if (!this.running) return;
     if (this.skillModal || this.shopModal) return;
+    this._isFiring = false;
     if (this.isMouseDown) this.tryFire();
     this._update(dt);
     this._render();
@@ -652,9 +657,19 @@ export class GameScene {
 
     // Player movement
     if (!this.betweenWaves) {
+      // Shift = sprint (150% speed, 0.4 s burst, 2 s cooldown)
+      const shiftHeld = this.KEYS['shift'] || this.KEYS['shiftleft'] || this.KEYS['shiftrigh'];
+      if (shiftHeld && this.sprintTimer <= 0 && this.abCDs.dash <= 0) {
+        this.sprintTimer = 0.4;
+        this.abCDs.dash  = 2; // borrow the dash cooldown to prevent spam
+        SFX.dash && SFX.dash();
+      }
+      if (this.sprintTimer > 0) this.sprintTimer -= dt;
+      const sprintMult = this.sprintTimer > 0 ? 1.5 : 1;
+
       const pdx = this.wMX - this.px, pdy = this.wMY - this.py, pd = Math.hypot(pdx, pdy);
       if (pd > 8) {
-        const sp = this.dashTimer > 0 ? 720 : this.speed;
+        const sp = this.dashTimer > 0 ? 720 : this.speed * sprintMult;
         this.px += pdx / pd * Math.min(pd, sp * dt);
         this.py += pdy / pd * Math.min(pd, sp * dt);
       }
@@ -1109,16 +1124,15 @@ export class GameScene {
       ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     });
 
-    // Player
-    const plx = wx(this.px), ply = wy(this.py), ps = 12 * DPR;
+    // Player — rendered via PlayerVisual (weapon arm + hex body + glow)
+    const plx = wx(this.px), ply = wy(this.py);
     const pBlink = this.ghostActive && Math.floor(this._T() * 10) % 2 === 0;
     ctx.globalAlpha = pBlink ? 0.22 : 1;
-    const pCol = this.empShieldActive ? '#00FFFF' : SKINS[this.skinIdx];
-    ctx.shadowBlur = this.empShieldActive ? 40 : 24; ctx.shadowColor = pCol;
-    ctx.fillStyle = pCol;
-    ctx.beginPath();
-    for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2 - Math.PI / 6; ctx[i ? 'lineTo' : 'moveTo'](plx + Math.cos(a) * ps, ply + Math.sin(a) * ps); }
-    ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+    const pCol    = this.empShieldActive ? '#00FFFF' : SKINS[this.skinIdx];
+    const aimAngle = Math.atan2(this.wMY - this.py, this.wMX - this.px);
+    const isSliding = this.sprintTimer > 0 && (this.KEYS['shift'] || this.KEYS['shiftleft']);
+    renderPlayer(ctx, plx, ply, aimAngle, WPNS[this.wpnIdx], this._isFiring, isSliding, 0, pCol, DPR);
+    ctx.globalAlpha = 1;
     // Ability auras
     if (this.empShieldActive) { ctx.strokeStyle = 'rgba(0,255,255,0.4)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(plx, ply, (24 + this.empShieldTimer * 5) * DPR, 0, Math.PI * 2); ctx.stroke(); }
     if (this.overclockActive)  { ctx.strokeStyle = 'rgba(255,255,0,0.35)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(plx, ply, (20 + Math.sin(this._T() * 8) * 4) * DPR, 0, Math.PI * 2); ctx.stroke(); }

@@ -7,11 +7,11 @@ main            = "src/index.js"
 #                    npx wrangler kv:namespace create LEADERBOARD
 [[kv_namespaces]]
 binding = "SAVES"
-id      = "REPLACE_WITH_SAVES_KV_ID"
+id      = "d2336a669d7248e7b56c57f361c61a99"
 
 [[kv_namespaces]]
 binding = "LEADERBOARD"
-id      = "REPLACE_WITH_LB_KV_ID"
+id      = "0dc096f729104bd8a9fea3fd9daeb308"
 
 # ── Environment Variables (set secrets via: npx wrangler secret put JWT_SECRET) ──
 [vars]

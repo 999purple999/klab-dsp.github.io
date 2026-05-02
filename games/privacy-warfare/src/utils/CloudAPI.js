@@ -2,7 +2,7 @@
 // Offline-first client for the Cloudflare Workers backend.
 // Set CLOUD_BASE to your deployed Workers URL before using cloud features.
 
-export const CLOUD_BASE = 'https://pw-api.YOUR-DOMAIN.workers.dev';
+export const CLOUD_BASE = 'https://pw-api.accessisoftwarefrancesco.workers.dev';
 
 let _token = localStorage.getItem('pw_cloud_token') || null;
 
