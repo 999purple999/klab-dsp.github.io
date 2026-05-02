@@ -180,78 +180,144 @@ canvas{display:block;position:absolute;top:0;left:0}
 }
 #nuke-lbl{font-size:8px;color:#FF6622;letter-spacing:.24em;margin-top:4px;text-transform:uppercase;}
 
-/* ── Overlay ───────────────────────────── */
+/* Overlay — transparent so canvas bg shows through */
 #overlay{
   position:fixed;inset:0;z-index:50;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:rgba(3,3,6,0.93);backdrop-filter:blur(16px);
+  background:rgba(4,2,12,0.82);
 }
 #overlay.hidden{display:none}
+
+/* Grid pattern */
 #overlay::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
   background-image:
-    linear-gradient(rgba(191,0,255,0.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(191,0,255,0.035) 1px,transparent 1px);
+    linear-gradient(rgba(191,0,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(191,0,255,0.04) 1px,transparent 1px);
   background-size:52px 52px;
 }
+
+/* Moving scanline */
 #overlay::after{
-  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:55%;height:2px;
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(
+    0deg, transparent,transparent 3px,
+    rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px
+  );
+  animation:scan-scroll 10s linear infinite;
+}
+@keyframes scan-scroll{to{background-position:0 100px}}
+
+/* top glow line */
+.ov-top-line{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:50%;height:2px;pointer-events:none;z-index:1;
   background:linear-gradient(90deg,transparent,#BF00FF,transparent);
-  box-shadow:0 0 90px 30px rgba(191,0,255,0.12);
+  box-shadow:0 0 80px 20px rgba(191,0,255,0.12);
 }
+
+#menu-content{
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;z-index:2;width:100%;max-width:520px;padding:0 22px;
+}
+
 #ov-eyebrow{
-  font-size:10px;color:rgba(191,0,255,0.55);
-  letter-spacing:.55em;text-transform:uppercase;
-  margin-bottom:14px;position:relative;z-index:1;
+  font-size:9px;color:rgba(191,0,255,0.5);
+  letter-spacing:.55em;text-transform:uppercase;margin-bottom:12px;
 }
+
+/* Title with periodic glitch */
 #ov-title{
-  font-size:clamp(40px,9vw,80px);font-weight:900;color:#fff;
-  letter-spacing:.06em;line-height:.95;
-  text-shadow:0 0 50px rgba(191,0,255,0.9),0 0 110px rgba(191,0,255,0.4),0 0 200px rgba(191,0,255,0.15);
-  margin-bottom:6px;position:relative;z-index:1;text-align:center;
+  font-size:clamp(42px,9vw,76px);font-weight:900;color:#fff;
+  letter-spacing:.07em;line-height:.92;text-align:center;
+  text-shadow:0 0 50px rgba(191,0,255,0.9),0 0 110px rgba(191,0,255,0.4);
+  margin-bottom:6px;animation:glitch-cycle 14s step-end infinite;
 }
 #ov-title .hl{color:#BF00FF;}
+
+@keyframes glitch-cycle{
+  0%,87%,100%{transform:none;text-shadow:0 0 50px rgba(191,0,255,0.9),0 0 110px rgba(191,0,255,0.4)}
+  88%{transform:translate(-3px,0);text-shadow:3px 0 #00FFFF,-3px 0 #FF00FF,0 0 50px #BF00FF;clip-path:inset(0 0 55% 0)}
+  89%{transform:translate(3px,0);clip-path:inset(45% 0 0 0)}
+  90%{transform:none;clip-path:none;text-shadow:0 0 50px rgba(191,0,255,0.9)}
+}
+
 #ov-sub{
-  font-size:clamp(10px,1.5vw,12px);color:rgba(255,255,255,0.3);
-  letter-spacing:.32em;margin-bottom:36px;text-transform:uppercase;
-  position:relative;z-index:1;
+  font-size:clamp(10px,1.5vw,11px);color:rgba(255,255,255,0.28);
+  letter-spacing:.32em;margin-bottom:18px;text-transform:uppercase;
 }
+
+#ov-score-wrap{text-align:center;margin-bottom:4px;}
+#ov-score{font-size:clamp(24px,5vw,42px);color:#fff;font-weight:900;display:none;text-shadow:0 0 20px rgba(191,0,255,0.5);}
+#ov-hi{font-size:11px;color:rgba(191,0,255,0.55);letter-spacing:.2em;display:none;margin-bottom:16px;}
+
 .ov-divider{
-  width:200px;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(191,0,255,0.55),transparent);
-  margin:0 auto 32px;position:relative;z-index:1;
+  width:180px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(191,0,255,0.5),transparent);
+  margin:0 auto 18px;
 }
-#ov-score{
-  font-size:clamp(24px,5vw,44px);color:#fff;font-weight:900;
-  margin-bottom:4px;display:none;position:relative;z-index:1;
-  text-shadow:0 0 20px rgba(191,0,255,0.5);
+
+/* Menu panels */
+#menu-panels{width:100%;display:flex;flex-direction:column;gap:5px;margin-bottom:18px;}
+
+.menu-panel{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 16px;
+  background:rgba(191,0,255,0.04);
+  border:1px solid rgba(191,0,255,0.16);
+  border-radius:9px;cursor:pointer;
+  transition:all .12s;
+  animation:panel-in .35s ease both;
 }
-#ov-hi{
-  font-size:11px;color:rgba(191,0,255,0.55);letter-spacing:.2em;
-  margin-bottom:40px;display:none;position:relative;z-index:1;
+.menu-panel:not(.mp-dim):hover{
+  background:rgba(191,0,255,0.13);
+  border-color:rgba(191,0,255,0.58);
+  transform:translateX(5px);
+  box-shadow:inset 3px 0 0 #BF00FF,-6px 0 18px rgba(191,0,255,0.1);
 }
-#start-btn{
-  padding:16px 68px;
-  background:linear-gradient(135deg,rgba(191,0,255,0.88),rgba(100,40,210,0.88));
-  color:#fff;font-weight:900;font-size:clamp(13px,2.4vw,17px);
-  letter-spacing:.22em;text-transform:uppercase;
-  border:1px solid rgba(191,0,255,0.55);cursor:pointer;border-radius:8px;
-  box-shadow:0 0 40px rgba(191,0,255,0.45),0 0 90px rgba(191,0,255,0.12),
-             inset 0 1px 0 rgba(255,255,255,0.12);
-  transition:all .15s;font-family:'JetBrains Mono',monospace;
-  position:relative;z-index:1;
-}
-#start-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 60px rgba(191,0,255,0.65),0 0 130px rgba(191,0,255,0.2),
-             inset 0 1px 0 rgba(255,255,255,0.18);
-}
-#start-btn:active{transform:translateY(1px);}
+.menu-panel.mp-dim{opacity:0.36;cursor:default;}
+.mp-icon{font-size:20px;width:26px;text-align:center;flex-shrink:0;}
+.mp-body{flex:1;}
+.mp-label{font-size:13px;font-weight:900;color:#fff;letter-spacing:.15em;text-transform:uppercase;}
+.mp-hint{font-size:10px;color:rgba(255,255,255,0.33);margin-top:2px;letter-spacing:.07em;}
+.mp-arr{font-size:18px;color:rgba(191,0,255,0.55);line-height:1;}
+.mp-soon{font-size:8px;color:rgba(255,255,255,0.28);letter-spacing:.1em;align-self:center;}
+
+@keyframes panel-in{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.menu-panel:nth-child(1){animation-delay:.04s}
+.menu-panel:nth-child(2){animation-delay:.09s}
+.menu-panel:nth-child(3){animation-delay:.14s}
+.menu-panel:nth-child(4){animation-delay:.19s}
+.menu-panel:nth-child(5){animation-delay:.24s}
+
 .ov-controls{
-  margin-top:30px;font-size:9px;color:rgba(255,255,255,0.16);
-  letter-spacing:.14em;text-align:center;line-height:2.6;text-transform:uppercase;
-  position:relative;z-index:1;
+  font-size:9px;color:rgba(255,255,255,0.15);
+  letter-spacing:.13em;text-align:center;line-height:2.5;text-transform:uppercase;
+}
+
+/* Mobile nav */
+#mobile-nav{display:none}
+
+@media(max-width:640px){
+  #menu-panels{display:none}
+  #mobile-nav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    background:rgba(6,3,14,0.97);
+    border-top:1px solid rgba(191,0,255,0.22);
+    z-index:3;
+  }
+  .mn-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;
+    padding:10px 0 14px;cursor:pointer;transition:background .12s;
+  }
+  .mn-item.active{background:rgba(191,0,255,0.12);}
+  .mn-item:not(.mn-dim):hover{background:rgba(191,0,255,0.08);}
+  .mn-dim{opacity:0.35;cursor:default;}
+  .mn-icon{font-size:22px;}
+  .mn-label{font-size:9px;color:rgba(255,255,255,0.45);letter-spacing:.1em;margin-top:3px;text-transform:uppercase;}
+  .mn-item.active .mn-label{color:#BF00FF;}
+  #ov-title{font-size:clamp(34px,10vw,52px);}
+  .ov-controls{display:none;}
 }
 
 /* ── Skill modal ───────────────────────── */
@@ -367,18 +433,51 @@ canvas{display:block;position:absolute;top:0;left:0}
 <div id="nuke-charge"><div id="nuke-bar-wrap"><div id="nuke-bar"></div></div><div id="nuke-lbl">Nuke Charging</div></div>
 
 <div id="overlay">
-  <div id="ov-eyebrow">K-Perception &mdash; 2025</div>
-  <div id="ov-title">PRIVACY <span class="hl">WARFARE</span></div>
-  <div id="ov-sub">Defend Your Data &mdash; Eliminate All Threats</div>
-  <div class="ov-divider"></div>
-  <div id="ov-score"></div>
-  <div id="ov-hi"></div>
-  <button id="start-btn">&#9654;&nbsp;&nbsp;ENGAGE</button>
-  <div class="ov-controls">
-    WASD&nbsp;/&nbsp;Arrows&nbsp;&#183;&nbsp;Camera &nbsp;&nbsp;&#124;&nbsp;&nbsp; Mouse&nbsp;&#183;&nbsp;Aim &nbsp;&nbsp;&#124;&nbsp;&nbsp; 1&#8209;0&nbsp;/&nbsp;Q&#183;E&nbsp;&#183;&nbsp;Weapon<br>
-    F&nbsp;Bomb &nbsp;&#183;&nbsp; G&nbsp;Kernel Panic &nbsp;&#183;&nbsp; X&nbsp;Dash &nbsp;&#183;&nbsp; V&nbsp;Overclock &nbsp;&#183;&nbsp; C&nbsp;EMP Shield &nbsp;&#183;&nbsp; Z&nbsp;Time Warp<br>
-    Tab &nbsp;&#183;&nbsp; Shop between waves
+  <div class="ov-top-line"></div>
+  <div id="menu-content">
+    <div id="ov-eyebrow">K-PERCEPTION &mdash; 2025</div>
+    <div id="ov-title">PRIVACY <span class="hl">WARFARE</span></div>
+    <div id="ov-sub">Defend Your Data &mdash; Eliminate All Threats</div>
+    <div id="ov-score-wrap"><div id="ov-score"></div><div id="ov-hi"></div></div>
+    <div class="ov-divider"></div>
+    <div id="menu-panels">
+      <div class="menu-panel" id="mp-survival">
+        <div class="mp-icon">&#9760;</div>
+        <div class="mp-body"><div class="mp-label">SOPRAVVIVENZA</div><div class="mp-hint">Onde infinite &middot; Punteggio globale</div></div>
+        <div class="mp-arr">&#8250;</div>
+      </div>
+      <div class="menu-panel" id="mp-campaign">
+        <div class="mp-icon">&#9788;</div>
+        <div class="mp-body"><div class="mp-label">CAMPAGNA</div><div class="mp-hint">20 zone &middot; 200 livelli</div></div>
+        <div class="mp-arr">&#8250;</div>
+      </div>
+      <div class="menu-panel mp-dim">
+        <div class="mp-icon">&#9654;</div>
+        <div class="mp-body"><div class="mp-label">ARSENALE</div><div class="mp-hint">Armi sbloccate &middot; Statistiche</div></div>
+        <div class="mp-arr mp-soon">SOON</div>
+      </div>
+      <div class="menu-panel mp-dim">
+        <div class="mp-icon">&#9733;</div>
+        <div class="mp-body"><div class="mp-label">SFIDE</div><div class="mp-hint">Maestria &middot; Obiettivi</div></div>
+        <div class="mp-arr mp-soon">SOON</div>
+      </div>
+      <div class="menu-panel mp-dim">
+        <div class="mp-icon">&#9881;</div>
+        <div class="mp-body"><div class="mp-label">IMPOSTAZIONI</div><div class="mp-hint">Audio &middot; Video &middot; Controlli</div></div>
+        <div class="mp-arr mp-soon">SOON</div>
+      </div>
+    </div>
+    <div class="ov-controls">WASD / Arrows &nbsp;&#183;&nbsp; Camera &nbsp;&nbsp;&#124;&nbsp;&nbsp; Mouse &nbsp;&#183;&nbsp; Aim &nbsp;&nbsp;&#124;&nbsp;&nbsp; 1&#8209;0/Q&#183;E &nbsp;&#183;&nbsp; Weapon<br>F Bomb &nbsp;&#183;&nbsp; G Kernel Panic &nbsp;&#183;&nbsp; X Dash &nbsp;&#183;&nbsp; V Overclock &nbsp;&#183;&nbsp; C EMP &nbsp;&#183;&nbsp; Z Time Warp &nbsp;&nbsp;&#124;&nbsp;&nbsp; Tab Shop</div>
   </div>
+  <!-- legacy hidden button kept for compatibility -->
+  <button id="start-btn" style="display:none;position:absolute;opacity:0;pointer-events:none"></button>
+  <!-- Mobile bottom nav -->
+  <nav id="mobile-nav">
+    <div class="mn-item active" id="mn-survival"><div class="mn-icon">&#9760;</div><div class="mn-label">Survival</div></div>
+    <div class="mn-item" id="mn-campaign"><div class="mn-icon">&#9788;</div><div class="mn-label">Campaign</div></div>
+    <div class="mn-item mn-dim"><div class="mn-icon">&#9654;</div><div class="mn-label">Arsenal</div></div>
+    <div class="mn-item mn-dim"><div class="mn-icon">&#9881;</div><div class="mn-label">More</div></div>
+  </nav>
 </div>
 
 <div id="skill-modal">

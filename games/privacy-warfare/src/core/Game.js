@@ -12,6 +12,8 @@ import { setWpn }       from '../ui/HUD.js';
 import { WPNS }         from '../entities/Weapon/WeaponDefinitions.js';
 import { GameScene }    from '../scenes/GameScene.js';
 import { MenuScene }    from '../scenes/MenuScene.js';
+import { CampaignScene } from '../scenes/CampaignScene.js';
+import { BootScene }    from '../scenes/BootScene.js';
 
 export class Game {
   constructor() {
@@ -23,8 +25,10 @@ export class Game {
     this.engine  = new Engine();
     this.scenes  = new SceneManager();
 
-    this.gameScene = new GameScene(this.cv, this.ctx, this.mmCv, this.mctx);
-    this.menuScene = new MenuScene(this.gameScene);
+    this.gameScene     = new GameScene(this.cv, this.ctx, this.mmCv, this.mctx);
+    this.campaignScene = new CampaignScene(this.cv, this.ctx, this.gameScene);
+    this.bootScene     = new BootScene(this);
+    this.menuScene     = new MenuScene(this);
 
     this._resize();
     this._initInput();
@@ -32,7 +36,7 @@ export class Game {
 
     window.addEventListener('resize', () => this._resize());
 
-    // Push menu — will stay until start button is clicked
+    // Push menu — will stay until a mode is selected
     this.scenes.push(this.menuScene);
 
     // Start the engine; it drives GameScene.update which calls render internally
@@ -45,6 +49,9 @@ export class Game {
 
       if (this.gameScene.running) {
         this.gameScene.update(dt);
+      } else {
+        // Drive active scene (menu, campaign, etc.)
+        this.scenes.update(dt);
       }
     });
   }
