@@ -1,13 +1,15 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/games/privacy-warfare/',
+  root: 'src',
+  base: './',
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
+    outDir: '../dist',
+    emptyOutDir: true,
     target: 'es2020',
   },
   server: {
-    port: 5174,
-  }
+    port: 3000,
+    open: true,
+  },
 });
