@@ -495,6 +495,24 @@ canvas{display:block;position:absolute;top:0;left:0}
 #s-auth-logged-in{display:none;}
 #s-account-status{font-size:10px;color:rgba(0,255,65,0.85);font-weight:700;letter-spacing:.1em;flex:1;}
 
+/* ── Style Meter ───────────────────────────────────────────────────────────── */
+#style-wrap{
+  position:fixed;bottom:10px;left:50%;transform:translateX(-50%);
+  z-index:20;pointer-events:none;text-align:center;
+  width:180px;opacity:0.25;transition:opacity .3s;
+}
+#style-bar{
+  width:0%;height:3px;
+  background:linear-gradient(90deg,#BF00FF,#00FFFF);
+  border-radius:2px;box-shadow:0 0 10px rgba(191,0,255,0.6);
+  transition:width .08s linear, background .2s, box-shadow .2s;
+}
+#style-lbl{
+  font-size:7px;color:rgba(191,0,255,0.55);
+  letter-spacing:.32em;margin-top:3px;
+  text-transform:uppercase;transition:color .2s;
+}
+
 /* ── Mobile action buttons ─────────────────────────────────────────────────── */
 #mob-actions{
   position:fixed;left:12px;bottom:80px;
@@ -678,6 +696,7 @@ canvas{display:block;position:absolute;top:0;left:0}
   </div>
 </div>
 
+<div id="style-wrap"><div id="style-bar"></div><div id="style-lbl">STYLE</div></div>
 <div id="map-name-flash"></div>
 <div id="msg-center"><div id="msg-title"></div><div id="msg-sub"></div></div>
 <div id="streak-banner"><div id="streak-txt"></div><div id="streak-sub"></div></div>

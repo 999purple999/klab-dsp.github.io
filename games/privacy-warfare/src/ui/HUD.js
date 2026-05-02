@@ -89,3 +89,25 @@ export function updateCombo(combo) {
     cv2.textContent = '';
   }
 }
+
+export function updateStyleMeter(pct, overdrive) {
+  const bar = document.getElementById('style-bar');
+  const lbl = document.getElementById('style-lbl');
+  const wrap = document.getElementById('style-wrap');
+  if (!bar || !lbl || !wrap) return;
+  wrap.style.opacity = pct > 0.04 ? '1' : '0.25';
+  bar.style.width = Math.min(100, pct * 100) + '%';
+  if (overdrive) {
+    bar.style.background = 'linear-gradient(90deg,#00FFFF,#FF00FF,#00FFFF)';
+    bar.style.boxShadow  = '0 0 18px #00FFFF, 0 0 40px rgba(255,0,255,0.5)';
+    lbl.textContent = 'OVERDRIVE';
+    lbl.style.color = '#00FFFF';
+    lbl.style.textShadow = '0 0 10px #00FFFF';
+  } else {
+    bar.style.background = 'linear-gradient(90deg,#BF00FF,#00FFFF)';
+    bar.style.boxShadow  = '0 0 10px rgba(191,0,255,0.6)';
+    lbl.textContent = 'STYLE';
+    lbl.style.color = 'rgba(191,0,255,0.55)';
+    lbl.style.textShadow = '';
+  }
+}

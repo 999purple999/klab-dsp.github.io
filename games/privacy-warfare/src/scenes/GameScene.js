@@ -13,7 +13,7 @@ import { setCameraState, wx, wy, onScreen, d2,
 import * as Camera from '../rendering/Camera.js';
 import { updateHpHud, setWpn, updateScore, updateCredits, showMsg, showStreak,
          updateWave, updateEnemyCount, updateWeather, updateAbilityUI,
-         updateWeaponCD, updateCombo } from '../ui/HUD.js';
+         updateWeaponCD, updateCombo, updateStyleMeter } from '../ui/HUD.js';
 import { renderMM } from '../ui/MiniMap.js';
 import { getHiScore, setHiScore, getCredits, setCredits } from '../data/Storage.js';
 import { MasterySystem } from '../data/MasterySystem.js';
@@ -171,6 +171,12 @@ export class GameScene {
     this.timeLoopProjs  = [];
     this.drones         = [];
     this.paused         = false;
+
+    // Style Meter + Overdrive
+    this.styleMeter      = 0;   // 0–100
+    this.overdriveActive = false;
+    this.overdriveTimer  = 0;
+    this._baseSpeed      = 260; // stored to restore after overdrive
   }
 
   // ─── called by Game on each resize
@@ -208,6 +214,7 @@ export class GameScene {
     this.EYES.length = 0; this.PARTS.length = 0; this.BEAMS.length = 0;
     this.EPROJS.length = 0; this.DEAD_EYES.length = 0; this.FLOATS.length = 0;
     this.vortexList.length = 0; this.timeLoopProjs.length = 0; this.drones.length = 0;
+    this.styleMeter = 0; this.overdriveActive = false; this.overdriveTimer = 0;
     this.boss = null; this.bhActive = false; this.nukeCharging = false; this.nukeRad = 0; this.chainSegs = [];
     WPNS.forEach((w, i) => { if (i < BASE_CD.length) { w.cd = BASE_CD[i]; w.dmg = BASE_DMG[i]; w.rng = BASE_RNG[i]; } });
     this.wpnCDs.fill(0); this.skinIdx = 0; this.wpnIdx = 0;
@@ -440,6 +447,7 @@ export class GameScene {
     this.mastery.setStat('maxCombo', Math.floor(this.combo));
     const _leveled = this.progression.addXP(Math.round(pts * 0.5));
     if (_leveled) showMsg('LEVEL UP', 'Rank ' + this.progression.level);
+    this._addStyle(15);
   }
 
   _killBoss() {
@@ -455,6 +463,7 @@ export class GameScene {
     this.boss = null; SFX.kill(); showMsg('BOSS ELIMINATED', 'Threat Neutralized');
     this.mastery.updateStat('bossKills', 1);
     this.progression.addXP(500);
+    this._addStyle(50);
   }
 
   _hurtPlayer() {
@@ -467,7 +476,7 @@ export class GameScene {
   }
 
   // ─── Abilities
-  _abCD(k) { return AB_BASE[k] * this.abilityCDMult; }
+  _abCD(k) { return AB_BASE[k] * this.abilityCDMult * (this.overdriveActive ? 0.5 : 1); }
 
   useBomb() {
     if (this.abCDs.bomb > 0 || !this.running) return;
@@ -495,6 +504,7 @@ export class GameScene {
     const dx = this.wMX - this.px, dy = this.wMY - this.py, d = Math.hypot(dx, dy) || 1;
     this.dashVX = dx / d * 720; this.dashVY = dy / d * 720;
     this.mastery.updateStat('dashes', 1);
+    this._addStyle(20);
   }
 
   useOverclock() {
@@ -519,6 +529,31 @@ export class GameScene {
     this.EYES.forEach(e => { e.applyFreeze(2.5); });
     if (this.boss) this.boss.applyFreeze(2.5);
     showMsg('TIME WARP', 'Reality Suspended');
+  }
+
+  // ─── Style Meter
+  _addStyle(amount) {
+    if (this.overdriveActive) return;
+    this.styleMeter = Math.min(100, this.styleMeter + amount);
+    if (this.styleMeter >= 100) this._startOverdrive();
+  }
+
+  _startOverdrive() {
+    this.overdriveActive = true;
+    this.overdriveTimer  = 6;
+    this.styleMeter      = 100;
+    this._baseSpeed      = this.speed;
+    this.speed          *= 1.3;
+    this.powerMult      *= 1.5;
+    showMsg('OVERDRIVE', 'Style at Maximum — Engage');
+    this.flashAlpha = 0.3; this.chromAberr = 1;
+  }
+
+  _endOverdrive() {
+    this.overdriveActive = false;
+    this.styleMeter      = 0;
+    this.speed           = this._baseSpeed;
+    this.powerMult      /= 1.5;
   }
 
   // ─── Weapons fire
@@ -918,6 +953,15 @@ export class GameScene {
     }
     if (this.timeWarpActive) { this.timeWarpTimer -= dt; if (this.timeWarpTimer <= 0) this.timeWarpActive = false; }
     if (this.ghostActive)    { this.ghostTimer -= dt;   if (this.ghostTimer <= 0)    this.ghostActive = false; }
+
+    // Style Meter + Overdrive
+    if (this.overdriveActive) {
+      this.overdriveTimer -= dt;
+      if (this.overdriveTimer <= 0) this._endOverdrive();
+    } else {
+      this.styleMeter = Math.max(0, this.styleMeter - 7 * dt);
+    }
+    updateStyleMeter(this.styleMeter / 100, this.overdriveActive);
 
     // Combo
     if (this.comboTimer > 0) this.comboTimer -= dt * this.comboDecayMult;
@@ -1390,6 +1434,20 @@ export class GameScene {
       ctx.fillStyle = 'rgba(255,0,0,1)'; ctx.fillRect(-4 * this.chromAberr * DPR, 0, W, H);
       ctx.fillStyle = 'rgba(0,0,255,1)'; ctx.fillRect(4 * this.chromAberr * DPR, 0, W, H);
       ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    }
+
+    // Overdrive thermal distortion — pulsing teal edge + colour shift
+    if (this.overdriveActive) {
+      const odPulse = 0.5 + 0.5 * Math.sin(this._T() * 7);
+      ctx.globalAlpha = 0.06 + 0.04 * odPulse;
+      ctx.globalCompositeOperation = 'screen';
+      ctx.fillStyle = '#00FFFF'; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+      // Edge glow
+      const edgeG = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.3, W / 2, H / 2, Math.min(W, H) * 0.9);
+      edgeG.addColorStop(0, 'rgba(0,255,255,0)');
+      edgeG.addColorStop(1, 'rgba(0,255,255,' + (0.12 * odPulse) + ')');
+      ctx.fillStyle = edgeG; ctx.fillRect(0, 0, W, H);
     }
 
     // Floating damage numbers
