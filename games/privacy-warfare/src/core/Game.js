@@ -46,6 +46,7 @@ export class Game {
 
     window.addEventListener('resize', () => this._resize());
     document.addEventListener('pw:gameover', e => this._onGameOver(e.detail));
+    this._initMobileButtons();
 
     // Push menu — will stay until a mode is selected
     this.scenes.push(this.menuScene);
@@ -155,6 +156,16 @@ export class Game {
     os.style.display = 'block'; os.textContent = 'SCORE: ' + Math.floor(score);
     oh.style.display = 'block'; oh.textContent = 'WAVE ' + wave + '  ·  BEST: ' + Math.floor(hiScore);
     this.scenes.push(this.menuScene);
+  }
+
+  _initMobileButtons() {
+    const AB_MAP = { bomb: 'useBomb', kp: 'useKP', dash: 'useDash', overclock: 'useOverclock', empshield: 'useEmpShield', timewarp: 'useTimeWarp' };
+    document.getElementById('mob-actions')?.addEventListener('touchstart', e => {
+      e.stopPropagation();
+      const btn = e.target.closest('[data-ab]'); if (!btn) return;
+      const fn = AB_MAP[btn.dataset.ab];
+      if (fn && this.gameScene[fn]) this.gameScene[fn]();
+    }, { passive: true });
   }
 
   _initShopEvents() {

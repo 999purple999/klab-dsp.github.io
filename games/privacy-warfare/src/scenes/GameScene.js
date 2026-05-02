@@ -756,6 +756,13 @@ export class GameScene {
     else if (my > lH - EDGE)                         this.camY += SSPD * (1 - (lH - my) / EDGE) * dt;
     this.camX = Math.max(0, Math.min(this.WW - lW, this.camX));
     this.camY = Math.max(0, Math.min(this.WH - lH, this.camY));
+    // Mobile: camera smoothly follows player (no WASD needed on touch devices)
+    if (window.matchMedia('(pointer:coarse)').matches) {
+      const tcX = Math.max(0, Math.min(this.WW - lW, this.px - lW / 2));
+      const tcY = Math.max(0, Math.min(this.WH - lH, this.py - lH / 2));
+      this.camX += (tcX - this.camX) * Math.min(1, 6 * dt);
+      this.camY += (tcY - this.camY) * Math.min(1, 6 * dt);
+    }
     this.wMX = mx + this.camX; this.wMY = my + this.camY;
     this._syncCamera();
 

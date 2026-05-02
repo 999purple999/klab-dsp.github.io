@@ -495,6 +495,33 @@ canvas{display:block;position:absolute;top:0;left:0}
 #s-auth-logged-in{display:none;}
 #s-account-status{font-size:10px;color:rgba(0,255,65,0.85);font-weight:700;letter-spacing:.1em;flex:1;}
 
+/* ── Mobile action buttons ─────────────────────────────────────────────────── */
+#mob-actions{
+  position:fixed;left:12px;bottom:80px;
+  z-index:30;display:none;
+  flex-direction:column;gap:8px;pointer-events:auto;
+}
+@media(pointer:coarse){#mob-actions{display:flex;}}
+.mob-btn{
+  width:56px;height:56px;border-radius:50%;
+  background:rgba(4,0,16,0.82);
+  border:1.5px solid rgba(191,0,255,0.45);
+  color:rgba(255,255,255,0.85);font-size:9px;font-weight:900;
+  letter-spacing:.06em;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  text-transform:uppercase;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  transition:background .08s, border-color .08s, box-shadow .08s;
+}
+.mob-btn:active{
+  background:rgba(191,0,255,0.28);
+  border-color:#BF00FF;
+  box-shadow:0 0 22px rgba(191,0,255,0.45),inset 0 0 12px rgba(191,0,255,0.15);
+}
+.mob-btn-key{font-size:12px;font-weight:900;color:#BF00FF;}
+.mob-btn-lbl{font-size:7px;color:rgba(255,255,255,0.38);letter-spacing:.08em;}
+
 /* ── Scrollbar style ───────────────────────────────────────────────────────── */
 #arsenal-grid::-webkit-scrollbar,#ch-list::-webkit-scrollbar,#lb-list::-webkit-scrollbar{width:3px;}
 #arsenal-grid::-webkit-scrollbar-track,#ch-list::-webkit-scrollbar-track,#lb-list::-webkit-scrollbar-track{background:transparent;}
@@ -657,6 +684,16 @@ canvas{display:block;position:absolute;top:0;left:0}
 <div id="nuke-charge">
   <div id="nuke-bar-wrap"><div id="nuke-bar"></div></div>
   <div id="nuke-lbl">Nuke Charging</div>
+</div>
+
+<!-- ── Mobile ability buttons (touch devices only) ───────────────────────── -->
+<div id="mob-actions">
+  <button class="mob-btn" data-ab="bomb"><span class="mob-btn-key">F</span><span class="mob-btn-lbl">BOMB</span></button>
+  <button class="mob-btn" data-ab="kp"><span class="mob-btn-key">G</span><span class="mob-btn-lbl">K-PANIC</span></button>
+  <button class="mob-btn" data-ab="dash"><span class="mob-btn-key">X</span><span class="mob-btn-lbl">DASH</span></button>
+  <button class="mob-btn" data-ab="overclock"><span class="mob-btn-key">V</span><span class="mob-btn-lbl">O-CLOCK</span></button>
+  <button class="mob-btn" data-ab="empshield"><span class="mob-btn-key">C</span><span class="mob-btn-lbl">EMP</span></button>
+  <button class="mob-btn" data-ab="timewarp"><span class="mob-btn-key">Z</span><span class="mob-btn-lbl">WARP</span></button>
 </div>
 
 <!-- ── Main Menu Overlay ─────────────── -->

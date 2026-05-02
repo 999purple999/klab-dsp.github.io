@@ -212,11 +212,12 @@ export class MenuScene {
     }
     ctx.restore();
 
-    // ── LAYER 3: Data rain (near, fast parallax) ──
+    // ── LAYER 3: Data rain with head-glow (near, fast parallax) ──
     const px3 = (mx / lW - 0.5) * 60 * DPR;
     ctx.save();
     ctx.translate(px3, 0);
-    ctx.font = `${11 * DPR}px 'JetBrains Mono',monospace`;
+    const fSz = 11 * DPR;
+    ctx.font = `${fSz}px 'JetBrains Mono',monospace`;
     for (const p of this._particles) {
       p.timer += 0.016;
       if (p.timer >= p.interval) {
@@ -224,13 +225,40 @@ export class MenuScene {
         p.char  = this._randChar();
         p.y    += p.speed * p.interval;
         if (p.y > lH + 20) p.y = -20;
+        // Push trail char
+        if (!p.trail) p.trail = [];
+        p.trail.push({ char: p.char, y: p.y, alpha: p.alpha });
+        if (p.trail.length > 6) p.trail.shift();
       }
-      ctx.globalAlpha = p.alpha;
-      ctx.fillStyle   = p.y < lH * 0.4 ? '#00FFCC' : '#BF00FF';
+      // Render trail
+      if (p.trail) {
+        for (let ti = 0; ti < p.trail.length; ti++) {
+          const tr = p.trail[ti];
+          const fade = (ti / p.trail.length) * p.alpha * 0.7;
+          ctx.globalAlpha = fade;
+          ctx.fillStyle   = '#BF00FF';
+          ctx.fillText(tr.char, p.x * DPR, tr.y * DPR);
+        }
+      }
+      // Head char — brightest, with glow
+      ctx.shadowBlur  = 12;
+      ctx.shadowColor = p.y < lH * 0.4 ? '#00FFFF' : '#BF00FF';
+      ctx.globalAlpha = Math.min(1, p.alpha * 2.8);
+      ctx.fillStyle   = p.y < lH * 0.4 ? '#FFFFFF' : '#DF88FF';
       ctx.fillText(p.char, p.x * DPR, p.y * DPR);
+      ctx.shadowBlur = 0;
     }
     ctx.globalAlpha = 1;
     ctx.restore();
+
+    // ── Scan line sweep ──
+    const scanY = ((t * 0.18) % 1) * H;
+    const scanG = ctx.createLinearGradient(0, scanY - 40 * DPR, 0, scanY + 40 * DPR);
+    scanG.addColorStop(0,   'rgba(191,0,255,0)');
+    scanG.addColorStop(0.5, 'rgba(191,0,255,0.04)');
+    scanG.addColorStop(1,   'rgba(191,0,255,0)');
+    ctx.fillStyle = scanG;
+    ctx.fillRect(0, scanY - 40 * DPR, W, 80 * DPR);
 
     // ── Top glow bar ──
     const barGrad = ctx.createLinearGradient(0, 0, W, 0);
