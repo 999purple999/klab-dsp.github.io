@@ -10,6 +10,10 @@ const KEY_STATS = 'pw_stats';
 export function getHiScore()     { return +(localStorage.getItem(KEY_HI) || 0); }
 export function setHiScore(val)  { localStorage.setItem(KEY_HI, Math.floor(val)); }
 
+// ── Credits (persisted between runs) ──────────────────────────────────────────
+export function getCredits()     { return +(localStorage.getItem('pw_credits') || 0); }
+export function setCredits(val)  { localStorage.setItem('pw_credits', Math.max(0, Math.floor(val))); }
+
 // ── Settings ──────────────────────────────────────────────────────────────────
 const DEFAULT_SETTINGS = {
   v:         V,

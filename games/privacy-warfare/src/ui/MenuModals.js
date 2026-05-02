@@ -4,12 +4,13 @@
 
 import { WPNS, loadWeaponUnlocks, unlockWeapon } from '../entities/Weapon/WeaponDefinitions.js';
 import { MasterySystem, CATEGORIES }             from '../data/MasterySystem.js';
-import { getSettings, saveSettings }             from '../data/Storage.js';
-import { isAuthenticated, loginWithGitHub,
-         clearToken, getToken, checkAuthCallback,
+import { getSettings, saveSettings,
+         getCredits, setCredits,
+         createSaveSnapshot, applySaveSnapshot }  from '../data/Storage.js';
+import { isAuthenticated, loginUser, register, validatePassword,
+         clearToken, getToken,
          uploadSave, downloadSave,
-         fetchLeaderboard, submitScore }          from '../utils/CloudAPI.js';
-import { createSaveSnapshot, applySaveSnapshot } from '../data/Storage.js';
+         fetchLeaderboard }                       from '../utils/CloudAPI.js';
 
 let _gameScene = null;
 const mastery  = new MasterySystem();
@@ -18,7 +19,6 @@ const mastery  = new MasterySystem();
 export function initMenuModals(gameScene) {
   _gameScene = gameScene;
   loadWeaponUnlocks();
-  checkAuthCallback();
 
   _bindPanel('mp-arsenal',    () => _openArsenal());
   _bindPanel('mp-challenges', () => _openChallenges());
@@ -75,15 +75,17 @@ function _openArsenal() {
   const grid = document.getElementById('arsenal-grid');
   if (!grid) return;
 
-  const credits = _gameScene?.credits ?? 0;
+  const credits = getCredits();
   document.getElementById('arsenal-credits').textContent = credits + ' ◈';
 
   grid.innerHTML = WPNS.map((w, i) => {
-    const locked = !w.unlocked;
-    const canBuy = !locked && w.unlockCost !== undefined && credits >= w.unlockCost;
-    const statsBar = _bar('DMG', w.dmg, 10) + _bar('RNG', w.rng, 600) + _bar('SPD', 1 / w.cd, 30);
+    const locked    = !w.unlocked;
+    const cost      = w.unlockCost || 0;
+    const canAfford = credits >= cost;
+    const statsBar  = _bar('DMG', w.dmg, 10) + _bar('RNG', w.rng, 600) + _bar('SPD', 1 / w.cd, 30);
+    const equipped  = _gameScene?.wpnIdx === i;
 
-    return `<div class="ar-card ${locked ? 'ar-locked' : ''}" data-idx="${i}" style="--wc:${w.col}">
+    return `<div class="ar-card ${locked ? 'ar-locked' : ''}" style="--wc:${w.col}">
       <div class="ar-color-strip"></div>
       <div class="ar-body">
         <div class="ar-name">${w.n}</div>
@@ -92,36 +94,33 @@ function _openArsenal() {
       </div>
       <div class="ar-right">
         ${locked
-          ? `<button class="ar-btn ar-buy" data-buy="${i}" ${credits >= (w.unlockCost || 0) ? '' : 'disabled'}>
-               ${w.unlockCost ?? '??'} ◈ UNLOCK
-             </button>`
-          : `<button class="ar-btn ar-equip" data-equip="${i}">EQUIP</button>`
+          ? `<button class="ar-btn ar-buy" data-buy="${i}" ${canAfford ? '' : 'disabled'}>${cost} ◈ UNLOCK</button>`
+          : `<button class="ar-btn ar-equip" data-equip="${i}">${equipped ? '✓ EQUIPPED' : 'EQUIP'}</button>`
         }
         <div class="ar-type">${w.t.toUpperCase()}</div>
       </div>
     </div>`;
   }).join('');
 
-  // Equip click
   grid.querySelectorAll('[data-equip]').forEach(btn => {
     btn.addEventListener('click', () => {
       const idx = +btn.dataset.equip;
-      if (_gameScene) { _gameScene.wpnIdx = idx; }
+      if (_gameScene) _gameScene.wpnIdx = idx;
       import('../ui/HUD.js').then(m => m.setWpn(idx, WPNS));
       grid.querySelectorAll('.ar-equip').forEach(b => b.textContent = 'EQUIP');
       btn.textContent = '✓ EQUIPPED';
     });
   });
 
-  // Buy click
   grid.querySelectorAll('[data-buy]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const idx = +btn.dataset.buy;
+      const idx  = +btn.dataset.buy;
       const cost = WPNS[idx]?.unlockCost || 0;
-      if (_gameScene && _gameScene.credits >= cost) {
-        _gameScene.credits -= cost;
+      if (getCredits() >= cost) {
+        setCredits(getCredits() - cost);
+        if (_gameScene) _gameScene.credits = getCredits();
         unlockWeapon(idx);
-        _openArsenal(); // refresh
+        _openArsenal();
       }
     });
   });
@@ -246,10 +245,10 @@ function _initSettingsControls() {
 
   // Account / cloud
   _updateAccountUI();
-  _on('s-login-btn',    () => loginWithGitHub());
-  _on('s-logout-btn',   () => { clearToken(); _updateAccountUI(); });
-  _on('s-sync-up-btn',  () => _syncUp());
-  _on('s-sync-dn-btn',  () => _syncDown());
+  _initAuthForm();
+  _on('s-logout-btn',  () => { clearToken(); _updateAccountUI(); });
+  _on('s-sync-up-btn', () => _syncUp());
+  _on('s-sync-dn-btn', () => _syncDown());
 }
 
 function _openSettings() {
@@ -258,24 +257,69 @@ function _openSettings() {
 }
 
 function _updateAccountUI() {
-  const statusEl = document.getElementById('s-account-status');
-  const loginBtn = document.getElementById('s-login-btn');
-  const logoutBtn= document.getElementById('s-logout-btn');
-  const syncUp   = document.getElementById('s-sync-up-btn');
-  const syncDn   = document.getElementById('s-sync-dn-btn');
-
+  const loggedIn  = document.getElementById('s-auth-logged-in');
+  const loggedOut = document.getElementById('s-auth-logged-out');
+  const statusEl  = document.getElementById('s-account-status');
   if (isAuthenticated()) {
-    if (statusEl) statusEl.textContent = 'Signed in ✓';
-    if (loginBtn)  loginBtn.style.display  = 'none';
-    if (logoutBtn) logoutBtn.style.display = 'inline-block';
-    if (syncUp)    syncUp.style.display    = 'inline-block';
-    if (syncDn)    syncDn.style.display    = 'inline-block';
+    const name = localStorage.getItem('pw_username') || 'Player';
+    if (statusEl)  statusEl.textContent = '● ' + name;
+    if (loggedIn)  loggedIn.style.display  = 'block';
+    if (loggedOut) loggedOut.style.display = 'none';
   } else {
-    if (statusEl) statusEl.textContent = 'Not signed in';
-    if (loginBtn)  loginBtn.style.display  = 'inline-block';
-    if (logoutBtn) logoutBtn.style.display = 'none';
-    if (syncUp)    syncUp.style.display    = 'none';
-    if (syncDn)    syncDn.style.display    = 'none';
+    if (loggedIn)  loggedIn.style.display  = 'none';
+    if (loggedOut) loggedOut.style.display = 'block';
+  }
+}
+
+function _initAuthForm() {
+  let isRegister = false;
+
+  const tabLogin    = document.getElementById('s-tab-login');
+  const tabRegister = document.getElementById('s-tab-register');
+  const authBtn     = document.getElementById('s-auth-btn');
+  const errEl       = document.getElementById('s-auth-err');
+
+  function _setTab(reg) {
+    isRegister = reg;
+    if (tabLogin)    tabLogin.classList.toggle('active', !reg);
+    if (tabRegister) tabRegister.classList.toggle('active',  reg);
+    if (authBtn)     authBtn.textContent = reg ? 'Register' : 'Sign In';
+    if (errEl)       errEl.textContent   = '';
+  }
+
+  _on('s-tab-login',    () => _setTab(false));
+  _on('s-tab-register', () => _setTab(true));
+
+  if (authBtn) {
+    authBtn.addEventListener('click', async () => {
+      const username = (document.getElementById('s-username')?.value || '').trim();
+      const password = document.getElementById('s-password')?.value || '';
+      if (errEl) errEl.textContent = '';
+
+      if (!username || username.length < 3) {
+        if (errEl) errEl.textContent = 'Username must be at least 3 characters';
+        return;
+      }
+      const pwErr = validatePassword(password);
+      if (pwErr) { if (errEl) errEl.textContent = pwErr; return; }
+
+      authBtn.disabled    = true;
+      authBtn.textContent = isRegister ? 'Registering…' : 'Signing in…';
+
+      const result = isRegister
+        ? await register(username, password)
+        : await loginUser(username, password);
+
+      authBtn.disabled = false;
+      authBtn.textContent = isRegister ? 'Register' : 'Sign In';
+
+      if (result.ok) {
+        localStorage.setItem('pw_username', username);
+        _updateAccountUI();
+      } else {
+        if (errEl) errEl.textContent = result.error || 'Authentication failed';
+      }
+    });
   }
 }
 

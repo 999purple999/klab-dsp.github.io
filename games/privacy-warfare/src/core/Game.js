@@ -38,6 +38,7 @@ export class Game {
     initMenuModals(this.gameScene);
 
     window.addEventListener('resize', () => this._resize());
+    document.addEventListener('pw:gameover', e => this._onGameOver(e.detail));
 
     // Push menu — will stay until a mode is selected
     this.scenes.push(this.menuScene);
@@ -122,6 +123,15 @@ export class Game {
         if (this.gameScene.betweenWaves && !this.gameScene.skillModal) this.gameScene._openShop();
       }
     });
+  }
+
+  _onGameOver({ score, wave, hiScore }) {
+    document.getElementById('ov-title').textContent = 'SYSTEM BREACH';
+    document.getElementById('ov-sub').textContent   = 'Your data has been compromised';
+    const os = document.getElementById('ov-score'), oh = document.getElementById('ov-hi');
+    os.style.display = 'block'; os.textContent = 'SCORE: ' + Math.floor(score);
+    oh.style.display = 'block'; oh.textContent = 'WAVE ' + wave + '  ·  BEST: ' + Math.floor(hiScore);
+    this.scenes.push(this.menuScene);
   }
 
   _initShopEvents() {

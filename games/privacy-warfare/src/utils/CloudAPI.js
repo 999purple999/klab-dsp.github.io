@@ -1,6 +1,5 @@
 // ─── CloudAPI ─────────────────────────────────────────────────────────────────
 // Offline-first client for the Cloudflare Workers backend.
-// Set CLOUD_BASE to your deployed Workers URL before using cloud features.
 
 export const CLOUD_BASE = 'https://pw-api.accessisoftwarefrancesco.workers.dev';
 
@@ -15,26 +14,19 @@ export function setToken(token) {
 export function clearToken() {
   _token = null;
   localStorage.removeItem('pw_cloud_token');
+  localStorage.removeItem('pw_username');
 }
 
-export function getToken()         { return _token; }
-export function isAuthenticated()  { return !!_token; }
+export function getToken()        { return _token; }
+export function isAuthenticated() { return !!_token; }
 
-/** Redirect to GitHub OAuth login (handled by auth-worker). */
-export function loginWithGitHub() {
-  window.location.href = CLOUD_BASE + '/auth/login';
-}
+// ── Password validation (run on client before sending) ───────────────────────
+const SPECIAL_RE = /[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>/?`~]/;
 
-/** Call from index page if URL has ?token= after OAuth callback. */
-export function checkAuthCallback() {
-  const params = new URLSearchParams(window.location.search);
-  const token  = params.get('token');
-  if (token) {
-    setToken(token);
-    window.history.replaceState({}, '', window.location.pathname);
-    return true;
-  }
-  return false;
+export function validatePassword(pwd) {
+  if (!pwd || pwd.length < 8)    return 'Password must be at least 8 characters';
+  if (!SPECIAL_RE.test(pwd))     return 'Password must contain at least one special character (!@#$%^&* …)';
+  return null;
 }
 
 // ── Internal helpers ──────────────────────────────────────────────────────────
@@ -48,12 +40,39 @@ async function _req(path, method = 'GET', body = null) {
   try {
     const opts = { method, headers: _headers() };
     if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(CLOUD_BASE + path, opts);
-    if (!res.ok) return { ok: false, status: res.status };
-    return { ok: true, data: await res.json() };
+    const res  = await fetch(CLOUD_BASE + path, opts);
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data };
   } catch {
-    return { ok: false, status: 0 };
+    return { ok: false, status: 0, data: {} };
   }
+}
+
+// ── Auth endpoints ────────────────────────────────────────────────────────────
+
+/**
+ * Register a new account. Returns { ok, error }.
+ * Password must be 8+ chars with at least one special character.
+ */
+export async function register(username, password) {
+  const r = await _req('/auth/register', 'POST', { username, password });
+  if (r.ok && r.data.token) {
+    setToken(r.data.token);
+    return { ok: true };
+  }
+  return { ok: false, error: r.data.error || 'Registration failed' };
+}
+
+/**
+ * Log in with username and password. Returns { ok, error }.
+ */
+export async function loginUser(username, password) {
+  const r = await _req('/auth/login', 'POST', { username, password });
+  if (r.ok && r.data.token) {
+    setToken(r.data.token);
+    return { ok: true };
+  }
+  return { ok: false, error: r.data.error || 'Invalid username or password' };
 }
 
 // ── Leaderboard ───────────────────────────────────────────────────────────────

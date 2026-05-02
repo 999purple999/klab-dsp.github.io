@@ -15,11 +15,9 @@ id      = "0dc096f729104bd8a9fea3fd9daeb308"
 
 # ── Environment Variables (set secrets via: npx wrangler secret put JWT_SECRET) ──
 [vars]
-GITHUB_CLIENT_ID = "REPLACE_WITH_GITHUB_CLIENT_ID"
-GAME_ORIGIN      = "https://999purple999.github.io"
-# Set these as secrets (not in wrangler.toml):
+GAME_ORIGIN = "https://999purple999.github.io"
+# Set this as a secret (not in wrangler.toml):
 #   npx wrangler secret put JWT_SECRET
-#   npx wrangler secret put GITHUB_CLIENT_SECRET
 
 # ── Build ─────────────────────────────────────────────────────────────────────
 [build]

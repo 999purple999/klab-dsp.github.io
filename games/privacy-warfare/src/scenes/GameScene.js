@@ -15,7 +15,7 @@ import { updateHpHud, setWpn, updateScore, updateCredits, showMsg, showStreak,
          updateWave, updateEnemyCount, updateWeather, updateAbilityUI,
          updateWeaponCD, updateCombo } from '../ui/HUD.js';
 import { renderMM } from '../ui/MiniMap.js';
-import { getHiScore, setHiScore } from '../data/Storage.js';
+import { getHiScore, setHiScore, getCredits, setCredits } from '../data/Storage.js';
 
 // ─── Player skins
 const SKINS = ['#BF00FF', '#00FFFF', '#FF2266', '#00FF41', '#FF8800'];
@@ -189,7 +189,7 @@ export class GameScene {
 
   startGame() {
     this.running = true;
-    this.score = 0; this.wave = 0; this.combo = 1; this.comboTimer = 0; this.credits = 100;
+    this.score = 0; this.wave = 0; this.combo = 1; this.comboTimer = 0; this.credits = getCredits() + 50;
     this.hp = 3; this.maxHp = 3; this.speed = 260; this.killStreak = 0; this.streakTimer = 0;
     this.ghostActive = false; this.invincible = 0; this.dashTimer = 0; this.dashTrail = [];
     this.overclockActive = false; this.empShieldActive = false; this.timeWarpActive = false;
@@ -206,7 +206,7 @@ export class GameScene {
     this._syncCamera();
     updateHpHud(this.hp, this.maxHp);
     updateScore(0);
-    updateCredits(100);
+    updateCredits(this.credits);
     setWpn(0, WPNS);
     document.getElementById('shield-bar-wrap').style.display = 'none';
     document.getElementById('nuke-charge').style.display = 'none';
@@ -219,13 +219,10 @@ export class GameScene {
     this.running = false;
     this.hiScore = getHiScore();
     if (this.score > this.hiScore) { this.hiScore = this.score; setHiScore(this.score); }
-    const ov = document.getElementById('overlay'); ov.classList.remove('hidden');
-    document.getElementById('ov-title').textContent = 'SYSTEM BREACH';
-    document.getElementById('ov-sub').textContent   = 'Your data has been compromised';
-    const os = document.getElementById('ov-score'), oh = document.getElementById('ov-hi');
-    os.style.display = 'block'; os.textContent = 'SCORE: ' + Math.floor(this.score);
-    oh.style.display = 'block'; oh.textContent = 'BEST: '  + Math.floor(this.hiScore);
-    document.getElementById('start-btn').textContent = '↺ RETRY';
+    setCredits(this.credits);
+    document.dispatchEvent(new CustomEvent('pw:gameover', {
+      detail: { score: this.score, wave: this.wave, hiScore: this.hiScore }
+    }));
   }
 
   // ─── Wave management
