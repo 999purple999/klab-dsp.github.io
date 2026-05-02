@@ -4,8 +4,8 @@
 
 import { SFX, getAC } from '../audio/AudioManager.js';
 import { renderPlayer } from '../entities/PlayerVisual.js';
-import { MAPS, STARS, BLDGS, WEB_LINES, AMBIENT, OBSTACLES,
-         buildMapAssets, buildObstacles, resolveObstaclePos } from '../mapgen/MapData.js';
+import { MAPS, STARS, BLDGS, WEB_LINES, AMBIENT, OBSTACLES, TRAPS,
+         buildMapAssets, buildObstacles, buildTraps, resolveObstaclePos } from '../mapgen/MapData.js';
 import { WPNS, BASE_CD, BASE_DMG, BASE_RNG } from '../entities/Weapon/WeaponDefinitions.js';
 import { setCameraState, wx, wy, onScreen, d2,
          camX as _camX, camY as _camY, lW as _lW, lH as _lH,
@@ -244,6 +244,7 @@ export class GameScene {
     this.EYES.length = 0; this.boss = null; this.EPROJS.length = 0;
     this.mapIdx = this.nextMapIdx;
     buildObstacles(wv, this.WW, this.WH);
+    buildTraps(wv, this.WW, this.WH);
     const M = MAPS[this.mapIdx];
     const mf = document.getElementById('map-name-flash');
     mf.style.opacity = '1'; mf.textContent = M.n;
@@ -656,6 +657,105 @@ export class GameScene {
     showMsg('DRONE SWARM MK2', '3 Drones Deployed');
   }
 
+  // ─── Trap system
+  _updateTraps(dt) {
+    const T = this._T();
+    for (const tr of TRAPS) {
+      if (tr.type === 'laser') {
+        tr.active = Math.sin(T * (Math.PI / tr.period) + tr.phase) > 0;
+        if (tr.active && this.invincible <= 0 && !this.ghostActive) {
+          const inBeam = tr.dir === 'h'
+            ? (Math.abs(this.py - tr.y) < 10 && this.px >= tr.x && this.px <= tr.x + tr.len)
+            : (Math.abs(this.px - tr.x) < 10 && this.py >= tr.y && this.py <= tr.y + tr.len);
+          if (inBeam) this._hurtPlayer();
+        }
+      } else if (tr.type === 'efield') {
+        tr.dmgTimer = (tr.dmgTimer || 0) - dt;
+        if (tr.dmgTimer <= 0) {
+          tr.dmgTimer = 1.5;
+          if (this.px >= tr.x && this.px <= tr.x + tr.w && this.py >= tr.y && this.py <= tr.y + tr.h)
+            this._hurtPlayer();
+        }
+      } else if (tr.type === 'turret') {
+        if (tr.dead) continue;
+        tr.shootTimer -= dt;
+        const tdx = this.px - tr.x, tdy = this.py - tr.y;
+        tr.angle = Math.atan2(tdy, tdx);
+        if (tr.shootTimer <= 0) {
+          tr.shootTimer = tr.shootCd;
+          const d = Math.hypot(tdx, tdy) || 1;
+          this.EPROJS.push({ x: tr.x, y: tr.y, vx: tdx / d * 165, vy: tdy / d * 165, r: 5, col: '#FF8800', life: 3 });
+        }
+        // Turret can be destroyed by player weapons — check via _damageE doesn't apply; use direct hit check
+        // Turrets die when a projectile (from player) hits them — handled in _hitDir by treating it as a pseudo-enemy
+      } else if (tr.type === 'mine') {
+        if (!tr.armed) continue;
+        if (d2(this.px, this.py, tr.x, tr.y) < 32) {
+          tr.armed = false;
+          this._burst(tr.x, tr.y, '#FF8800', 18, 180);
+          this._shakeDir(tr.x, tr.y, 18);
+          this.flashAlpha = 0.3;
+          if (d2(this.px, this.py, tr.x, tr.y) < 90 && this.invincible <= 0) this._hurtPlayer();
+          this.EYES.forEach(e => { if (d2(e.x, e.y, tr.x, tr.y) < 120) this._damageE(e, 3 * this.powerMult, true); });
+          if (this.boss && d2(this.boss.x, this.boss.y, tr.x, tr.y) < 140) this._hurtBoss(3 * this.powerMult);
+        }
+      }
+    }
+  }
+
+  _renderTraps(ctx, camX, camY, DPR) {
+    const T = this._T();
+    for (const tr of TRAPS) {
+      if (tr.type === 'laser') {
+        const col = tr.active ? '#FF2244' : 'rgba(255,34,68,0.18)';
+        const ex = tr.dir === 'h' ? tr.x + tr.len : tr.x;
+        const ey = tr.dir === 'h' ? tr.y : tr.y + tr.len;
+        ctx.strokeStyle = col;
+        ctx.lineWidth   = tr.active ? 3 * DPR : 1 * DPR;
+        ctx.shadowBlur  = tr.active ? 20 : 0;
+        ctx.shadowColor = '#FF2244';
+        ctx.globalAlpha = tr.active ? 0.9 : 0.35;
+        ctx.beginPath();
+        ctx.moveTo((tr.x - camX) * DPR, (tr.y - camY) * DPR);
+        ctx.lineTo((ex - camX) * DPR, (ey - camY) * DPR);
+        ctx.stroke();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        // Emitter nodes at each end
+        ctx.fillStyle = '#FF2244'; ctx.globalAlpha = 0.7;
+        ctx.beginPath(); ctx.arc((tr.x - camX) * DPR, (tr.y - camY) * DPR, 4 * DPR, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc((ex - camX) * DPR, (ey - camY) * DPR, 4 * DPR, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 1;
+      } else if (tr.type === 'efield') {
+        const pulse = 0.25 + 0.12 * Math.sin(T * 3);
+        ctx.fillStyle   = 'rgba(80,200,255,' + pulse + ')';
+        ctx.strokeStyle = 'rgba(80,200,255,0.5)';
+        ctx.lineWidth   = 1.5;
+        ctx.shadowBlur  = 14; ctx.shadowColor = '#50C8FF';
+        ctx.fillRect((tr.x - camX) * DPR, (tr.y - camY) * DPR, tr.w * DPR, tr.h * DPR);
+        ctx.strokeRect((tr.x - camX) * DPR, (tr.y - camY) * DPR, tr.w * DPR, tr.h * DPR);
+        ctx.shadowBlur = 0;
+      } else if (tr.type === 'turret' && !tr.dead) {
+        const tx2 = (tr.x - camX) * DPR, ty2 = (tr.y - camY) * DPR;
+        ctx.save(); ctx.translate(tx2, ty2); ctx.rotate(tr.angle);
+        ctx.fillStyle = '#996633'; ctx.strokeStyle = '#FF8800'; ctx.lineWidth = 2;
+        ctx.shadowBlur = 14; ctx.shadowColor = '#FF8800';
+        ctx.beginPath(); ctx.arc(0, 0, 8 * DPR, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#FF8800'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(14 * DPR, 0); ctx.stroke();
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'mine' && tr.armed) {
+        const blink = Math.sin(T * 4 + tr.blinkPhase) > 0;
+        ctx.fillStyle   = blink ? '#FF8800' : 'rgba(255,136,0,0.4)';
+        ctx.shadowBlur  = blink ? 18 : 4;
+        ctx.shadowColor = '#FF8800';
+        ctx.beginPath(); ctx.arc((tr.x - camX) * DPR, (tr.y - camY) * DPR, 6 * DPR, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+        // Proximity ring
+        ctx.strokeStyle = 'rgba(255,136,0,0.2)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc((tr.x - camX) * DPR, (tr.y - camY) * DPR, 32 * DPR, 0, Math.PI * 2); ctx.stroke();
+      }
+    }
+  }
+
   _hitDir(ox, oy, dirx, diry, rng, dmg, tol, onHit) {
     for (let i = this.EYES.length - 1; i >= 0; i--) {
       const e = this.EYES[i];
@@ -992,6 +1092,7 @@ export class GameScene {
       if (f.life <= 0) this.FLOATS.splice(i, 1);
     }
 
+    this._updateTraps(dt);
     this._updateEnemyCount();
 
     // Wave end condition
@@ -1078,6 +1179,9 @@ export class GameScene {
         ctx.beginPath(); ctx.arc(wx(cx2), wy(cy2), 2.5 * DPR, 0, Math.PI * 2); ctx.fill();
       });
     });
+
+    // Traps
+    this._renderTraps(ctx, camX, camY, DPR);
 
     // Black hole
     if (this.bhActive) {

@@ -2,19 +2,24 @@
 import { d2 } from '../utils/math.js';
 
 export const MAPS = [
-  { n: 'CYBER GRID',    bg: '#030306', gc: 'rgba(191,0,255,0.08)',  ac: 'rgba(191,0,255,0.6)',  sc: '#BF00FF' },
-  { n: 'DEEP SPACE',    bg: '#010216', gc: 'rgba(0,80,255,0.07)',   ac: 'rgba(0,150,255,0.6)',  sc: '#0088FF' },
-  { n: 'NEON CITY',     bg: '#040002', gc: 'rgba(255,0,80,0.07)',   ac: 'rgba(255,60,160,0.6)', sc: '#FF0066' },
-  { n: 'DATA STORM',    bg: '#010A06', gc: 'rgba(0,255,100,0.06)',  ac: 'rgba(0,255,80,0.6)',   sc: '#00FF64' },
-  { n: 'QUANTUM REALM', bg: '#060108', gc: 'rgba(150,0,255,0.07)',  ac: 'rgba(180,80,255,0.6)', sc: '#AA00FF' },
-  { n: 'DARK WEB',      bg: '#060000', gc: 'rgba(255,30,0,0.06)',   ac: 'rgba(255,60,30,0.6)',  sc: '#FF2200' },
+  { n: 'CYBER GRID',        bg: '#030306', gc: 'rgba(191,0,255,0.08)',  ac: 'rgba(191,0,255,0.6)',  sc: '#BF00FF' },
+  { n: 'DEEP SPACE',        bg: '#010216', gc: 'rgba(0,80,255,0.07)',   ac: 'rgba(0,150,255,0.6)',  sc: '#0088FF' },
+  { n: 'NEON CITY',         bg: '#040002', gc: 'rgba(255,0,80,0.07)',   ac: 'rgba(255,60,160,0.6)', sc: '#FF0066' },
+  { n: 'DATA STORM',        bg: '#010A06', gc: 'rgba(0,255,100,0.06)',  ac: 'rgba(0,255,80,0.6)',   sc: '#00FF64' },
+  { n: 'QUANTUM REALM',     bg: '#060108', gc: 'rgba(150,0,255,0.07)',  ac: 'rgba(180,80,255,0.6)', sc: '#AA00FF' },
+  { n: 'DARK WEB',          bg: '#060000', gc: 'rgba(255,30,0,0.06)',   ac: 'rgba(255,60,30,0.6)',  sc: '#FF2200' },
+  { n: 'AI NEXUS',          bg: '#000816', gc: 'rgba(0,180,255,0.07)',  ac: 'rgba(0,220,255,0.6)',  sc: '#00CCFF' },
+  { n: 'CRYO VAULT',        bg: '#010A10', gc: 'rgba(0,200,220,0.07)',  ac: 'rgba(80,240,255,0.6)', sc: '#00EEFF' },
+  { n: 'INDUSTRIAL WASTE',  bg: '#090400', gc: 'rgba(255,120,0,0.06)', ac: 'rgba(255,160,40,0.6)', sc: '#FF8800' },
+  { n: 'BIO-DIGITAL',       bg: '#001008', gc: 'rgba(0,220,80,0.07)',   ac: 'rgba(40,255,100,0.6)', sc: '#00FF88' },
 ];
 
-export let STARS    = [];
-export let BLDGS    = [];
+export let STARS     = [];
+export let BLDGS     = [];
 export let WEB_LINES = [];
-export let AMBIENT  = [];
+export let AMBIENT   = [];
 export let OBSTACLES = [];
+export let TRAPS     = [];
 
 export function buildMapAssets(WW, WH) {
   if (!WW) return;
@@ -42,6 +47,46 @@ export function buildObstacles(wv, WW, WH) {
   for (let i = 0; i < n; i++) {
     const w2 = 70 + Math.random() * 130, h2 = 25 + Math.random() * 55;
     OBSTACLES.push({ x: 150 + Math.random() * (WW - 300 - w2), y: 150 + Math.random() * (WH - 300 - h2), w: w2, h: h2 });
+  }
+}
+
+// ─── Trap system ──────────────────────────────────────────────────────────────
+// Trap types:
+//   laser  – alternating beam; kills player if active and player in path
+//   efield – always-on electric floor zone; continuous damage
+//   turret – auto-turret that fires projectiles at player
+//   mine   – proximity mine; explodes once
+
+export function buildTraps(wv, WW, WH) {
+  TRAPS = [];
+  if (wv < 2) return;
+
+  const margin = 180;
+  const rnd = (lo, hi) => lo + Math.random() * (hi - lo);
+
+  const count = Math.min(6, Math.floor(wv / 2));
+
+  const pool = ['laser'];
+  if (wv >= 3) pool.push('efield');
+  if (wv >= 5) pool.push('turret');
+  if (wv >= 7) pool.push('mine');
+
+  for (let i = 0; i < count; i++) {
+    const type = pool[Math.floor(Math.random() * pool.length)];
+    const x = rnd(margin, WW - margin);
+    const y = rnd(margin, WH - margin);
+
+    if (type === 'laser') {
+      const dir = Math.random() < 0.5 ? 'h' : 'v';
+      const len = rnd(120, 260);
+      TRAPS.push({ type: 'laser', x, y, len, dir, active: false, phase: Math.random() * Math.PI * 2, period: 2.5 + Math.random() * 2 });
+    } else if (type === 'efield') {
+      TRAPS.push({ type: 'efield', x, y, w: rnd(80, 160), h: rnd(60, 120), dmgTimer: 0 });
+    } else if (type === 'turret') {
+      TRAPS.push({ type: 'turret', x, y, angle: 0, shootCd: 2.5 + Math.random(), shootTimer: 1.5 + Math.random() * 2, hp: 3, dead: false });
+    } else if (type === 'mine') {
+      TRAPS.push({ type: 'mine', x, y, armed: true, blinkPhase: Math.random() * Math.PI * 2 });
+    }
   }
 }
 
