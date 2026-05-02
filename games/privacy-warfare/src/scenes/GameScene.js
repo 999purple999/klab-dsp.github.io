@@ -18,6 +18,12 @@ import { renderMM } from '../ui/MiniMap.js';
 import { getHiScore, setHiScore, getCredits, setCredits } from '../data/Storage.js';
 import { MasterySystem } from '../data/MasterySystem.js';
 import { Progression }   from '../data/Progression.js';
+import { BaseEnemy }    from '../entities/Enemy/BaseEnemy.js';
+import { Architect }    from '../entities/Boss/Architect.js';
+import { DataSpectre }  from '../entities/Boss/DataSpectre.js';
+import { CoreGuardian } from '../entities/Boss/CoreGuardian.js';
+import { VoidWeaver }   from '../entities/Boss/VoidWeaver.js';
+import { SystemAdmin }  from '../entities/Boss/SystemAdmin.js';
 
 // ─── Player skins
 const SKINS = ['#BF00FF', '#00FFFF', '#FF2266', '#00FF41', '#FF8800'];
@@ -294,14 +300,35 @@ export class GameScene {
   }
 
   _makeEnemy(x, y, type, wv) {
-    const d = EDEFS[type], hb = Math.floor(wv / 3);
-    return {
-      x, y, t: type, col: d.col, sz: d.sz, hp: d.hp + hb, maxHp: d.hp + hb,
-      spd: d.spd * (1 + wv * 0.07), pts: d.pts, vx: 0, vy: 0,
-      frozen: 0, virus: 0, al: 1, hitFlash: 0, spawnAnim: 0.5,
-      cloakTimer: 2, cloaking: false, shootTimer: 2 + Math.random() * 2,
-      teleTimer: 4 + Math.random() * 3, necroTimer: 8, berserk: false,
-    };
+    return new BaseEnemy(x, y, { type, ...EDEFS[type] }, wv);
+  }
+
+  _enemyTypeBehavior(e, dt) {
+    if (e.t === 'cloaker') {
+      e.cloakTimer -= dt;
+      if (e.cloakTimer <= 0) { e.cloaking = !e.cloaking; e.cloakTimer = e.cloaking ? 3 : 2; }
+      e.al = e.cloaking ? 0.07 : 1;
+    }
+    if (e.t === 'berser' && e.hp < e.maxHp * 0.5 && !e.berserk) { e.berserk = true; e.spd *= 2; e.col = '#FF0000'; }
+    if (e.t === 'teleport') {
+      e.teleTimer -= dt;
+      if (e.teleTimer <= 0) { e.x = Math.random() * this.WW; e.y = Math.random() * this.WH; e.teleTimer = 4 + Math.random() * 3; this._burst(e.x, e.y, '#44FFFF', 8, 45); }
+    }
+    if (e.t === 'necro') {
+      e.necroTimer -= dt;
+      if (e.necroTimer <= 0) {
+        e.necroTimer = 8;
+        if (this.DEAD_EYES.length > 0) { const dead = this.DEAD_EYES.shift(); this._spawnAt(dead.x, dead.y, dead.t || 'normal', this.wave); this._burst(dead.x, dead.y, '#CC00FF', 10, 55); }
+      }
+    }
+    if (e.t === 'shooter' || e.t === 'doppel') {
+      e.shootTimer -= dt;
+      if (e.shootTimer <= 0) {
+        e.shootTimer = 1.8 + Math.random() * 2;
+        const sdx = this.px - e.x, sdy = this.py - e.y, sd = Math.hypot(sdx, sdy) || 1;
+        this.EPROJS.push({ x: e.x, y: e.y, vx: sdx / sd * 185, vy: sdy / sd * 185, r: 5, col: e.col, life: 3 });
+      }
+    }
   }
 
   _spawnAt(x, y, type, wv) { this.EYES.push(this._makeEnemy(x, y, type, wv)); }
@@ -333,13 +360,9 @@ export class GameScene {
 
   // ─── Boss
   _spawnBoss(wv) {
-    this.boss = {
-      x: this.WW / 2, y: this.WH * 0.22,
-      hp: 30 + wv * 9, maxHp: 30 + wv * 9,
-      spd: 52 + wv * 3, sz: 44, col: '#FF0000',
-      phase: 1, shootTimer: 1.4, vx: 100, vy: 70,
-      frozen: 0, virus: 0, pts: 500 + wv * 100, angle: 0, hitFlash: 0,
-    };
+    const BOSS_CLASSES = [Architect, DataSpectre, CoreGuardian, VoidWeaver, SystemAdmin];
+    const BossClass = BOSS_CLASSES[(Math.floor(wv / 5) - 1) % BOSS_CLASSES.length];
+    this.boss = new BossClass(this.WW / 2, this.WH * 0.22, wv);
     SFX.boss();
   }
 
@@ -383,9 +406,9 @@ export class GameScene {
 
   _hurtBoss(dmg) {
     if (!this.boss) return;
-    this.boss.hp -= dmg; this.boss.hitFlash = 0.1; SFX.bossHit();
+    this.boss.takeDamage(dmg); SFX.bossHit();
     this._spawnFloat(this.boss.x + (Math.random() - 0.5) * 40, this.boss.y - 40, '-' + dmg.toFixed(1), '#FF5555');
-    if (this.boss.hp <= 0) this._killBoss();
+    if (!this.boss.alive) this._killBoss();
   }
 
   _killE(e) {
@@ -458,8 +481,8 @@ export class GameScene {
   useKP() {
     if (this.abCDs.kp > 0 || !this.running) return;
     this.abCDs.kp = this._abCD('kp'); SFX.kp();
-    this.EYES.forEach(e => { e.frozen = 3.8; e.vx = 0; e.vy = 0; });
-    if (this.boss) this.boss.frozen = 2.5;
+    this.EYES.forEach(e => { e.applyFreeze(3.8); });
+    if (this.boss) this.boss.applyFreeze(2.5);
     this.shakeAmt = 8; this.flashAlpha = 0.22;
     showMsg('KERNEL PANIC', 'All Threats Frozen');
   }
@@ -492,8 +515,8 @@ export class GameScene {
     if (this.abCDs.timewarp > 0 || !this.running) return;
     this.abCDs.timewarp = this._abCD('timewarp'); SFX.warp();
     this.timeWarpActive = true; this.timeWarpTimer = 2.5;
-    this.EYES.forEach(e => { e.frozen = Math.max(e.frozen, 2.5); e.vx = 0; e.vy = 0; });
-    if (this.boss) this.boss.frozen = Math.max(this.boss.frozen || 0, 2.5);
+    this.EYES.forEach(e => { e.applyFreeze(2.5); });
+    if (this.boss) this.boss.applyFreeze(2.5);
     showMsg('TIME WARP', 'Reality Suspended');
   }
 
@@ -564,16 +587,16 @@ export class GameScene {
     } else if (w.t === 'cryo') {
       SFX.beam();
       this._addBeam(this.px, this.py, this.px + ux * w.rng, this.py + uy * w.rng, w.col, 0.38, 6);
-      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 18, e => { e.frozen = 3.8; e.vx *= 0.08; e.vy *= 0.08; this._burst(e.x, e.y, '#88FFFF', 5, 25); });
-      if (this.boss && d2(this.boss.x, this.boss.y, this.px, this.py) < w.rng) this.boss.frozen = 1.6;
+      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 18, e => { e.applyFreeze(3.8); e.vx *= 0.08; e.vy *= 0.08; this._burst(e.x, e.y, '#88FFFF', 5, 25); });
+      if (this.boss && d2(this.boss.x, this.boss.y, this.px, this.py) < w.rng) this.boss.applyFreeze(1.6);
     } else if (w.t === 'nuke') {
       this.nukeCharging = true; this.nukeTimer = 2; this.nukeX = this.wMX; this.nukeY = this.wMY;
       document.getElementById('nuke-charge').style.display = 'block';
     } else if (w.t === 'virus') {
       SFX.shoot();
       const t = this.EYES.find(e => d2(e.x, e.y, this.wMX, this.wMY) < e.sz + 14);
-      if (t) { t.virus = 12; this._damageE(t, w.dmg * this.powerMult, false); }
-      else if (this.boss && d2(this.boss.x, this.boss.y, this.wMX, this.wMY) < this.boss.sz + 22) this.boss.virus = 7;
+      if (t) { t.applyVirus(12); this._damageE(t, w.dmg * this.powerMult, false); }
+      else if (this.boss && d2(this.boss.x, this.boss.y, this.wMX, this.wMY) < this.boss.sz + 22) this.boss.applyVirus(7);
     }
   }
 
@@ -618,9 +641,9 @@ export class GameScene {
     SFX.shoot();
     const w = WPNS[13];
     const sorted = [...this.EYES].sort((a, b) => d2(a.x, a.y, this.wMX, this.wMY) - d2(b.x, b.y, this.wMX, this.wMY));
-    sorted.slice(0, 2).forEach(t => { t.virus = Math.max(t.virus, 15); this._damageE(t, w.dmg * this.powerMult * 2, false); });
+    sorted.slice(0, 2).forEach(t => { t.applyVirus(15); this._damageE(t, w.dmg * this.powerMult * 2, false); });
     if (this.boss && d2(this.boss.x, this.boss.y, this.wMX, this.wMY) < this.boss.sz + 30)
-      this.boss.virus = Math.max(this.boss.virus || 0, 10);
+      this.boss.applyVirus(10);
   }
 
   // ── Drone Swarm MK2 (14): deploys 3 orbiting attack drones for 8 s
@@ -900,18 +923,17 @@ export class GameScene {
       if (a.y < 0) a.y += this.WH; if (a.y > this.WH) a.y -= this.WH;
     });
 
-    // Virus spread
-    this.EYES.forEach(e => {
-      if (e.virus > 0) {
-        e.virus -= dt; e.hp -= 0.3 * dt;
-        if (Math.random() < 0.025) {
-          const n = this.EYES.find(o => o !== e && d2(o.x, o.y, e.x, e.y) < 82);
-          if (n) n.virus = Math.max(n.virus, 5);
-        }
-        if (e.hp <= 0) this._killE(e);
+    // Virus spread (tick handled by BaseEnemy.update; spread to nearby is GameScene responsibility)
+    for (const e of this.EYES) {
+      if (e.virus > 0 && Math.random() < 0.025) {
+        const n = this.EYES.find(o => o !== e && d2(o.x, o.y, e.x, e.y) < 82);
+        if (n) n.applyVirus(5);
       }
-    });
-    if (this.boss && this.boss.virus > 0) { this.boss.virus -= dt; this.boss.hp -= 0.55 * dt; }
+    }
+    // Boss virus HP drain (BossBase statusEffects tick time but don't drain HP)
+    if (this.boss) {
+      if (this.boss.statusEffects.some(s => s.type === 'virus')) this.boss.hp -= 0.55 * dt;
+    }
 
     // Dead timers
     for (let i = this.DEAD_EYES.length - 1; i >= 0; i--) {
@@ -919,58 +941,14 @@ export class GameScene {
       if (this.DEAD_EYES[i].deadTimer <= 0) this.DEAD_EYES.splice(i, 1);
     }
 
-    // Enemy AI
+    // Enemy AI — BaseEnemy.update handles status, movement, obstacles
     for (let i = this.EYES.length - 1; i >= 0; i--) {
       const e = this.EYES[i];
       if (e.hp <= 0) { this._killE(e); continue; }
-      if (e.spawnAnim > 0) e.spawnAnim -= dt * 3;
-      if (e.frozen > 0) { e.frozen -= dt; if (e.hitFlash > 0) e.hitFlash -= dt; continue; }
-      if (e.hitFlash > 0) e.hitFlash -= dt;
-      // Type behaviours
-      if (e.t === 'cloaker') {
-        e.cloakTimer -= dt;
-        if (e.cloakTimer <= 0) { e.cloaking = !e.cloaking; e.cloakTimer = e.cloaking ? 3 : 2; }
-        e.al = e.cloaking ? 0.07 : 1;
-      }
-      if (e.t === 'berser' && e.hp < e.maxHp * 0.5 && !e.berserk) { e.berserk = true; e.spd *= 2; e.col = '#FF0000'; }
-      if (e.t === 'teleport') {
-        e.teleTimer -= dt;
-        if (e.teleTimer <= 0) { e.x = Math.random() * this.WW; e.y = Math.random() * this.WH; e.teleTimer = 4 + Math.random() * 3; this._burst(e.x, e.y, '#44FFFF', 8, 45); }
-      }
-      if (e.t === 'necro') {
-        e.necroTimer -= dt;
-        if (e.necroTimer <= 0) {
-          e.necroTimer = 8;
-          if (this.DEAD_EYES.length > 0) { const dead = this.DEAD_EYES.shift(); this._spawnAt(dead.x, dead.y, dead.t || 'normal', this.wave); this._burst(dead.x, dead.y, '#CC00FF', 10, 55); }
-        }
-      }
-      if (e.t === 'shooter' || e.t === 'doppel') {
-        e.shootTimer -= dt;
-        if (e.shootTimer <= 0) {
-          e.shootTimer = 1.8 + Math.random() * 2;
-          const sdx = this.px - e.x, sdy = this.py - e.y, sd = Math.hypot(sdx, sdy) || 1;
-          this.EPROJS.push({ x: e.x, y: e.y, vx: sdx / sd * 185, vy: sdy / sd * 185, r: 5, col: e.col, life: 3 });
-        }
-      }
-      // Movement + separation
-      const tdx = this.px - e.x, tdy = this.py - e.y, td = Math.hypot(tdx, tdy) || 1;
-      let sx = 0, sy = 0;
-      for (const o of this.EYES) {
-        if (o === e) continue;
-        const sd = d2(e.x, e.y, o.x, o.y);
-        if (sd < 32 && sd > 0) { sx += (e.x - o.x) / sd; sy += (e.y - o.y) / sd; }
-      }
-      e.vx += (tdx / td * e.spd - e.vx) * Math.min(1, 4.5 * dt); e.vx += sx * 90 * dt;
-      e.vy += (tdy / td * e.spd - e.vy) * Math.min(1, 4.5 * dt); e.vy += sy * 90 * dt;
-      e.x += e.vx * dt; e.y += e.vy * dt;
+      e.update(dt, this.px, this.py, OBSTACLES, this.EYES);
+      if (e.hp <= 0) { this._killE(e); continue; }
+      this._enemyTypeBehavior(e, dt);
       e.x = Math.max(0, Math.min(this.WW, e.x)); e.y = Math.max(0, Math.min(this.WH, e.y));
-      // Obstacle bounce
-      for (const o of OBSTACLES) {
-        const cx = Math.max(o.x, Math.min(o.x + o.w, e.x)); const cy = Math.max(o.y, Math.min(o.y + o.h, e.y));
-        const dst = d2(e.x, e.y, cx, cy);
-        if (dst < e.sz && dst > 0) { const nx = (e.x - cx) / dst, ny = (e.y - cy) / dst; e.x = cx + nx * (e.sz + 1); e.y = cy + ny * (e.sz + 1); e.vx += nx * 120; e.vy += ny * 120; }
-      }
-      // Hit player
       if (this.invincible <= 0 && !this.ghostActive && !this.empShieldActive && d2(e.x, e.y, this.px, this.py) < e.sz + 12) this._hurtPlayer();
     }
 
@@ -982,29 +960,14 @@ export class GameScene {
       if (!this.empShieldActive && this.invincible <= 0 && !this.ghostActive && d2(p.x, p.y, this.px, this.py) < p.r + 11) { this.EPROJS.splice(i, 1); this._hurtPlayer(); }
     }
 
-    // Boss AI
+    // Boss AI — BossBase subclass handles movement, attack, phase transitions
     if (this.boss) {
-      if (this.boss.hitFlash > 0) this.boss.hitFlash -= dt;
-      if (this.boss.frozen > 0) { this.boss.frozen -= dt; }
-      else {
-        if (this.boss.hp < this.boss.maxHp * 0.5 && this.boss.phase === 1) {
-          this.boss.phase = 2; this.boss.spd *= 1.55; this.boss.shootTimer /= 2;
-          SFX.boss(); showMsg('PHASE 2', 'Critical System Override');
-        }
-        this.boss.angle = (this.boss.angle || 0) + dt * (this.boss.phase === 2 ? 1.4 : 0.8);
-        const bdx = this.px - this.boss.x, bdy = this.py - this.boss.y, bd = Math.hypot(bdx, bdy) || 1;
-        this.boss.x += bdx / bd * this.boss.spd * dt; this.boss.y += bdy / bd * this.boss.spd * dt;
+      if (!this.boss.alive) {
+        this._killBoss();
+      } else {
+        this.boss.update(dt, { px: this.px, py: this.py }, this.EPROJS);
         this.boss.x = Math.max(40, Math.min(this.WW - 40, this.boss.x));
         this.boss.y = Math.max(40, Math.min(this.WH - 40, this.boss.y));
-        this.boss.shootTimer -= dt;
-        if (this.boss.shootTimer <= 0) {
-          this.boss.shootTimer = this.boss.phase === 2 ? 0.75 : 1.3;
-          const cnt = this.boss.phase === 2 ? 5 : 3;
-          for (let a = 0; a < cnt; a++) {
-            const ang = a / cnt * Math.PI * 2 + this.boss.angle;
-            this.EPROJS.push({ x: this.boss.x, y: this.boss.y, vx: Math.cos(ang) * 210, vy: Math.sin(ang) * 210, r: 9, col: '#FF2200', life: 3.5 });
-          }
-        }
         if (d2(this.boss.x, this.boss.y, this.px, this.py) < this.boss.sz + 14 && this.invincible <= 0) this._hurtPlayer();
       }
     }
@@ -1199,8 +1162,8 @@ export class GameScene {
       ctx.beginPath(); ctx.arc(wx(p.x), wy(p.y), p.r * DPR, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
     });
 
-    // Boss HP bar (canvas top)
-    if (this.boss) {
+    // Boss HP bar (canvas top) + boss body via subclass render
+    if (this.boss && this.boss.alive) {
       const bw2 = lW * 0.6 * DPR, bx2 = (W - bw2) / 2, by2 = 8 * DPR;
       ctx.fillStyle = 'rgba(255,0,0,0.15)'; ctx.fillRect(bx2, by2, bw2, 7 * DPR);
       const hpPct = this.boss.hp / this.boss.maxHp;
@@ -1208,23 +1171,8 @@ export class GameScene {
       ctx.fillStyle = hcol; ctx.shadowBlur = 12; ctx.shadowColor = hcol;
       ctx.fillRect(bx2, by2, bw2 * hpPct, 7 * DPR); ctx.shadowBlur = 0;
       ctx.fillStyle = 'rgba(255,80,80,0.7)'; ctx.font = (8 * DPR) + 'px monospace'; ctx.textAlign = 'center';
-      ctx.fillText('BOSS  PHASE ' + this.boss.phase + '  —  ' + Math.ceil(this.boss.hp) + ' HP', W / 2, by2 - 3 * DPR);
-      // Boss shape
-      const bxe = wx(this.boss.x), bye = wy(this.boss.y), bs = this.boss.sz * DPR;
-      ctx.save(); ctx.translate(bxe, bye); ctx.rotate(this.boss.angle || 0);
-      if (this.boss.hitFlash > 0) { ctx.shadowBlur = 60; ctx.shadowColor = '#FFFFFF'; ctx.strokeStyle = '#FFFFFF'; }
-      else { ctx.shadowBlur = 50; ctx.shadowColor = '#FF0000'; ctx.strokeStyle = '#FF2200'; }
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * bs, Math.sin(a) * bs); }
-      ctx.closePath(); ctx.stroke();
-      if (this.boss.phase === 2) {
-        ctx.strokeStyle = 'rgba(255,140,0,0.5)'; ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2 + this.boss.angle * 0.4; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * bs * 1.45, Math.sin(a) * bs * 1.45); }
-        ctx.closePath(); ctx.stroke();
-      }
-      ctx.restore(); ctx.shadowBlur = 0;
+      ctx.fillText(this.boss.constructor.name.toUpperCase() + '  —  ' + Math.ceil(this.boss.hp) + ' HP', W / 2, by2 - 3 * DPR);
+      this.boss.render(ctx, this.camX, this.camY, this.DPR);
     }
 
     // Enemies
