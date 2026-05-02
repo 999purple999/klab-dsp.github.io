@@ -733,9 +733,12 @@ function showStreak(text,col){
   streakTO=setTimeout(()=>{b.style.opacity='0';b.style.transform='translate(-50%,-50%) scale(0.8)';},1200);
 }
 function updateHpHud(){
+  const FILL='<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:-2px;margin:0 1px"><path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4 4.5 8-2.5 4.5-9.5 9-9.5 9z"/></svg>';
+  const EMPTY='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin:0 1px;opacity:.35"><path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4 4.5 8-2.5 4.5-9.5 9-9.5 9z"/></svg>';
   let s='';
-  for(let i=0;i<hp;i++)s+='♥';for(let i=hp;i<maxHp;i++)s+='♡';
-  document.getElementById('hp-hearts').textContent=s;
+  for(let i=0;i<hp;i++) s+=FILL;
+  for(let i=hp;i<maxHp;i++) s+=EMPTY;
+  document.getElementById('hp-hearts').innerHTML=s;
 }
 
 // ═══ Start / game over ════════════════════════════════════════════════════

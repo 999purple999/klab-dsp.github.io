@@ -206,9 +206,9 @@ hr.divider{border:none;border-top:1px solid var(--border);max-width:1240px;margi
 .problem-card p{font-size:.86rem;color:var(--text2);line-height:1.6;margin-bottom:14px}
 .problem-card ul{list-style:none}
 .problem-card li{font-size:.82rem;color:var(--text3);line-height:1.7;padding-left:20px;position:relative}
-.problem-card li::before{position:absolute;left:0;font-family:var(--font-mono);font-size:.85rem}
-.problem-card.broken li::before{content:'✕';color:#fca5a5}
-.problem-card.solved li::before{content:'✓';color:var(--kp3)}
+.problem-card li::before{content:'';position:absolute;left:0;top:7px;width:12px;height:12px;background-repeat:no-repeat;background-size:contain;background-position:center}
+.problem-card.broken li::before{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fca5a5' stroke-width='3' stroke-linecap='round'><path d='M18 6 6 18M6 6l12 12'/></svg>")}
+.problem-card.solved li::before{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c084fc' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>")}
 
 /* ─────────────────────────────────────────────────────────────────────── */
 /*  EDITOR MODES SHOWCASE                                                   */
@@ -351,7 +351,8 @@ hr.divider{border:none;border-top:1px solid var(--border);max-width:1240px;margi
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 .collab-pane.server .cipher-blob{font-size:.7rem;color:#86efac;opacity:.7;line-height:1.5;word-break:break-all;max-height:120px;overflow:hidden}
 .collab-pane.server .server-knows{margin-top:14px;font-size:.7rem;color:#fca5a5;line-height:1.6}
-.collab-pane.server .server-knows::before{content:'⚠ Server cannot read content';display:block;font-weight:700;letter-spacing:.04em;margin-bottom:6px}
+.collab-pane.server .server-knows-head{display:flex;align-items:center;gap:6px;font-weight:700;letter-spacing:.04em;margin-bottom:6px}
+.collab-pane.server .server-knows-head .icon{width:12px;height:12px;stroke-width:2.4}
 .collab-arrow-h{display:flex;align-items:center;justify-content:center;color:var(--kp3);font-family:var(--font-mono);font-size:.72rem;font-weight:600;flex-direction:column;gap:6px}
 .collab-arrow-h-line{width:32px;height:1px;background:linear-gradient(90deg,var(--kp),transparent);position:relative}
 .collab-arrow-h-line::after{content:'';position:absolute;right:-3px;top:-2px;width:5px;height:5px;border-top:1px solid var(--kp);border-right:1px solid var(--kp);transform:rotate(45deg)}
@@ -716,9 +717,45 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
   .feat-card::before{display:none}
   .ticker-inner:hover{animation-play-state:running}
 }
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/*  SVG ICON SYSTEM                                                         */
+/* ─────────────────────────────────────────────────────────────────────── */
+.icon{display:inline-block;width:1em;height:1em;vertical-align:-0.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.icon-fill{fill:currentColor;stroke:none}
+.icon-xs{width:10px;height:10px}
+.icon-sm{width:14px;height:14px}
+.icon-md{width:18px;height:18px}
+.icon-lg{width:32px;height:32px}
+.svg-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.showcase-check-icon .icon,.pricing-feature-icon .icon,.binaura-feat-check .icon{width:11px;height:11px;stroke-width:3}
+.compare .check .icon,.compare .cross .icon,.compare .partial .icon{width:12px;height:12px;stroke-width:3;margin-right:4px}
+.docs-cat-icon{display:inline-flex;align-items:center;justify-content:center;color:var(--kp3)}
+.docs-cat-icon .icon{width:28px;height:28px;stroke-width:1.6}
+.demo-card-icon{display:inline-flex;align-items:center;justify-content:center;color:var(--kp3);margin-bottom:12px}
+.demo-card-icon .icon{width:34px;height:34px;stroke-width:1.6}
 </style>
 </head>
 <body>
+
+<svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+    <symbol id="i-move" viewBox="0 0 24 24"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="i-orbit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(45 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(-45 12 12)"/></symbol>
+    <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="12" y1="6" x2="12" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  </defs>
+</svg>
 
 <div class="scroll-progress" id="scrollProgress"></div>
 <div class="spotlight" id="spotlight"></div>
@@ -890,7 +927,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
 
     <div class="problem-grid">
       <div class="problem-card broken reveal delay-1">
-        <div class="problem-card-tag">✕ Local-only tools</div>
+        <div class="problem-card-tag"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"/></svg> Local-only tools</div>
         <h4>Obsidian · Bear · Apple Notes</h4>
         <p>Strong privacy because the data never leaves your device. But you lose collaboration entirely, and sync is a manual chore.</p>
         <ul>
@@ -900,7 +937,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         </ul>
       </div>
       <div class="problem-card broken reveal delay-2">
-        <div class="problem-card-tag">✕ Cloud-connected tools</div>
+        <div class="problem-card-tag"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"/></svg> Cloud-connected tools</div>
         <h4>Notion · Evernote · Google Docs</h4>
         <p>Beautiful collaboration. But the server reads every word you write: your IP, your patient notes, your sources, all in plaintext.</p>
         <ul>
@@ -910,7 +947,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         </ul>
       </div>
       <div class="problem-card solved reveal delay-3">
-        <div class="problem-card-tag">✓ K-Perception</div>
+        <div class="problem-card-tag"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-check"/></svg> K-Perception</div>
         <h4>The architectural escape hatch</h4>
         <p>Encryption happens before the network exists. Y.js CRDT + AES-256-GCM means the server brokers binary blobs it cannot interpret.</p>
         <ul>
@@ -955,12 +992,12 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         <h3>Your mind is private.<br>Keep it that way.</h3>
         <p>K-Perception encrypts every note, attachment, and metadata field with AES-256-GCM <em>before</em> any network transmission. The master key is derived from your password via PBKDF2 (100,000 SHA-256 iterations). It never leaves your device, never travels to the server, never gets logged.</p>
         <div class="showcase-checks">
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> AES-256-GCM authenticated encryption. Tampering rejected at the bit level</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Per-section HKDF-derived keys. Revoke one section without touching the rest</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Per-file Data Encryption Keys (DEK) wrapped with directory keys</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Offline-first SQLite-analog vault. Works without internet, always</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Biometric unlock with hardware-backed Android Keystore enclave</div>
-          <div class="showcase-check"><span class="showcase-check-icon">✓</span> Time-limited elevation tokens for destructive ops. TOTP step-up enforced server-side</div>
+          <div class="showcase-check"><span class="showcase-check-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> AES-256-GCM authenticated encryption. Tampering rejected at the bit level</div>
+          <div class="showcase-check"><span class="showcase-check-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Per-section HKDF-derived keys. Revoke one section without touching the rest</div>
+          <div class="showcase-check"><span class="showcase-check-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Per-file Data Encryption Keys (DEK) wrapped with directory keys</div>
+          <div class="showcase-check"><span class="showcase-check-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Offline-first SQLite-analog vault. Works without internet, always</div>
+          <div class="showcase-check"><span class="showcase-check-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Biometric unlock with hardware-backed Android Keystore enclave</div>
+          <div class="showcase-check"><span class="showcase-check-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Time-limited elevation tokens for destructive ops. TOTP step-up enforced server-side</div>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
           <a href="#security" class="btn btn-kp">View security model</a>
@@ -989,10 +1026,10 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           <div class="vault-line"><span class="key">authTag</span>: <span class="kp-color">GCM tag verifies integrity</span></div>
           <div class="vault-line">&nbsp;</div>
           <div class="vault-line"><span class="comment">// Server sees: blob size + user ID</span></div>
-          <div class="vault-line"><span class="comment">// Server sees: nothing else ✓</span></div>
+          <div class="vault-line"><span class="comment">// Server sees: nothing else.</span></div>
 
           <div class="live-encrypt">
-            <div class="live-encrypt-label">⚡ Live encryption</div>
+            <div class="live-encrypt-label"><svg class="icon" style="width:11px;height:11px;stroke-width:2.4" aria-hidden="true"><use href="#i-zap"/></svg> Live encryption</div>
             <div class="live-encrypt-row">
               <span class="live-encrypt-from" id="liveFrom">"My therapy notes 2026-04-26..."</span>
               <span class="live-encrypt-arrow">→</span>
@@ -1252,6 +1289,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           17b0d15a9ec224d9f3a17e2fff…
         </div>
         <div class="server-knows">
+          <div class="server-knows-head"><svg class="icon" aria-hidden="true"><use href="#i-warning"/></svg> Server cannot read content</div>
           • doc_id (opaque)<br>
           • update size · timestamp<br>
           • sender session · cursor positions
@@ -1358,16 +1396,16 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
           </tr>
         </thead>
         <tbody>
-          <tr><td>E2EE at rest</td><td class="kp-col"><span class="check">✓ Always</span></td><td><span class="cross">✕</span></td><td><span class="check">✓ Local</span></td><td><span class="cross">✕</span></td><td><span class="check">✓</span></td></tr>
-          <tr><td>E2EE real-time collab</td><td class="kp-col"><span class="check">✓ Y.js CRDT</span></td><td><span class="cross">✕ Server reads</span></td><td><span class="cross">✕ None</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
-          <tr><td>Rich-text editor</td><td class="kp-col"><span class="check">✓ TipTap v3</span></td><td><span class="check">✓</span></td><td><span class="partial">~ Markdown</span></td><td><span class="check">✓</span></td><td><span class="partial">Limited</span></td></tr>
-          <tr><td>Spreadsheets</td><td class="kp-col"><span class="check">✓ 40+ formulas</span></td><td><span class="check">✓</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
-          <tr><td>LaTeX rendering</td><td class="kp-col"><span class="check">✓ Full doc</span></td><td><span class="partial">Partial</span></td><td><span class="partial">Plugin</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
-          <tr><td>Freehand canvas</td><td class="kp-col"><span class="check">✓ Bézier smooth</span></td><td><span class="cross">✕</span></td><td><span class="partial">Plugin</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
-          <tr><td>Mermaid diagrams</td><td class="kp-col"><span class="check">✓ Built-in</span></td><td><span class="cross">✕</span></td><td><span class="partial">Plugin</span></td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td></tr>
-          <tr><td>SAML / SCIM enterprise</td><td class="kp-col"><span class="check">✓ Both</span></td><td><span class="check">✓</span></td><td><span class="cross">✕</span></td><td><span class="check">✓</span></td><td><span class="cross">✕</span></td></tr>
-          <tr><td>Offline-first</td><td class="kp-col"><span class="check">✓ Always</span></td><td><span class="partial">Partial</span></td><td><span class="check">✓</span></td><td><span class="partial">Partial</span></td><td><span class="check">✓</span></td></tr>
-          <tr><td>Free tier</td><td class="kp-col"><span class="check">✓ €0 forever</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>E2EE at rest</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Always</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Local</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td></tr>
+          <tr><td>E2EE real-time collab</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Y.js CRDT</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg> Server reads</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg> None</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td></tr>
+          <tr><td>Rich-text editor</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> TipTap v3</span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td><td><span class="partial">~ Markdown</span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td><td><span class="partial">Limited</span></td></tr>
+          <tr><td>Spreadsheets</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> 40+ formulas</span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td></tr>
+          <tr><td>LaTeX rendering</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Full doc</span></td><td><span class="partial">Partial</span></td><td><span class="partial">Plugin</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td></tr>
+          <tr><td>Freehand canvas</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Bézier smooth</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="partial">Plugin</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td></tr>
+          <tr><td>Mermaid diagrams</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Built-in</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="partial">Plugin</span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td></tr>
+          <tr><td>SAML / SCIM enterprise</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Both</span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td><td><span class="cross"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span></td></tr>
+          <tr><td>Offline-first</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Always</span></td><td><span class="partial">Partial</span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td><td><span class="partial">Partial</span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td></tr>
+          <tr><td>Free tier</td><td class="kp-col"><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> €0 forever</span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td><td><span class="check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span></td></tr>
           <tr><td>Paid base price</td><td class="kp-col"><span class="price kp">€3.49/mo</span></td><td><span class="price">€8/mo</span></td><td><span class="price">€4/mo</span></td><td><span class="price">€7.99/mo</span></td><td><span class="price">€9/mo</span></td></tr>
         </tbody>
       </table>
@@ -1404,12 +1442,12 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         <div class="pricing-annual-note">&nbsp;</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> AES-256-GCM, fully offline</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> All 7 editor modes</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> 2 share links (12h expiry)</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Export TXT, MD, JSON, KPX</li>
-          <li class="pricing-feature dim"><span class="pricing-feature-icon">✕</span> No cross-device sync</li>
-          <li class="pricing-feature dim"><span class="pricing-feature-icon">✕</span> No cloud backup</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> AES-256-GCM, fully offline</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> All 7 editor modes</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> 2 share links (12h expiry)</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Export TXT, MD, JSON, KPX</li>
+          <li class="pricing-feature dim"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span> No cross-device sync</li>
+          <li class="pricing-feature dim"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></span> No cloud backup</li>
         </ul>
         <button class="pricing-cta dim-btn" onclick="window.location.href='https://k-perception-backend.accessisoftwarefrancesco.workers.dev/updates/download/kperceptioninstaller.exe?v=2.0.0'">Download Free</button>
       </div>
@@ -1425,19 +1463,19 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         <div class="pricing-annual-note" id="guardian-annual">or €29/year · save 30%</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Sync across 3 devices</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> 5 GB encrypted storage</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--emerald)">✓</span> 30-day version history</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Unlimited share links</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> PDF export with themes</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> TOTP 2FA</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Sync across 3 devices</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> 5 GB encrypted storage</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--emerald)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> 30-day version history</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Unlimited share links</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> PDF export with themes</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> TOTP 2FA</li>
         </ul>
         <button class="pricing-cta kp-fill" onclick="kpCheckout('guardian')">Get Guardian →</button>
       </div>
 
       <!-- VAULT -->
       <div class="pricing-card featured">
-        <span class="pricing-ribbon" style="background:rgba(129,140,248,.25);color:var(--indigo);border:1px solid rgba(129,140,248,.35)">⚡ Best value</span>
+        <span class="pricing-ribbon" style="background:rgba(129,140,248,.25);color:var(--indigo);border:1px solid rgba(129,140,248,.35);display:inline-flex;align-items:center;gap:5px"><svg class="icon" style="width:11px;height:11px" aria-hidden="true"><use href="#i-zap"/></svg> Best value</span>
         <div class="pricing-name" style="color:var(--indigo)">Vault</div>
         <div class="pricing-tagline">For those who take their mind seriously.</div>
         <div class="pricing-price">
@@ -1447,34 +1485,34 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         <div class="pricing-annual-note" id="vault-annual">or €67/year · save 30%</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Guardian</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--indigo)">✓</span> 8 devices · 50 GB</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--indigo)">✓</span> Real-time E2EE collaboration</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--indigo)">✓</span> Unlimited revision history</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Knowledge Graph + LLM refinement</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Priority support</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Everything in Guardian</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--indigo)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> 8 devices · 50 GB</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--indigo)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Real-time E2EE collaboration</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--indigo)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Unlimited revision history</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Knowledge Graph + LLM refinement</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Priority support</li>
         </ul>
         <button class="pricing-cta kp-solid" onclick="kpCheckout('vault')">Get Vault →</button>
       </div>
 
       <!-- LIFETIME -->
       <div class="pricing-card lifetime-card">
-        <span class="pricing-ribbon" style="background:rgba(245,158,11,.14);color:var(--gold);border:1px solid rgba(245,158,11,.3)">🔥 Limited</span>
+        <span class="pricing-ribbon" style="background:rgba(245,158,11,.14);color:var(--gold);border:1px solid rgba(245,158,11,.3);display:inline-flex;align-items:center;gap:5px"><svg class="icon" style="width:11px;height:11px" aria-hidden="true"><use href="#i-flame"/></svg> Limited</span>
         <div class="pricing-name" style="color:var(--gold)">Lifetime</div>
         <div class="pricing-tagline">Pay once. Own it forever.</div>
         <div class="pricing-price">
           <span class="pricing-amount">€149</span>
           <span class="pricing-period">one-time</span>
         </div>
-        <div class="pricing-annual-note" style="color:var(--gold);font-size:.72rem">⚠ Only 47 lifetime spots remaining</div>
+        <div class="pricing-annual-note" style="color:var(--gold);font-size:.72rem;display:flex;align-items:center;gap:5px"><svg class="icon" style="width:11px;height:11px" aria-hidden="true"><use href="#i-warning"/></svg> Only 47 lifetime spots remaining</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Vault, forever</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--gold)">✓</span> Zero recurring fees</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--gold)">✓</span> All future features included</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Lifetime supporter badge</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Direct developer access</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Pays for itself in 19 months</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Everything in Vault, forever</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--gold)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Zero recurring fees</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--gold)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> All future features included</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Lifetime supporter badge</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Direct developer access</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Pays for itself in 19 months</li>
         </ul>
         <button class="pricing-cta gold" onclick="kpCheckout('lifetime')">Get Lifetime →</button>
       </div>
@@ -1490,12 +1528,12 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         <div class="pricing-annual-note" id="team-annual">or €59/user/year</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Vault</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--kp)">✓</span> Encrypted workspaces</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--kp)">✓</span> 100 GB shared storage</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Channels · Files · Gantt · Calendar</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> 8-tab admin console</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Webhooks · API keys</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Everything in Vault</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--kp)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Encrypted workspaces</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--kp)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> 100 GB shared storage</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Channels · Files · Gantt · Calendar</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> 8-tab admin console</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Webhooks · API keys</li>
         </ul>
         <button class="pricing-cta kp-fill" onclick="kpCheckout('team')">Get Team →</button>
       </div>
@@ -1511,12 +1549,12 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         <div class="pricing-annual-note">Custom pricing available</div>
         <hr class="pricing-divider">
         <ul class="pricing-features">
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Everything in Team</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--rose)">✓</span> SAML 2.0 · SCIM 2.0 · OIDC</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--rose)">✓</span> Unlimited storage + devices</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> IP allowlist · MFA enforcement</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> SLA 99.9% · BAA · DPA</li>
-          <li class="pricing-feature"><span class="pricing-feature-icon">✓</span> Dedicated account manager</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Everything in Team</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--rose)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> SAML 2.0 · SCIM 2.0 · OIDC</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon" style="color:var(--rose)"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Unlimited storage + devices</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> IP allowlist · MFA enforcement</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> SLA 99.9% · BAA · DPA</li>
+          <li class="pricing-feature"><span class="pricing-feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Dedicated account manager</li>
         </ul>
         <button class="pricing-cta rose" onclick="window.location.href='mailto:accessisoftwarefrancesco@gmail.com?subject=K-Perception Enterprise'">Contact Sales →</button>
       </div>
@@ -1611,16 +1649,16 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       </div>
 
       <div class="binaura-feat-grid">
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> 4 lock-free wavetable oscillator engines with independent tuning, pan and phase</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> AVX2 SIMD vectorization for maximum polyphony with minimal CPU load</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> PolyBLEP antialiasing across all waveforms. Zero aliasing at any frequency</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> Analog Drift DDS · per-voice VCO instability simulation</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> ZDF biquad with SSI2144 circuit emulation, self-oscillation, key tracking</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> 8-slot modulation matrix · route any source to any parameter</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> 4 independent LFO engines with tempo sync and per-voice mode</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> Full MPE support with CC74 slide, per-note pitch bend and pressure</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> ThermalGuard DSP · auto voice limiting prevents dropouts under CPU load</div>
-        <div class="binaura-feat"><span class="binaura-feat-check">✓</span> GPU-accelerated waveform display and drag-to-assign routing</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> 4 lock-free wavetable oscillator engines with independent tuning, pan and phase</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> AVX2 SIMD vectorization for maximum polyphony with minimal CPU load</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> PolyBLEP antialiasing across all waveforms. Zero aliasing at any frequency</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Analog Drift DDS · per-voice VCO instability simulation</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> ZDF biquad with SSI2144 circuit emulation, self-oscillation, key tracking</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> 8-slot modulation matrix · route any source to any parameter</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> 4 independent LFO engines with tempo sync and per-voice mode</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Full MPE support with CC74 slide, per-note pitch bend and pressure</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> ThermalGuard DSP · auto voice limiting prevents dropouts under CPU load</div>
+        <div class="binaura-feat"><span class="binaura-feat-check"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> GPU-accelerated waveform display and drag-to-assign routing</div>
       </div>
     </div>
   </div>
@@ -1670,32 +1708,32 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
       </div>
       <div class="docs-cats">
         <a href="wiki.html#getting-started/overview" class="docs-cat">
-          <span class="docs-cat-icon">🚀</span>
+          <span class="docs-cat-icon"><svg class="icon" aria-hidden="true"><use href="#i-rocket"/></svg></span>
           <span class="docs-cat-name">Getting Started</span>
           <span class="docs-cat-count">8 articles</span>
         </a>
         <a href="wiki.html#editors/overview" class="docs-cat">
-          <span class="docs-cat-icon">✏️</span>
+          <span class="docs-cat-icon"><svg class="icon" aria-hidden="true"><use href="#i-pencil"/></svg></span>
           <span class="docs-cat-name">Editor Modes</span>
           <span class="docs-cat-count">16 articles</span>
         </a>
         <a href="wiki.html#security/overview" class="docs-cat">
-          <span class="docs-cat-icon">🔐</span>
+          <span class="docs-cat-icon"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg></span>
           <span class="docs-cat-name">Security</span>
           <span class="docs-cat-count">12 articles</span>
         </a>
         <a href="wiki.html#enterprise/overview" class="docs-cat">
-          <span class="docs-cat-icon">🏢</span>
+          <span class="docs-cat-icon"><svg class="icon" aria-hidden="true"><use href="#i-building"/></svg></span>
           <span class="docs-cat-name">Enterprise</span>
           <span class="docs-cat-count">21 articles</span>
         </a>
         <a href="wiki.html#collaboration/realtime-yjs" class="docs-cat">
-          <span class="docs-cat-icon">⚡</span>
+          <span class="docs-cat-icon"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg></span>
           <span class="docs-cat-name">Collaboration</span>
           <span class="docs-cat-count">7 articles</span>
         </a>
         <a href="wiki.html#legal/terms-of-service" class="docs-cat">
-          <span class="docs-cat-icon">📋</span>
+          <span class="docs-cat-icon"><svg class="icon" aria-hidden="true"><use href="#i-clipboard"/></svg></span>
           <span class="docs-cat-name">Legal</span>
           <span class="docs-cat-count">10 articles</span>
         </a>
@@ -1717,7 +1755,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         style="display:block;text-decoration:none;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:28px 24px;transition:var(--tr);position:relative;overflow:hidden"
         onmouseover="this.style.borderColor='var(--kp)';this.style.boxShadow='0 0 30px var(--kp-glow)'"
         onmouseout="this.style.borderColor='var(--border2)';this.style.boxShadow='none'">
-        <div style="font-size:2rem;margin-bottom:12px">🔥</div>
+        <div class="demo-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-flame"/></svg></div>
         <div style="font-family:var(--font-display);font-size:.95rem;color:var(--text1);margin-bottom:8px;letter-spacing:.04em">DOC SHREDDER</div>
         <div style="font-size:.82rem;color:var(--text2);line-height:1.6">Click to shred a file full of leaked passwords and SSNs. Strips fly off the screen — K-Perception is revealed beneath.</div>
         <div style="margin-top:16px;font-size:.72rem;color:var(--kp3);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase">Play →</div>
@@ -1727,7 +1765,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         style="display:block;text-decoration:none;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:28px 24px;transition:var(--tr);position:relative;overflow:hidden"
         onmouseover="this.style.borderColor='var(--kp)';this.style.boxShadow='0 0 30px var(--kp-glow)'"
         onmouseout="this.style.borderColor='var(--border2)';this.style.boxShadow='none'">
-        <div style="font-size:2rem;margin-bottom:12px">🏎️</div>
+        <div class="demo-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-move"/></svg></div>
         <div style="font-family:var(--font-display);font-size:.95rem;color:var(--text1);margin-bottom:8px;letter-spacing:.04em">GRAVITY SANDBOX</div>
         <div style="font-size:.82rem;color:var(--text2);line-height:1.6">Fling Docs, Sheets, IDE and Collab boxes around a physics sandbox. Double-click to shake everything.</div>
         <div style="margin-top:16px;font-size:.72rem;color:var(--kp3);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase">Play →</div>
@@ -1737,7 +1775,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         style="display:block;text-decoration:none;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:28px 24px;transition:var(--tr);position:relative;overflow:hidden"
         onmouseover="this.style.borderColor='var(--kp)';this.style.boxShadow='0 0 30px var(--kp-glow)'"
         onmouseout="this.style.borderColor='var(--border2)';this.style.boxShadow='none'">
-        <div style="font-size:2rem;margin-bottom:12px">🛡️</div>
+        <div class="demo-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg></div>
         <div style="font-family:var(--font-display);font-size:.95rem;color:var(--text1);margin-bottom:8px;letter-spacing:.04em">PRIVACY MAGNET</div>
         <div style="font-size:.82rem;color:var(--text2);line-height:1.6">Move your shield to block 28 surveillance trackers — EMAIL, GPS, CC#, HEALTH and more. All eyes closed: Privacy Mode ON.</div>
         <div style="margin-top:16px;font-size:.72rem;color:var(--kp3);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase">Play →</div>
@@ -1747,7 +1785,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         style="display:block;text-decoration:none;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:28px 24px;transition:var(--tr);position:relative;overflow:hidden"
         onmouseover="this.style.borderColor='var(--kp)';this.style.boxShadow='0 0 30px var(--kp-glow)'"
         onmouseout="this.style.borderColor='var(--border2)';this.style.boxShadow='none'">
-        <div style="font-size:2rem;margin-bottom:12px">⚡</div>
+        <div class="demo-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-zap"/></svg></div>
         <div style="font-family:var(--font-display);font-size:.95rem;color:var(--text1);margin-bottom:8px;letter-spacing:.04em">HACKER SPEED TEST</div>
         <div style="font-size:.82rem;color:var(--text2);line-height:1.6">Sensitive data streams across the screen. Hit ENCRYPT the instant you see it. Your reaction time = your security speed.</div>
         <div style="margin-top:16px;font-size:.72rem;color:var(--kp3);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase">Play →</div>
@@ -1757,7 +1795,7 @@ footer{border-top:1px solid var(--border);padding:3rem clamp(1.5rem,5vw,4rem) 2r
         style="display:block;text-decoration:none;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:28px 24px;transition:var(--tr);position:relative;overflow:hidden"
         onmouseover="this.style.borderColor='var(--kp)';this.style.boxShadow='0 0 30px var(--kp-glow)'"
         onmouseout="this.style.borderColor='var(--border2)';this.style.boxShadow='none'">
-        <div style="font-size:2rem;margin-bottom:12px">🌌</div>
+        <div class="demo-card-icon"><svg class="icon" aria-hidden="true"><use href="#i-orbit"/></svg></div>
         <div style="font-family:var(--font-display);font-size:.95rem;color:var(--text1);margin-bottom:8px;letter-spacing:.04em">TOOL GALAXY</div>
         <div style="font-size:.82rem;color:var(--text2);line-height:1.6">350 particles orbit 5 tool clusters — Docs, Sheets, IDE, Collab, Canvas. Move to attract. Click to explode the galaxy.</div>
         <div style="margin-top:16px;font-size:.72rem;color:var(--kp3);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase">Play →</div>
@@ -1998,7 +2036,7 @@ const MODES = {
     tech: 'TipTap v3 (ProseMirror) · 20+ extensions',
     desc: 'Word-class rich text. Headings, lists, checklists, tables, code blocks, callouts, mentions, slash menu, bubble formatter. Encrypted before it ever touches the network.',
     feats: ['H1-H6, bold/italic/underline/highlight','Task lists · tables · code blocks','Slash menu + bubble menu','DocsOutline sidebar · @mentions','Drag-resize images · character count'],
-    preview: '<span class="pv-tag">project-brief.doc</span><h2>Q3 product roadmap</h2><div style="color:var(--text2);line-height:1.7;margin-top:8px"><strong style="color:var(--text1)">Owner:</strong> @anna  ·  <strong style="color:var(--text1)">Status:</strong> in progress<br><br>The encrypted backup-restore feature ships first. We will:<br><br>☑ <span style="color:var(--text2)">Land DEK refactor</span><br>☑ <span style="color:var(--text2)">Wire up R2 archive</span><br>☐ <span style="color:var(--text3)">Public AI Panel beta</span><br>☐ <span style="color:var(--text3)">SCIM Groups GA</span><br><br><span style="color:var(--kp3);font-style:italic">→ See <u>SECURITY.md</u> for the cipher details.</span></div>'
+    preview: '<span class="pv-tag">project-brief.doc</span><h2>Q3 product roadmap</h2><div style="color:var(--text2);line-height:1.7;margin-top:8px"><strong style="color:var(--text1)">Owner:</strong> @anna  ·  <strong style="color:var(--text1)">Status:</strong> in progress<br><br>The encrypted backup-restore feature ships first. We will:<br><br><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#a78bfa" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="18" height="18" rx="3"/><polyline points="8 12 11 15 16 9"/></svg> <span style="color:var(--text2)">Land DEK refactor</span><br><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#a78bfa" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="18" height="18" rx="3"/><polyline points="8 12 11 15 16 9"/></svg> <span style="color:var(--text2)">Wire up R2 archive</span><br><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#5a6485" stroke-width="2" style="vertical-align:-2px"><rect x="3" y="3" width="18" height="18" rx="3"/></svg> <span style="color:var(--text3)">Public AI Panel beta</span><br><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#5a6485" stroke-width="2" style="vertical-align:-2px"><rect x="3" y="3" width="18" height="18" rx="3"/></svg> <span style="color:var(--text3)">SCIM Groups GA</span><br><br><span style="color:var(--kp3);font-style:italic">→ See <u>SECURITY.md</u> for the cipher details.</span></div>'
   },
   sheets: {
     title: 'Sheets',
@@ -2161,10 +2199,10 @@ if (waitlistForm) {
         body: JSON.stringify({ email }),
       });
       if (res.ok) {
-        waitlistMsg.textContent = '✓ You\'re on the list. We\'ll email you when it ships.';
+        waitlistMsg.innerHTML = '<svg class="icon" style="width:13px;height:13px;stroke-width:2.5" aria-hidden="true"><use href="#i-check"/></svg> You\'re on the list. We\'ll email you when it ships.';
         waitlistMsg.className = 'waitlist-msg ok';
         waitlistEmail.value = '';
-        waitlistBtn.textContent = 'Done ✓';
+        waitlistBtn.innerHTML = 'Done <svg class="icon" style="width:12px;height:12px;stroke-width:2.5" aria-hidden="true"><use href="#i-check"/></svg>';
       } else {
         throw new Error('Server error');
       }
