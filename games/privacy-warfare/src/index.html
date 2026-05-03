@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Privacy Warfare — K-Perception</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="styles/tokens.css">
 <style>
 /* ── Reset ─────────────────────────────── */
 *{margin:0;padding:0;box-sizing:border-box}
@@ -602,10 +605,49 @@ canvas{display:block;position:absolute;top:0;left:0}
 .ar-buy-btn:hover:not(:disabled){background:rgba(0,255,65,.2);box-shadow:0 0 28px rgba(0,255,65,.18);}
 .ar-buy-btn:disabled{opacity:.35;cursor:not-allowed;}
 .ar-cant-afford{font-size:9px;color:rgba(255,80,80,.7);margin-top:10px;letter-spacing:.12em;text-align:center;}
+
+/* ── Arsenal mode tabs (WEAPONS | GADGETS) ────────────────────────────────── */
+.ar-mode-tabs{display:flex;border-bottom:1px solid rgba(191,0,255,.15);flex-shrink:0;}
+.ar-mode-tab{
+  flex:1;padding:11px 8px;font-family:inherit;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;background:transparent;border:none;border-bottom:2px solid transparent;
+  color:rgba(255,255,255,.35);cursor:pointer;transition:all .15s;margin-bottom:-1px;
+}
+.ar-mode-tab:hover{color:rgba(255,255,255,.7);background:rgba(255,255,255,.03);}
+.ar-mode-tab.active{color:#BF00FF;border-bottom-color:#BF00FF;background:rgba(191,0,255,.07);}
+
+/* ── CRT scanline overlay ─────────────────────────────────────────────────── */
+#crt-overlay{
+  position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px),
+    radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);
+  animation:crt-flicker 8s infinite;
+}
+@keyframes crt-flicker{0%,100%{opacity:.97}48%{opacity:1}50%{opacity:.98}92%{opacity:.99}94%{opacity:.97}}
+
+/* ── Custom cursor ────────────────────────────────────────────────────────── */
+*{cursor:none}
+#cur-core{
+  position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;
+  border:2px solid var(--neon-cyan,#00f0ff);background:transparent;z-index:var(--z-cursor,500);
+  transform:translate(-50%,-50%);transition:transform .08s linear,border-color .15s,width .15s,height .15s;
+  mix-blend-mode:screen;
+}
+#cur-trail{
+  position:fixed;width:24px;height:24px;border-radius:50%;pointer-events:none;
+  border:1px solid rgba(0,240,255,.3);background:transparent;z-index:calc(var(--z-cursor,500) - 1);
+  transform:translate(-50%,-50%);transition:transform .15s ease-out,opacity .15s;
+  mix-blend-mode:screen;
+}
+body:has(button:hover) #cur-core{width:14px;height:14px;border-color:var(--neon-purple,#b026ff);}
+body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
+
 @media(max-width:640px){
   .ar-layout{flex-direction:column;width:100vw;height:100vh;border-radius:0;}
   .ar-left{width:100%;height:45%;border-right:none;border-bottom:1px solid rgba(191,0,255,.14);}
   .ar-right{height:55%;}
+  #cur-core,#cur-trail{display:none;}
 }
 
 /* ── Campaign Modal ─────────────────────────────────────────────────────────── */
@@ -859,6 +901,11 @@ canvas{display:block;position:absolute;top:0;left:0}
 </style>
 </head>
 <body>
+<!-- ── CRT overlay (scanlines + vignette) ── -->
+<div id="crt-overlay" aria-hidden="true"></div>
+<!-- ── Custom cursor ─────────────────────── -->
+<div id="cur-core" aria-hidden="true"></div>
+<div id="cur-trail" aria-hidden="true"></div>
 <!-- ── SVG Sprite Sheet ──────────────────── -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
   <!-- Target / Survival -->
@@ -1104,15 +1151,15 @@ canvas{display:block;position:absolute;top:0;left:0}
   </div>
 </div>
 
-<!-- ── Arsenal Modal (CoD-style 2-panel) ─────────────────────────────────── -->
+<!-- ── Arsenal Modal (weapons + gadgets, CoD-style 2-panel) ─────────────────── -->
 <div id="arsenal-modal" class="pw-modal">
   <div class="ar-layout">
-    <!-- Left: header + filter + list -->
+    <!-- Left: header + mode tabs + class filters + list -->
     <div class="ar-left">
       <div class="ar-header">
         <div>
           <div class="ar-header-title">ARSENAL</div>
-          <div class="ar-header-sub">SELECT LOADOUT</div>
+          <div class="ar-header-sub">CONFIGURE LOADOUT</div>
         </div>
         <div class="ar-hdr-right">
           <div class="ar-credits-amt" id="ar-credits-amt">0</div>
@@ -1120,19 +1167,20 @@ canvas{display:block;position:absolute;top:0;left:0}
           <button class="ar-close-x" id="close-arsenal-btn">✕</button>
         </div>
       </div>
+      <!-- Mode: WEAPONS | GADGETS -->
+      <div class="ar-mode-tabs" id="ar-mode-tabs">
+        <button class="ar-mode-tab active" data-m="weapons">⚔ WEAPONS</button>
+        <button class="ar-mode-tab" data-m="gadgets">◈ GADGETS</button>
+      </div>
+      <!-- Class filter (weapons mode only) -->
       <div class="ar-filters" id="ar-filters">
         <button class="ar-filter active" data-f="all">ALL</button>
-        <button class="ar-filter" data-f="energy">ENERGY</button>
-        <button class="ar-filter" data-f="spread">SPREAD</button>
-        <button class="ar-filter" data-f="tactical">TACTICAL</button>
-        <button class="ar-filter" data-f="special">SPECIAL</button>
-        <button class="ar-filter" data-f="status">STATUS</button>
       </div>
       <div class="ar-wpn-list" id="ar-wpn-list"></div>
     </div>
     <!-- Right: detail panel -->
     <div class="ar-right" id="ar-detail">
-      <div class="ar-placeholder">← SELECT A WEAPON</div>
+      <div class="ar-placeholder">← SELECT A WEAPON OR GADGET</div>
     </div>
   </div>
 </div>
@@ -1330,5 +1378,29 @@ canvas{display:block;position:absolute;top:0;left:0}
 </div>
 
 <script type="module" src="./main.js"></script>
+<script>
+// ── Custom cursor (Wave A) ──────────────────────────────────────────────────
+(function(){
+  const core  = document.getElementById('cur-core');
+  const trail = document.getElementById('cur-trail');
+  if (!core || !trail) return;
+  let tx=0,ty=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{
+    tx=e.clientX; ty=e.clientY;
+    core.style.left=tx+'px';  core.style.top=ty+'px';
+  });
+  function animTrail(){
+    cx += (tx-cx)*.12; cy += (ty-cy)*.12;
+    trail.style.left=cx+'px'; trail.style.top=cy+'px';
+    requestAnimationFrame(animTrail);
+  }
+  animTrail();
+  document.addEventListener('mousedown',()=>{
+    core.style.transform='translate(-50%,-50%) scale(0.5)';
+    setTimeout(()=>{ core.style.transform='translate(-50%,-50%) scale(1.2)'; },80);
+    setTimeout(()=>{ core.style.transform='translate(-50%,-50%) scale(1)';   },200);
+  });
+})();
+</script>
 </body>
 </html>

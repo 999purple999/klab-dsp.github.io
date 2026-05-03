@@ -76,17 +76,31 @@ function _open(id) {
   if (el) el.style.display = 'flex';
 }
 
+// ── GADGET DEFINITIONS (exported — LoadoutModal imports from here) ─────────────
+export const GADGETS = [
+  { key:'bomb',      name:'FRAG BOMB',   desc:'Area explosion — devastates groups.',  col:'#FF4422', effect:'Throws a frag grenade dealing 80 dmg in 180px radius. Cooldown 14s.' },
+  { key:'kp',        name:'EMP BURST',   desc:'Screen-wide stun — instant panic.',    col:'#00FFFF', effect:'Emits EMP pulse stunning all enemies for 2.5s. Cooldown 20s.' },
+  { key:'dash',      name:'GHOST DASH',  desc:'Invincible dash — escape any threat.', col:'#BF00FF', effect:'Dash 200px in aim direction with 0.6s invincibility. Cooldown 8s.' },
+  { key:'overclock', name:'OVERCLOCK',   desc:'Fire rate ×3 — four second window.',   col:'#FFFF00', effect:'Triples weapon fire rate for 4 seconds. Cooldown 18s.' },
+  { key:'empshield', name:'EMP SHIELD',  desc:'Absorb next 3 hits — zero damage.',    col:'#00FF88', effect:'Energy shield absorbs up to 3 incoming hits. Lasts 12s or until depleted.' },
+  { key:'timewarp',  name:'TIME WARP',   desc:'Slow all enemies — four seconds.',     col:'#FF8800', effect:'Reduces all enemy speed and attack rate by 60% for 4s. Cooldown 22s.' },
+];
+
 // ── ARSENAL v2 – 30 weapons from WeaponCatalog ────────────────────────────────
 
 const UNLOCK_KEY   = 'pw_catalog_unlocks_v1';
 const SELECTED_KEY = 'pw_catalog_selected_v1';
+const GADGET_KEY   = 'pw_catalog_gadgets_v1';
 
-let _arUnlocks  = null;  // { [weaponId]: true }
-let _arSelected = { s0: null, s1: null };
-let _arFilter   = 'all';
-let _arSelId    = null;
-let _arAttSlot  = null;
-const _arWpnInst = {};   // WeaponBase instances keyed by weapon id
+let _arUnlocks    = null;  // { [weaponId]: true }
+let _arSelected   = { s0: null, s1: null };
+let _arGadSlots   = { f: 'bomb', g: 'kp' };
+let _arFilter     = 'all';
+let _arMode       = 'weapons';  // 'weapons' | 'gadgets'
+let _arSelId      = null;
+let _arGadSelKey  = null;
+let _arAttSlot    = null;
+const _arWpnInst  = {};   // WeaponBase instances keyed by weapon id
 
 const AR_CLASS_TABS = [
   ['all','ALL'],['assault','AR'],['smg','SMG'],['shotgun','SG'],
@@ -122,15 +136,34 @@ function _arGetInstance(id) {
   return _arWpnInst[id];
 }
 
-// Exported so LoadoutModal can read the configured selection
-export function getArsenalSelected() { _arLoadSelected(); return _arSelected; }
-export function getArsenalInstance(id) { return _arWpnInst[id] || null; }
+function _arLoadGadgets() {
+  try { _arGadSlots = JSON.parse(localStorage.getItem(GADGET_KEY) || '{"f":"bomb","g":"kp"}'); }
+  catch (_) {}
+}
+function _arSaveGadgets() {
+  try { localStorage.setItem(GADGET_KEY, JSON.stringify(_arGadSlots)); } catch (_) {}
+}
+
+// Exported — LoadoutModal reads these to pre-fill pre-mission screen
+export function getArsenalSelected()      { _arLoadSelected(); return _arSelected; }
+export function getArsenalGadgets()       { _arLoadGadgets();  return _arGadSlots; }
+export function getArsenalInstance(id)    { return _arWpnInst[id] || null; }
 
 function _openArsenal() {
   document.getElementById('ar-credits-amt').textContent = getCredits().toLocaleString();
   _arLoadSelected();
+  _arLoadGadgets();
 
-  // Rebuild filter bar as class tabs (once)
+  // Mode tabs (once)
+  const mt = document.getElementById('ar-mode-tabs');
+  if (mt && !mt._init) {
+    mt._init = true;
+    mt.querySelectorAll('.ar-mode-tab').forEach(b => {
+      b.addEventListener('click', () => _arSwitchMode(b.dataset.m));
+    });
+  }
+
+  // Rebuild class filter tabs (once)
   const fb = document.getElementById('ar-filters');
   if (fb && !fb._v2) {
     fb._v2 = true;
@@ -149,10 +182,29 @@ function _openArsenal() {
     });
   }
 
-  _arRenderList();
-  const first = WEAPON_CATALOG_DATA.find(d => _arIsUnlocked(d)) || WEAPON_CATALOG_DATA[0];
-  if (first) _arDetail(first.id);
+  _arSwitchMode('weapons');
   _open('arsenal-modal');
+}
+
+function _arSwitchMode(mode) {
+  _arMode = mode;
+  document.querySelectorAll('.ar-mode-tab').forEach(b =>
+    b.classList.toggle('active', b.dataset.m === mode)
+  );
+  const fb = document.getElementById('ar-filters');
+  if (fb) fb.style.display = mode === 'weapons' ? 'flex' : 'none';
+
+  if (mode === 'weapons') {
+    _arRenderList();
+    const sel = WEAPON_CATALOG_DATA.find(d => d.id === _arSelId) ||
+                WEAPON_CATALOG_DATA.find(d => _arIsUnlocked(d)) ||
+                WEAPON_CATALOG_DATA[0];
+    if (sel) _arDetail(sel.id);
+  } else {
+    _arRenderGadgets();
+    const gSel = _arGadSelKey || GADGETS[0].key;
+    _arGadDetail(gSel);
+  }
 }
 
 function _arRenderList() {
@@ -330,6 +382,78 @@ function _arOpenPicker(slot, wpn, def) {
       if (att) wpn.equip(slot, att);
       _arDetail(_arSelId);
     });
+  });
+}
+
+// ── GADGET LIST & DETAIL ──────────────────────────────────────────────────────
+
+function _arRenderGadgets() {
+  const list = document.getElementById('ar-wpn-list'); if (!list) return;
+  list.innerHTML = '';
+  GADGETS.forEach(g => {
+    const isF = _arGadSlots.f === g.key;
+    const isG = _arGadSlots.g === g.key;
+    const row = document.createElement('div');
+    row.className = `ar-row${_arGadSelKey === g.key ? ' ar-sel' : ''}`;
+    row.innerHTML = `
+      <div class="ar-dot" style="background:${g.col};box-shadow:0 0 7px ${g.col}55"></div>
+      <div class="ar-rinfo">
+        <div class="ar-rname">${g.name}</div>
+        <div class="ar-rtag">${g.desc}</div>
+      </div>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        ${isF ? `<div class="ar-eq-badge">F</div>` : ''}
+        ${isG ? `<div class="ar-eq-badge" style="background:rgba(0,240,255,.15);border-color:rgba(0,240,255,.45);color:#00f0ff">G</div>` : ''}
+      </div>`;
+    row.addEventListener('click', () => {
+      list.querySelectorAll('.ar-row').forEach(r => r.classList.remove('ar-sel'));
+      row.classList.add('ar-sel');
+      _arGadSelKey = g.key;
+      _arGadDetail(g.key);
+    });
+    list.appendChild(row);
+  });
+}
+
+function _arGadDetail(key) {
+  _arGadSelKey = key;
+  const panel = document.getElementById('ar-detail'); if (!panel) return;
+  const g = GADGETS.find(x => x.key === key); if (!g) return;
+  const isF = _arGadSlots.f === key;
+  const isG = _arGadSlots.g === key;
+  const rv = parseInt(g.col.slice(1,3),16)||191;
+  const gv = parseInt(g.col.slice(3,5),16)||0;
+  const bv = parseInt(g.col.slice(5,7),16)||255;
+  const rgba = a => `rgba(${rv},${gv},${bv},${a})`;
+
+  panel.innerHTML = `
+    <div class="ar-d-top">
+      <div class="ar-d-icon" style="background:${rgba(.1)};border:1.5px solid ${g.col};box-shadow:0 0 20px ${rgba(.18)}">
+        <div style="font-size:26px;text-align:center;line-height:48px;filter:drop-shadow(0 0 8px ${g.col})">◈</div>
+      </div>
+      <div>
+        <div class="ar-d-name" style="text-shadow:0 0 28px ${rgba(.45)}">${g.name}</div>
+        <div class="ar-d-cat" style="color:${g.col}">TACTICAL GADGET</div>
+        <div style="font-size:8px;color:rgba(255,255,255,.3);margin-top:4px">Always available · No credits required</div>
+      </div>
+    </div>
+    <div class="ar-d-desc" style="border-color:${rgba(.25)};margin-top:12px">${g.desc}</div>
+    <div class="ar-stats-lbl" style="margin-top:14px">EFFECT DETAILS</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.7;letter-spacing:.04em;margin-bottom:16px">${g.effect}</div>
+    <div class="ar-action">
+      <div style="display:flex;gap:8px;margin-top:0;flex-wrap:wrap">
+        <button class="ar-equip-btn ${isF?'equipped':''}" id="ar-gad-f">
+          ${isF ? '✓ F KEY' : 'EQUIP → F KEY'}</button>
+        <button class="ar-equip-btn ${isG?'equipped':''}" id="ar-gad-g" style="opacity:.8">
+          ${isG ? '✓ G KEY' : 'EQUIP → G KEY'}</button>
+      </div>
+    </div>`;
+
+  document.getElementById('ar-gad-f')?.addEventListener('click', () => {
+    _arGadSlots.f = key; _arSaveGadgets(); _arRenderGadgets(); _arGadDetail(key);
+  });
+  document.getElementById('ar-gad-g')?.addEventListener('click', () => {
+    _arGadSlots.g = key; _arSaveGadgets(); _arRenderGadgets(); _arGadDetail(key);
   });
 }
 

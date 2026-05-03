@@ -4,16 +4,8 @@
 // Gadget definitions remain here; Arsenal handles weapons & attachments.
 
 import { WEAPON_CATALOG_DATA, WEAPON_CATALOG_BY_ID } from '../entities/Weapon/WeaponCatalog.js';
-import { getArsenalSelected } from './MenuModals.js';
-
-export const GADGETS = [
-  { key: 'bomb',      name: 'FRAG BOMB',   desc: 'Area explosion — devastates groups.',  col: '#FF4422', icon: '#i-bomb'   },
-  { key: 'kp',        name: 'EMP BURST',   desc: 'Screen-wide stun — instant panic.',    col: '#00FFFF', icon: '#i-bolt'   },
-  { key: 'dash',      name: 'GHOST DASH',  desc: 'Invincible dash — escape any threat.', col: '#BF00FF', icon: '#i-dash'   },
-  { key: 'overclock', name: 'OVERCLOCK',   desc: 'Fire rate ×3 — four second window.',   col: '#FFFF00', icon: '#i-chip'   },
-  { key: 'empshield', name: 'EMP SHIELD',  desc: 'Absorb next 3 hits — zero damage.',    col: '#00FF88', icon: '#i-shield' },
-  { key: 'timewarp',  name: 'TIME WARP',   desc: 'Slow all enemies — four seconds.',     col: '#FF8800', icon: '#i-clock'  },
-];
+import { getArsenalSelected, getArsenalGadgets, GADGETS } from './MenuModals.js';
+export { GADGETS };
 
 const UNLOCK_KEY = 'pw_catalog_unlocks_v1';
 
@@ -30,14 +22,15 @@ let _gadSlots  = ['bomb', 'kp'];
 export function openLoadout(onConfirm) {
   _onConfirm = onConfirm;
 
-  // Default to Arsenal-selected weapons, falling back to first two unlocked
+  // Pre-fill from Arsenal configuration
   const sel = getArsenalSelected();
+  const gad = getArsenalGadgets();
   const unlocked = _getUnlockedWeapons();
   _wpnSlots = [
     sel.s0 || unlocked[0]?.id || null,
     sel.s1 || unlocked[1]?.id || unlocked[0]?.id || null,
   ];
-  _gadSlots = ['bomb', 'kp'];
+  _gadSlots = [gad.f || 'bomb', gad.g || 'kp'];
 
   const modal = document.getElementById('loadout-modal');
   if (!modal) { _onConfirm(_wpnSlots, _gadSlots); return; }

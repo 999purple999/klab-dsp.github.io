@@ -1,0 +1,93 @@
+/* ─── Privacy Warfare — Design Tokens (Wave A) ──────────────────────────────── */
+/* Single source of truth. Import this first in index.html. Never hardcode.    */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap');
+
+:root {
+  /* ── Neon Palette ─────────────────────────────────────────────────────────── */
+  --neon-purple: #b026ff;
+  --neon-cyan:   #00f0ff;
+  --neon-pink:   #ff2a6d;
+  --neon-green:  #39ff14;
+  --neon-gold:   #ffae00;
+  --neon-red:    #ff0040;
+
+  /* ── Backgrounds ──────────────────────────────────────────────────────────── */
+  --bg-void:    #02020a;
+  --bg-deep:    #050510;
+  --bg-surface: rgba(10, 10, 30, 0.92);
+  --bg-glass:   rgba(20, 20, 50, 0.45);
+
+  /* ── Text ─────────────────────────────────────────────────────────────────── */
+  --text-primary:   #e0e0ff;
+  --text-secondary: #8899aa;
+  --text-muted:     #556677;
+
+  /* ── Borders ──────────────────────────────────────────────────────────────── */
+  --border-subtle: rgba(176, 38, 255, 0.25);
+  --border-active: rgba(0, 240, 255, 0.8);
+  --border-danger: rgba(255, 42, 109, 0.6);
+
+  /* ── Glows ────────────────────────────────────────────────────────────────── */
+  --glow-purple:      0 0 8px rgba(176,38,255,0.6),  0 0 20px rgba(176,38,255,0.3);
+  --glow-cyan:        0 0 8px rgba(0,240,255,0.6),   0 0 20px rgba(0,240,255,0.3);
+  --glow-pink:        0 0 8px rgba(255,42,109,0.6),  0 0 20px rgba(255,42,109,0.3);
+  --glow-text-purple: 0 0 10px rgba(176,38,255,0.8);
+  --glow-text-cyan:   0 0 10px rgba(0,240,255,0.8);
+
+  /* ── Typography ───────────────────────────────────────────────────────────── */
+  --font-display: 'Orbitron', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+  --font-numeric: 'Rajdhani', monospace;
+
+  --text-xs:  11px;
+  --text-sm:  13px;
+  --text-base: 15px;
+  --text-lg:  18px;
+  --text-xl:  24px;
+  --text-2xl: 32px;
+  --text-3xl: 48px;
+  --text-4xl: 64px;
+
+  /* ── Spacing ──────────────────────────────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ── Border Radius ────────────────────────────────────────────────────────── */
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   8px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* ── Transitions ──────────────────────────────────────────────────────────── */
+  --ease-expo:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --duration-fast:   150ms;
+  --duration-normal: 300ms;
+  --duration-slow:   500ms;
+
+  /* ── Z-Index Scale ────────────────────────────────────────────────────────── */
+  --z-bg:     0;
+  --z-game:   10;
+  --z-hud:    100;
+  --z-modal:  200;
+  --z-overlay:300;
+  --z-toast:  400;
+  --z-cursor: 500;
+}
+
+/* ── Reduced motion overrides ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
