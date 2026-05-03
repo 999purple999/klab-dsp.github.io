@@ -920,6 +920,24 @@ canvas{display:block;position:absolute;top:0;left:0}
   </div>
 </div>
 
+<!-- ── First-run Tutorial ────────────────────────────────────────────────── -->
+<div id="tutorial-modal" style="display:none;position:fixed;inset:0;z-index:70;background:rgba(0,0,0,0.94);backdrop-filter:blur(18px);align-items:center;justify-content:center;flex-direction:column;">
+  <div style="max-width:480px;width:90%;text-align:center;padding:0 20px;">
+    <div style="font-size:9px;color:rgba(191,0,255,0.5);letter-spacing:.5em;margin-bottom:16px;text-transform:uppercase">First Boot</div>
+    <div style="font-size:clamp(22px,5vw,36px);font-weight:900;color:#fff;letter-spacing:.06em;margin-bottom:20px;text-shadow:0 0 30px #BF00FF">MISSION BRIEFING</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:2;letter-spacing:.08em;margin-bottom:28px;text-align:left;background:rgba(191,0,255,0.04);border:1px solid rgba(191,0,255,0.15);border-radius:10px;padding:16px 20px;">
+      <span style="color:#BF00FF;font-weight:900">MOVE</span> — WASD / Arrow keys (pan camera)<br>
+      <span style="color:#BF00FF;font-weight:900">AIM &amp; FIRE</span> — Mouse cursor / Hold click<br>
+      <span style="color:#BF00FF;font-weight:900">WEAPONS</span> — 1–0 keys, or Q/E to cycle<br>
+      <span style="color:#BF00FF;font-weight:900">ABILITIES</span> — F Bomb &nbsp;·&nbsp; G KP &nbsp;·&nbsp; X Dash &nbsp;·&nbsp; V OC &nbsp;·&nbsp; C EMP &nbsp;·&nbsp; Z Warp<br>
+      <span style="color:#00FF41;font-weight:900">STYLE METER</span> — Fill by killing; OVERDRIVE at max<br>
+      <span style="color:#FF8800;font-weight:900">SHOP</span> — Tab between waves
+    </div>
+    <div style="font-size:10px;color:rgba(191,0,255,0.6);letter-spacing:.3em;animation:pulse-txt 1.4s ease-in-out infinite;text-transform:uppercase">Press Any Key or Tap to Begin</div>
+  </div>
+</div>
+<style>@keyframes pulse-txt{0%,100%{opacity:.5}50%{opacity:1}}</style>
+
 <script type="module" src="./main.js"></script>
 </body>
 </html>

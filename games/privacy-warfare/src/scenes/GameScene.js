@@ -177,6 +177,10 @@ export class GameScene {
     this.overdriveActive = false;
     this.overdriveTimer  = 0;
     this._baseSpeed      = 260; // stored to restore after overdrive
+
+    // Kill-cam slow-mo
+    this._timeScale      = 1;
+    this._timeScaleTimer = 0;
   }
 
   // ─── called by Game on each resize
@@ -372,6 +376,8 @@ export class GameScene {
     const BossClass = BOSS_CLASSES[(Math.floor(wv / 5) - 1) % BOSS_CLASSES.length];
     this.boss = new BossClass(this.WW / 2, this.WH * 0.22, wv);
     SFX.boss();
+    // Boss spawn glitch
+    this.flashAlpha = 0.55; this.chromAberr = 2.2; this.shakeAmt = 28;
   }
 
   // ─── Weather
@@ -448,6 +454,10 @@ export class GameScene {
     const _leveled = this.progression.addXP(Math.round(pts * 0.5));
     if (_leveled) showMsg('LEVEL UP', 'Rank ' + this.progression.level);
     this._addStyle(15);
+    // Kill-cam slow-mo on wave's last kill
+    if (this.EYES.length === 0 && !this.betweenWaves && !this.boss) {
+      this._timeScale = 0.12; this._timeScaleTimer = 0.45;
+    }
   }
 
   _killBoss() {
@@ -872,6 +882,8 @@ export class GameScene {
     if (this.skillModal || this.shopModal) return;
     this._isFiring = false;
     if (this.isMouseDown) this.tryFire();
+    // Kill-cam slow-motion time scale
+    if (this._timeScaleTimer > 0) { this._timeScaleTimer -= dt; dt *= this._timeScale; }
     this._update(dt);
     this._render();
     this._renderMiniMap();

@@ -17,6 +17,7 @@ import { BootScene }    from '../scenes/BootScene.js';
 import { initMenuModals } from '../ui/MenuModals.js';
 import { PauseScene }    from '../scenes/PauseScene.js';
 import { submitScore, isAuthenticated } from '../utils/CloudAPI.js';
+import { AdaptiveMusic } from '../audio/AdaptiveMusic.js';
 
 export class Game {
   constructor() {
@@ -27,6 +28,7 @@ export class Game {
 
     this.engine  = new Engine();
     this.scenes  = new SceneManager();
+    this._music  = null; // AdaptiveMusic — lazy-init after first AudioContext unlock
 
     this.gameScene     = new GameScene(this.cv, this.ctx, this.mmCv, this.mctx);
     this.campaignScene = new CampaignScene(this.cv, this.ctx, this.gameScene);
@@ -47,6 +49,7 @@ export class Game {
     window.addEventListener('resize', () => this._resize());
     document.addEventListener('pw:gameover', e => this._onGameOver(e.detail));
     this._initMobileButtons();
+    this._initTutorial();
 
     // Push menu — will stay until a mode is selected
     this.scenes.push(this.menuScene);
@@ -62,6 +65,20 @@ export class Game {
       if (this.gameScene.running) {
         this.gameScene.update(dt);
         if (this.gameScene.paused) this.pauseScene.update(dt);
+        // Adaptive music: lazy-init after AudioContext is unlocked
+        const ac = getAC();
+        if (ac && !this._music) { this._music = new AdaptiveMusic(ac); this._music.start(); }
+        if (this._music && this._music._started) {
+          const nearby = this.gameScene.EYES.filter(e => {
+            const dx = e.x - this.gameScene.px, dy = e.y - this.gameScene.py;
+            return Math.hypot(dx, dy) < 320;
+          }).length;
+          this._music.update(
+            this.gameScene.EYES.length, nearby,
+            !!this.gameScene.boss,
+            this.gameScene.hp, this.gameScene.maxHp,
+          );
+        }
       } else {
         // Drive active scene (menu, campaign, etc.)
         this.scenes.update(dt);
@@ -156,6 +173,23 @@ export class Game {
     os.style.display = 'block'; os.textContent = 'SCORE: ' + Math.floor(score);
     oh.style.display = 'block'; oh.textContent = 'WAVE ' + wave + '  ·  BEST: ' + Math.floor(hiScore);
     this.scenes.push(this.menuScene);
+  }
+
+  _initTutorial() {
+    if (localStorage.getItem('pw_tutorial_done')) return;
+    const el = document.getElementById('tutorial-modal');
+    if (!el) return;
+    el.style.display = 'flex';
+    const dismiss = () => {
+      el.style.display = 'none';
+      localStorage.setItem('pw_tutorial_done', '1');
+      document.removeEventListener('keydown', dismiss);
+      el.removeEventListener('touchstart', dismiss);
+      el.removeEventListener('click', dismiss);
+    };
+    document.addEventListener('keydown', dismiss);
+    el.addEventListener('touchstart', dismiss, { passive: true });
+    el.addEventListener('click', dismiss);
   }
 
   _initMobileButtons() {
