@@ -2,6 +2,7 @@
 // Pre-mission loadout: choose 2 weapons + 2 gadgets before deploying.
 
 import { WPNS, BASE_AMMO } from '../entities/Weapon/WeaponDefinitions.js';
+import { openArsenal }     from './ArsenalScene.js';
 
 export const GADGETS = [
   { key: 'bomb',      name: 'FRAG BOMB',   desc: 'Area explosion — devastates groups.',  col: '#FF4422', icon: '#i-bomb'   },
@@ -29,13 +30,32 @@ export function openLoadout(onConfirm) {
   modal.style.display = 'flex';
   _render();
 
-  const deployBtn = document.getElementById('lo-deploy-btn');
-  const backBtn   = document.getElementById('lo-back-btn');
-  const _deploy   = () => { _cleanup(); _onConfirm(_wpnSlots, _gadSlots); };
-  const _abort    = () => { _cleanup(); };
-  function _cleanup() { modal.style.display = 'none'; deployBtn.removeEventListener('click', _deploy); backBtn.removeEventListener('click', _abort); }
+  const deployBtn   = document.getElementById('lo-deploy-btn');
+  const backBtn     = document.getElementById('lo-back-btn');
+  const _deploy     = () => { _cleanup(); _onConfirm(_wpnSlots, _gadSlots); };
+  const _abort      = () => { _cleanup(); };
+  function _cleanup() {
+    modal.style.display = 'none';
+    deployBtn.removeEventListener('click', _deploy);
+    backBtn.removeEventListener('click', _abort);
+  }
   deployBtn.addEventListener('click', _deploy);
   backBtn.addEventListener('click', _abort);
+
+  // Inject Gunsmith button once
+  if (!document.getElementById('lo-gunsmith-btn')) {
+    const ftr = modal.querySelector('.lo-ftr');
+    if (ftr) {
+      const gsBtn = document.createElement('button');
+      gsBtn.id = 'lo-gunsmith-btn';
+      gsBtn.textContent = '⚙ GUNSMITH';
+      gsBtn.style.cssText = `font-family:inherit;font-size:11px;letter-spacing:2px;padding:10px 20px;
+        background:rgba(0,255,68,.08);border:1px solid rgba(0,255,68,.4);color:#0F4;cursor:pointer;
+        margin-right:8px;`;
+      gsBtn.addEventListener('click', () => openArsenal());
+      ftr.insertBefore(gsBtn, deployBtn);
+    }
+  }
 }
 
 // ─── Render ───────────────────────────────────────────────────────────────────
