@@ -20,11 +20,16 @@ import { getHiScore, setHiScore, getCredits, setCredits } from '../data/Storage.
 import { MasterySystem } from '../data/MasterySystem.js';
 import { Progression }   from '../data/Progression.js';
 import { BaseEnemy }    from '../entities/Enemy/BaseEnemy.js';
-import { Architect }    from '../entities/Boss/Architect.js';
-import { DataSpectre }  from '../entities/Boss/DataSpectre.js';
-import { CoreGuardian } from '../entities/Boss/CoreGuardian.js';
-import { VoidWeaver }   from '../entities/Boss/VoidWeaver.js';
-import { SystemAdmin }  from '../entities/Boss/SystemAdmin.js';
+import { Architect }         from '../entities/Boss/Architect.js';
+import { DataSpectre }       from '../entities/Boss/DataSpectre.js';
+import { CoreGuardian }      from '../entities/Boss/CoreGuardian.js';
+import { VoidWeaver }        from '../entities/Boss/VoidWeaver.js';
+import { SystemAdmin }       from '../entities/Boss/SystemAdmin.js';
+import { FirewallColossus }  from '../entities/Boss/FirewallColossus.js';
+import { HydraProtocol }     from '../entities/Boss/HydraProtocol.js';
+import { DataLeviathan }     from '../entities/Boss/DataLeviathan.js';
+import { QuantumOverlord }   from '../entities/Boss/QuantumOverlord.js';
+import { PrivacyEater }      from '../entities/Boss/PrivacyEater.js';
 
 // ─── Player skins
 const SKINS = ['#BF00FF', '#00FFFF', '#FF2266', '#00FF41', '#FF8800'];
@@ -41,6 +46,28 @@ const EDEFS = {
   tank:     { col: '#996633', sz: 20, hp: 5, spd: 32,  pts: 60  },
   teleport: { col: '#44FFFF', sz: 11, hp: 1, spd: 62,  pts: 50  },
   necro:    { col: '#CC00FF', sz: 15, hp: 3, spd: 52,  pts: 100 },
+  // Wave A new types
+  mosquito: { col: '#FF88FF', sz:  6, hp: 1, spd: 140, pts:  25 },
+  hawk:     { col: '#FF2200', sz: 18, hp: 4, spd:  40, pts:  80 },
+  bouncer:  { col: '#FFAA00', sz: 11, hp: 2, spd:   0, pts:  45 },
+  leech:    { col: '#1A0033', sz:  8, hp: 2, spd: 150, pts:  60 },
+  trojan:   { col: '#00FFCC', sz: 10, hp: 4, spd:  60, pts:  70 },
+  mirage:   { col: '#AAAAFF', sz: 12, hp: 5, spd:  55, pts:  90 },
+  zeryday:  { col: '#FF00FF', sz: 14, hp: 6, spd:  45, pts: 100 },
+  crawler:  { col: '#CC8800', sz: 14, hp: 3, spd:  55, pts:  50 },
+  broker:   { col: '#00FF88', sz: 10, hp: 2, spd: 120, pts:  80 },
+  corrupted:{ col: '#8800CC', sz: 13, hp: 3, spd:  70, pts:  55 },
+  // Wave C new types
+  hornet:   { col: '#FFCC00', sz: 10, hp: 2, spd:  90, pts:  30 },
+  dropper:  { col: '#FF6600', sz: 14, hp: 3, spd:  25, pts:  45 },
+  sentry:   { col: '#00FFCC', sz: 16, hp: 6, spd:   0, pts:  70 },
+  wraith:   { col: '#AA44FF', sz:  9, hp: 2, spd:  95, pts:  55 },
+  zealot:   { col: '#FFFFFF', sz: 12, hp: 3, spd:  50, pts:  65 },
+  kiddie:   { col: '#FF2288', sz:  7, hp: 1, spd: 120, pts:  15 },
+  icecannon:{ col: '#88EEFF', sz: 15, hp: 4, spd:   0, pts:  60 },
+  goblin:   { col: '#44CC44', sz: 11, hp: 2, spd:  75, pts:  40 },
+  glitch:   { col: '#FF44AA', sz: 12, hp: 3, spd:  60, pts:  75 },
+  titan:    { col: '#8888AA', sz: 22, hp:10, spd:  20, pts:  90 },
 };
 
 const STREAK_NAMES = ['', '', 'DOUBLE KILL', 'TRIPLE KILL', 'QUAD KILL', 'PENTA KILL', 'HEXA KILL', 'ULTRA KILL', 'RAMPAGE'];
@@ -179,6 +206,8 @@ export class GameScene {
     this.vortexList     = [];
     this.timeLoopProjs  = [];
     this.drones         = [];
+    this.CORRUPT_ZONES  = []; // { x, y, r, pulse }
+    this._ddosTriggered = false;
     this.paused         = false;
 
     // Style Meter + Overdrive
@@ -240,7 +269,7 @@ export class GameScene {
     this.EYES.length = 0; this.PARTS.length = 0; this.BEAMS.length = 0;
     this.EPROJS.length = 0; this.DEAD_EYES.length = 0; this.FLOATS.length = 0;
     this.AMMO_PKUPS.length = 0; this.HP_PKUPS.length = 0; this.ammoPkupTimer = 8;
-    this.vortexList.length = 0; this.timeLoopProjs.length = 0; this.drones.length = 0;
+    this.vortexList.length = 0; this.timeLoopProjs.length = 0; this.drones.length = 0; this.CORRUPT_ZONES.length = 0; this._ddosTriggered = false;
     this.styleMeter = 0; this.overdriveActive = false; this.overdriveTimer = 0;
     this.boss = null; this.bhActive = false; this.nukeCharging = false; this.nukeRad = 0; this.chainSegs = [];
     WPNS.forEach((w, i) => { if (i < BASE_CD.length) { w.cd = BASE_CD[i]; w.dmg = BASE_DMG[i]; w.rng = BASE_RNG[i]; } });
@@ -307,6 +336,19 @@ export class GameScene {
         for (let i = 0; i < count; i++) this._spawnRandom(wv);
       }
     }
+    // Spawn corruption zones every 3 waves (1-2 zones)
+    this.CORRUPT_ZONES.length = 0;
+    if (wv >= 3 && wv % 3 === 0) {
+      const zcount = 1 + Math.floor(wv / 6);
+      for (let i = 0; i < zcount; i++) {
+        this.CORRUPT_ZONES.push({
+          x: 100 + Math.random() * (this.WW - 200),
+          y: 100 + Math.random() * (this.WH - 200),
+          r: 90 + Math.random() * 60,
+          pulse: 0,
+        });
+      }
+    }
     this._pickWeather(wv); SFX.wave();
     updateWave(wv);
     this._updateEnemyCount();
@@ -335,6 +377,14 @@ export class GameScene {
     add('normal', 1, 60); add('elite', 2, 28); add('phish', 3, 18);
     add('shooter', 4, 14); add('doppel', 4, 12); add('cloaker', 5, 10);
     add('berser', 5, 10); add('tank', 6, 6); add('teleport', 7, 5); add('necro', 8, 3);
+    // Wave A new types
+    add('mosquito', 3, 12); add('crawler', 4, 8); add('bouncer', 5, 7);
+    add('hawk', 5, 5); add('leech', 6, 6); add('broker', 6, 5);
+    add('trojan', 7, 4); add('mirage', 7, 4); add('zeryday', 8, 3); add('corrupted', 8, 4);
+    // Wave C new types
+    add('hornet', 3, 10); add('dropper', 4, 6); add('glitch', 4, 7);
+    add('goblin', 5, 6); add('wraith', 5, 5); add('kiddie', 3, 14);
+    add('zealot', 6, 5); add('sentry', 6, 4); add('icecannon', 7, 4); add('titan', 8, 3);
     let tot = pool.reduce((s, p) => s + p.w, 0), r = Math.random() * tot;
     for (const p of pool) { r -= p.w; if (r <= 0) return p.k; }
     return 'normal';
@@ -345,6 +395,7 @@ export class GameScene {
   }
 
   _enemyTypeBehavior(e, dt) {
+    // ── Original types ──────────────────────────────────────────────────────────
     if (e.t === 'cloaker') {
       e.cloakTimer -= dt;
       if (e.cloakTimer <= 0) { e.cloaking = !e.cloaking; e.cloakTimer = e.cloaking ? 3 : 2; }
@@ -368,6 +419,315 @@ export class GameScene {
         e.shootTimer = 1.8 + Math.random() * 2;
         const sdx = this.px - e.x, sdy = this.py - e.y, sd = Math.hypot(sdx, sdy) || 1;
         this.EPROJS.push({ x: e.x, y: e.y, vx: sdx / sd * 185, vy: sdy / sd * 185, r: 5, col: e.col, life: 3 });
+      }
+    }
+    // ── Wave A new types ────────────────────────────────────────────────────────
+
+    // MOSQUITO: no special, speed handled by EDEFS; just leave base movement
+
+    // CRAWLER: charges at player every 3.5s
+    if (e.t === 'crawler') {
+      if (e.chargeActive) {
+        e.vx = e.chargeDX * 400; e.vy = e.chargeDY * 400;
+        e.chargeTimer -= dt;
+        if (e.chargeTimer <= 0) { e.chargeActive = false; e.chargeTimer = 3 + Math.random() * 2; }
+      } else {
+        e.chargeTimer -= dt;
+        if (e.chargeTimer <= 0) {
+          const cdx = this.px - e.x, cdy = this.py - e.y, cd = Math.hypot(cdx, cdy) || 1;
+          e.chargeDX = cdx / cd; e.chargeDY = cdy / cd;
+          e.chargeActive = true; e.chargeTimer = 1.2;
+          this._burst(e.x, e.y, '#CC8800', 6, 50);
+        }
+      }
+    }
+
+    // BOUNCER: bounces off world walls, accelerates, splits at 5 bounces
+    if (e.t === 'bouncer') {
+      if (!e.bounceDir) {
+        const a = Math.random() * Math.PI * 2;
+        e.bounceDir = { x: Math.cos(a), y: Math.sin(a) };
+        e.bounceSpd = 120;
+      }
+      e.bounceSpd = Math.min(e.bounceSpd + 18 * dt, 340);
+      // Keep spd = bounceSpd so base steering target matches our direction (prevents damping)
+      e.spd = e.bounceSpd;
+      e.vx = e.bounceDir.x * e.bounceSpd; e.vy = e.bounceDir.y * e.bounceSpd;
+      if (e.x <= e.sz) { e.bounceDir.x = Math.abs(e.bounceDir.x); e.bounceCount++; this._burst(e.x, e.y, '#FFAA00', 4, 40); }
+      if (e.x >= this.WW - e.sz) { e.bounceDir.x = -Math.abs(e.bounceDir.x); e.bounceCount++; this._burst(e.x, e.y, '#FFAA00', 4, 40); }
+      if (e.y <= e.sz) { e.bounceDir.y = Math.abs(e.bounceDir.y); e.bounceCount++; this._burst(e.x, e.y, '#FFAA00', 4, 40); }
+      if (e.y >= this.WH - e.sz) { e.bounceDir.y = -Math.abs(e.bounceDir.y); e.bounceCount++; this._burst(e.x, e.y, '#FFAA00', 4, 40); }
+      if (e.bounceCount >= 5 && !e._splitDone) {
+        e._splitDone = true;
+        this._spawnAt(e.x + 12, e.y, 'normal', this.wave);
+        this._spawnAt(e.x - 12, e.y, 'normal', this.wave);
+        e.hp = 0; this._killE(e); return;
+      }
+    }
+
+    // HAWK: fires sustained laser beam every 4-6s; hits player once per 1.5s while active
+    if (e.t === 'hawk') {
+      if (e.laserActive) {
+        e.laserHoldTime -= dt;
+        e._laserDmgTimer = (e._laserDmgTimer || 0) - dt;
+        const dist = Math.hypot(this.px - e.x, this.py - e.y);
+        this._addBeam(e.x, e.y, this.px, this.py, '#FF2200', 0.04, 2);
+        if (dist < 320 && e._laserDmgTimer <= 0) { this._hurtPlayer(); e._laserDmgTimer = 1.5; }
+        if (e.laserHoldTime <= 0) { e.laserActive = false; e.laserTimer = 4 + Math.random() * 2; e._laserDmgTimer = 0; }
+      } else {
+        e.laserTimer -= dt;
+        if (e.laserTimer <= 0) { e.laserActive = true; e.laserHoldTime = 1.8; }
+      }
+    }
+
+    // LEECH: dashes into player, attaches, drains credits; detaches if player dashes
+    if (e.t === 'leech') {
+      const ldx = this.px - e.x, ldy = this.py - e.y, ld = Math.hypot(ldx, ldy);
+      if (ld < 18) {
+        // Attached: drain credits, slow player
+        e.stealTimer -= dt;
+        if (e.stealTimer <= 0) {
+          e.stealTimer = 1;
+          this.credits = Math.max(0, this.credits - 8);
+          updateCredits(this.credits);
+          this._spawnFloat(e.x, e.y - 12, '-8¢', '#1A0033');
+        }
+        e.x = this.px; e.y = this.py - 14; e.vx = 0; e.vy = 0;
+        // detach on dash
+        if (this.ghostActive) { e.x += (Math.random() - 0.5) * 60; e.y += (Math.random() - 0.5) * 60; }
+      }
+    }
+
+    // TROJAN: disguised as ammo pickup; reveals at 80px
+    if (e.t === 'trojan') {
+      if (!e.revealed) {
+        e.spd = 0; // freeze in place
+        e.vx = 0; e.vy = 0;
+        const tdx = this.px - e.x, tdy = this.py - e.y;
+        if (Math.hypot(tdx, tdy) < 80) { e.revealed = true; e.spd = EDEFS.trojan.spd; this._burst(e.x, e.y, '#00FFCC', 10, 55); showMsg('TROJAN!', 'It\'s a trap — it\'s alive!', 1200); }
+      }
+    }
+
+    // MIRAGE: spawns 4 ghost clones that track with it (rendered separately)
+    if (e.t === 'mirage') {
+      if (!e.copies) {
+        e.copies = Array.from({ length: 4 }, (_, i) => {
+          const a = i / 4 * Math.PI * 2;
+          return { ox: Math.cos(a) * 55, oy: Math.sin(a) * 55 };
+        });
+      }
+    }
+
+    // ZERYDAY: tracks which weapon index hits it; gains immunity after 3 hits from same weapon
+    // Immunity logic is in _damageE override below
+
+    // BROKER: steals credits at range, flees when <50% HP
+    if (e.t === 'broker') {
+      e.stealTimer -= dt;
+      if (e.stealTimer <= 0) {
+        e.stealTimer = 4 + Math.random() * 2;
+        const bd = Math.hypot(this.px - e.x, this.py - e.y);
+        if (bd < 240) {
+          const stolen = Math.min(20, this.credits);
+          this.credits -= stolen; updateCredits(this.credits);
+          this._spawnFloat(e.x, e.y - 14, '-' + stolen + '¢', '#00FF88');
+          this._burst(e.x, e.y, '#00FF88', 5, 40);
+        }
+      }
+      // Flee to nearest edge when below 50% HP
+      if (e.hp < e.maxHp * 0.5) {
+        const toEdgeX = e.x < this.WW / 2 ? -1 : 1;
+        const toEdgeY = e.y < this.WH / 2 ? -1 : 1;
+        e.vx += toEdgeX * 300 * dt; e.vy += toEdgeY * 300 * dt;
+      }
+    }
+
+    // CORRUPTED: pulses DoT aura on player, buffs nearby normal enemies
+    if (e.t === 'corrupted') {
+      e._auraDmgTimer = (e._auraDmgTimer || 0) - dt;
+      const cd = Math.hypot(this.px - e.x, this.py - e.y);
+      if (cd < 55 && e._auraDmgTimer <= 0) { this._hurtPlayer(); e._auraDmgTimer = 2.0; }
+      // Buff nearby enemies once
+      if (!e._buffApplied) {
+        for (const o of this.EYES) {
+          if (o === e) continue;
+          if (Math.hypot(o.x - e.x, o.y - e.y) < 80 && !o.corrupted) {
+            o.corrupted = true; o.spd *= 1.25; o.col = '#CC44FF';
+          }
+        }
+        e._buffApplied = true;
+        setTimeout(() => { if (e) e._buffApplied = false; }, 3000);
+      }
+    }
+
+    // ── Wave C new types ──────────────────────────────────────────────────────────
+
+    // HORNET: burst-fires 5 projectiles every 2.5s while strafing
+    if (e.t === 'hornet') {
+      e.shootTimer -= dt;
+      if (e.shootTimer <= 0) {
+        e.shootTimer = 2.2 + Math.random() * 0.8;
+        const dx = this.px - e.x, dy = this.py - e.y, d = Math.hypot(dx, dy) || 1;
+        const perp = { x: -dy / d, y: dx / d };
+        for (let b = -2; b <= 2; b++) {
+          const spread = b * 0.12;
+          const c = Math.cos(spread), s = Math.sin(spread);
+          const bx = dx / d * c - dy / d * s, by = dx / d * s + dy / d * c;
+          this.EPROJS.push({ x: e.x, y: e.y, vx: bx * 170, vy: by * 170, r: 4, col: '#FFCC00', life: 2.5 });
+        }
+        // Strafe perpendicular
+        e.vx += perp.x * 200; e.vy += perp.y * 200;
+      }
+    }
+
+    // DROPPER: hovers above player, drops slow bombs every 4s
+    if (e.t === 'dropper') {
+      const targetY = this.py - 160;
+      e.vy += (targetY - e.y) * 1.5 * dt;
+      e.vy = Math.max(-50, Math.min(50, e.vy));
+      e.stealTimer -= dt;
+      if (e.stealTimer <= 0) {
+        e.stealTimer = 3.5 + Math.random();
+        this.EPROJS.push({ x: e.x + (Math.random() - 0.5) * 40, y: e.y, vx: 0, vy: 70, r: 12, col: '#FF6600', life: 3.5 });
+      }
+    }
+
+    // GLITCH: micro-teleports every 0.6s, fires in random direction
+    if (e.t === 'glitch') {
+      e._glitchTimer = (e._glitchTimer || 0) - dt;
+      if (e._glitchTimer <= 0) {
+        e._glitchTimer = 0.55 + Math.random() * 0.15;
+        e.x += (Math.random() - 0.5) * 32; e.y += (Math.random() - 0.5) * 32;
+        e.x = Math.max(e.sz, Math.min(this.WW - e.sz, e.x));
+        e.y = Math.max(e.sz, Math.min(this.WH - e.sz, e.y));
+        this._burst(e.x, e.y, '#FF44AA', 3, 30);
+      }
+      e.shootTimer -= dt;
+      if (e.shootTimer <= 0) {
+        e.shootTimer = 1.2 + Math.random();
+        const a = Math.atan2(this.py - e.y, this.px - e.x) + (Math.random() - 0.5) * 1.2;
+        this.EPROJS.push({ x: e.x, y: e.y, vx: Math.cos(a) * 160, vy: Math.sin(a) * 160, r: 5, col: '#FF44AA', life: 3 });
+      }
+    }
+
+    // GOBLIN: hides underground (invisible 3s), then bursts up at player position
+    if (e.t === 'goblin') {
+      if (!e._goblinState) e._goblinState = 'hunt';
+      if (e._goblinState === 'hunt') {
+        e.chargeTimer -= dt;
+        if (e.chargeTimer <= 0) {
+          e._goblinState = 'underground'; e.chargeTimer = 3;
+          e.al = 0; e.vx = 0; e.vy = 0;
+          // Mark emerge target
+          e._emergeX = this.px + (Math.random() - 0.5) * 50;
+          e._emergeY = this.py + (Math.random() - 0.5) * 50;
+        }
+      } else {
+        e.chargeTimer -= dt; e.spd = 0;
+        if (e.chargeTimer <= 0) {
+          e._goblinState = 'hunt'; e.chargeTimer = 3 + Math.random() * 2;
+          e.x = e._emergeX; e.y = e._emergeY; e.al = 1; e.spd = EDEFS.goblin.spd;
+          this._burst(e.x, e.y, '#44CC44', 14, 80);
+          if (Math.hypot(this.px - e.x, this.py - e.y) < 55) this._hurtPlayer();
+        }
+      }
+    }
+
+    // WRAITH: semi-transparent, steals credits on contact, phases through briefly
+    if (e.t === 'wraith') {
+      e.al = 0.32 + 0.18 * Math.sin(this._T() * 4);
+      const wd = Math.hypot(this.px - e.x, this.py - e.y);
+      if (wd < 20) {
+        e.stealTimer -= dt;
+        if (e.stealTimer <= 0) {
+          e.stealTimer = 2.5;
+          const stolen = Math.min(30, this.credits);
+          this.credits -= stolen; updateCredits(this.credits);
+          this._spawnFloat(e.x, e.y - 12, '-' + stolen + '¢', '#AA44FF');
+          this._burst(e.x, e.y, '#AA44FF', 8, 55);
+        }
+      }
+    }
+
+    // ZEALOT: seeks most-wounded nearby enemy and heals it
+    if (e.t === 'zealot') {
+      e._zealotTimer = (e._zealotTimer || 0) - dt;
+      if (e._zealotTimer <= 0) {
+        e._zealotTimer = 2;
+        // Find most wounded nearby enemy
+        let target = null, worstFrac = 1;
+        for (const o of this.EYES) {
+          if (o === e) continue;
+          const frac = o.hp / o.maxHp;
+          if (frac < worstFrac && Math.hypot(o.x - e.x, o.y - e.y) < 160) { target = o; worstFrac = frac; }
+        }
+        if (target) {
+          target.hp = Math.min(target.maxHp, target.hp + 3);
+          this._addBeam(e.x, e.y, target.x, target.y, '#FFFFFF', 0.25, 2);
+          this._burst(target.x, target.y, '#FFFFFF', 5, 25);
+        }
+      }
+    }
+
+    // KIDDIE: fast swarm; DDoS call if 4+ kiddies survive 10s
+    if (e.t === 'kiddie') {
+      e._kiddieAge = (e._kiddieAge || 0) + dt;
+    }
+    // DDoS check (once per frame, outside individual behavior)
+    if (e.t === 'kiddie' && !this._ddosTriggered) {
+      const alive = this.EYES.filter(x => x.t === 'kiddie');
+      if (alive.length >= 4 && alive.every(k => (k._kiddieAge || 0) >= 10)) {
+        this._ddosTriggered = true;
+        showMsg('DDoS ATTACK!', '8 enemy surge incoming!', 2000);
+        for (let i = 0; i < 8; i++) this._spawnRandom(this.wave);
+        setTimeout(() => { this._ddosTriggered = false; }, 15000);
+      }
+    }
+
+    // SENTRY: stationary rapid fire + berserk spiral every 10s
+    if (e.t === 'sentry') {
+      e.spd = 0; e.vx = 0; e.vy = 0;
+      if (!e._sentryMode) e._sentryMode = 'fire';
+      if (e._sentryMode === 'fire') {
+        e.shootTimer -= dt;
+        e._sentryBerserkCd = (e._sentryBerserkCd || 10) - dt;
+        if (e.shootTimer <= 0) {
+          e.shootTimer = 0.25;
+          const dx = this.px - e.x, dy = this.py - e.y, d = Math.hypot(dx, dy) || 1;
+          this.EPROJS.push({ x: e.x, y: e.y, vx: dx / d * 200, vy: dy / d * 200, r: 4, col: '#00FFCC', life: 2.5 });
+        }
+        if (e._sentryBerserkCd <= 0) { e._sentryMode = 'berserk'; e._sentryBerserkTimer = 3; e._sentryBerserkAngle = 0; }
+      } else if (e._sentryMode === 'berserk') {
+        e._sentryBerserkTimer -= dt; e._sentryBerserkAngle += dt * 6;
+        if (e._sentryBerserkTimer % 0.08 < dt) {
+          const a = e._sentryBerserkAngle;
+          this.EPROJS.push({ x: e.x, y: e.y, vx: Math.cos(a) * 180, vy: Math.sin(a) * 180, r: 5, col: '#00FF88', life: 2.5 });
+        }
+        if (e._sentryBerserkTimer <= 0) { e._sentryMode = 'overheat'; e._sentryBerserkCd = 7; e._sentryOverheatTimer = 3; }
+      } else {
+        e._sentryOverheatTimer -= dt;
+        if (e._sentryOverheatTimer <= 0) e._sentryMode = 'fire';
+      }
+    }
+
+    // ICE CANNON: stationary, fires slow freeze shot every 4s that slows player
+    if (e.t === 'icecannon') {
+      e.spd = 0; e.vx = 0; e.vy = 0;
+      e.laserTimer -= dt;
+      if (e.laserTimer <= 0) {
+        e.laserTimer = 3.5 + Math.random();
+        const dx = this.px - e.x, dy = this.py - e.y, d = Math.hypot(dx, dy) || 1;
+        this.EPROJS.push({ x: e.x, y: e.y, vx: dx / d * 90, vy: dy / d * 90, r: 10, col: '#88EEFF', life: 5, freeze: true });
+      }
+    }
+
+    // TITAN: huge slow tank, fires single homing projectile every 5s
+    if (e.t === 'titan') {
+      e.shootTimer -= dt;
+      if (e.shootTimer <= 0) {
+        e.shootTimer = 4.5 + Math.random();
+        const dx = this.px - e.x, dy = this.py - e.y, d = Math.hypot(dx, dy) || 1;
+        this.EPROJS.push({ x: e.x, y: e.y, vx: dx / d * 100, vy: dy / d * 100, r: 9, col: '#8888AA', life: 6, seek: true, dmg: 2 });
       }
     }
   }
@@ -401,7 +761,7 @@ export class GameScene {
 
   // ─── Boss
   _spawnBoss(wv) {
-    const BOSS_CLASSES = [Architect, DataSpectre, CoreGuardian, VoidWeaver, SystemAdmin];
+    const BOSS_CLASSES = [Architect, DataSpectre, CoreGuardian, VoidWeaver, SystemAdmin, FirewallColossus, HydraProtocol, DataLeviathan, QuantumOverlord, PrivacyEater];
     const BossClass = BOSS_CLASSES[(Math.floor(wv / 5) - 1) % BOSS_CLASSES.length];
     this.boss = new BossClass(this.WW / 2, this.WH * 0.22, wv);
     SFX.boss();
@@ -439,8 +799,17 @@ export class GameScene {
 
   _addBeam(x1, y1, x2, y2, col, life, lw) { this.BEAMS.push({ x1, y1, x2, y2, col, life, maxLife: life, lw }); }
 
-  _damageE(e, dmg, big) {
+  _damageE(e, dmg, big, wpnIdx) {
     if (!e || e.hp <= 0) return;
+    // Zeryday immunity: track hits per weapon; block after 3 from same weapon
+    if (e.t === 'zeryday' && wpnIdx !== undefined) {
+      e.immuneHits[wpnIdx] = (e.immuneHits[wpnIdx] || 0) + 1;
+      if (e.immuneHits[wpnIdx] > 3) {
+        this._burst(e.x, e.y, '#FF00FF', 4, 30);
+        this._spawnFloat(e.x, e.y - 12, 'IMMUNE', '#FF00FF');
+        return;
+      }
+    }
     e.hp -= dmg; e.hitFlash = 0.13;
     SFX.hit();
     if (big) this._burst(e.x, e.y, e.col, 8, 35);
@@ -449,6 +818,11 @@ export class GameScene {
 
   _hurtBoss(dmg) {
     if (!this.boss) return;
+    // PrivacyEater absorb: intercept damage during absorb window
+    if (this.boss.absorbProjectile && this.boss.absorbProjectile()) {
+      this._spawnFloat(this.boss.x + (Math.random() - 0.5) * 40, this.boss.y - 30, 'ABSORBED', '#FF88CC');
+      return;
+    }
     this.boss.takeDamage(dmg); SFX.bossHit();
     this._spawnFloat(this.boss.x + (Math.random() - 0.5) * 40, this.boss.y - 40, '-' + dmg.toFixed(1), '#FF5555');
     if (!this.boss.alive) this._killBoss();
@@ -463,10 +837,18 @@ export class GameScene {
     this.score += pts; this.credits += Math.floor(e.pts * 0.1);
     this.combo = Math.min(this.combo + 0.4, 8); this.comboTimer = 2.5;
     SFX.kill();
-    if (e.t === 'necro')      this._burst(e.x, e.y, '#CC00FF', 20, 90);
-    else if (e.t === 'tank')  this._burst(e.x, e.y, '#FF8800', 22, 80);
-    else if (e.t === 'boss')  this._burst(e.x, e.y, '#FF0000', 30, 130);
-    else                      this._burst(e.x, e.y, e.col, 12, 55);
+    if (e.t === 'necro')       this._burst(e.x, e.y, '#CC00FF', 20, 90);
+    else if (e.t === 'tank')   this._burst(e.x, e.y, '#FF8800', 22, 80);
+    else if (e.t === 'boss')   this._burst(e.x, e.y, '#FF0000', 30, 130);
+    else if (e.t === 'hawk')   { this._burst(e.x, e.y, '#FF2200', 18, 95); this._addBeam(e.x, e.y, e.x, e.y - 60, '#FF2200', 0.3, 3); }
+    else if (e.t === 'zeryday') this._burst(e.x, e.y, '#FF00FF', 25, 100);
+    else if (e.t === 'mirage') { this._burst(e.x, e.y, '#AAAAFF', 20, 75); if (e.copies) e.copies = null; }
+    else if (e.t === 'corrupted') this._burst(e.x, e.y, '#8800CC', 22, 85);
+    else if (e.t === 'titan')  { this._burst(e.x, e.y, '#8888AA', 30, 110); this._shakeDir(e.x, e.y, 14); }
+    else if (e.t === 'glitch') this._burst(e.x, e.y, '#FF44AA', 16, 65);
+    else if (e.t === 'zealot') this._burst(e.x, e.y, '#FFFFFF', 14, 55);
+    else if (e.t === 'sentry') { this._burst(e.x, e.y, '#00FFCC', 20, 90); this._shakeDir(e.x, e.y, 10); }
+    else                       this._burst(e.x, e.y, e.col, 12, 55);
     this._spawnFloat(e.x, e.y - 16, '+' + pts, e.col);
     this.killStreak++; this.streakTimer = 2.5;
     if (this.killStreak >= 2 && this.killStreak < STREAK_NAMES.length) {
@@ -692,18 +1074,18 @@ export class GameScene {
     if (w.t === 'pulse') {
       SFX.shoot();
       this._addBeam(this.px, this.py, this.px + ux * w.rng, this.py + uy * w.rng, w.col, 0.12, 2.5);
-      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 16);
+      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 16, null, this.wpnIdx);
     } else if (w.t === 'beam') {
       SFX.beam();
       this._addBeam(this.px, this.py, this.px + ux * w.rng, this.py + uy * w.rng, w.col, 0.09, 4);
-      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 12);
+      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 12, null, this.wpnIdx);
     } else if (w.t === 'spread') {
       SFX.shoot();
       for (let a = -0.44; a <= 0.45; a += 0.22) {
         const c = Math.cos(a), s = Math.sin(a);
         const bx = ux * c - uy * s, by = ux * s + uy * c;
         this._addBeam(this.px, this.py, this.px + bx * w.rng, this.py + by * w.rng, w.col, 0.14, 2);
-        this._hitDir(this.px, this.py, bx, by, w.rng, w.dmg, 15);
+        this._hitDir(this.px, this.py, bx, by, w.rng, w.dmg, 15, null, this.wpnIdx);
       }
     } else if (w.t === 'split') {
       SFX.shoot();
@@ -711,12 +1093,12 @@ export class GameScene {
         const c = Math.cos(a), s = Math.sin(a);
         const bx = ux * c - uy * s, by = ux * s + uy * c;
         this._addBeam(this.px, this.py, this.px + bx * w.rng, this.py + by * w.rng, w.col, 0.16, 2);
-        this._hitDir(this.px, this.py, bx, by, w.rng, w.dmg, 14);
+        this._hitDir(this.px, this.py, bx, by, w.rng, w.dmg, 14, null, this.wpnIdx);
       });
     } else if (w.t === 'wave') {
       SFX.shoot();
       this.waveRing = true; this.waveRingTimer = 0.55; this.waveRingX = this.px; this.waveRingY = this.py;
-      this.EYES.forEach(e => { if (d2(e.x, e.y, this.px, this.py) < w.rng) this._damageE(e, w.dmg * this.powerMult, false); });
+      this.EYES.forEach(e => { if (d2(e.x, e.y, this.px, this.py) < w.rng) this._damageE(e, w.dmg * this.powerMult, false, this.wpnIdx); });
       if (this.boss && d2(this.boss.x, this.boss.y, this.px, this.py) < w.rng) this._hurtBoss(w.dmg * this.powerMult);
       this._burst(this.px, this.py, w.col, 16, w.rng * 0.8); this._shakeDir(this.px, this.py, 5);
     } else if (w.t === 'blackhole') {
@@ -733,7 +1115,7 @@ export class GameScene {
     } else if (w.t === 'cryo') {
       SFX.beam();
       this._addBeam(this.px, this.py, this.px + ux * w.rng, this.py + uy * w.rng, w.col, 0.38, 6);
-      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 18, e => { e.applyFreeze(3.8); e.vx *= 0.08; e.vy *= 0.08; this._burst(e.x, e.y, '#88FFFF', 5, 25); });
+      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 18, e => { e.applyFreeze(3.8); e.vx *= 0.08; e.vy *= 0.08; this._burst(e.x, e.y, '#88FFFF', 5, 25); }, this.wpnIdx);
       if (this.boss && d2(this.boss.x, this.boss.y, this.px, this.py) < w.rng) this.boss.applyFreeze(1.6);
     } else if (w.t === 'nuke') {
       this.nukeCharging = true; this.nukeTimer = 2; this.nukeX = this.wMX; this.nukeY = this.wMY;
@@ -811,7 +1193,7 @@ export class GameScene {
     for (let b = 0; b < 3; b++) {
       const ex = ox + ux * segLen, ey = oy + uy * segLen;
       this._addBeam(ox, oy, ex, ey, w.col, 0.18, 3);
-      this._hitDir(ox, oy, ux, uy, segLen, w.dmg, 12);
+      this._hitDir(ox, oy, ux, uy, segLen, w.dmg, 12, null, this.wpnIdx);
       // Reflect off world bounds
       let nx = ex, ny = ey;
       if (ex < 40 || ex > this.WW - 40) { ux = -ux; nx = Math.max(40, Math.min(this.WW - 40, ex)); }
@@ -891,6 +1273,43 @@ export class GameScene {
           this.EYES.forEach(e => { if (d2(e.x, e.y, tr.x, tr.y) < 120) this._damageE(e, 3 * this.powerMult, true); });
           if (this.boss && d2(this.boss.x, this.boss.y, tr.x, tr.y) < 140) this._hurtBoss(3 * this.powerMult);
         }
+      } else if (tr.type === 'data_spike') {
+        tr.active = Math.sin(T * (Math.PI / tr.period) + tr.phase) > 0.3;
+        if (tr.active && this.invincible <= 0 && !this.ghostActive && d2(this.px, this.py, tr.x, tr.y) < tr.r) {
+          tr.dmgTimer = (tr.dmgTimer || 0) - dt;
+          if (tr.dmgTimer <= 0) { tr.dmgTimer = 1.2; this._hurtPlayer(); }
+        }
+      } else if (tr.type === 'emp_burst') {
+        if (!tr.armed) {
+          tr.rearmTimer -= dt;
+          if (tr.rearmTimer <= 0) tr.armed = true;
+          continue;
+        }
+        if (d2(this.px, this.py, tr.x, tr.y) < tr.r && this.invincible <= 0) {
+          tr.armed = false; tr.rearmTimer = 20;
+          this._burst(tr.x, tr.y, '#00FFFF', 20, 120); this._shakeDir(tr.x, tr.y, 10);
+          this._spawnFloat(tr.x, tr.y - 40, 'EMP!', '#00FFFF');
+          // Disable all ability cooldowns by setting them to max
+          const empDur = 4;
+          Object.keys(this.abCDs).forEach(k => { this.abCDs[k] = Math.max(this.abCDs[k], empDur); });
+        }
+      } else if (tr.type === 'vortex_pit') {
+        tr.angle = (tr.angle + dt * 2.5) % (Math.PI * 2);
+        const pullDist = d2(this.px, this.py, tr.x, tr.y);
+        if (pullDist < tr.pullR && !this.ghostActive) {
+          const dx = tr.x - this.px, dy = tr.y - this.py, d3 = Math.hypot(dx, dy) || 1;
+          const force = (1 - pullDist / tr.pullR) * 120;
+          this.px += dx / d3 * force * dt; this.py += dy / d3 * force * dt;
+        }
+        if (pullDist < tr.r && this.invincible <= 0 && !this.ghostActive) {
+          tr.dmgTimer = (tr.dmgTimer || 0) - dt;
+          if (tr.dmgTimer <= 0) { tr.dmgTimer = 1.0; this._hurtPlayer(); }
+        }
+        // Also pull enemies
+        this.EYES.forEach(e => {
+          const ed = d2(e.x, e.y, tr.x, tr.y);
+          if (ed < tr.pullR) { const dx = tr.x - e.x, dy = tr.y - e.y, d3 = Math.hypot(dx, dy) || 1; const f = (1 - ed / tr.pullR) * 80; e.x += dx / d3 * f * dt; e.y += dy / d3 * f * dt; }
+        });
       }
     }
   }
@@ -941,14 +1360,60 @@ export class GameScene {
         ctx.shadowColor = '#FF8800';
         ctx.beginPath(); ctx.arc((tr.x - camX) * DPR, (tr.y - camY) * DPR, 6 * DPR, 0, Math.PI * 2); ctx.fill();
         ctx.shadowBlur = 0;
-        // Proximity ring
         ctx.strokeStyle = 'rgba(255,136,0,0.2)'; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.arc((tr.x - camX) * DPR, (tr.y - camY) * DPR, 32 * DPR, 0, Math.PI * 2); ctx.stroke();
+      } else if (tr.type === 'data_spike') {
+        const tx2 = (tr.x - camX) * DPR, ty2 = (tr.y - camY) * DPR;
+        const spk = tr.active;
+        ctx.save();
+        ctx.strokeStyle = spk ? '#FF4444' : 'rgba(200,50,50,0.25)';
+        ctx.lineWidth   = spk ? 2 : 1;
+        ctx.shadowBlur  = spk ? 16 : 0; ctx.shadowColor = '#FF2222';
+        for (let s = 0; s < 8; s++) {
+          const a = (s / 8) * Math.PI * 2;
+          const len = spk ? tr.r * DPR : tr.r * 0.35 * DPR;
+          ctx.beginPath();
+          ctx.moveTo(tx2 + Math.cos(a) * 5 * DPR, ty2 + Math.sin(a) * 5 * DPR);
+          ctx.lineTo(tx2 + Math.cos(a) * len, ty2 + Math.sin(a) * len);
+          ctx.stroke();
+        }
+        ctx.beginPath(); ctx.arc(tx2, ty2, 5 * DPR, 0, Math.PI * 2);
+        ctx.fillStyle = spk ? '#FF2222' : 'rgba(200,50,50,0.4)'; ctx.fill();
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'emp_burst') {
+        const tx2 = (tr.x - camX) * DPR, ty2 = (tr.y - camY) * DPR;
+        const blink2 = tr.armed && Math.sin(T * 2 + tr.blinkPhase) > 0;
+        ctx.save();
+        ctx.strokeStyle = tr.armed ? (blink2 ? '#00FFFF' : 'rgba(0,255,255,0.3)') : 'rgba(0,255,255,0.08)';
+        ctx.lineWidth   = 1.5;
+        ctx.shadowBlur  = tr.armed ? (blink2 ? 20 : 5) : 0; ctx.shadowColor = '#00FFFF';
+        ctx.beginPath(); ctx.arc(tx2, ty2, tr.r * DPR, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = tr.armed ? 'rgba(0,255,255,0.06)' : 'rgba(0,255,255,0.02)';
+        ctx.fill();
+        ctx.beginPath(); ctx.arc(tx2, ty2, 5 * DPR, 0, Math.PI * 2);
+        ctx.fillStyle = tr.armed ? '#00FFFF' : 'rgba(0,255,255,0.3)'; ctx.fill();
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'vortex_pit') {
+        const tx2 = (tr.x - camX) * DPR, ty2 = (tr.y - camY) * DPR;
+        ctx.save();
+        // Spinning spiral rings
+        for (let ring = 0; ring < 3; ring++) {
+          const rr = (tr.r * (0.35 + ring * 0.3)) * DPR;
+          ctx.beginPath(); ctx.arc(tx2, ty2, rr, tr.angle + ring * 0.8, tr.angle + ring * 0.8 + Math.PI * 1.4);
+          ctx.strokeStyle = `rgba(100,0,200,${0.7 - ring * 0.2})`; ctx.lineWidth = (3 - ring) * DPR;
+          ctx.shadowBlur = 12; ctx.shadowColor = '#6600CC'; ctx.stroke();
+        }
+        ctx.fillStyle = 'rgba(40,0,80,0.7)';
+        ctx.beginPath(); ctx.arc(tx2, ty2, 8 * DPR, 0, Math.PI * 2); ctx.fill();
+        // Pull radius indicator
+        ctx.strokeStyle = 'rgba(100,0,200,0.12)'; ctx.lineWidth = 1; ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.arc(tx2, ty2, tr.pullR * DPR, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
       }
     }
   }
 
-  _hitDir(ox, oy, dirx, diry, rng, dmg, tol, onHit) {
+  _hitDir(ox, oy, dirx, diry, rng, dmg, tol, onHit, wpnIdx) {
     for (let i = this.EYES.length - 1; i >= 0; i--) {
       const e = this.EYES[i];
       if (e.cloaking && Math.random() < 0.7) continue;
@@ -956,7 +1421,7 @@ export class GameScene {
       const proj = tx * dirx + ty * diry;
       if (proj < 0 || proj > rng) continue;
       const cx = ox + dirx * proj, cy = oy + diry * proj;
-      if (d2(e.x, e.y, cx, cy) < e.sz + tol) { this._damageE(e, dmg * this.powerMult, false); if (onHit) onHit(e); }
+      if (d2(e.x, e.y, cx, cy) < e.sz + tol) { this._damageE(e, dmg * this.powerMult, false, wpnIdx); if (onHit) onHit(e); }
     }
     if (this.boss) {
       const tx = this.boss.x - ox, ty = this.boss.y - oy, proj = tx * dirx + ty * diry;
@@ -1070,7 +1535,9 @@ export class GameScene {
       }
       this.dashTrail.forEach(t => t.life -= dt);
       for (let i = this.dashTrail.length - 1; i >= 0; i--) { if (this.dashTrail[i].life <= 0) this.dashTrail.splice(i, 1); }
-      this.px = Math.max(10, Math.min(this.WW - 10, this.px));
+      // Cylindrical wrap: left/right edges are connected; top/bottom remain bounded
+      if (this.px < 0)          this.px += this.WW;
+      else if (this.px > this.WW) this.px -= this.WW;
       this.py = Math.max(10, Math.min(this.WH - 10, this.py));
       // Obstacle resolution
       for (const o of OBSTACLES) {
@@ -1280,16 +1747,42 @@ export class GameScene {
       e.update(dt, this.px, this.py, OBSTACLES, this.EYES);
       if (e.hp <= 0) { this._killE(e); continue; }
       this._enemyTypeBehavior(e, dt);
-      e.x = Math.max(0, Math.min(this.WW, e.x)); e.y = Math.max(0, Math.min(this.WH, e.y));
+      // Cylindrical wrap for enemies; wrapping gives an elite boost once per crossing
+      if (e.x < 0)            { e.x += this.WW; if (!e._wrapElite) { e._wrapElite = true; e.hp = Math.min(e.hp * 1.25, e.maxHp * 1.8); e.spd *= 1.12; e.col = '#FFFFFF'; } }
+      else if (e.x > this.WW) { e.x -= this.WW; if (!e._wrapElite) { e._wrapElite = true; e.hp = Math.min(e.hp * 1.25, e.maxHp * 1.8); e.spd *= 1.12; e.col = '#FFFFFF'; } }
+      e.y = Math.max(0, Math.min(this.WH, e.y));
       if (this.invincible <= 0 && !this.ghostActive && !this.empShieldActive && d2(e.x, e.y, this.px, this.py) < e.sz + 12) this._hurtPlayer();
     }
 
     // Enemy projectiles
     for (let i = this.EPROJS.length - 1; i >= 0; i--) {
       const p = this.EPROJS[i];
+      // Seeking projectiles home toward player
+      if (p.seek) {
+        const sdx = this.px - p.x, sdy = this.py - p.y, sd = Math.hypot(sdx, sdy) || 1;
+        p.vx += (sdx / sd * 120 - p.vx) * Math.min(1, 2.5 * dt);
+        p.vy += (sdy / sd * 120 - p.vy) * Math.min(1, 2.5 * dt);
+      }
       p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
-      if (p.life <= 0 || p.x < 0 || p.x > this.WW || p.y < 0 || p.y > this.WH) { this.EPROJS.splice(i, 1); continue; }
-      if (!this.empShieldActive && this.invincible <= 0 && !this.ghostActive && d2(p.x, p.y, this.px, this.py) < p.r + 11) { this.EPROJS.splice(i, 1); this._hurtPlayer(); }
+      if (p.life <= 0 || p.x < 0 || p.x > this.WW || p.y < 0 || p.y > this.WH) {
+        // PrivacyEater zone-drop: convert to corruption zone on expiry
+        if (p.zone) {
+          this.CORRUPT_ZONES.push({ x: p.x, y: p.y, r: 80 + Math.random() * 40, pulse: 0, life: 18 });
+          this._burst(p.x, p.y, '#8800CC', 12, 80);
+        }
+        this.EPROJS.splice(i, 1); continue;
+      }
+      if (!this.empShieldActive && this.invincible <= 0 && !this.ghostActive && d2(p.x, p.y, this.px, this.py) < p.r + 11) {
+        this.EPROJS.splice(i, 1);
+        // Freeze shot: slow player speed for 2.5s
+        if (p.freeze) {
+          this.speed = Math.max(80, this.speed * 0.35);
+          this._spawnFloat(this.px, this.py - 20, 'FROZEN!', '#88EEFF');
+          clearTimeout(this._freezeRestore);
+          this._freezeRestore = setTimeout(() => { this.speed = this._baseSpeed; }, 2500);
+        }
+        this._hurtPlayer();
+      }
     }
 
     // Boss AI — BossBase subclass handles movement, attack, phase transitions
@@ -1311,6 +1804,23 @@ export class GameScene {
     }
     // Beams
     for (let i = this.BEAMS.length - 1; i >= 0; i--) { this.BEAMS[i].life -= dt; if (this.BEAMS[i].life <= 0) this.BEAMS.splice(i, 1); }
+    // Corruption zones: DoT player, pulse animation, optional life expiry
+    for (let zi = this.CORRUPT_ZONES.length - 1; zi >= 0; zi--) {
+      const z = this.CORRUPT_ZONES[zi];
+      z.pulse = (z.pulse + dt * 1.8) % (Math.PI * 2);
+      if (z.life !== undefined) { z.life -= dt; if (z.life <= 0) { this.CORRUPT_ZONES.splice(zi, 1); continue; } }
+      if (this.invincible <= 0 && !this.ghostActive && Math.hypot(this.px - z.x, this.py - z.y) < z.r) {
+        if (!z._dotTimer || z._dotTimer <= 0) {
+          z._dotTimer = 1.0;
+          this.hp -= 0.3;
+          updateHpHud(this.hp, this.maxHp);
+          if (this.hp <= 0) this.gameOver();
+        }
+        z._dotTimer = (z._dotTimer || 0) - dt;
+      } else {
+        z._dotTimer = (z._dotTimer || 0) - dt;
+      }
+    }
     // Floats
     for (let i = this.FLOATS.length - 1; i >= 0; i--) {
       const f = this.FLOATS[i]; f.x += f.vx * dt; f.y += f.vy * dt; f.life -= dt;
@@ -1407,6 +1917,27 @@ export class GameScene {
 
     // Traps
     this._renderTraps(ctx, camX, camY, DPR);
+
+    // Corruption zones
+    for (const z of this.CORRUPT_ZONES) {
+      if (!onScreen(z.x, z.y, z.r + 20)) continue;
+      const zx = wx(z.x), zy = wy(z.y), zr = z.r * DPR;
+      const pulseMod = 1 + 0.06 * Math.sin(z.pulse);
+      const g = ctx.createRadialGradient(zx, zy, 0, zx, zy, zr * pulseMod);
+      g.addColorStop(0, 'rgba(136,0,204,0.18)');
+      g.addColorStop(0.6, 'rgba(80,0,100,0.10)');
+      g.addColorStop(1,   'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(zx, zy, zr * pulseMod, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = 'rgba(180,0,255,' + (0.22 + 0.12 * Math.sin(z.pulse)) + ')';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(zx, zy, zr * pulseMod, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = 'rgba(180,0,255,0.55)';
+      ctx.font = 'bold ' + (10 * DPR) + 'px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('CORRUPTION ZONE', zx, zy - zr * 0.6);
+    }
+    ctx.textAlign = 'left';
 
     // Black hole
     if (this.bhActive) {
@@ -1519,27 +2050,105 @@ export class GameScene {
       ctx.globalAlpha = e.al * (e.frozen > 0 ? 0.6 : 1) * (e.spawnAnim > 0 ? sa : 1);
       const col = e.hitFlash > 0 ? '#FFFFFF' : (e.frozen > 0 ? '#88FFFF' : (e.virus > 0 ? '#44FF00' : (e.berserk ? '#FF0000' : e.col)));
       ctx.fillStyle = col;
-      ctx.shadowBlur = e.t === 'necro' ? 35 : 15; ctx.shadowColor = e.hitFlash > 0 ? '#FFFFFF' : e.col;
+      ctx.shadowBlur = (e.t === 'necro' || e.t === 'corrupted') ? 35 : 15;
+      ctx.shadowColor = e.hitFlash > 0 ? '#FFFFFF' : e.col;
       const er = e.sz * DPR;
-      ctx.beginPath();
-      if (e.t === 'tank') {
-        ctx.rect(-er, -er, er * 2, er * 2);
-      } else if (e.t === 'necro') {
-        for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2 - Math.PI / 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
-        ctx.closePath();
-      } else if (e.t === 'elite') {
-        for (let i = 0; i < 4; i++) { const a = i / 4 * Math.PI * 2 - Math.PI / 4; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
-        ctx.closePath();
-      } else if (e.t === 'teleport') {
-        for (let i = 0; i < 3; i++) { const a = i / 3 * Math.PI * 2 - Math.PI / 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
-        ctx.closePath();
+      // Trojan: render as ammo pickup icon until revealed
+      if (e.t === 'trojan' && !e.revealed) {
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = '#00FFCC'; ctx.shadowColor = '#00FFCC'; ctx.shadowBlur = 12;
+        ctx.fillRect(-er * 0.7, -er * 0.7, er * 1.4, er * 1.4);
+        ctx.fillStyle = '#001A14'; ctx.font = (er * 1.2) + 'px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('A', 0, 1);
+        ctx.textBaseline = 'alphabetic';
       } else {
-        ctx.arc(0, 0, er, 0, Math.PI * 2);
+        ctx.beginPath();
+        if (e.t === 'tank') {
+          ctx.rect(-er, -er, er * 2, er * 2);
+        } else if (e.t === 'necro') {
+          for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2 - Math.PI / 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
+          ctx.closePath();
+        } else if (e.t === 'elite') {
+          for (let i = 0; i < 4; i++) { const a = i / 4 * Math.PI * 2 - Math.PI / 4; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
+          ctx.closePath();
+        } else if (e.t === 'teleport') {
+          for (let i = 0; i < 3; i++) { const a = i / 3 * Math.PI * 2 - Math.PI / 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
+          ctx.closePath();
+        } else if (e.t === 'hawk') {
+          // Hexagon
+          for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
+          ctx.closePath();
+        } else if (e.t === 'zeryday') {
+          // Octagon
+          for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
+          ctx.closePath();
+        } else if (e.t === 'crawler') {
+          // Rectangle (crouched)
+          ctx.rect(-er, -er * 0.65, er * 2, er * 1.3);
+        } else if (e.t === 'broker') {
+          // Elongated diamond (6-point)
+          ctx.moveTo(0, -er * 1.3); ctx.lineTo(er * 0.6, -er * 0.3);
+          ctx.lineTo(er * 0.9, er * 0.5); ctx.lineTo(0, er * 1.3);
+          ctx.lineTo(-er * 0.9, er * 0.5); ctx.lineTo(-er * 0.6, -er * 0.3);
+          ctx.closePath();
+        } else if (e.t === 'hornet') {
+          // Pentagon
+          for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2 - Math.PI / 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
+          ctx.closePath();
+        } else if (e.t === 'sentry' || e.t === 'icecannon') {
+          // Rotated square (diamond)
+          for (let i = 0; i < 4; i++) { const a = i / 4 * Math.PI * 2 - Math.PI / 4; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * er, Math.sin(a) * er); }
+          ctx.closePath();
+        } else if (e.t === 'zealot') {
+          // Cross/plus
+          ctx.rect(-er * 0.35, -er, er * 0.7, er * 2);
+          ctx.rect(-er, -er * 0.35, er * 2, er * 0.7);
+        } else if (e.t === 'titan') {
+          // Large rectangle with notched corners
+          ctx.rect(-er, -er * 0.65, er * 2, er * 1.3);
+        } else if (e.t === 'glitch') {
+          // Jagged irregular shape (static polygon)
+          const pts2 = [[-er,-er*0.4],[0,-er*0.9],[er*0.5,-er*0.3],[er,0],[er*0.4,er],[0,er*0.6],[-er*0.6,er*0.8]];
+          pts2.forEach(([px2,py2],i) => ctx[i?'lineTo':'moveTo'](px2,py2));
+          ctx.closePath();
+        } else if (e.t === 'dropper') {
+          // Oval (wider)
+          ctx.ellipse(0, 0, er * 1.4, er * 0.8, 0, 0, Math.PI * 2);
+        } else {
+          ctx.arc(0, 0, er, 0, Math.PI * 2);
+        }
+        ctx.fill();
       }
-      ctx.fill(); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0; ctx.globalAlpha = 1;
       ctx.restore();
+      // Mirage ghost copies
+      if (e.t === 'mirage' && e.copies) {
+        e.copies.forEach(c => {
+          ctx.save();
+          ctx.globalAlpha = 0.28;
+          ctx.fillStyle = e.col; ctx.shadowBlur = 8; ctx.shadowColor = e.col;
+          ctx.beginPath(); ctx.arc(wx(e.x + c.ox), wy(e.y + c.oy), er * 0.8, 0, Math.PI * 2); ctx.fill();
+          ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+          ctx.restore();
+        });
+      }
+      // Corrupted aura ring
+      if (e.t === 'corrupted') {
+        ctx.strokeStyle = 'rgba(136,0,204,0.35)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(wx(e.x), wy(e.y), (e.sz + 22 + 4 * Math.sin(t2 * 3)) * DPR, 0, Math.PI * 2); ctx.stroke();
+      }
+      // Hawk laser charge indicator
+      if (e.t === 'hawk' && !e.laserActive && e.laserTimer < 1) {
+        ctx.strokeStyle = 'rgba(255,34,0,' + (1 - e.laserTimer) * 0.6 + ')'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(wx(e.x), wy(e.y), (e.sz + 8) * DPR, 0, Math.PI * 2); ctx.stroke();
+      }
+      // Crawler charge warning
+      if (e.t === 'crawler' && !e.chargeActive && e.chargeTimer < 0.5) {
+        ctx.strokeStyle = 'rgba(204,136,0,0.7)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(wx(e.x), wy(e.y), (e.sz + 6) * DPR, 0, Math.PI * 2); ctx.stroke();
+      }
       // HP bar
-      if (e.maxHp > 1) {
+      if (e.maxHp > 1 && e.t !== 'trojan' || (e.t === 'trojan' && e.revealed)) {
         const ex2 = wx(e.x), ey2 = wy(e.y), er2 = e.sz * DPR;
         ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(ex2 - er2, ey2 - er2 - 8 * DPR, er2 * 2, 4 * DPR);
         ctx.fillStyle = e.col; ctx.fillRect(ex2 - er2, ey2 - er2 - 8 * DPR, er2 * 2 * (e.hp / e.maxHp), 4 * DPR);

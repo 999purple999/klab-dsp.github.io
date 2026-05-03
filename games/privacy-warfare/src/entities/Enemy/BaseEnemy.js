@@ -22,9 +22,27 @@ export class BaseEnemy {
     // per necro
     this.necroTimer = 8;
     // AI state
-    this.alertLevel = 0;  // 0=patrol, 1=alert, 2=attack
+    this.alertLevel = 0;
     this.patrolTarget = null;
     this.lastSeenX = x; this.lastSeenY = y;
+
+    // Extended timers for new enemy types
+    this.chargeTimer  = 3.5 + Math.random() * 2; // crawler
+    this.chargeActive = false;
+    this.chargeDX = 0; this.chargeDY = 0;
+    this.stealTimer   = 3 + Math.random() * 2;   // broker
+    this.laserTimer   = 4 + Math.random() * 2;   // hawk
+    this.laserActive  = false;
+    this.laserHoldTime = 0;
+    this.revealed     = false;                    // trojan
+    this.copies       = null;                     // mirage
+    this.immuneWpn    = -1;                       // zeryday
+    this.immuneHits   = {};
+    this.bounceDir    = null;                     // bouncer
+    this.bounceCount  = 0;
+    this.bounceSpd    = 0;
+    this.corrupted    = false;                    // corruption zone effect
+    this._splitDone   = false;                    // bouncer split guard
   }
 
   isAlive() { return this.hp > 0; }

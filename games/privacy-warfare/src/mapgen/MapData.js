@@ -12,6 +12,11 @@ export const MAPS = [
   { n: 'CRYO VAULT',        bg: '#010C12', gc: 'rgba(0,210,230,0.20)',  ac: 'rgba(80,240,255,0.7)', sc: '#00EEFF' },
   { n: 'INDUSTRIAL WASTE',  bg: '#0B0500', gc: 'rgba(255,130,0,0.18)', ac: 'rgba(255,160,40,0.7)', sc: '#FF8800' },
   { n: 'BIO-DIGITAL',       bg: '#001209', gc: 'rgba(0,220,80,0.20)',   ac: 'rgba(40,255,100,0.7)', sc: '#00FF88' },
+  { n: 'VOID MATRIX',       bg: '#000000', gc: 'rgba(200,200,255,0.14)',ac: 'rgba(220,220,255,0.6)',sc: '#CCCCFF' },
+  { n: 'PHISHING NET',      bg: '#030700', gc: 'rgba(100,200,0,0.18)',  ac: 'rgba(140,255,30,0.7)', sc: '#88FF00' },
+  { n: 'OVERCLOCK CORE',    bg: '#120400', gc: 'rgba(255,200,0,0.20)',  ac: 'rgba(255,230,80,0.7)', sc: '#FFCC00' },
+  { n: 'SHADOW PROTOCOL',   bg: '#0A0000', gc: 'rgba(200,0,30,0.16)',   ac: 'rgba(255,30,60,0.6)',  sc: '#CC0020' },
+  { n: 'NEURAL CLUSTER',    bg: '#040012', gc: 'rgba(180,60,255,0.22)', ac: 'rgba(200,100,255,0.7)',sc: '#CC66FF' },
 ];
 
 export let STARS     = [];
@@ -70,6 +75,9 @@ export function buildTraps(wv, WW, WH) {
   if (wv >= 3) pool.push('efield');
   if (wv >= 5) pool.push('turret');
   if (wv >= 7) pool.push('mine');
+  if (wv >= 6) pool.push('data_spike');
+  if (wv >= 8) pool.push('emp_burst');
+  if (wv >= 9) pool.push('vortex_pit');
 
   for (let i = 0; i < count; i++) {
     const type = pool[Math.floor(Math.random() * pool.length)];
@@ -86,6 +94,12 @@ export function buildTraps(wv, WW, WH) {
       TRAPS.push({ type: 'turret', x, y, angle: 0, shootCd: 2.5 + Math.random(), shootTimer: 1.5 + Math.random() * 2, hp: 3, dead: false });
     } else if (type === 'mine') {
       TRAPS.push({ type: 'mine', x, y, armed: true, blinkPhase: Math.random() * Math.PI * 2 });
+    } else if (type === 'data_spike') {
+      TRAPS.push({ type: 'data_spike', x, y, r: 55 + rnd(0, 30), phase: Math.random() * Math.PI * 2, period: 2 + rnd(0, 1.5), active: false, dmgTimer: 0 });
+    } else if (type === 'emp_burst') {
+      TRAPS.push({ type: 'emp_burst', x, y, r: 70, armed: true, rearmTimer: 0, blinkPhase: Math.random() * Math.PI * 2 });
+    } else if (type === 'vortex_pit') {
+      TRAPS.push({ type: 'vortex_pit', x, y, r: 100, pullR: 180, dmgTimer: 0, angle: 0 });
     }
   }
 }
