@@ -131,6 +131,7 @@ export class GameScene {
     this.BEAMS     = [];
     this.FLOATS    = [];
     this.AMMO_PKUPS = [];
+    this.HP_PKUPS   = [];
 
     // loadout
     this.loadoutWpns  = [0, 1];    // two equipped weapon indices
@@ -238,7 +239,7 @@ export class GameScene {
     this.abilityCDMult = 1; this.ghostBonusTime = 0; this.comboDecayMult = 1; this.chainExtraTargets = 0;
     this.EYES.length = 0; this.PARTS.length = 0; this.BEAMS.length = 0;
     this.EPROJS.length = 0; this.DEAD_EYES.length = 0; this.FLOATS.length = 0;
-    this.AMMO_PKUPS.length = 0; this.ammoPkupTimer = 8;
+    this.AMMO_PKUPS.length = 0; this.HP_PKUPS.length = 0; this.ammoPkupTimer = 8;
     this.vortexList.length = 0; this.timeLoopProjs.length = 0; this.drones.length = 0;
     this.styleMeter = 0; this.overdriveActive = false; this.overdriveTimer = 0;
     this.boss = null; this.bhActive = false; this.nukeCharging = false; this.nukeRad = 0; this.chainSegs = [];
@@ -256,7 +257,8 @@ export class GameScene {
     updateHpHud(this.hp, this.maxHp);
     updateScore(0);
     updateCredits(this.credits);
-    setWpn(0, WPNS);
+    setWpn(this.wpnIdx, WPNS);
+    this._updateAmmoHUD();
     document.getElementById('shield-bar-wrap').style.display = 'none';
     document.getElementById('nuke-charge').style.display = 'none';
     document.getElementById('ov-score').style.display = 'none';
@@ -480,8 +482,9 @@ export class GameScene {
     this.mastery.setStat('maxCombo', Math.floor(this.combo));
     const _leveled = this.progression.addXP(Math.round(pts * 0.5));
     if (_leveled) showMsg('LEVEL UP', 'Rank ' + this.progression.level);
-    // 25% chance ammo drop on kill
+    // Drops on kill: 25% ammo, 6% health
     if (Math.random() < 0.25) this.AMMO_PKUPS.push({ x: e.x, y: e.y, pulse: 0 });
+    if (Math.random() < 0.06 && this.hp < this.maxHp) this.HP_PKUPS.push({ x: e.x, y: e.y, pulse: 0 });
     this._addStyle(15);
     // Kill-cam slow-mo on wave's last kill
     if (this.EYES.length === 0 && !this.betweenWaves && !this.boss) {
@@ -1139,6 +1142,19 @@ export class GameScene {
           this._collectAmmo();
         }
       }
+      // Collect HP pickups
+      for (let i = this.HP_PKUPS.length - 1; i >= 0; i--) {
+        const p = this.HP_PKUPS[i];
+        p.pulse += dt * 2;
+        if (d2(p.x, p.y, this.px, this.py) < 28) {
+          this.HP_PKUPS.splice(i, 1);
+          if (this.hp < this.maxHp) {
+            this.hp++; updateHpHud(this.hp, this.maxHp);
+            showMsg('MEDKIT', 'Health Restored', 1200);
+            this._burst(this.px, this.py, '#FF4466', 8, 35);
+          }
+        }
+      }
     }
 
     // Weather
@@ -1615,28 +1631,41 @@ export class GameScene {
       ctx.fillStyle = edgeG; ctx.fillRect(0, 0, W, H);
     }
 
-    // Ammo pickups
+    // Ammo pickups — glowing cyan diamond
     this.AMMO_PKUPS.forEach(p => {
       if (!onScreen(p.x, p.y, 22)) return;
-      const glow = 0.55 + 0.45 * Math.sin(p.pulse);
+      const glow = 0.6 + 0.4 * Math.sin(p.pulse);
+      const r = (8 + 2 * Math.sin(p.pulse)) * DPR;
       ctx.save();
-      ctx.shadowBlur = 18 * DPR; ctx.shadowColor = '#00FFCC';
+      ctx.shadowBlur = 22 * DPR; ctx.shadowColor = '#00FFCC';
       ctx.globalAlpha = glow;
       ctx.fillStyle = '#00FFCC';
-      // Diamond shape
-      const r = 9 * DPR;
       ctx.beginPath();
       ctx.moveTo(wx(p.x), wy(p.y) - r);
-      ctx.lineTo(wx(p.x) + r, wy(p.y));
+      ctx.lineTo(wx(p.x) + r * 0.7, wy(p.y));
       ctx.lineTo(wx(p.x), wy(p.y) + r);
-      ctx.lineTo(wx(p.x) - r, wy(p.y));
+      ctx.lineTo(wx(p.x) - r * 0.7, wy(p.y));
       ctx.closePath(); ctx.fill();
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.95;
       ctx.shadowBlur = 0;
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      ctx.font = `900 ${8 * DPR}px monospace`;
+      ctx.fillStyle = '#020A0A';
+      ctx.font = `900 ${7 * DPR}px monospace`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('AMO', wx(p.x), wy(p.y));
+      ctx.fillText('◉', wx(p.x), wy(p.y));
+      ctx.restore();
+    });
+
+    // HP pickups — pulsing gold cross
+    this.HP_PKUPS.forEach(p => {
+      if (!onScreen(p.x, p.y, 22)) return;
+      const glow = 0.65 + 0.35 * Math.sin(p.pulse);
+      const r = (7 + 2 * Math.sin(p.pulse * 1.3)) * DPR;
+      ctx.save();
+      ctx.shadowBlur = 20 * DPR; ctx.shadowColor = '#FF4466';
+      ctx.globalAlpha = glow;
+      ctx.fillStyle = '#FF4466';
+      ctx.fillRect(wx(p.x) - r * 0.28, wy(p.y) - r, r * 0.56, r * 2);
+      ctx.fillRect(wx(p.x) - r, wy(p.y) - r * 0.28, r * 2, r * 0.56);
       ctx.restore();
     });
 

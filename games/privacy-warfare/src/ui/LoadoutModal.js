@@ -133,14 +133,11 @@ function _renderGadList() {
 function _toggleWpn(idx) {
   const cur = _wpnSlots.indexOf(idx);
   if (cur >= 0) {
-    _wpnSlots[cur] = _wpnSlots[cur === 0 ? 1 : 0]; // keep other, clear this
-    _wpnSlots[cur === 0 ? 1 : 0] = -1; // this doesn't quite work right
-    // Actually: just remove from the slot it's in
-    _wpnSlots[cur] = -1;
+    _wpnSlots[cur] = -1; // deselect
   } else {
     if (_wpnSlots[0] < 0)      _wpnSlots[0] = idx;
     else if (_wpnSlots[1] < 0) _wpnSlots[1] = idx;
-    else                        _wpnSlots[0] = idx; // replace slot 0
+    else                        _wpnSlots[0] = idx;
   }
   _render();
 }
