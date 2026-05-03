@@ -78,6 +78,14 @@ export function buildTraps(wv, WW, WH) {
   if (wv >= 6) pool.push('data_spike');
   if (wv >= 8) pool.push('emp_burst');
   if (wv >= 9) pool.push('vortex_pit');
+  if (wv >= 4)  pool.push('time_bubble');
+  if (wv >= 5)  pool.push('acid_pool');
+  if (wv >= 7)  pool.push('phase_wall');
+  if (wv >= 8)  pool.push('noise_trap');
+  if (wv >= 9)  pool.push('crusher');
+  if (wv >= 10) pool.push('gravity_pulse');
+  if (wv >= 11) pool.push('laser_mandala');
+  if (wv >= 12) pool.push('mine_chain');
 
   for (let i = 0; i < count; i++) {
     const type = pool[Math.floor(Math.random() * pool.length)];
@@ -100,6 +108,102 @@ export function buildTraps(wv, WW, WH) {
       TRAPS.push({ type: 'emp_burst', x, y, r: 70, armed: true, rearmTimer: 0, blinkPhase: Math.random() * Math.PI * 2 });
     } else if (type === 'vortex_pit') {
       TRAPS.push({ type: 'vortex_pit', x, y, r: 100, pullR: 180, dmgTimer: 0, angle: 0 });
+    } else if (type === 'time_bubble') {
+      TRAPS.push({ type: 'time_bubble', x, y, r: 80 + rnd(0, 40), dmgTimer: 0 });
+    } else if (type === 'acid_pool') {
+      TRAPS.push({ type: 'acid_pool', x, y, w: rnd(100, 200), h: rnd(70, 130), pulse: 0, dmgTimer: 0 });
+    } else if (type === 'phase_wall') {
+      const dir2 = Math.random() < 0.5 ? 'h' : 'v';
+      const len2 = rnd(140, 280);
+      TRAPS.push({ type: 'phase_wall', x, y, len: len2, dir: dir2, phase: Math.random() * Math.PI * 2, period: 2.5 + rnd(0, 2), active: false });
+    } else if (type === 'noise_trap') {
+      TRAPS.push({ type: 'noise_trap', x, y, r: 90, armed: true, rearmTimer: 0, pulse: 0 });
+    } else if (type === 'crusher') {
+      const cdir = Math.random() < 0.5 ? 'h' : 'v';
+      TRAPS.push({ type: 'crusher', x, y, dir: cdir, len: rnd(100, 200), spd: 40 + rnd(0, 30), offset: 0, offsetDir: 1, maxOffset: rnd(80, 160) });
+    } else if (type === 'gravity_pulse') {
+      TRAPS.push({ type: 'gravity_pulse', x, y, r: 120, pulseTimer: 0, pulseCd: 4 + rnd(0, 2), pulseActive: false, pulseR: 0 });
+    } else if (type === 'laser_mandala') {
+      TRAPS.push({ type: 'laser_mandala', x, y, r: 110, angle: 0, spd: 0.8 + rnd(0, 0.6), arms: 6 });
+    } else if (type === 'mine_chain') {
+      TRAPS.push({ type: 'mine_chain', x, y, armed: true, blinkPhase: Math.random() * Math.PI * 2, chainR: 150 });
+    }
+  }
+}
+
+export let INTERACTIVES = [];
+
+export function buildInteractives(wv, WW, WH) {
+  INTERACTIVES = [];
+  if (wv < 2) return;
+  const margin = 200;
+  const rnd2 = (lo, hi) => lo + Math.random() * (hi - lo);
+  const count = Math.min(5, 1 + Math.floor(wv / 3));
+  const pool2 = ['data_terminal', 'ammo_depot', 'health_station'];
+  if (wv >= 3) pool2.push('jammer_node');
+  if (wv >= 4) pool2.push('shield_pylon');
+  if (wv >= 5) pool2.push('decoy_beacon');
+  if (wv >= 6) pool2.push('power_node');
+  if (wv >= 7) pool2.push('firewall_barrier');
+  if (wv >= 8) pool2.push('overclock_station');
+  if (wv >= 9) pool2.push('data_cache');
+
+  for (let i = 0; i < count; i++) {
+    const type = pool2[Math.floor(Math.random() * pool2.length)];
+    const x = rnd2(margin, WW - margin);
+    const y = rnd2(margin, WH - margin);
+    INTERACTIVES.push({ type, x, y, r: 30, cooldown: 0, cdMax: 20, activating: false, activateTimer: 0, pulse: 0 });
+  }
+}
+
+export let PORTALS = [];
+export let CONVEYOR_ZONES = [];
+export let MOVING_OBSTACLES = [];
+
+export function buildGeometry(wv, WW, WH) {
+  PORTALS = [];
+  CONVEYOR_ZONES = [];
+  MOVING_OBSTACLES = [];
+
+  const margin = 150;
+  const rnd3 = (lo, hi) => lo + Math.random() * (hi - lo);
+
+  // Portals: pairs of teleport circles (wave 6+)
+  if (wv >= 6) {
+    const pairCount = Math.min(2, Math.floor((wv - 4) / 3));
+    for (let i = 0; i < pairCount; i++) {
+      const colA = ['#FF00FF', '#00FFFF', '#FFFF00'][i % 3];
+      PORTALS.push(
+        { x: rnd3(margin, WW / 2 - margin), y: rnd3(margin, WH - margin), r: 28, col: colA, pairIdx: i, angle: 0 },
+        { x: rnd3(WW / 2 + margin, WW - margin), y: rnd3(margin, WH - margin), r: 28, col: colA, pairIdx: i, angle: 0 }
+      );
+    }
+  }
+
+  // Conveyor zones (wave 4+)
+  if (wv >= 4) {
+    const ccount = Math.min(3, Math.floor((wv - 2) / 2));
+    for (let i = 0; i < ccount; i++) {
+      const dir3 = Math.random() < 0.5 ? 1 : -1;
+      CONVEYOR_ZONES.push({
+        x: rnd3(margin, WW - margin - 160), y: rnd3(margin, WH - margin - 100),
+        w: rnd3(120, 200), h: rnd3(80, 130), dx: dir3 * (30 + rnd3(0, 20)), dy: 0, pulse: 0
+      });
+    }
+  }
+
+  // Moving obstacles (wave 5+) — stored separately, obstacles array uses these as extra entries
+  if (wv >= 5) {
+    const mcount = Math.min(4, Math.floor((wv - 3) / 2));
+    for (let i = 0; i < mcount; i++) {
+      const mdir = Math.random() < 0.5 ? 'h' : 'v';
+      const bx = rnd3(margin, WW - margin - 120);
+      const by = rnd3(margin, WH - margin - 40);
+      MOVING_OBSTACLES.push({
+        x: bx, y: by, w: 80 + rnd3(0, 60), h: 22 + rnd3(0, 18),
+        baseX: bx, baseY: by, dir: mdir,
+        amplitude: 60 + rnd3(0, 80), period: 3 + rnd3(0, 3), phase: Math.random() * Math.PI * 2
+      });
     }
   }
 }
