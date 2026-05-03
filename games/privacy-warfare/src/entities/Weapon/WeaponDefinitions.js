@@ -3,7 +3,7 @@
 // Indices 10-20 = unlockable weapons (no BASE reset).
 
 export const BASE_CD  = [0.46, 0.065, 0.82, 1.25, 1.9, 5.0, 0.88, 0.58, 5.0, 0.38];
-export const BASE_DMG = [1,    0.32,  2,    2.5,  1.5, 0,   1.5,  0.5,  8,   0.3 ];
+export const BASE_DMG = [1,    0.32,  2,    2.5,  1.5, 0,   0.8,  0.5,  8,   0.3 ];
 export const BASE_RNG = [170,  265,   145,  350,  210, 0,   210,  190,  0,   160 ];
 
 export const WPNS = [
@@ -45,10 +45,10 @@ export const WPNS = [
     unlocked: true },
 
   { n: 'CHAIN LIGHTNING',
-    col: '#FFFF00', rng: 210, cd: 0.88,  dmg: 1.5,  t: 'chain',
+    col: '#FFFF00', rng: 210, cd: 0.88,  dmg: 0.8,  t: 'chain',
     cat: 'tactical', tag: 'CHAIN',
-    desc: 'Electromagnetic arc jumps between up to five targets automatically. The definitive crowd-control tool for wave clearing.',
-    unlocked: true },
+    desc: 'Electromagnetic arc jumps between up to three targets automatically. Balanced crowd-control — lethal without being game-breaking.',
+    unlocked: false, unlockCost: 180 },
 
   { n: 'CRYO RAY',
     col: '#88FFFF', rng: 190, cd: 0.58,  dmg: 0.5,  t: 'cryo',

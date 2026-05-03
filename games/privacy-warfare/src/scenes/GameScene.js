@@ -625,7 +625,7 @@ export class GameScene {
     } else if (w.t === 'chain') {
       SFX.shoot();
       const sorted = [...this.EYES].sort((a, b) => d2(a.x, a.y, this.wMX, this.wMY) - d2(b.x, b.y, this.wMX, this.wMY));
-      const n = Math.min(5 + this.chainExtraTargets, sorted.length);
+      const n = Math.min(3 + this.chainExtraTargets, sorted.length);
       this.chainSegs = []; this.chainLife = 0.5;
       let lx = this.px, ly = this.py;
       sorted.slice(0, n).forEach(t => { this.chainSegs.push({ x1: lx, y1: ly, x2: t.x, y2: t.y }); lx = t.x; ly = t.y; this._damageE(t, w.dmg * this.powerMult, false); });
@@ -937,26 +937,12 @@ export class GameScene {
   }
 
   _update(dt) {
-    // Camera
-    const SSPD = 290, EDGE = 88;
+    // Camera — always follows player with smooth lerp
     const { mx, my, lW, lH } = this;
-    if (this.KEYS['a'] || this.KEYS['arrowleft'])   this.camX -= SSPD * dt;
-    else if (mx < EDGE)                              this.camX -= SSPD * (1 - mx / EDGE) * dt;
-    if (this.KEYS['d'] || this.KEYS['arrowright'])   this.camX += SSPD * dt;
-    else if (mx > lW - EDGE)                         this.camX += SSPD * (1 - (lW - mx) / EDGE) * dt;
-    if (this.KEYS['w'] || this.KEYS['arrowup'])      this.camY -= SSPD * dt;
-    else if (my < EDGE)                              this.camY -= SSPD * (1 - my / EDGE) * dt;
-    if (this.KEYS['s'] || this.KEYS['arrowdown'])    this.camY += SSPD * dt;
-    else if (my > lH - EDGE)                         this.camY += SSPD * (1 - (lH - my) / EDGE) * dt;
-    this.camX = Math.max(0, Math.min(this.WW - lW, this.camX));
-    this.camY = Math.max(0, Math.min(this.WH - lH, this.camY));
-    // Mobile: camera smoothly follows player (no WASD needed on touch devices)
-    if (window.matchMedia('(pointer:coarse)').matches) {
-      const tcX = Math.max(0, Math.min(this.WW - lW, this.px - lW / 2));
-      const tcY = Math.max(0, Math.min(this.WH - lH, this.py - lH / 2));
-      this.camX += (tcX - this.camX) * Math.min(1, 6 * dt);
-      this.camY += (tcY - this.camY) * Math.min(1, 6 * dt);
-    }
+    const tcX = Math.max(0, Math.min(this.WW - lW, this.px - lW / 2));
+    const tcY = Math.max(0, Math.min(this.WH - lH, this.py - lH / 2));
+    this.camX += (tcX - this.camX) * Math.min(1, 8 * dt);
+    this.camY += (tcY - this.camY) * Math.min(1, 8 * dt);
     this.wMX = mx + this.camX; this.wMY = my + this.camY;
     this._syncCamera();
 
@@ -1520,6 +1506,17 @@ export class GameScene {
       ctx.fillText(f.text, wx(f.x), wy(f.y));
       ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     });
+
+    // World boundary warning — glow at map edges when player is near
+    const BZONE = 120;
+    const bL = Math.max(0, 1 - this.px / BZONE);
+    const bR = Math.max(0, 1 - (this.WW - this.px) / BZONE);
+    const bT = Math.max(0, 1 - this.py / BZONE);
+    const bB = Math.max(0, 1 - (this.WH - this.py) / BZONE);
+    if (bL > 0) { const g = ctx.createLinearGradient(0,0,W*0.18,0); g.addColorStop(0,`rgba(255,60,0,${0.55*bL})`); g.addColorStop(1,'rgba(255,60,0,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W*0.18,H); }
+    if (bR > 0) { const g = ctx.createLinearGradient(W,0,W*0.82,0); g.addColorStop(0,`rgba(255,60,0,${0.55*bR})`); g.addColorStop(1,'rgba(255,60,0,0)'); ctx.fillStyle=g; ctx.fillRect(W*0.82,0,W*0.18,H); }
+    if (bT > 0) { const g = ctx.createLinearGradient(0,0,0,H*0.18); g.addColorStop(0,`rgba(255,60,0,${0.55*bT})`); g.addColorStop(1,'rgba(255,60,0,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H*0.18); }
+    if (bB > 0) { const g = ctx.createLinearGradient(0,H,0,H*0.82); g.addColorStop(0,`rgba(255,60,0,${0.55*bB})`); g.addColorStop(1,'rgba(255,60,0,0)'); ctx.fillStyle=g; ctx.fillRect(0,H*0.82,W,H*0.18); }
 
     // Watermark
     ctx.globalAlpha = 0.18; ctx.fillStyle = '#BF00FF';

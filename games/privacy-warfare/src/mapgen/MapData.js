@@ -2,16 +2,16 @@
 import { d2 } from '../utils/math.js';
 
 export const MAPS = [
-  { n: 'CYBER GRID',        bg: '#030306', gc: 'rgba(191,0,255,0.08)',  ac: 'rgba(191,0,255,0.6)',  sc: '#BF00FF' },
-  { n: 'DEEP SPACE',        bg: '#010216', gc: 'rgba(0,80,255,0.07)',   ac: 'rgba(0,150,255,0.6)',  sc: '#0088FF' },
-  { n: 'NEON CITY',         bg: '#040002', gc: 'rgba(255,0,80,0.07)',   ac: 'rgba(255,60,160,0.6)', sc: '#FF0066' },
-  { n: 'DATA STORM',        bg: '#010A06', gc: 'rgba(0,255,100,0.06)',  ac: 'rgba(0,255,80,0.6)',   sc: '#00FF64' },
-  { n: 'QUANTUM REALM',     bg: '#060108', gc: 'rgba(150,0,255,0.07)',  ac: 'rgba(180,80,255,0.6)', sc: '#AA00FF' },
-  { n: 'DARK WEB',          bg: '#060000', gc: 'rgba(255,30,0,0.06)',   ac: 'rgba(255,60,30,0.6)',  sc: '#FF2200' },
-  { n: 'AI NEXUS',          bg: '#000816', gc: 'rgba(0,180,255,0.07)',  ac: 'rgba(0,220,255,0.6)',  sc: '#00CCFF' },
-  { n: 'CRYO VAULT',        bg: '#010A10', gc: 'rgba(0,200,220,0.07)',  ac: 'rgba(80,240,255,0.6)', sc: '#00EEFF' },
-  { n: 'INDUSTRIAL WASTE',  bg: '#090400', gc: 'rgba(255,120,0,0.06)', ac: 'rgba(255,160,40,0.6)', sc: '#FF8800' },
-  { n: 'BIO-DIGITAL',       bg: '#001008', gc: 'rgba(0,220,80,0.07)',   ac: 'rgba(40,255,100,0.6)', sc: '#00FF88' },
+  { n: 'CYBER GRID',        bg: '#040308', gc: 'rgba(191,0,255,0.22)',  ac: 'rgba(191,0,255,0.7)',  sc: '#BF00FF' },
+  { n: 'DEEP SPACE',        bg: '#01021A', gc: 'rgba(0,100,255,0.20)',  ac: 'rgba(0,150,255,0.7)',  sc: '#0088FF' },
+  { n: 'NEON CITY',         bg: '#060002', gc: 'rgba(255,0,80,0.20)',   ac: 'rgba(255,60,160,0.7)', sc: '#FF0066' },
+  { n: 'DATA STORM',        bg: '#010C06', gc: 'rgba(0,255,100,0.18)',  ac: 'rgba(0,255,80,0.7)',   sc: '#00FF64' },
+  { n: 'QUANTUM REALM',     bg: '#07010A', gc: 'rgba(160,0,255,0.20)',  ac: 'rgba(180,80,255,0.7)', sc: '#AA00FF' },
+  { n: 'DARK WEB',          bg: '#080000', gc: 'rgba(255,40,0,0.18)',   ac: 'rgba(255,60,30,0.7)',  sc: '#FF2200' },
+  { n: 'AI NEXUS',          bg: '#000A1A', gc: 'rgba(0,180,255,0.20)',  ac: 'rgba(0,220,255,0.7)',  sc: '#00CCFF' },
+  { n: 'CRYO VAULT',        bg: '#010C12', gc: 'rgba(0,210,230,0.20)',  ac: 'rgba(80,240,255,0.7)', sc: '#00EEFF' },
+  { n: 'INDUSTRIAL WASTE',  bg: '#0B0500', gc: 'rgba(255,130,0,0.18)', ac: 'rgba(255,160,40,0.7)', sc: '#FF8800' },
+  { n: 'BIO-DIGITAL',       bg: '#001209', gc: 'rgba(0,220,80,0.20)',   ac: 'rgba(40,255,100,0.7)', sc: '#00FF88' },
 ];
 
 export let STARS     = [];
