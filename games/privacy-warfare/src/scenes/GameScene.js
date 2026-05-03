@@ -11,6 +11,7 @@ import { MAPS, STARS, BLDGS, WEB_LINES, AMBIENT, OBSTACLES, TRAPS,
          SECRETS, buildSecrets } from '../mapgen/MapData.js';
 import { renderBiomeExtras, renderBiomeObstacle } from '../mapgen/BiomeRenderer.js';
 import { WPNS, BASE_CD, BASE_DMG, BASE_RNG, BASE_AMMO } from '../entities/Weapon/WeaponDefinitions.js';
+import { WEAPON_CATALOG_BY_ID } from '../entities/Weapon/WeaponCatalog.js';
 import { GADGETS } from '../ui/LoadoutModal.js';
 import { setCameraState, wx, wy, onScreen, d2,
          camX as _camX, camY as _camY, lW as _lW, lH as _lH,
@@ -228,8 +229,19 @@ export class GameScene {
   }
 
   // ─── Loadout (called before startGame) ─────────────────────────────────────
+  // wpnSlots: array of catalog weapon IDs (strings) or legacy WPNS indices (numbers)
   setLoadout(wpnSlots, gadSlots) {
-    this.loadoutWpns = wpnSlots.filter(i => i >= 0 && i < WPNS.length);
+    // Map catalog IDs → WPNS indices by weapon class
+    const CLASS_TO_IDX = { assault:0, smg:1, shotgun:2, lmg:3, sniper:4, marksman:5, pistol:6, special:7 };
+    this.loadoutCatalogIds = (wpnSlots || []).filter(Boolean);
+    this.loadoutWpns = this.loadoutCatalogIds.map(slot => {
+      if (typeof slot === 'number') return slot;  // legacy numeric index
+      const def = WEAPON_CATALOG_BY_ID[slot];
+      return def ? (CLASS_TO_IDX[def.weaponClass] ?? 0) : 0;
+    }).filter(i => i >= 0 && i < WPNS.length);
+    // Deduplicate (two weapons of same class both map to same WPNS index)
+    this.loadoutWpns = [...new Set(this.loadoutWpns)];
+    if (!this.loadoutWpns.length) this.loadoutWpns = [0];
     this.loadoutGads = (gadSlots || []).filter(Boolean);
     // Fill ammo for each selected weapon
     this.wpnAmmo = {};

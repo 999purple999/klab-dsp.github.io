@@ -1,8 +1,10 @@
 // ─── LoadoutModal ─────────────────────────────────────────────────────────────
 // Pre-mission loadout: choose 2 weapons + 2 gadgets before deploying.
+// Weapons are sourced from WeaponCatalog (unlocked ones).
+// Gadget definitions remain here; Arsenal handles weapons & attachments.
 
-import { WPNS, BASE_AMMO } from '../entities/Weapon/WeaponDefinitions.js';
-import { openArsenal }     from './ArsenalScene.js';
+import { WEAPON_CATALOG_DATA, WEAPON_CATALOG_BY_ID } from '../entities/Weapon/WeaponCatalog.js';
+import { getArsenalSelected } from './MenuModals.js';
 
 export const GADGETS = [
   { key: 'bomb',      name: 'FRAG BOMB',   desc: 'Area explosion — devastates groups.',  col: '#FF4422', icon: '#i-bomb'   },
@@ -13,27 +15,39 @@ export const GADGETS = [
   { key: 'timewarp',  name: 'TIME WARP',   desc: 'Slow all enemies — four seconds.',     col: '#FF8800', icon: '#i-clock'  },
 ];
 
+const UNLOCK_KEY = 'pw_catalog_unlocks_v1';
+
+function _getUnlockedWeapons() {
+  let unlocks = {};
+  try { unlocks = JSON.parse(localStorage.getItem(UNLOCK_KEY) || '{}'); } catch (_) {}
+  return WEAPON_CATALOG_DATA.filter(d => d.unlockLevel === 0 || unlocks[d.id]);
+}
+
 let _onConfirm = null;
-let _wpnSlots  = [0, 1];
+let _wpnSlots  = [null, null];  // catalog weapon IDs (strings)
 let _gadSlots  = ['bomb', 'kp'];
 
 export function openLoadout(onConfirm) {
   _onConfirm = onConfirm;
 
-  // Default to first two unlocked weapons
-  const unlocked = WPNS.map((w, i) => i).filter(i => WPNS[i].unlocked);
-  _wpnSlots = [unlocked[0] ?? 0, unlocked[1] ?? unlocked[0] ?? 0];
+  // Default to Arsenal-selected weapons, falling back to first two unlocked
+  const sel = getArsenalSelected();
+  const unlocked = _getUnlockedWeapons();
+  _wpnSlots = [
+    sel.s0 || unlocked[0]?.id || null,
+    sel.s1 || unlocked[1]?.id || unlocked[0]?.id || null,
+  ];
   _gadSlots = ['bomb', 'kp'];
 
   const modal = document.getElementById('loadout-modal');
-  if (!modal) { _onConfirm([_wpnSlots, _gadSlots]); return; }
+  if (!modal) { _onConfirm(_wpnSlots, _gadSlots); return; }
   modal.style.display = 'flex';
   _render();
 
-  const deployBtn   = document.getElementById('lo-deploy-btn');
-  const backBtn     = document.getElementById('lo-back-btn');
-  const _deploy     = () => { _cleanup(); _onConfirm(_wpnSlots, _gadSlots); };
-  const _abort      = () => { _cleanup(); };
+  const deployBtn = document.getElementById('lo-deploy-btn');
+  const backBtn   = document.getElementById('lo-back-btn');
+  const _deploy   = () => { _cleanup(); _onConfirm(_wpnSlots, _gadSlots); };
+  const _abort    = () => { _cleanup(); };
   function _cleanup() {
     modal.style.display = 'none';
     deployBtn.removeEventListener('click', _deploy);
@@ -41,21 +55,6 @@ export function openLoadout(onConfirm) {
   }
   deployBtn.addEventListener('click', _deploy);
   backBtn.addEventListener('click', _abort);
-
-  // Inject Gunsmith button once
-  if (!document.getElementById('lo-gunsmith-btn')) {
-    const ftr = modal.querySelector('.lo-ftr');
-    if (ftr) {
-      const gsBtn = document.createElement('button');
-      gsBtn.id = 'lo-gunsmith-btn';
-      gsBtn.textContent = '⚙ GUNSMITH';
-      gsBtn.style.cssText = `font-family:inherit;font-size:11px;letter-spacing:2px;padding:10px 20px;
-        background:rgba(0,255,68,.08);border:1px solid rgba(0,255,68,.4);color:#0F4;cursor:pointer;
-        margin-right:8px;`;
-      gsBtn.addEventListener('click', () => openArsenal());
-      ftr.insertBefore(gsBtn, deployBtn);
-    }
-  }
 }
 
 // ─── Render ───────────────────────────────────────────────────────────────────
@@ -71,16 +70,16 @@ function _renderWpnSlots() {
   for (let s = 0; s < 2; s++) {
     const el = document.getElementById('lo-wpn-slot-' + s);
     if (!el) continue;
-    const idx = _wpnSlots[s];
-    const w   = (idx >= 0 && WPNS[idx]) ? WPNS[idx] : null;
-    el.innerHTML = w
+    const id = _wpnSlots[s];
+    const d  = id ? WEAPON_CATALOG_BY_ID[id] : null;
+    el.innerHTML = d
       ? `<div class="lo-sl-key">${s === 0 ? 'SLOT 1' : 'SLOT 2'}</div>
-         <div class="lo-sl-name" style="color:${w.col}">${w.n}</div>
-         <div class="lo-sl-ammo">${BASE_AMMO[idx]} ammo</div>`
+         <div class="lo-sl-name" style="color:${d.col}">${d.name}</div>
+         <div class="lo-sl-ammo">${d.magazine} mag · ${d.weaponClass.toUpperCase()}</div>`
       : `<div class="lo-sl-key">${s === 0 ? 'SLOT 1' : 'SLOT 2'}</div>
          <div class="lo-sl-empty">— SELECT WEAPON —</div>`;
-    el.style.borderColor = w ? w.col + '55' : 'rgba(255,255,255,0.08)';
-    el.style.boxShadow   = w ? '0 0 14px ' + w.col + '22' : 'none';
+    el.style.borderColor = d ? d.col + '55' : 'rgba(255,255,255,0.08)';
+    el.style.boxShadow   = d ? '0 0 14px ' + d.col + '22' : 'none';
   }
 }
 
@@ -104,23 +103,22 @@ function _renderWpnList() {
   const list = document.getElementById('lo-wpn-list');
   if (!list) return;
   list.innerHTML = '';
-  WPNS.forEach((w, i) => {
-    if (!w.unlocked) return;
-    const slot = _wpnSlots.indexOf(i);
-    const row  = document.createElement('div');
-    row.className = 'lo-wpn-row' + (slot >= 0 ? ' lo-row-sel' : '');
-    row.dataset.idx = i;
+  _getUnlockedWeapons().forEach(d => {
+    const slotIdx = _wpnSlots.indexOf(d.id);
+    const row = document.createElement('div');
+    row.className = 'lo-wpn-row' + (slotIdx >= 0 ? ' lo-row-sel' : '');
+    row.dataset.id = d.id;
     row.innerHTML = `
-      <div class="lo-wpn-dot" style="background:${w.col};box-shadow:0 0 8px ${w.col}88"></div>
+      <div class="lo-wpn-dot" style="background:${d.col};box-shadow:0 0 8px ${d.col}88"></div>
       <div class="lo-wpn-mid">
-        <div class="lo-wpn-name">${w.n}</div>
-        <div class="lo-wpn-tag">${w.tag}</div>
+        <div class="lo-wpn-name">${d.name}</div>
+        <div class="lo-wpn-tag">${d.tag} · ${d.weaponClass.toUpperCase()}</div>
       </div>
-      <div class="lo-wpn-ammo-badge" style="color:${w.col}">${BASE_AMMO[i]}</div>
-      ${slot >= 0 ? `<div class="lo-row-badge">S${slot+1}</div>` : ''}
+      <div class="lo-wpn-ammo-badge" style="color:${d.col}">${d.magazine}r</div>
+      ${slotIdx >= 0 ? `<div class="lo-row-badge">S${slotIdx + 1}</div>` : ''}
     `;
-    row.style.setProperty('--wc', w.col);
-    row.addEventListener('click', () => _toggleWpn(i));
+    row.style.setProperty('--wc', d.col);
+    row.addEventListener('click', () => _toggleWpn(d.id));
     list.appendChild(row);
   });
 }
@@ -150,14 +148,14 @@ function _renderGadList() {
 
 // ─── Toggle logic ─────────────────────────────────────────────────────────────
 
-function _toggleWpn(idx) {
-  const cur = _wpnSlots.indexOf(idx);
+function _toggleWpn(id) {
+  const cur = _wpnSlots.indexOf(id);
   if (cur >= 0) {
-    _wpnSlots[cur] = -1; // deselect
+    _wpnSlots[cur] = null;
   } else {
-    if (_wpnSlots[0] < 0)      _wpnSlots[0] = idx;
-    else if (_wpnSlots[1] < 0) _wpnSlots[1] = idx;
-    else                        _wpnSlots[0] = idx;
+    if (!_wpnSlots[0])      _wpnSlots[0] = id;
+    else if (!_wpnSlots[1]) _wpnSlots[1] = id;
+    else                     _wpnSlots[0] = id;
   }
   _render();
 }
