@@ -24,15 +24,20 @@ export class MenuScene {
     this._buildings = [];
     this._initBuildings();
 
+    this._difficulty   = 'normal';
+    this._modeOpen     = false;
+
     // Bound handlers
-    this._onSurvival   = () => this._startSurvival();
+    this._onSurvival   = () => this._showModePanel();
     this._onCampaign   = () => this._startCampaign();
-    this._onMnSurvival = () => this._startSurvival();
+    this._onMnSurvival = () => this._showModePanel();
     this._onMnCampaign = () => this._startCampaign();
   }
 
   enter() {
     document.getElementById('overlay').classList.remove('hidden');
+    document.getElementById('crosshair').style.display = 'none';
+    document.getElementById('game-over-modal').style.display = 'none';
     document.addEventListener('mousemove', this._onMouseMove);
     document.getElementById('mp-survival')?.addEventListener('click', this._onSurvival);
     document.getElementById('mp-campaign')?.addEventListener('click', this._onCampaign);
@@ -58,9 +63,37 @@ export class MenuScene {
 
   render() {}
 
-  _startSurvival() {
+  _showModePanel() {
+    const sel = document.getElementById('mode-select');
+    if (!sel) { this._doStartSurvival(); return; }
+
+    sel.classList.add('open');
+    this._modeOpen = true;
+
+    // Difficulty buttons
+    sel.querySelectorAll('.diff-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.d === this._difficulty);
+      b.onclick = () => {
+        this._difficulty = b.dataset.d;
+        sel.querySelectorAll('.diff-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      };
+    });
+
+    const closePanel = () => { sel.classList.remove('open'); this._modeOpen = false; };
+
+    document.getElementById('mode-cancel-btn').onclick = closePanel;
+    sel.onclick = e => { if (e.target === sel) closePanel(); };
+    document.getElementById('mode-start-btn').onclick = () => {
+      closePanel();
+      this._doStartSurvival();
+    };
+  }
+
+  _doStartSurvival() {
     document.getElementById('overlay').classList.add('hidden');
     this._game.scenes.pop();
+    document.getElementById('crosshair').style.display = 'block';
     openLoadout((wpnSlots, gadSlots) => {
       this._game.gameScene.setLoadout(wpnSlots, gadSlots);
       this._game.gameScene.startGame();
@@ -69,6 +102,7 @@ export class MenuScene {
 
   _startCampaign() {
     document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('crosshair').style.display = 'block';
     this._game.scenes.replace(this._game.campaignScene);
   }
 

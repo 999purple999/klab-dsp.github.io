@@ -169,12 +169,27 @@ export class Game {
       const username = localStorage.getItem('pw_username') || 'Anonymous';
       submitScore(Math.floor(score), wave, username);
     }
-    document.getElementById('ov-title').textContent = 'SYSTEM BREACH';
-    document.getElementById('ov-sub').textContent   = 'Your data has been compromised';
-    const os = document.getElementById('ov-score'), oh = document.getElementById('ov-hi');
-    os.style.display = 'block'; os.textContent = 'SCORE: ' + Math.floor(score);
-    oh.style.display = 'block'; oh.textContent = 'WAVE ' + wave + '  ·  BEST: ' + Math.floor(hiScore);
-    this.scenes.push(this.menuScene);
+
+    // Show game-over modal
+    const modal = document.getElementById('game-over-modal');
+    if (modal) {
+      document.getElementById('go-score-v').textContent = Math.floor(score).toLocaleString();
+      document.getElementById('go-wave-v').textContent  = wave;
+      document.getElementById('go-best-v').textContent  = Math.floor(hiScore).toLocaleString();
+      modal.style.display = 'flex';
+
+      document.getElementById('go-retry').onclick = () => {
+        modal.style.display = 'none';
+        document.getElementById('crosshair').style.display = 'block';
+        this.gameScene.startGame();
+      };
+      document.getElementById('go-menu').onclick = () => {
+        modal.style.display = 'none';
+        this.scenes.push(this.menuScene);
+      };
+    } else {
+      this.scenes.push(this.menuScene);
+    }
   }
 
   _initTutorial() {

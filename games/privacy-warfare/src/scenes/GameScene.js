@@ -291,11 +291,34 @@ export class GameScene {
     this.styleMeter = 0; this.overdriveActive = false; this.overdriveTimer = 0;
     this.boss = null; this.bhActive = false; this.nukeCharging = false; this.nukeRad = 0; this.chainSegs = [];
     WPNS.forEach((w, i) => { if (i < BASE_CD.length) { w.cd = BASE_CD[i]; w.dmg = BASE_DMG[i]; w.rng = BASE_RNG[i]; } });
+
+    // Apply catalog weapon overrides: name, color, and stat-scaled values
+    if (this.loadoutCatalogIds?.length) {
+      const CLS_IDX = { assault:0, smg:1, shotgun:2, lmg:3, sniper:4, marksman:5, pistol:6, special:7, launcher:7, bow:7 };
+      this.loadoutCatalogIds.forEach(catId => {
+        if (typeof catId !== 'string') return;
+        const def = WEAPON_CATALOG_BY_ID[catId]; if (!def) return;
+        const idx = CLS_IDX[def.weaponClass] ?? 0;
+        if (idx >= WPNS.length) return;
+        const s = def.stats;
+        WPNS[idx].n   = def.name;
+        WPNS[idx].col = def.col;
+        // Scale base stats by catalog 0-100 relative to midpoint 50
+        if (s.damage   > 0) WPNS[idx].dmg = BASE_DMG[idx] * (s.damage   / 50);
+        if (s.fireRate  > 0) WPNS[idx].cd  = BASE_CD[idx]  * (50 / Math.max(s.fireRate, 10));
+        if (s.range     > 0 && BASE_RNG[idx] > 0) WPNS[idx].rng = BASE_RNG[idx] * (s.range / 50);
+      });
+    }
+
     this.wpnCDs.fill(0); this.skinIdx = 0;
     this.wpnIdx = this.loadoutWpns.length > 0 ? this.loadoutWpns[0] : 0;
-    // Reset ammo for loadout weapons
+    // Set ammo: prefer catalog magazine size, fall back to BASE_AMMO
     this.wpnAmmo = {};
-    this.loadoutWpns.forEach(i => { this.wpnAmmo[i] = BASE_AMMO[i] ?? 80; });
+    this.loadoutWpns.forEach(i => {
+      const catId = this.loadoutCatalogIds?.[this.loadoutWpns.indexOf(i)];
+      const def   = catId ? WEAPON_CATALOG_BY_ID[catId] : null;
+      this.wpnAmmo[i] = def?.magazine ?? BASE_AMMO[i] ?? 80;
+    });
     this._updateGadgetHUD();
     this.camX = (this.WW - this.lW) / 2; this.camY = (this.WH - this.lH) / 2;
     this.px = this.WW / 2; this.py = this.WH / 2;

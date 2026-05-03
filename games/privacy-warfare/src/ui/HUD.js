@@ -93,6 +93,27 @@ export function updateCombo(combo) {
   }
 }
 
+// Kill feed — call after each kill with enemy name
+const _kfEntries = [];
+export function addKillFeed(label, col) {
+  const feed = document.getElementById('kill-feed'); if (!feed) return;
+  if (_kfEntries.length >= 4) {
+    const old = _kfEntries.shift();
+    old?.remove();
+  }
+  const el = document.createElement('div');
+  el.className = 'kf-entry';
+  el.style.borderLeftColor = col || '#FF2A6D';
+  el.textContent = '✕  ' + (label || 'ENEMY');
+  feed.appendChild(el);
+  _kfEntries.push(el);
+  setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transition = 'opacity .4s';
+    setTimeout(() => { el.remove(); _kfEntries.splice(_kfEntries.indexOf(el), 1); }, 400);
+  }, 2800);
+}
+
 export function updateStyleMeter(pct, overdrive) {
   const bar = document.getElementById('style-bar');
   const lbl = document.getElementById('style-lbl');

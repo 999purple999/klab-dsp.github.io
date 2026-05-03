@@ -898,6 +898,117 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
 #arsenal-grid::-webkit-scrollbar,#ch-list::-webkit-scrollbar,#lb-list::-webkit-scrollbar{width:3px;}
 #arsenal-grid::-webkit-scrollbar-track,#ch-list::-webkit-scrollbar-track,#lb-list::-webkit-scrollbar-track{background:transparent;}
 #arsenal-grid::-webkit-scrollbar-thumb,#ch-list::-webkit-scrollbar-thumb,#lb-list::-webkit-scrollbar-thumb{background:rgba(191,0,255,0.3);border-radius:2px;}
+
+/* ── Wave B: Mode Selection Overlay ────────────────────────────────────────── */
+#mode-select{
+  position:fixed;inset:0;z-index:60;
+  display:flex;align-items:flex-end;justify-content:center;
+  background:transparent;pointer-events:none;
+  opacity:0;transition:opacity .3s,background .3s;
+}
+#mode-select.open{
+  background:rgba(2,2,10,.75);backdrop-filter:blur(6px);
+  pointer-events:auto;opacity:1;
+}
+#mode-panel{
+  width:min(500px,94vw);margin-bottom:0;
+  background:linear-gradient(160deg,rgba(8,2,18,.99),rgba(2,1,10,.99));
+  border:1px solid rgba(191,0,255,.3);border-radius:16px 16px 0 0;
+  padding:30px 32px 44px;
+  transform:translateY(100%);transition:transform .5s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 -24px 80px rgba(191,0,255,.12);
+}
+#mode-select.open #mode-panel{transform:translateY(0);}
+#mode-title{
+  font-size:18px;font-weight:900;color:#fff;letter-spacing:.2em;
+  text-transform:uppercase;text-shadow:0 0 20px rgba(191,0,255,.7);margin-bottom:6px;
+}
+#mode-desc{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:.08em;margin-bottom:22px;line-height:1.5;}
+#difficulty-bar{display:flex;gap:8px;margin-bottom:24px;}
+.diff-btn{
+  flex:1;padding:10px 0;font-family:inherit;font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.1);border-radius:6px;color:rgba(255,255,255,.4);cursor:pointer;
+  transition:all .15s;
+}
+.diff-btn:hover{background:rgba(191,0,255,.1);border-color:rgba(191,0,255,.35);color:rgba(191,0,255,.85);}
+.diff-btn.active{background:rgba(191,0,255,.18);border-color:#BF00FF;color:#BF00FF;box-shadow:0 0 16px rgba(191,0,255,.2);}
+#mode-actions{display:flex;gap:12px;}
+#mode-start-btn{
+  flex:1;padding:14px;font-family:inherit;font-size:12px;font-weight:900;letter-spacing:.28em;
+  text-transform:uppercase;background:rgba(191,0,255,.14);border:1.5px solid rgba(191,0,255,.6);
+  color:#BF00FF;border-radius:8px;cursor:pointer;transition:all .15s;
+}
+#mode-start-btn:hover{background:rgba(191,0,255,.28);box-shadow:0 0 30px rgba(191,0,255,.3);color:#fff;}
+#mode-cancel-btn{
+  padding:14px 22px;font-family:inherit;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.3);border-radius:8px;cursor:pointer;transition:all .15s;
+}
+#mode-cancel-btn:hover{border-color:rgba(255,40,40,.5);color:rgba(255,80,80,.7);}
+
+/* ── Wave C: Crosshair ──────────────────────────────────────────────────────── */
+#crosshair{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:28px;height:28px;pointer-events:none;z-index:30;
+}
+.ch-line{position:absolute;background:rgba(0,240,255,.7);box-shadow:0 0 4px rgba(0,240,255,.45);}
+.ch-t,.ch-b{width:2px;height:10px;left:50%;transform:translateX(-50%);}
+.ch-l,.ch-r{height:2px;width:10px;top:50%;transform:translateY(-50%);}
+.ch-t{top:0;}.ch-b{bottom:0;}.ch-l{left:0;}.ch-r{right:0;}
+.ch-dot{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(0,240,255,.9);top:50%;left:50%;transform:translate(-50%,-50%);}
+
+/* ── Wave C: Kill Feed ──────────────────────────────────────────────────────── */
+#kill-feed{
+  position:fixed;top:20px;right:20px;z-index:30;pointer-events:none;
+  display:flex;flex-direction:column;gap:4px;align-items:flex-end;
+}
+.kf-entry{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(2,2,10,.7);border:1px solid rgba(255,255,255,.06);
+  border-left:2px solid #FF2A6D;
+  padding:5px 10px;border-radius:4px;font-size:10px;color:rgba(255,255,255,.7);
+  letter-spacing:.08em;
+  animation:kf-in .3s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes kf-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+/* ── Wave E: Game Over Modal ────────────────────────────────────────────────── */
+#game-over-modal{
+  position:fixed;inset:0;z-index:70;display:none;
+  align-items:center;justify-content:center;
+  background:rgba(2,2,10,.92);backdrop-filter:blur(14px);
+}
+#go-panel{
+  width:min(480px,90vw);
+  background:linear-gradient(160deg,rgba(12,2,24,.98),rgba(2,2,10,.98));
+  border:1px solid rgba(255,42,109,.35);border-radius:16px;padding:38px 36px 32px;
+  box-shadow:0 0 80px rgba(255,42,109,.1);
+  animation:go-in .5s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes go-in{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+#go-title{
+  font-size:clamp(24px,5vw,38px);font-weight:900;text-align:center;letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+#go-title.failure{color:#FF2A6D;text-shadow:0 0 30px rgba(255,42,109,.7);}
+#go-title.success{color:#00F0FF;text-shadow:0 0 30px rgba(0,240,255,.7);}
+#go-subtitle{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.22em;text-align:center;margin-bottom:28px;}
+#go-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.go-stat{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;
+  padding:14px 8px;text-align:center;
+}
+.go-v{font-size:22px;font-weight:900;color:#fff;letter-spacing:.04em;font-family:'Rajdhani',monospace;}
+.go-l{font-size:8px;color:rgba(255,255,255,.3);letter-spacing:.2em;margin-top:4px;text-transform:uppercase;}
+#go-actions{display:flex;gap:12px;justify-content:center;}
+.go-btn{
+  flex:1;max-width:180px;padding:13px 16px;font-family:inherit;font-size:11px;font-weight:900;
+  letter-spacing:.2em;text-transform:uppercase;border-radius:8px;cursor:pointer;transition:all .15s;
+}
+#go-retry{background:rgba(191,0,255,.14);border:1.5px solid rgba(191,0,255,.5);color:#BF00FF;}
+#go-retry:hover{background:rgba(191,0,255,.28);box-shadow:0 0 24px rgba(191,0,255,.3);color:#fff;}
+#go-menu{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.55);}
+#go-menu:hover{border-color:rgba(255,255,255,.3);color:#fff;}
 </style>
 </head>
 <body>
@@ -988,6 +1099,52 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
   </symbol>
 </svg>
 
+<!-- ── Wave B: Mode Selection Overlay ────── -->
+<div id="mode-select">
+  <div id="mode-panel">
+    <div id="mode-title">SURVIVAL MODE</div>
+    <div id="mode-desc">Endless waves of threats. Earn credits. Survive.</div>
+    <div id="difficulty-bar">
+      <button class="diff-btn" data-d="easy">EASY</button>
+      <button class="diff-btn active" data-d="normal">NORMAL</button>
+      <button class="diff-btn" data-d="hard">HARD</button>
+    </div>
+    <div id="mode-actions">
+      <button id="mode-cancel-btn">✕ CANCEL</button>
+      <button id="mode-start-btn">▶ DEPLOY TO FIELD</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Wave C: Crosshair ──────────────────── -->
+<div id="crosshair" style="display:none">
+  <div class="ch-line ch-t"></div>
+  <div class="ch-line ch-b"></div>
+  <div class="ch-line ch-l"></div>
+  <div class="ch-line ch-r"></div>
+  <div class="ch-dot"></div>
+</div>
+
+<!-- ── Wave C: Kill Feed ─────────────────── -->
+<div id="kill-feed"></div>
+
+<!-- ── Wave E: Game Over Modal ───────────── -->
+<div id="game-over-modal">
+  <div id="go-panel">
+    <div id="go-title" class="failure">SYSTEM FAILURE</div>
+    <div id="go-subtitle">YOUR DATA HAS BEEN COMPROMISED</div>
+    <div id="go-stats">
+      <div class="go-stat"><div class="go-v" id="go-score-v">0</div><div class="go-l">SCORE</div></div>
+      <div class="go-stat"><div class="go-v" id="go-wave-v">0</div><div class="go-l">WAVE</div></div>
+      <div class="go-stat"><div class="go-v" id="go-best-v">0</div><div class="go-l">BEST</div></div>
+    </div>
+    <div id="go-actions">
+      <button class="go-btn" id="go-retry">↺ RETRY</button>
+      <button class="go-btn" id="go-menu">⌂ MAIN MENU</button>
+    </div>
+  </div>
+</div>
+
 <canvas id="c"></canvas>
 <canvas id="mm"></canvas>
 
@@ -1059,9 +1216,9 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
 <div id="overlay">
   <div class="ov-top-line"></div>
   <div id="menu-content">
-    <div id="ov-eyebrow">K-Perception &mdash; 2025</div>
-    <div id="ov-title">PRIVACY <span class="hl">WARFARE</span></div>
-    <div id="ov-sub">Defend Your Data &mdash; Eliminate All Threats</div>
+    <div id="ov-eyebrow">K-Perception &mdash; v2.0 &mdash; 2026</div>
+    <div id="ov-title">PRIVACY<br><span class="hl">WARFARE</span></div>
+    <div id="ov-sub">CYBER ASSAULT &mdash; DEFEND YOUR DATA</div>
     <div id="ov-score-wrap">
       <div id="ov-score"></div>
       <div id="ov-hi"></div>
@@ -1088,7 +1245,7 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
         <svg class="mp-svg"><use href="#i-diamond"/></svg>
         <div class="mp-body">
           <div class="mp-label">Arsenal</div>
-          <div class="mp-hint">20 weapons &middot; Unlocks &middot; Stats</div>
+          <div class="mp-hint">30 weapons &middot; Attachments &middot; Gadgets</div>
         </div>
         <svg class="mp-arr" width="16" height="16"><use href="#i-chevron"/></svg>
       </div>
