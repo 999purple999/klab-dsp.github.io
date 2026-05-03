@@ -288,7 +288,7 @@ function _renderWpnList() {
     const row  = document.createElement('div');
     row.className = 'gs-wrow' + (def.id === _selWpnId ? ' on' : '');
     row.innerHTML = `<div class="gs-wn" style="color:${def.col||'#0F4'}">${def.name}</div>
-      <div class="gs-wt">LVL ${prog.level} · ${def.class.toUpperCase()}</div>`;
+      <div class="gs-wt">LVL ${prog.level} · ${def.weaponClass.toUpperCase()}</div>`;
     row.addEventListener('click', () => _selectWeapon(def.id));
     el.appendChild(row);
   });
@@ -329,7 +329,7 @@ function _renderCenter() {
   document.getElementById('gs-cbtinfo').innerHTML = `
     <div class="gs-cbtrow">
       <div class="gs-cbt"><div class="gs-cbv">${ttk === Infinity ? '∞' : ttk + 'ms'}</div><div class="gs-cbl">TTK @20m</div></div>
-      <div class="gs-cbt"><div class="gs-cbv">${dps.toFixed(0)}</div><div class="gs-cbl">DPS</div></div>
+      <div class="gs-cbt"><div class="gs-cbv">${dps}</div><div class="gs-cbl">DPS</div></div>
       <div class="gs-cbt"><div class="gs-cbv">${_weapon.magazine}r</div><div class="gs-cbl">MAG</div></div>
       <div class="gs-cbt"><div class="gs-cbv">${_weapon.reserve}</div><div class="gs-cbl">RESERVE</div></div>
     </div>`;
@@ -425,10 +425,10 @@ function _renderPicker(slot) {
   const el = document.getElementById('gs-picker'); if (!el) return;
   if (!slot || !_weapon) { el.style.display = 'none'; return; }
   const def     = WEAPON_CATALOG_BY_ID[_selWpnId];
-  const prog    = getWeaponProgress(_selWpnId);
-  const options = getCompatibleAttachments(slot, def?.class || 'assault', prog.level);
+  // Pass level 50 so Gunsmith shows all compatible attachments regardless of progression
+  const options = getCompatibleAttachments(slot, def?.weaponClass || 'assault', 50);
   if (!options.length) {
-    el.innerHTML = '<div style="padding:6px;font-size:9px;color:#555">No compatible attachments for this level</div>';
+    el.innerHTML = '<div style="padding:6px;font-size:9px;color:#555">No attachments for this slot/class</div>';
     el.style.display = 'block'; return;
   }
   const curAtt = _weapon.slots[slot];
@@ -504,7 +504,7 @@ function _loadSlot(i) {
   const nameEl = document.getElementById('gs-loname');
   if (nameEl) nameEl.value = lo.name || '';
   const def = WEAPON_CATALOG_BY_ID[lo.weaponId]; if (!def) return;
-  _selectClass(def.class);
+  _selectClass(def.weaponClass);
   _selectWeapon(lo.weaponId);
   if (lo.ammoType && _weapon) _weapon.currentAmmoType = lo.ammoType;
   _renderAmmo();
@@ -546,7 +546,7 @@ function _drawPreview() {
     ctx.translate(W / 2, H / 2);
     const sc = Math.min(W / 280, H / 100) * 0.88;
     ctx.scale(sc, sc);
-    drawWeaponShape(ctx, 260, 90, def.class, def.col || '#0F4');
+    drawWeaponShape(ctx, 260, 90, def.weaponClass, def.col || '#0F4');
     ctx.restore();
   }
 
@@ -558,7 +558,7 @@ function _drawPreview() {
     ctx.fillText(def.name, 14, H - 14);
     ctx.font = '9px monospace';
     ctx.fillStyle = '#888';
-    ctx.fillText((def.class || '').toUpperCase() + ' · ' + (def.tag || ''), 14, H - 26);
+    ctx.fillText((def.weaponClass || '').toUpperCase() + ' · ' + (def.tag || ''), 14, H - 26);
     ctx.textAlign = 'left';
   }
 }
