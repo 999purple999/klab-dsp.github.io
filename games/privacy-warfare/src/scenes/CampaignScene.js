@@ -3,6 +3,7 @@
 // Renders via DOM (no canvas drawing) for clean, readable UI.
 
 import { CampaignSave } from '../data/CampaignSave.js';
+import { openLoadout }  from '../ui/LoadoutModal.js';
 
 const ZONE_NAMES = [
   'FIREWALL', 'PHISH NET', 'DARKWEB', 'BOTNET', 'RANSOMWARE',
@@ -230,6 +231,8 @@ export class CampaignScene {
     const z = this._sel;
     if (!this.save.isZoneUnlocked(z)) return;
     const waveNum = z * 10 + 1;
+
+    // Hook boss-kill to record campaign progress
     const origKillBoss = this.gameScene._killBoss?.bind(this.gameScene);
     if (origKillBoss) {
       this.gameScene._killBoss = () => {
@@ -240,8 +243,12 @@ export class CampaignScene {
         this.gameScene._killBoss = origKillBoss;
       };
     }
+
     this.exit();
-    this.gameScene.startCampaignLevel(waveNum);
+    openLoadout((wpnSlots, gadSlots) => {
+      this.gameScene.setLoadout(wpnSlots, gadSlots);
+      this.gameScene.startCampaignLevel(waveNum);
+    });
   }
 }
 

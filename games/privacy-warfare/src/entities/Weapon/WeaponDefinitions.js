@@ -2,9 +2,15 @@
 // Indices 0-9 = original 10 (BASE_* arrays used for skill upgrade reset).
 // Indices 10-20 = unlockable weapons (no BASE reset).
 
-export const BASE_CD  = [0.46, 0.065, 0.82, 1.25, 1.9, 5.0, 0.88, 0.58, 5.0, 0.38];
-export const BASE_DMG = [1,    0.32,  2,    2.5,  1.5, 0,   0.8,  0.5,  8,   0.3 ];
-export const BASE_RNG = [170,  265,   145,  350,  210, 0,   210,  190,  0,   160 ];
+export const BASE_CD   = [0.46, 0.065, 0.82, 1.25, 1.9, 5.0, 0.88, 0.58, 5.0, 0.38];
+export const BASE_DMG  = [1,    0.32,  2,    2.5,  1.5, 0,   0.8,  0.5,  8,   0.3 ];
+export const BASE_RNG  = [170,  265,   145,  350,  210, 0,   210,  190,  0,   160 ];
+// Base ammo per weapon (indices match WPNS)
+export const BASE_AMMO = [
+  80, 300, 30, 35, 18, 5, 40, 60, 3, 90,   // indices 0-9
+  12, 70, 30, 75, 15,                        // indices 10-14
+  8, 10, 20, 12, 25, 8,                      // indices 15-20
+];
 
 export const WPNS = [
   // ── INDEX 0-9: Standard Issue (all unlocked) ────────────────────────────────

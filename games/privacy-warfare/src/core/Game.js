@@ -143,17 +143,19 @@ export class Game {
         return;
       }
       if (this.gameScene.paused) return;
-      if (k >= '1' && k <= '9') { this.gameScene.wpnIdx = +k - 1; setWpn(this.gameScene.wpnIdx, WPNS); e.preventDefault(); }
-      if (k === '0')              { this.gameScene.wpnIdx = 9;      setWpn(9, WPNS); e.preventDefault(); }
-      // Q/E cycle through all unlocked weapons (supports 20+)
-      if (k.toLowerCase() === 'q') { this.gameScene.wpnIdx = (this.gameScene.wpnIdx + WPNS.length - 1) % WPNS.length; setWpn(this.gameScene.wpnIdx, WPNS); }
-      if (k.toLowerCase() === 'e') { this.gameScene.wpnIdx = (this.gameScene.wpnIdx + 1) % WPNS.length; setWpn(this.gameScene.wpnIdx, WPNS); }
-      if (k.toLowerCase() === 'f') this.gameScene.useBomb();
-      if (k.toLowerCase() === 'g') this.gameScene.useKP();
-      if (k.toLowerCase() === 'x') this.gameScene.useDash();
-      if (k.toLowerCase() === 'v') this.gameScene.useOverclock();
-      if (k.toLowerCase() === 'c') this.gameScene.useEmpShield();
-      if (k.toLowerCase() === 'z') this.gameScene.useTimeWarp();
+      // Q/E cycle between the 2 loadout weapons
+      if (k.toLowerCase() === 'q' || k.toLowerCase() === 'e') {
+        const slots = this.gameScene.loadoutWpns.filter(i => i >= 0);
+        if (slots.length > 1) {
+          const cur = slots.indexOf(this.gameScene.wpnIdx);
+          this.gameScene.wpnIdx = cur === 0 ? slots[1] : slots[0];
+          setWpn(this.gameScene.wpnIdx, WPNS);
+          this.gameScene._updateAmmoHUD();
+        }
+      }
+      if (k.toLowerCase() === 'f') this.gameScene.useGadget(0);
+      if (k.toLowerCase() === 'g') this.gameScene.useGadget(1);
+      if (k.toLowerCase() === 'x') this.gameScene.useDash(); // sprint/dash fallback
       if (k === 'Tab') {
         e.preventDefault();
         if (this.gameScene.betweenWaves && !this.gameScene.skillModal) this.gameScene._openShop();
@@ -193,12 +195,10 @@ export class Game {
   }
 
   _initMobileButtons() {
-    const AB_MAP = { bomb: 'useBomb', kp: 'useKP', dash: 'useDash', overclock: 'useOverclock', empshield: 'useEmpShield', timewarp: 'useTimeWarp' };
     document.getElementById('mob-actions')?.addEventListener('touchstart', e => {
       e.stopPropagation();
-      const btn = e.target.closest('[data-ab]'); if (!btn) return;
-      const fn = AB_MAP[btn.dataset.ab];
-      if (fn && this.gameScene[fn]) this.gameScene[fn]();
+      const btn = e.target.closest('[data-gadget]'); if (!btn) return;
+      this.gameScene.useGadget(+btn.dataset.gadget);
     }, { passive: true });
   }
 

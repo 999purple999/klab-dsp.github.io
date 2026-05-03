@@ -62,13 +62,16 @@ export function updateWeather(weather) {
 }
 
 export function updateAbilityUI(abCDs, abilityCDMult) {
-  const abKeys   = ['f', 'g', 'x', 'v', 'c', 'z'];
-  const abNames2 = ['bomb', 'kp', 'dash', 'overclock', 'empshield', 'timewarp'];
-  abKeys.forEach((l, i) => {
-    const el = document.getElementById('cd-' + l), slot = document.getElementById('slot-' + l);
-    const t = abCDs[abNames2[i]];
-    el.textContent  = t > 0 ? t.toFixed(1) + 's' : 'READY';
-    el.style.color  = t > 0 ? 'rgba(255,120,80,0.8)' : 'rgba(0,255,65,0.8)';
+  // Only F and G slots remain — X/V/C/Z removed
+  ['f', 'g'].forEach(l => {
+    const el   = document.getElementById('cd-' + l);
+    const slot = document.getElementById('slot-' + l);
+    if (!el || !slot) return;
+    // Look up which gadget is in this slot from the slot's data attribute
+    const gadKey = slot.dataset.gadget;
+    const t = gadKey ? (abCDs[gadKey] ?? 0) : 0;
+    el.textContent = t > 0 ? t.toFixed(1) + 's' : 'READY';
+    el.style.color = t > 0 ? 'rgba(255,120,80,0.8)' : 'rgba(0,255,65,0.8)';
     slot.classList.toggle('ready', t <= 0);
   });
 }

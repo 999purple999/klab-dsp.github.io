@@ -2,6 +2,8 @@
 // Renders an animated cyberpunk background on the game canvas,
 // then shows the HTML overlay with panels on top.
 
+import { openLoadout } from '../ui/LoadoutModal.js';
+
 export class MenuScene {
   constructor(game) {
     this._game = game;
@@ -59,7 +61,10 @@ export class MenuScene {
   _startSurvival() {
     document.getElementById('overlay').classList.add('hidden');
     this._game.scenes.pop();
-    this._game.gameScene.startGame();
+    openLoadout((wpnSlots, gadSlots) => {
+      this._game.gameScene.setLoadout(wpnSlots, gadSlots);
+      this._game.gameScene.startGame();
+    });
   }
 
   _startCampaign() {

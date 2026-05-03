@@ -99,6 +99,8 @@ canvas{display:block;position:absolute;top:0;left:0}
 #wpn-cd-wrap{width:100%;height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-top:8px;overflow:hidden;}
 #wpn-cd{height:3px;border-radius:2px;width:100%;transition:width .05s linear}
 #wpn-key{font-size:9px;color:rgba(255,255,255,0.24);margin-top:5px;letter-spacing:.1em;}
+#wpn-ammo-row{margin-top:4px;text-align:right;}
+#wpn-ammo{font-size:10px;font-weight:900;letter-spacing:.1em;color:rgba(0,255,65,0.7);transition:color .2s;}
 
 /* ── Ability rail ──────────────────────── */
 #ability-rail{
@@ -130,6 +132,96 @@ canvas{display:block;position:absolute;top:0;left:0}
 .ab-slot.ready .ab-ico{color:rgba(191,0,255,0.9);}
 .ab-cd{font-size:7px;color:rgba(191,0,255,0.6);height:10px;margin-top:1px;letter-spacing:.04em;}
 .ab-slot.ready .ab-cd{color:rgba(0,255,65,0.85);}
+.ab-name{font-size:6px;color:rgba(255,255,255,0.35);letter-spacing:.06em;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ── Loadout Modal ─────────────────────── */
+#loadout-modal{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);
+  flex-direction:column;align-items:center;justify-content:center;
+}
+.lo-box{
+  width:min(900px,95vw);max-height:88vh;
+  background:linear-gradient(160deg,rgba(8,2,18,0.98),rgba(2,1,8,0.98));
+  border:1px solid rgba(191,0,255,0.22);border-radius:16px;
+  box-shadow:0 0 60px rgba(191,0,255,0.1),0 0 0 1px rgba(191,0,255,0.06);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.lo-hdr{
+  padding:22px 28px 18px;border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.lo-title{font-size:13px;font-weight:900;color:#fff;letter-spacing:.3em;}
+.lo-subtitle{font-size:10px;color:rgba(191,0,255,0.6);letter-spacing:.2em;margin-top:2px;}
+.lo-abort{
+  font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:.16em;
+  background:none;border:1px solid rgba(255,255,255,0.1);border-radius:6px;
+  padding:6px 12px;cursor:pointer;
+}
+.lo-abort:hover{color:#fff;border-color:rgba(255,255,255,0.3);}
+.lo-body{display:flex;gap:0;flex:1;overflow:hidden;}
+.lo-panel{flex:1;padding:22px 24px;overflow-y:auto;border-right:1px solid rgba(255,255,255,0.04);}
+.lo-panel:last-child{border-right:none;}
+.lo-panel-title{
+  font-size:9px;font-weight:900;color:rgba(191,0,255,0.6);letter-spacing:.3em;
+  margin-bottom:14px;
+}
+.lo-slots{display:flex;gap:10px;margin-bottom:18px;}
+.lo-slot{
+  flex:1;min-height:68px;border-radius:10px;padding:10px 12px;
+  border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);
+  transition:border-color .2s,box-shadow .2s;
+}
+.lo-sl-key{font-size:8px;color:rgba(255,255,255,0.3);letter-spacing:.2em;font-weight:700;}
+.lo-sl-name{font-size:11px;font-weight:900;letter-spacing:.1em;margin-top:4px;}
+.lo-sl-ammo{font-size:9px;color:rgba(0,255,100,0.6);margin-top:3px;letter-spacing:.08em;}
+.lo-sl-empty{font-size:9px;color:rgba(255,255,255,0.18);margin-top:4px;letter-spacing:.12em;}
+.lo-sep{height:1px;background:rgba(255,255,255,0.05);margin:0 0 14px;}
+.lo-list-title{font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:.2em;margin-bottom:10px;}
+.lo-wpn-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;margin-bottom:5px;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);
+  transition:background .15s,border-color .15s;
+  --wc:#BF00FF;
+}
+.lo-wpn-row:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);}
+.lo-wpn-row.lo-row-sel{background:rgba(var(--wc),0.06);border-color:var(--wc);border-color:color-mix(in srgb,var(--wc) 40%,transparent);}
+.lo-wpn-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.lo-wpn-mid{flex:1;}
+.lo-wpn-name{font-size:11px;font-weight:900;color:#fff;letter-spacing:.1em;}
+.lo-wpn-tag{font-size:8px;color:rgba(255,255,255,0.3);letter-spacing:.12em;margin-top:1px;}
+.lo-wpn-ammo-badge{font-size:10px;font-weight:700;letter-spacing:.06em;}
+.lo-row-badge{
+  font-size:9px;font-weight:900;padding:2px 7px;border-radius:4px;
+  background:rgba(191,0,255,0.15);color:#BF00FF;
+  border:1px solid rgba(191,0,255,0.3);letter-spacing:.12em;
+}
+.lo-gad-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;margin-bottom:5px;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);
+  transition:background .15s,border-color .15s;
+  --gc:#00FFFF;
+}
+.lo-gad-row:hover{background:rgba(255,255,255,0.04);}
+.lo-gad-row.lo-row-sel{background:rgba(0,255,255,0.04);border-color:color-mix(in srgb,var(--gc) 40%,transparent);}
+.lo-gad-ico{flex-shrink:0;}
+.lo-gad-mid{flex:1;}
+.lo-gad-name{font-size:11px;font-weight:900;color:#fff;letter-spacing:.1em;}
+.lo-gad-desc{font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;letter-spacing:.06em;}
+.lo-ftr{
+  padding:18px 28px;border-top:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:center;justify-content:flex-end;gap:12px;
+}
+.lo-info{font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:.1em;flex:1;}
+#lo-deploy-btn{
+  font-size:12px;font-weight:900;letter-spacing:.3em;
+  background:rgba(191,0,255,0.12);border:1px solid rgba(191,0,255,0.5);
+  color:#BF00FF;border-radius:8px;padding:12px 32px;cursor:pointer;
+  box-shadow:0 0 20px rgba(191,0,255,0.15);transition:all .15s;
+}
+#lo-deploy-btn:hover{background:rgba(191,0,255,0.22);box-shadow:0 0 30px rgba(191,0,255,0.3);color:#fff;}
 
 /* ── Map name flash ────────────────────── */
 #map-name-flash{
@@ -880,39 +972,24 @@ canvas{display:block;position:absolute;top:0;left:0}
     <span id="wpn-name-txt">RSA PULSE</span>
   </div>
   <div id="wpn-cd-wrap"><div id="wpn-cd"></div></div>
-  <div id="wpn-key">1–0 / Q · E</div>
+  <div id="wpn-ammo-row">
+    <span id="wpn-ammo"></span>
+  </div>
+  <div id="wpn-key">Q · E  SWAP</div>
 </div>
 
 <div id="ability-rail">
-  <div class="ab-slot" id="slot-f">
+  <div class="ab-slot" id="slot-f" data-gadget="bomb">
     <div class="ab-key">F</div>
     <div class="ab-icon"><svg class="ab-ico"><use href="#i-bomb"/></svg></div>
+    <div class="ab-name" id="gad-name-f">BOMB</div>
     <div class="ab-cd" id="cd-f"></div>
   </div>
-  <div class="ab-slot" id="slot-g">
+  <div class="ab-slot" id="slot-g" data-gadget="kp">
     <div class="ab-key">G</div>
     <div class="ab-icon"><svg class="ab-ico"><use href="#i-bolt"/></svg></div>
+    <div class="ab-name" id="gad-name-g">EMP</div>
     <div class="ab-cd" id="cd-g"></div>
-  </div>
-  <div class="ab-slot" id="slot-x">
-    <div class="ab-key">X</div>
-    <div class="ab-icon"><svg class="ab-ico"><use href="#i-dash"/></svg></div>
-    <div class="ab-cd" id="cd-x"></div>
-  </div>
-  <div class="ab-slot" id="slot-v">
-    <div class="ab-key">V</div>
-    <div class="ab-icon"><svg class="ab-ico"><use href="#i-chip"/></svg></div>
-    <div class="ab-cd" id="cd-v"></div>
-  </div>
-  <div class="ab-slot" id="slot-c">
-    <div class="ab-key">C</div>
-    <div class="ab-icon"><svg class="ab-ico"><use href="#i-shield"/></svg></div>
-    <div class="ab-cd" id="cd-c"></div>
-  </div>
-  <div class="ab-slot" id="slot-z">
-    <div class="ab-key">Z</div>
-    <div class="ab-icon"><svg class="ab-ico"><use href="#i-clock"/></svg></div>
-    <div class="ab-cd" id="cd-z"></div>
   </div>
 </div>
 
@@ -925,14 +1002,10 @@ canvas{display:block;position:absolute;top:0;left:0}
   <div id="nuke-lbl">Nuke Charging</div>
 </div>
 
-<!-- ── Mobile ability buttons (touch devices only) ───────────────────────── -->
+<!-- ── Mobile gadget buttons (touch devices only) ────────────────────────── -->
 <div id="mob-actions">
-  <button class="mob-btn" data-ab="bomb"><span class="mob-btn-key">F</span><span class="mob-btn-lbl">BOMB</span></button>
-  <button class="mob-btn" data-ab="kp"><span class="mob-btn-key">G</span><span class="mob-btn-lbl">K-PANIC</span></button>
-  <button class="mob-btn" data-ab="dash"><span class="mob-btn-key">X</span><span class="mob-btn-lbl">DASH</span></button>
-  <button class="mob-btn" data-ab="overclock"><span class="mob-btn-key">V</span><span class="mob-btn-lbl">O-CLOCK</span></button>
-  <button class="mob-btn" data-ab="empshield"><span class="mob-btn-key">C</span><span class="mob-btn-lbl">EMP</span></button>
-  <button class="mob-btn" data-ab="timewarp"><span class="mob-btn-key">Z</span><span class="mob-btn-lbl">WARP</span></button>
+  <button class="mob-btn" data-gadget="0"><span class="mob-btn-key">F</span><span class="mob-btn-lbl" id="mob-gad-0">GADGET</span></button>
+  <button class="mob-btn" data-gadget="1"><span class="mob-btn-key">G</span><span class="mob-btn-lbl" id="mob-gad-1">GADGET</span></button>
 </div>
 
 <!-- ── Main Menu Overlay ─────────────── -->
@@ -1199,6 +1272,59 @@ canvas{display:block;position:absolute;top:0;left:0}
     </div>
     <div class="cp-detail" id="cp-detail">
       <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(0,255,180,.3);letter-spacing:.2em;">SELECT A ZONE</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Loadout Modal ──────────────────────────────────────────────────────── -->
+<div id="loadout-modal">
+  <div class="lo-box">
+    <div class="lo-hdr">
+      <div>
+        <div class="lo-title">PRE-MISSION LOADOUT</div>
+        <div class="lo-subtitle">SELECT 2 WEAPONS · 2 GADGETS · DEPLOY</div>
+      </div>
+      <button class="lo-abort" id="lo-back-btn">✕ ABORT</button>
+    </div>
+    <div class="lo-body">
+      <!-- Weapons panel -->
+      <div class="lo-panel">
+        <div class="lo-panel-title">WEAPON LOADOUT</div>
+        <div class="lo-slots">
+          <div class="lo-slot" id="lo-wpn-slot-0">
+            <div class="lo-sl-key">SLOT 1</div>
+            <div class="lo-sl-empty">— SELECT WEAPON —</div>
+          </div>
+          <div class="lo-slot" id="lo-wpn-slot-1">
+            <div class="lo-sl-key">SLOT 2</div>
+            <div class="lo-sl-empty">— SELECT WEAPON —</div>
+          </div>
+        </div>
+        <div class="lo-sep"></div>
+        <div class="lo-list-title">AVAILABLE WEAPONS</div>
+        <div id="lo-wpn-list"></div>
+      </div>
+      <!-- Gadgets panel -->
+      <div class="lo-panel">
+        <div class="lo-panel-title">GADGET LOADOUT</div>
+        <div class="lo-slots">
+          <div class="lo-slot" id="lo-gad-slot-0">
+            <div class="lo-sl-key">F KEY</div>
+            <div class="lo-sl-empty">— SELECT GADGET —</div>
+          </div>
+          <div class="lo-slot" id="lo-gad-slot-1">
+            <div class="lo-sl-key">G KEY</div>
+            <div class="lo-sl-empty">— SELECT GADGET —</div>
+          </div>
+        </div>
+        <div class="lo-sep"></div>
+        <div class="lo-list-title">AVAILABLE GADGETS</div>
+        <div id="lo-gad-list"></div>
+      </div>
+    </div>
+    <div class="lo-ftr">
+      <div class="lo-info">Ammo is collected from ground caches and enemy drops. Select wisely.</div>
+      <button id="lo-deploy-btn">DEPLOY ▶</button>
     </div>
   </div>
 </div>

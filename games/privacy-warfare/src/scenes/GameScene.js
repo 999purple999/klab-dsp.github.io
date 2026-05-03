@@ -6,7 +6,8 @@ import { SFX, getAC } from '../audio/AudioManager.js';
 import { renderPlayer } from '../entities/PlayerVisual.js';
 import { MAPS, STARS, BLDGS, WEB_LINES, AMBIENT, OBSTACLES, TRAPS,
          buildMapAssets, buildObstacles, buildTraps, resolveObstaclePos } from '../mapgen/MapData.js';
-import { WPNS, BASE_CD, BASE_DMG, BASE_RNG } from '../entities/Weapon/WeaponDefinitions.js';
+import { WPNS, BASE_CD, BASE_DMG, BASE_RNG, BASE_AMMO } from '../entities/Weapon/WeaponDefinitions.js';
+import { GADGETS } from '../ui/LoadoutModal.js';
 import { setCameraState, wx, wy, onScreen, d2,
          camX as _camX, camY as _camY, lW as _lW, lH as _lH,
          WW as _WW, WH as _WH, DPR as _DPR } from '../rendering/Camera.js';
@@ -129,6 +130,13 @@ export class GameScene {
     this.PARTS     = [];
     this.BEAMS     = [];
     this.FLOATS    = [];
+    this.AMMO_PKUPS = [];
+
+    // loadout
+    this.loadoutWpns  = [0, 1];    // two equipped weapon indices
+    this.loadoutGads  = ['bomb', 'kp']; // two equipped gadget keys
+    this.wpnAmmo      = {};        // ammo by weapon index
+    this.ammoPkupTimer = 0;        // countdown to next random spawn
 
     // boss
     this.boss = null;
@@ -183,6 +191,19 @@ export class GameScene {
     this._timeScaleTimer = 0;
   }
 
+  // ─── Loadout (called before startGame) ─────────────────────────────────────
+  setLoadout(wpnSlots, gadSlots) {
+    this.loadoutWpns = wpnSlots.filter(i => i >= 0 && i < WPNS.length);
+    this.loadoutGads = (gadSlots || []).filter(Boolean);
+    // Fill ammo for each selected weapon
+    this.wpnAmmo = {};
+    this.loadoutWpns.forEach(i => { this.wpnAmmo[i] = BASE_AMMO[i] ?? 80; });
+    // Set active weapon to slot 0
+    if (this.loadoutWpns.length > 0) this.wpnIdx = this.loadoutWpns[0];
+    // Update gadget HUD
+    this._updateGadgetHUD();
+  }
+
   // ─── called by Game on each resize
   resize(lW, lH, DPR) {
     this.lW = lW; this.lH = lH; this.DPR = DPR;
@@ -217,11 +238,17 @@ export class GameScene {
     this.abilityCDMult = 1; this.ghostBonusTime = 0; this.comboDecayMult = 1; this.chainExtraTargets = 0;
     this.EYES.length = 0; this.PARTS.length = 0; this.BEAMS.length = 0;
     this.EPROJS.length = 0; this.DEAD_EYES.length = 0; this.FLOATS.length = 0;
+    this.AMMO_PKUPS.length = 0; this.ammoPkupTimer = 8;
     this.vortexList.length = 0; this.timeLoopProjs.length = 0; this.drones.length = 0;
     this.styleMeter = 0; this.overdriveActive = false; this.overdriveTimer = 0;
     this.boss = null; this.bhActive = false; this.nukeCharging = false; this.nukeRad = 0; this.chainSegs = [];
     WPNS.forEach((w, i) => { if (i < BASE_CD.length) { w.cd = BASE_CD[i]; w.dmg = BASE_DMG[i]; w.rng = BASE_RNG[i]; } });
-    this.wpnCDs.fill(0); this.skinIdx = 0; this.wpnIdx = 0;
+    this.wpnCDs.fill(0); this.skinIdx = 0;
+    this.wpnIdx = this.loadoutWpns.length > 0 ? this.loadoutWpns[0] : 0;
+    // Reset ammo for loadout weapons
+    this.wpnAmmo = {};
+    this.loadoutWpns.forEach(i => { this.wpnAmmo[i] = BASE_AMMO[i] ?? 80; });
+    this._updateGadgetHUD();
     this.camX = (this.WW - this.lW) / 2; this.camY = (this.WH - this.lH) / 2;
     this.px = this.WW / 2; this.py = this.WH / 2;
     this.mapIdx = 0; this.nextMapIdx = 1;
@@ -453,6 +480,8 @@ export class GameScene {
     this.mastery.setStat('maxCombo', Math.floor(this.combo));
     const _leveled = this.progression.addXP(Math.round(pts * 0.5));
     if (_leveled) showMsg('LEVEL UP', 'Rank ' + this.progression.level);
+    // 25% chance ammo drop on kill
+    if (Math.random() < 0.25) this.AMMO_PKUPS.push({ x: e.x, y: e.y, pulse: 0 });
     this._addStyle(15);
     // Kill-cam slow-mo on wave's last kill
     if (this.EYES.length === 0 && !this.betweenWaves && !this.boss) {
@@ -474,6 +503,62 @@ export class GameScene {
     this.mastery.updateStat('bossKills', 1);
     this.progression.addXP(500);
     this._addStyle(50);
+  }
+
+  // ─── Ammo helpers ─────────────────────────────────────────────────────────
+  _collectAmmo() {
+    // Restore ~35% base ammo for all carried weapons
+    let restored = false;
+    this.loadoutWpns.forEach(i => {
+      const max = BASE_AMMO[i] ?? 80;
+      const add = Math.max(1, Math.floor(max * 0.35));
+      if ((this.wpnAmmo[i] ?? max) < max) {
+        this.wpnAmmo[i] = Math.min(max, (this.wpnAmmo[i] ?? 0) + add);
+        restored = true;
+      }
+    });
+    if (restored) { SFX.kp && SFX.kp(); showMsg('AMMO CACHE', 'Supply Restored', 1000); this._updateAmmoHUD(); }
+  }
+
+  _updateAmmoHUD() {
+    const el = document.getElementById('wpn-ammo');
+    if (!el) return;
+    const ammo = this.wpnAmmo[this.wpnIdx];
+    if (ammo === undefined) { el.textContent = ''; return; }
+    const max = BASE_AMMO[this.wpnIdx] ?? 80;
+    el.textContent = ammo + ' / ' + max;
+    el.style.color = ammo === 0 ? '#FF2200' : ammo < max * 0.25 ? '#FF8800' : 'rgba(0,255,65,0.7)';
+  }
+
+  _updateGadgetHUD() {
+    ['f', 'g'].forEach((key, s) => {
+      const gadKey = this.loadoutGads[s];
+      const g      = GADGETS.find(x => x.key === gadKey);
+      const nameEl = document.getElementById('gad-name-' + key);
+      if (nameEl) nameEl.textContent = g ? g.name : '—';
+      const slotEl = document.getElementById('slot-' + key);
+      if (slotEl) {
+        slotEl.dataset.gadget = gadKey || '';
+        if (g) slotEl.style.setProperty('--gc', g.col);
+      }
+      // Update mobile label
+      const mobEl = document.getElementById('mob-gad-' + s);
+      if (mobEl) mobEl.textContent = g ? g.name : 'GADGET';
+    });
+  }
+
+  // ─── Gadget dispatch — called by Game.js F/G keys ─────────────────────────
+  useGadget(slot) {
+    const key = this.loadoutGads[slot];
+    if (!key) return;
+    switch (key) {
+      case 'bomb':      this.useBomb();       break;
+      case 'kp':        this.useKP();         break;
+      case 'dash':      this.useDash();       break;
+      case 'overclock': this.useOverclock();  break;
+      case 'empshield': this.useEmpShield();  break;
+      case 'timewarp':  this.useTimeWarp();   break;
+    }
   }
 
   _hurtPlayer() {
@@ -569,10 +654,22 @@ export class GameScene {
   // ─── Weapons fire
   tryFire() {
     if (this.empToggle && this.weather === 'EMP') return;
+    // Ammo check — switch to other loadout weapon if empty
+    const ammoLeft = this.wpnAmmo[this.wpnIdx];
+    if (ammoLeft !== undefined && ammoLeft <= 0) {
+      const other = this.loadoutWpns.find(i => i !== this.wpnIdx && (this.wpnAmmo[i] ?? 1) > 0);
+      if (other !== undefined) { this.wpnIdx = other; setWpn(this.wpnIdx, WPNS); this._updateAmmoHUD(); }
+      this._isFiring = false; return;
+    }
     if (this.wpnCDs[this.wpnIdx] > 0) { this._isFiring = false; return; }
     this._isFiring = true;
     this._fire();
     this.wpnCDs[this.wpnIdx] = WPNS[this.wpnIdx].cd;
+    // Consume ammo
+    if (this.wpnAmmo[this.wpnIdx] !== undefined) {
+      this.wpnAmmo[this.wpnIdx] = Math.max(0, this.wpnAmmo[this.wpnIdx] - 1);
+      this._updateAmmoHUD();
+    }
   }
 
   _fire() {
@@ -1020,6 +1117,29 @@ export class GameScene {
     // Weapon CD bar + ability UI
     updateWeaponCD(this.wpnIdx, this.wpnCDs, WPNS, this.overclockActive);
     updateAbilityUI(this.abCDs, this.abilityCDMult);
+
+    // Ammo pickup — random ground spawns
+    if (this.running && !this.betweenWaves) {
+      this.ammoPkupTimer -= dt;
+      if (this.ammoPkupTimer <= 0) {
+        this.ammoPkupTimer = 6 + Math.random() * 6;
+        const MARGIN = 80;
+        this.AMMO_PKUPS.push({
+          x: MARGIN + Math.random() * (this.WW - MARGIN * 2),
+          y: MARGIN + Math.random() * (this.WH - MARGIN * 2),
+          pulse: 0,
+        });
+      }
+      // Collect ammo pickups
+      for (let i = this.AMMO_PKUPS.length - 1; i >= 0; i--) {
+        const p = this.AMMO_PKUPS[i];
+        p.pulse += dt * 3;
+        if (d2(p.x, p.y, this.px, this.py) < 28) {
+          this.AMMO_PKUPS.splice(i, 1);
+          this._collectAmmo();
+        }
+      }
+    }
 
     // Weather
     this.weatherTimer -= dt;
@@ -1494,6 +1614,31 @@ export class GameScene {
       edgeG.addColorStop(1, 'rgba(0,255,255,' + (0.12 * odPulse) + ')');
       ctx.fillStyle = edgeG; ctx.fillRect(0, 0, W, H);
     }
+
+    // Ammo pickups
+    this.AMMO_PKUPS.forEach(p => {
+      if (!onScreen(p.x, p.y, 22)) return;
+      const glow = 0.55 + 0.45 * Math.sin(p.pulse);
+      ctx.save();
+      ctx.shadowBlur = 18 * DPR; ctx.shadowColor = '#00FFCC';
+      ctx.globalAlpha = glow;
+      ctx.fillStyle = '#00FFCC';
+      // Diamond shape
+      const r = 9 * DPR;
+      ctx.beginPath();
+      ctx.moveTo(wx(p.x), wy(p.y) - r);
+      ctx.lineTo(wx(p.x) + r, wy(p.y));
+      ctx.lineTo(wx(p.x), wy(p.y) + r);
+      ctx.lineTo(wx(p.x) - r, wy(p.y));
+      ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = `900 ${8 * DPR}px monospace`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('AMO', wx(p.x), wy(p.y));
+      ctx.restore();
+    });
 
     // Floating damage numbers
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
