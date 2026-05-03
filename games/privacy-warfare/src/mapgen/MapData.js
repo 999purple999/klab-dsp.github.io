@@ -68,24 +68,22 @@ export function buildTraps(wv, WW, WH) {
 
   const margin = 180;
   const rnd = (lo, hi) => lo + Math.random() * (hi - lo);
-
   const count = Math.min(6, Math.floor(wv / 2));
 
-  const pool = ['laser'];
-  if (wv >= 3) pool.push('efield');
-  if (wv >= 5) pool.push('turret');
-  if (wv >= 7) pool.push('mine');
-  if (wv >= 6) pool.push('data_spike');
-  if (wv >= 8) pool.push('emp_burst');
-  if (wv >= 9) pool.push('vortex_pit');
-  if (wv >= 4)  pool.push('time_bubble');
-  if (wv >= 5)  pool.push('acid_pool');
-  if (wv >= 7)  pool.push('phase_wall');
-  if (wv >= 8)  pool.push('noise_trap');
-  if (wv >= 9)  pool.push('crusher');
-  if (wv >= 10) pool.push('gravity_pulse');
-  if (wv >= 11) pool.push('laser_mandala');
-  if (wv >= 12) pool.push('mine_chain');
+  // Classic traps always available
+  const pool = ['laser', 'efield', 'turret', 'mine'];
+  if (wv >= 3) pool.push('vortex_pit');
+  if (wv >= 4) pool.push('acid_pool');
+  if (wv >= 5) pool.push('emp_burst');
+  // New spec-specific traps
+  if (wv >= 3) pool.push('pendulum_saw');
+  if (wv >= 4) pool.push('pressure_plate');
+  if (wv >= 4) pool.push('reactive_vent');
+  if (wv >= 5) pool.push('corruption_cloud');
+  if (wv >= 5) pool.push('lag_zone');
+  if (wv >= 6) pool.push('laser_mirror');
+  if (wv >= 6) pool.push('simon_field');
+  if (wv >= 7) pool.push('tp_tile');
 
   for (let i = 0; i < count; i++) {
     const type = pool[Math.floor(Math.random() * pool.length)];
@@ -102,31 +100,28 @@ export function buildTraps(wv, WW, WH) {
       TRAPS.push({ type: 'turret', x, y, angle: 0, shootCd: 2.5 + Math.random(), shootTimer: 1.5 + Math.random() * 2, hp: 3, dead: false });
     } else if (type === 'mine') {
       TRAPS.push({ type: 'mine', x, y, armed: true, blinkPhase: Math.random() * Math.PI * 2 });
-    } else if (type === 'data_spike') {
-      TRAPS.push({ type: 'data_spike', x, y, r: 55 + rnd(0, 30), phase: Math.random() * Math.PI * 2, period: 2 + rnd(0, 1.5), active: false, dmgTimer: 0 });
-    } else if (type === 'emp_burst') {
-      TRAPS.push({ type: 'emp_burst', x, y, r: 70, armed: true, rearmTimer: 0, blinkPhase: Math.random() * Math.PI * 2 });
     } else if (type === 'vortex_pit') {
       TRAPS.push({ type: 'vortex_pit', x, y, r: 100, pullR: 180, dmgTimer: 0, angle: 0 });
-    } else if (type === 'time_bubble') {
-      TRAPS.push({ type: 'time_bubble', x, y, r: 80 + rnd(0, 40), dmgTimer: 0 });
     } else if (type === 'acid_pool') {
       TRAPS.push({ type: 'acid_pool', x, y, w: rnd(100, 200), h: rnd(70, 130), pulse: 0, dmgTimer: 0 });
-    } else if (type === 'phase_wall') {
-      const dir2 = Math.random() < 0.5 ? 'h' : 'v';
-      const len2 = rnd(140, 280);
-      TRAPS.push({ type: 'phase_wall', x, y, len: len2, dir: dir2, phase: Math.random() * Math.PI * 2, period: 2.5 + rnd(0, 2), active: false });
-    } else if (type === 'noise_trap') {
-      TRAPS.push({ type: 'noise_trap', x, y, r: 90, armed: true, rearmTimer: 0, pulse: 0 });
-    } else if (type === 'crusher') {
-      const cdir = Math.random() < 0.5 ? 'h' : 'v';
-      TRAPS.push({ type: 'crusher', x, y, dir: cdir, len: rnd(100, 200), spd: 40 + rnd(0, 30), offset: 0, offsetDir: 1, maxOffset: rnd(80, 160) });
-    } else if (type === 'gravity_pulse') {
-      TRAPS.push({ type: 'gravity_pulse', x, y, r: 120, pulseTimer: 0, pulseCd: 4 + rnd(0, 2), pulseActive: false, pulseR: 0 });
-    } else if (type === 'laser_mandala') {
-      TRAPS.push({ type: 'laser_mandala', x, y, r: 110, angle: 0, spd: 0.8 + rnd(0, 0.6), arms: 6 });
-    } else if (type === 'mine_chain') {
-      TRAPS.push({ type: 'mine_chain', x, y, armed: true, blinkPhase: Math.random() * Math.PI * 2, chainR: 150 });
+    } else if (type === 'emp_burst') {
+      TRAPS.push({ type: 'emp_burst', x, y, r: 70, armed: true, rearmTimer: 0, blinkPhase: Math.random() * Math.PI * 2 });
+    } else if (type === 'pendulum_saw') {
+      TRAPS.push({ type: 'pendulum_saw', x, y, len: rnd(80, 160), spd: 0.7 + rnd(0, 0.9), angle: Math.random() * Math.PI * 2 });
+    } else if (type === 'pressure_plate') {
+      TRAPS.push({ type: 'pressure_plate', x, y, triggered: false, _countdown: 0 });
+    } else if (type === 'reactive_vent') {
+      TRAPS.push({ type: 'reactive_vent', x, y, _cooldown: 0 });
+    } else if (type === 'corruption_cloud') {
+      TRAPS.push({ type: 'corruption_cloud', x, y, r: 70 + rnd(0, 40), _driftAngle: Math.random() * Math.PI * 2, _driftSpd: 40 + rnd(0, 30), _phase: Math.random() * Math.PI * 2, _dmgT: 0 });
+    } else if (type === 'lag_zone') {
+      TRAPS.push({ type: 'lag_zone', x, y, r: 75 + rnd(0, 55) });
+    } else if (type === 'laser_mirror') {
+      TRAPS.push({ type: 'laser_mirror', x, y, angle: Math.random() * Math.PI, len: rnd(90, 190) });
+    } else if (type === 'simon_field') {
+      TRAPS.push({ type: 'simon_field', x, y, _activeQ: 0, _timer: 0, _period: 1.2 + rnd(0, 0.8), _dmgTimer: 0 });
+    } else if (type === 'tp_tile') {
+      TRAPS.push({ type: 'tp_tile', x, y, _cd: 0 });
     }
   }
 }
@@ -139,20 +134,23 @@ export function buildInteractives(wv, WW, WH) {
   const margin = 200;
   const rnd2 = (lo, hi) => lo + Math.random() * (hi - lo);
   const count = Math.min(5, 1 + Math.floor(wv / 3));
-  const pool2 = ['data_terminal', 'ammo_depot', 'health_station'];
+  const pool2 = ['data_terminal', 'ammo_depot', 'health_station', 'data_barrel'];
   if (wv >= 3) pool2.push('jammer_node');
-  if (wv >= 4) pool2.push('shield_pylon');
-  if (wv >= 5) pool2.push('decoy_beacon');
-  if (wv >= 6) pool2.push('power_node');
+  if (wv >= 4) pool2.push('shield_pylon', 'crystal_spike');
+  if (wv >= 5) pool2.push('decoy_beacon', 'data_cache_hack');
+  if (wv >= 6) pool2.push('power_node', 'weight_platform');
   if (wv >= 7) pool2.push('firewall_barrier');
   if (wv >= 8) pool2.push('overclock_station');
   if (wv >= 9) pool2.push('data_cache');
+
+  const cdMaxFor = t => ({ data_barrel: 12, crystal_spike: 20, data_cache_hack: 25, weight_platform: 15 }[t] || 20);
+  const activateTimeFor = t => ({ crystal_spike: 1.5, weight_platform: 0.4, data_cache_hack: 1.8 }[t] || 1.0);
 
   for (let i = 0; i < count; i++) {
     const type = pool2[Math.floor(Math.random() * pool2.length)];
     const x = rnd2(margin, WW - margin);
     const y = rnd2(margin, WH - margin);
-    INTERACTIVES.push({ type, x, y, r: 30, cooldown: 0, cdMax: 20, activating: false, activateTimer: 0, pulse: 0 });
+    INTERACTIVES.push({ type, x, y, r: 30, cooldown: 0, cdMax: cdMaxFor(type), activating: false, activateTimer: activateTimeFor(type), pulse: 0 });
   }
 }
 

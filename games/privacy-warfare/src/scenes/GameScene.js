@@ -210,6 +210,7 @@ export class GameScene {
     this.timeLoopProjs  = [];
     this.drones         = [];
     this.CORRUPT_ZONES  = []; // { x, y, r, pulse }
+    this._biomeState     = {}; // per-biome ephemeral gameplay state
     this._timeBubbleActive = false;
     this._ddosTriggered = false;
     this.paused         = false;
@@ -315,6 +316,7 @@ export class GameScene {
   _startWave(wv) {
     this.wave = wv; this.betweenWaves = false;
     this.EYES.length = 0; this.boss = null; this.EPROJS.length = 0;
+    this._biomeState = {}; // reset per-biome state each wave
     this.mapIdx = this.nextMapIdx;
     buildObstacles(wv, this.WW, this.WH);
     buildTraps(wv, this.WW, this.WH);
@@ -874,6 +876,11 @@ export class GameScene {
     if (Math.random() < 0.25) this.AMMO_PKUPS.push({ x: e.x, y: e.y, pulse: 0 });
     if (Math.random() < 0.06 && this.hp < this.maxHp) this.HP_PKUPS.push({ x: e.x, y: e.y, pulse: 0 });
     this._addStyle(15);
+    // Neural Cluster (mapIdx 14): 20% chance to chain-kill nearest enemy within 120px
+    if (this.mapIdx === 14 && Math.random() < 0.20) {
+      const linked = this.EYES.find(n => Math.hypot(n.x - e.x, n.y - e.y) < 120);
+      if (linked) { this._damageE(linked, linked.hp, true); this._spawnFloat(linked.x, linked.y - 20, 'MIND LINK!', '#CC66FF'); }
+    }
     // Kill-cam slow-mo on wave's last kill
     if (this.EYES.length === 0 && !this.betweenWaves && !this.boss) {
       this._timeScale = 0.12; this._timeScaleTimer = 0.45;
@@ -1399,6 +1406,77 @@ export class GameScene {
             setTimeout(() => { t2.armed = false; this._burst(t2.x, t2.y, '#FF8800', 14, 120); }, 350);
           }});
         }
+      } else if (tr.type === 'pendulum_saw') {
+        tr.angle = (tr.angle + tr.spd * dt) % (Math.PI * 2);
+        const tipX = tr.x + Math.cos(tr.angle) * tr.len;
+        const tipY = tr.y + Math.sin(tr.angle) * tr.len;
+        if (this.invincible <= 0 && Math.hypot(this.px - tipX, this.py - tipY) < 18) this._hurtPlayer();
+      } else if (tr.type === 'simon_field') {
+        tr._timer -= dt;
+        if (tr._timer <= 0) { tr._timer = tr._period; tr._activeQ = (tr._activeQ + 1) % 4; }
+        tr._dmgTimer -= dt;
+        const sfQx = tr.x + (tr._activeQ % 2 === 0 ? -40 : 40);
+        const sfQy = tr.y + (tr._activeQ < 2 ? -40 : 40);
+        if (this.invincible <= 0 && Math.hypot(this.px - sfQx, this.py - sfQy) < 38 && tr._dmgTimer <= 0) {
+          tr._dmgTimer = 0.4; this._hurtPlayer();
+        }
+      } else if (tr.type === 'pressure_plate') {
+        if (!tr.triggered) {
+          if (Math.hypot(this.px - tr.x, this.py - tr.y) < 28) { tr.triggered = true; tr._countdown = 1.0; }
+        } else {
+          tr._countdown -= dt;
+          if (tr._countdown <= 0) {
+            tr.triggered = false;
+            for (let q = 0; q < 8; q++) {
+              const qa = (q / 8) * Math.PI * 2;
+              this.EPROJS.push({ x: tr.x, y: tr.y, vx: Math.cos(qa) * 160, vy: Math.sin(qa) * 160, r: 5, col: '#FF8800', life: 2 });
+            }
+            this._burst(tr.x, tr.y, '#FF8800', 10, 100);
+          }
+        }
+      } else if (tr.type === 'corruption_cloud') {
+        tr._driftAngle += dt * 0.4;
+        tr.x += Math.cos(tr._driftAngle) * tr._driftSpd * dt;
+        tr.y += Math.sin(tr._driftAngle) * tr._driftSpd * dt;
+        tr.x = Math.max(80, Math.min(this.WW - 80, tr.x));
+        tr.y = Math.max(80, Math.min(this.WH - 80, tr.y));
+        tr._dmgT -= dt;
+        if (Math.hypot(this.px - tr.x, this.py - tr.y) < tr.r && this.invincible <= 0 && tr._dmgT <= 0) {
+          tr._dmgT = 0.5; this._hurtPlayer();
+        }
+      } else if (tr.type === 'reactive_vent') {
+        tr._cooldown -= dt;
+        if (tr._cooldown <= 0 && Math.hypot(this.px - tr.x, this.py - tr.y) < 60) {
+          tr._cooldown = 4;
+          this._burst(tr.x, tr.y, '#FFAA00', 14, 70);
+          if (this.invincible <= 0) { this.py -= 80; this._shakeDir(tr.x, tr.y, 10); }
+        }
+      } else if (tr.type === 'laser_mirror') {
+        const lmDirs = [
+          { x: Math.cos(tr.angle), y: Math.sin(tr.angle) },
+          { x: Math.cos(tr.angle + Math.PI * 0.75), y: Math.sin(tr.angle + Math.PI * 0.75) },
+        ];
+        if (this.invincible <= 0) {
+          for (const d4 of lmDirs) {
+            const tx4 = this.px - tr.x, ty4 = this.py - tr.y;
+            const proj4 = tx4 * d4.x + ty4 * d4.y;
+            if (proj4 > 0 && proj4 < tr.len) {
+              const cx4 = tr.x + d4.x * proj4, cy4 = tr.y + d4.y * proj4;
+              if (Math.hypot(this.px - cx4, this.py - cy4) < 12) { this._hurtPlayer(); break; }
+            }
+          }
+        }
+      } else if (tr.type === 'lag_zone') {
+        if (Math.hypot(this.px - tr.x, this.py - tr.y) < tr.r) this._lagMult = 0.28;
+      } else if (tr.type === 'tp_tile') {
+        tr._cd -= dt;
+        if (tr._cd <= 0 && Math.hypot(this.px - tr.x, this.py - tr.y) < 24) {
+          tr._cd = 8;
+          this.px = 200 + Math.random() * (this.WW - 400);
+          this.py = 200 + Math.random() * (this.WH - 400);
+          showMsg('TELEPORTED', 'Position Scrambled', 1200);
+          this._burst(tr.x, tr.y, '#FF00FF', 12, 80);
+        }
       }
     }
   }
@@ -1463,6 +1541,33 @@ export class GameScene {
       case 'data_cache':
         this.wpnCDs.fill(0); this.credits += 80; updateHpHud(this.hp, this.maxHp);
         this._spawnFloat(iv.x, iv.y - 40, 'DATA CACHE', '#00FFCC'); SFX.hit();
+        break;
+      case 'data_barrel':
+        this._burst(iv.x, iv.y, '#FF8800', 22, 160);
+        this.EYES.forEach(e => { if (Math.hypot(e.x - iv.x, e.y - iv.y) < 160) this._damageE(e, 4, true); });
+        if (this.boss && Math.hypot(this.boss.x - iv.x, this.boss.y - iv.y) < 160) this._hurtBoss(4 * this.powerMult);
+        this._shakeDir(iv.x, iv.y, 16); this.flashAlpha = 0.22;
+        this._spawnFloat(iv.x, iv.y - 40, 'BARREL BLAST!', '#FF8800'); SFX.hit();
+        break;
+      case 'crystal_spike':
+        // Summon 6 radial spikes that linger as obstacles for 3s
+        for (let q = 0; q < 6; q++) {
+          const sa = (q / 6) * Math.PI * 2;
+          const sx2 = iv.x + Math.cos(sa) * 60, sy2 = iv.y + Math.sin(sa) * 60;
+          this.CORRUPT_ZONES.push({ x: sx2, y: sy2, r: 22, pulse: 0, life: 3 });
+        }
+        this._spawnFloat(iv.x, iv.y - 40, 'CRYSTAL SPIKE!', '#00EEFF'); SFX.hit();
+        break;
+      case 'data_cache_hack':
+        this.credits += 200 + Math.floor(Math.random() * 150);
+        this.powerMult *= 1.25; setTimeout(() => { this.powerMult /= 1.25; }, 6000);
+        this._spawnFloat(iv.x, iv.y - 40, 'HACKED! +CR +PWR', '#FF44FF'); SFX.hit();
+        break;
+      case 'weight_platform':
+        // Crushes nearby enemies with downward force and stuns
+        this.EYES.forEach(e => { if (Math.hypot(e.x - iv.x, e.y - iv.y) < 120) { e.vy = (e.vy || 0) + 300; this._damageE(e, 2, true); } });
+        this._burst(iv.x, iv.y, '#AAAAAA', 18, 120); this._shakeDir(iv.x, iv.y, 12);
+        this._spawnFloat(iv.x, iv.y - 40, 'CRUSHING BLOW!', '#AAAAAA'); SFX.hit();
         break;
     }
   }
@@ -1529,6 +1634,163 @@ export class GameScene {
     }
   }
 
+  _updateBiomeEffects(dt) {
+    const bs = this._biomeState;
+    switch (this.mapIdx) {
+      case 0: { // CYBER GRID — random sector overloads every 30s
+        bs._t0 = (bs._t0 || 30) - dt;
+        if (bs._t0 <= 0) {
+          bs._t0 = 28 + Math.random() * 18;
+          const gx = 100 + Math.random() * (this.WW - 200), gy = 100 + Math.random() * (this.WH - 200);
+          this.CORRUPT_ZONES.push({ x: gx, y: gy, r: 65, pulse: 0, life: 5 });
+          this._burst(gx, gy, '#BF00FF', 10, 60);
+          showMsg('SECTOR OVERLOAD', 'Grid Node Critical', 1500);
+        }
+        break;
+      }
+      case 1: { // DEEP SPACE — enemies drift randomly
+        if (Math.random() < 0.015) {
+          this.EYES.forEach(e => { e.vx += (Math.random() - 0.5) * 25; e.vy += (Math.random() - 0.5) * 25; });
+        }
+        break;
+      }
+      case 2: { // NEON CITY — exploding signs every 8-17s
+        bs._t2 = (bs._t2 || 10) - dt;
+        if (bs._t2 <= 0) {
+          bs._t2 = 7 + Math.random() * 10;
+          const nx = 120 + Math.random() * (this.WW - 240), ny = 120 + Math.random() * (this.WH - 240);
+          this._burst(nx, ny, '#FF0066', 22, 140); this._shakeDir(nx, ny, 8);
+          if (Math.hypot(this.px - nx, this.py - ny) < 100 && this.invincible <= 0) this._hurtPlayer();
+          this.EYES.forEach(e => { if (Math.hypot(e.x - nx, e.y - ny) < 110) this._damageE(e, 2, true); });
+          if (this.boss && Math.hypot(this.boss.x - nx, this.boss.y - ny) < 120) this._hurtBoss(2);
+          showMsg('NEON SURGE', 'Sign Detonation!', 1200);
+        }
+        break;
+      }
+      case 3: { // DATA STORM — movement slow + damage burst release
+        bs._t3 = (bs._t3 || 22) - dt;
+        if (bs._t3 <= 0 && !bs._surge) {
+          bs._t3 = 22 + Math.random() * 12; bs._surge = true; bs._surgeTimer = 3;
+          bs._surgeOrigSpd = this.speed; this.speed = Math.max(60, this.speed * 0.45);
+          showMsg('DATA SURGE', 'Network Overload — 3s', 2000); this.flashAlpha = 0.12;
+        }
+        if (bs._surge) {
+          bs._surgeTimer -= dt;
+          if (bs._surgeTimer <= 0) {
+            bs._surge = false; this.speed = bs._surgeOrigSpd || this._baseSpeed;
+            this.EYES.forEach(e => this._damageE(e, 2, true));
+            if (this.boss) this._hurtBoss(5);
+            this._burst(this.px, this.py, '#00FF64', 20, 200);
+            showMsg('SURGE RELEASE', 'Data Shockwave!', 1500);
+          }
+        }
+        break;
+      }
+      case 4: { // QUANTUM REALM — player quantum jumps every 12-20s
+        bs._t4 = (bs._t4 || 12) - dt;
+        if (bs._t4 <= 0) {
+          bs._t4 = 12 + Math.random() * 8;
+          const jx = (Math.random() - 0.5) * 180, jy = (Math.random() - 0.5) * 180;
+          this._burst(this.px, this.py, '#AA00FF', 12, 60);
+          this.px = Math.max(50, Math.min(this.WW - 50, this.px + jx));
+          this.py = Math.max(50, Math.min(this.WH - 50, this.py + jy));
+          this._burst(this.px, this.py, '#CC88FF', 12, 50);
+          this._spawnFloat(this.px, this.py - 30, 'QUANTUM JUMP', '#AA00FF');
+        }
+        break;
+      }
+      case 5: { // DARK WEB — enemies fade invisible unless attacking
+        this.EYES.forEach(e => {
+          const soonShoot = e.shootTimer !== undefined && e.shootTimer < 0.5;
+          if (soonShoot || e.hitFlash > 0 || e.berserk) { e.al = Math.min(1, (e.al || 1) + 3 * dt); }
+          else { e.al = Math.max(0.06, (e.al || 1) - 1.5 * dt); }
+        });
+        break;
+      }
+      case 6: { // AI NEXUS — auto-overclock speed burst every 15s
+        bs._t6 = (bs._t6 || 15) - dt;
+        if (bs._t6 <= 0 && !bs._anBoost) {
+          bs._t6 = 15 + Math.random() * 8; bs._anBoost = true; bs._anTimer = 3;
+          bs._anOrigSpd = this.speed; this.speed = Math.min(this.speed * 1.9, 650);
+          showMsg('AI OVERCLOCK', 'Autonomous Speed Boost — 3s', 2000); this.flashAlpha = 0.12;
+        }
+        if (bs._anBoost) { bs._anTimer -= dt; if (bs._anTimer <= 0) { bs._anBoost = false; this.speed = bs._anOrigSpd || this._baseSpeed; } }
+        break;
+      }
+      case 7: { // CRYO VAULT — ice momentum: dash leaves a slide
+        if (this.dashTimer > 0.25 && !bs._iceSlide) {
+          bs._iceSlide = true; bs._iceVx = this.dashVX * 0.3; bs._iceVy = this.dashVY * 0.3;
+        }
+        if (bs._iceSlide) {
+          this.px += bs._iceVx * dt; this.py += bs._iceVy * dt;
+          bs._iceVx *= (1 - 1.8 * dt); bs._iceVy *= (1 - 1.8 * dt);
+          if (Math.abs(bs._iceVx) < 5 && Math.abs(bs._iceVy) < 5) bs._iceSlide = false;
+        }
+        break;
+      }
+      case 8: { // INDUSTRIAL WASTE — lava strip rises from bottom periodically
+        bs._t8 = (bs._t8 || 35) - dt;
+        if (bs._t8 <= 0) {
+          bs._t8 = 25 + Math.random() * 18;
+          const stripY = this.WH - 80 - Math.random() * 120;
+          this.CORRUPT_ZONES.push({ x: this.WW / 2, y: stripY, r: this.WW * 0.7, pulse: 0, life: 10 });
+          showMsg('LAVA SURGE', 'Industrial Floor Rising!', 1500); this.flashAlpha = 0.1;
+        }
+        break;
+      }
+      case 9: { // BIO-DIGITAL — organic growth randomly expands obstacles
+        bs._t9 = (bs._t9 || 22) - dt;
+        if (bs._t9 <= 0 && OBSTACLES.length > 0) {
+          bs._t9 = 18 + Math.random() * 12;
+          const o = OBSTACLES[Math.floor(Math.random() * OBSTACLES.length)];
+          o.w = Math.min(o.w + 45, 320); o.h = Math.min(o.h + 30, 220);
+          showMsg('BIO-GROWTH', 'Organic Expansion!', 1200);
+        }
+        break;
+      }
+      case 10: { // VOID MATRIX — reality glitch teleports all enemies
+        bs._t10 = (bs._t10 || 28) - dt;
+        if (bs._t10 <= 0) {
+          bs._t10 = 20 + Math.random() * 18;
+          this.EYES.forEach(e => { this._burst(e.x, e.y, '#CCCCFF', 5, 40); e.x = 100 + Math.random() * (this.WW - 200); e.y = 100 + Math.random() * (this.WH - 200); this._burst(e.x, e.y, '#CCCCFF', 5, 40); });
+          showMsg('REALITY GLITCH', 'Enemy Positions Scrambled', 1500); this.flashAlpha = 0.2; this.chromAberr = 1;
+        }
+        break;
+      }
+      case 11: { // PHISHING NET — auto-spawn decoys confusing enemies
+        bs._t11 = (bs._t11 || 12) - dt;
+        if (bs._t11 <= 0 && !this._decoyActive) {
+          bs._t11 = 10 + Math.random() * 8;
+          this._decoyActive = true;
+          this._decoyX = 100 + Math.random() * (this.WW - 200); this._decoyY = 100 + Math.random() * (this.WH - 200);
+          this._decoyTimer = 6;
+          this._burst(this._decoyX, this._decoyY, '#88FF00', 10, 80);
+          showMsg('PHISHING DECOY', 'Enemies Lured — 6s', 1200);
+        }
+        break;
+      }
+      case 12: { // OVERCLOCK CORE — thermal heat builds from shooting, jams at 100%
+        if (!bs._oh) {
+          bs._heat = (bs._heat || 0);
+          if (this._isFiring) bs._heat = Math.min(100, bs._heat + 22 * dt);
+          else bs._heat = Math.max(0, bs._heat - 10 * dt);
+          if (bs._heat >= 100) {
+            bs._oh = true; bs._ohTimer = 3;
+            this.wpnCDs.fill(3);
+            showMsg('THERMAL OVERLOAD', 'Weapons Jammed — Cooling 3s', 2000);
+            this.flashAlpha = 0.18; this._burst(this.px, this.py, '#FF8800', 12, 80);
+          }
+        } else {
+          bs._ohTimer -= dt;
+          if (bs._ohTimer <= 0) { bs._oh = false; bs._heat = 0; showMsg('COOLED', 'Weapons Online', 900); }
+        }
+        break;
+      }
+      case 13: break; // SHADOW PROTOCOL — handled in _render (darkness overlay)
+      case 14: break; // NEURAL CLUSTER — mind link handled in _killE
+    }
+  }
+
   _renderInteractives(ctx, camX, camY, DPR) {
     if (!INTERACTIVES) return;
     const T = this._T();
@@ -1536,13 +1798,15 @@ export class GameScene {
       data_terminal: '#00FFCC', ammo_depot: '#FFCC00', health_station: '#00FF88',
       jammer_node: '#00FF44', shield_pylon: '#00FFFF', decoy_beacon: '#FFFF00',
       power_node: '#FF8800', firewall_barrier: '#FF4400', overclock_station: '#BF00FF',
-      data_cache: '#FF88FF',
+      data_cache: '#FF88FF', data_barrel: '#FF6600', crystal_spike: '#00EEFF',
+      data_cache_hack: '#FF44FF', weight_platform: '#AAAAAA',
     };
     const TYPE_ICONS = {
       data_terminal: 'TERM', ammo_depot: 'AMMO', health_station: 'HP',
       jammer_node: 'JAM', shield_pylon: 'SHL', decoy_beacon: 'DCY',
       power_node: 'PWR', firewall_barrier: 'FW', overclock_station: 'OC',
-      data_cache: 'CACHE',
+      data_cache: 'CACHE', data_barrel: 'BRL', crystal_spike: 'CRYS',
+      data_cache_hack: 'HACK', weight_platform: 'WGT',
     };
     INTERACTIVES.forEach(iv => {
       const sx = (iv.x - camX) * DPR, sy = (iv.y - camY) * DPR;
@@ -1836,6 +2100,118 @@ export class GameScene {
         ctx.beginPath(); ctx.arc(mcx, mcy, tr.chainR * DPR, 0, Math.PI * 2); ctx.stroke();
         ctx.setLineDash([]);
         ctx.restore();
+      } else if (tr.type === 'pendulum_saw') {
+        const psx = (tr.x - camX) * DPR, psy = (tr.y - camY) * DPR;
+        const ptx = (tr.x + Math.cos(tr.angle) * tr.len - camX) * DPR;
+        const pty = (tr.y + Math.sin(tr.angle) * tr.len - camY) * DPR;
+        ctx.save();
+        ctx.strokeStyle = '#FF4400'; ctx.lineWidth = 3 * DPR; ctx.shadowBlur = 14; ctx.shadowColor = '#FF4400';
+        ctx.beginPath(); ctx.moveTo(psx, psy); ctx.lineTo(ptx, pty); ctx.stroke();
+        ctx.fillStyle = '#FF6600'; ctx.shadowBlur = 20;
+        ctx.beginPath(); ctx.arc(ptx, pty, 7 * DPR, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#FFAA00';
+        ctx.beginPath(); ctx.arc(psx, psy, 4 * DPR, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'simon_field') {
+        const sfx = (tr.x - camX) * DPR, sfy = (tr.y - camY) * DPR;
+        const qdx = 40 * DPR, qdy = 40 * DPR;
+        ctx.save();
+        for (let q = 0; q < 4; q++) {
+          const qx2 = sfx + (q % 2 === 0 ? -qdx : qdx);
+          const qy2 = sfy + (q < 2 ? -qdy : qdy);
+          const isActive = q === tr._activeQ;
+          ctx.fillStyle = isActive ? 'rgba(255,200,0,0.55)' : 'rgba(255,200,0,0.08)';
+          ctx.strokeStyle = isActive ? '#FFCC00' : 'rgba(255,200,0,0.3)';
+          ctx.lineWidth = isActive ? 2.5 * DPR : 1 * DPR;
+          ctx.shadowBlur = isActive ? 24 : 4; ctx.shadowColor = '#FFCC00';
+          ctx.beginPath(); ctx.rect(qx2 - 18 * DPR, qy2 - 18 * DPR, 36 * DPR, 36 * DPR);
+          ctx.fill(); ctx.stroke();
+        }
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'pressure_plate') {
+        const ppx = (tr.x - camX) * DPR, ppy = (tr.y - camY) * DPR;
+        ctx.save();
+        const ppCol = tr.triggered ? '#FF8800' : 'rgba(255,136,0,0.5)';
+        ctx.strokeStyle = ppCol; ctx.lineWidth = 2.5 * DPR;
+        ctx.shadowBlur = tr.triggered ? 22 : 8; ctx.shadowColor = '#FF8800';
+        ctx.beginPath(); ctx.rect(ppx - 18 * DPR, ppy - 8 * DPR, 36 * DPR, 16 * DPR); ctx.stroke();
+        if (tr.triggered) {
+          ctx.fillStyle = 'rgba(255,136,0,0.3)';
+          ctx.beginPath(); ctx.rect(ppx - 18 * DPR, ppy - 8 * DPR, 36 * DPR, 16 * DPR); ctx.fill();
+          ctx.fillStyle = '#FFFFFF'; ctx.font = (5 * DPR) + 'px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(Math.ceil(tr._countdown) + 's', ppx, ppy);
+        }
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'corruption_cloud') {
+        const ccx = (tr.x - camX) * DPR, ccy = (tr.y - camY) * DPR;
+        const ccPulse = 1 + 0.08 * Math.sin(T * 2.5 + tr._phase);
+        ctx.save();
+        const ccG = ctx.createRadialGradient(ccx, ccy, 0, ccx, ccy, tr.r * DPR * ccPulse);
+        ccG.addColorStop(0, 'rgba(136,0,204,0.40)'); ccG.addColorStop(0.5, 'rgba(80,0,120,0.20)'); ccG.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = ccG;
+        ctx.beginPath(); ctx.arc(ccx, ccy, tr.r * DPR * ccPulse, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = 'rgba(180,0,255,0.5)'; ctx.lineWidth = 1.5; ctx.shadowBlur = 18; ctx.shadowColor = '#8800CC';
+        ctx.beginPath(); ctx.arc(ccx, ccy, tr.r * DPR * ccPulse, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = '#CC66FF'; ctx.font = (5 * DPR) + 'px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('CORRUPT', ccx, ccy);
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'reactive_vent') {
+        const rvx = (tr.x - camX) * DPR, rvy = (tr.y - camY) * DPR;
+        ctx.save();
+        ctx.strokeStyle = '#FFAA00'; ctx.lineWidth = 2 * DPR; ctx.shadowBlur = 12; ctx.shadowColor = '#FFAA00';
+        ctx.beginPath(); ctx.rect(rvx - 12 * DPR, rvy - 5 * DPR, 24 * DPR, 10 * DPR); ctx.stroke();
+        // Steam jets when near cooldown end
+        if (tr._cooldown < 0.8) {
+          const jets = 4;
+          for (let j = 0; j < jets; j++) {
+            const jx = rvx - 9 * DPR + j * 6 * DPR;
+            const jLen = (0.8 - tr._cooldown) * 30 * DPR;
+            ctx.strokeStyle = 'rgba(255,170,0,0.5)'; ctx.lineWidth = DPR;
+            ctx.beginPath(); ctx.moveTo(jx, rvy - 5 * DPR); ctx.lineTo(jx + (Math.random() - 0.5) * 4 * DPR, rvy - 5 * DPR - jLen); ctx.stroke();
+          }
+        }
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'laser_mirror') {
+        const lmx2 = (tr.x - camX) * DPR, lmy2 = (tr.y - camY) * DPR;
+        ctx.save();
+        const lmDirs2 = [
+          { x: Math.cos(tr.angle), y: Math.sin(tr.angle) },
+          { x: Math.cos(tr.angle + Math.PI * 0.75), y: Math.sin(tr.angle + Math.PI * 0.75) },
+        ];
+        for (const d5 of lmDirs2) {
+          ctx.strokeStyle = 'rgba(255,50,200,0.75)'; ctx.lineWidth = 1.5 * DPR; ctx.shadowBlur = 12; ctx.shadowColor = '#FF22CC';
+          ctx.beginPath(); ctx.moveTo(lmx2, lmy2); ctx.lineTo(lmx2 + d5.x * tr.len * DPR, lmy2 + d5.y * tr.len * DPR); ctx.stroke();
+        }
+        ctx.fillStyle = '#FF44FF'; ctx.shadowBlur = 18;
+        ctx.beginPath(); ctx.arc(lmx2, lmy2, 5 * DPR, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'lag_zone') {
+        const lzx = (tr.x - camX) * DPR, lzy = (tr.y - camY) * DPR;
+        const lzR = tr.r * DPR;
+        ctx.save();
+        const lzPulse = 1 + 0.05 * Math.sin(T * 1.8);
+        const lzG = ctx.createRadialGradient(lzx, lzy, 0, lzx, lzy, lzR * lzPulse);
+        lzG.addColorStop(0, 'rgba(0,100,255,0.12)'); lzG.addColorStop(1, 'rgba(0,80,200,0)');
+        ctx.fillStyle = lzG; ctx.beginPath(); ctx.arc(lzx, lzy, lzR * lzPulse, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = 'rgba(0,150,255,0.45)'; ctx.lineWidth = 1.5; ctx.setLineDash([6 * DPR, 4 * DPR]);
+        ctx.shadowBlur = 10; ctx.shadowColor = '#0088FF';
+        ctx.beginPath(); ctx.arc(lzx, lzy, lzR * lzPulse, 0, Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = 'rgba(0,200,255,0.7)'; ctx.font = (5 * DPR) + 'px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('LAG ZONE', lzx, lzy);
+        ctx.shadowBlur = 0; ctx.restore();
+      } else if (tr.type === 'tp_tile') {
+        const tpx = (tr.x - camX) * DPR, tpy = (tr.y - camY) * DPR;
+        const tpPulse = 0.6 + 0.4 * Math.sin(T * 3 + tr._cd);
+        ctx.save();
+        ctx.globalAlpha = tr._cd > 0 ? 0.25 : tpPulse;
+        ctx.strokeStyle = '#FF00FF'; ctx.lineWidth = 2 * DPR; ctx.shadowBlur = tr._cd > 0 ? 4 : 20; ctx.shadowColor = '#FF00FF';
+        ctx.beginPath(); ctx.rect(tpx - 14 * DPR, tpy - 14 * DPR, 28 * DPR, 28 * DPR); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,0,255,0.15)'; ctx.fill();
+        ctx.fillStyle = '#FF88FF'; ctx.font = (5 * DPR) + 'px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.globalAlpha = tr._cd > 0 ? 0.25 : 1;
+        ctx.fillText('TP', tpx, tpy);
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1; ctx.restore();
       }
     }
   }
@@ -1952,7 +2328,8 @@ export class GameScene {
 
       const pdx = this.wMX - this.px, pdy = this.wMY - this.py, pd = Math.hypot(pdx, pdy);
       if (pd > 8) {
-        const sp = this.dashTimer > 0 ? 720 : this.speed * sprintMult;
+        const sp = this.dashTimer > 0 ? 720 : this.speed * sprintMult * (this._lagMult || 1);
+        this._lagMult = 1;
         this.px += pdx / pd * Math.min(pd, sp * dt);
         this.py += pdy / pd * Math.min(pd, sp * dt);
       }
@@ -2257,6 +2634,7 @@ export class GameScene {
     this._updateTraps(dt);
     this._updateInteractives(dt);
     this._updateGeometry(dt);
+    this._updateBiomeEffects(dt);
     this._updateEnemyCount();
 
     // Wave end condition
@@ -2611,6 +2989,13 @@ export class GameScene {
     }
     if (this.empToggle && this.weather === 'EMP') { ctx.fillStyle = 'rgba(255,200,0,0.04)'; ctx.fillRect(0, 0, W, H); }
 
+    // Shadow Protocol (mapIdx 13): darkness vignette — only player's immediate vicinity is lit
+    if (this.mapIdx === 13) {
+      const spG = ctx.createRadialGradient(this.mx * DPR, this.my * DPR, 60 * DPR, this.mx * DPR, this.my * DPR, Math.min(W, H) * 0.62);
+      spG.addColorStop(0, 'rgba(0,0,0,0)'); spG.addColorStop(1, 'rgba(0,0,0,0.93)');
+      ctx.fillStyle = spG; ctx.fillRect(0, 0, W, H);
+    }
+
     // Vignette
     const vig = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.25, W / 2, H / 2, Math.min(W, H) * 0.85);
     vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(0,0,0,0.45)');
@@ -2702,6 +3087,31 @@ export class GameScene {
     if (bR > 0) { const g = ctx.createLinearGradient(W,0,W*0.82,0); g.addColorStop(0,`rgba(255,60,0,${0.55*bR})`); g.addColorStop(1,'rgba(255,60,0,0)'); ctx.fillStyle=g; ctx.fillRect(W*0.82,0,W*0.18,H); }
     if (bT > 0) { const g = ctx.createLinearGradient(0,0,0,H*0.18); g.addColorStop(0,`rgba(255,60,0,${0.55*bT})`); g.addColorStop(1,'rgba(255,60,0,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H*0.18); }
     if (bB > 0) { const g = ctx.createLinearGradient(0,H,0,H*0.82); g.addColorStop(0,`rgba(255,60,0,${0.55*bB})`); g.addColorStop(1,'rgba(255,60,0,0)'); ctx.fillStyle=g; ctx.fillRect(0,H*0.82,W,H*0.18); }
+
+    // Overclock Core (mapIdx 12): heat bar HUD
+    if (this.mapIdx === 12 && this._biomeState) {
+      const heat = this._biomeState._heat || 0;
+      const bx3 = W / 2 - 80 * DPR, by3 = 12 * DPR, bw3 = 160 * DPR, bh3 = 10 * DPR;
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(bx3 - 2, by3 - 2, bw3 + 4, bh3 + 4);
+      const heatCol = heat > 80 ? '#FF2200' : heat > 50 ? '#FF8800' : '#FFCC00';
+      ctx.fillStyle = heatCol; ctx.shadowBlur = heat > 80 ? 16 : 6; ctx.shadowColor = heatCol;
+      ctx.fillRect(bx3, by3, bw3 * (heat / 100), bh3);
+      ctx.strokeStyle = heatCol; ctx.lineWidth = 1; ctx.shadowBlur = 0;
+      ctx.strokeRect(bx3, by3, bw3, bh3);
+      ctx.fillStyle = '#FFFFFF'; ctx.font = (5.5 * DPR) + 'px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(this._biomeState._oh ? 'OVERHEATED — COOLING' : 'THERMAL: ' + Math.round(heat) + '%', W / 2, by3 + bh3 / 2);
+      ctx.restore();
+    }
+
+    // Lag zone slow indicator
+    if (this._lagMult && this._lagMult < 0.5) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,100,255,0.18)'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = 'rgba(0,200,255,0.7)'; ctx.font = (8 * DPR) + 'px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.fillText('LAG ZONE', W / 2, 30 * DPR);
+      ctx.restore();
+    }
 
     // Watermark
     ctx.globalAlpha = 0.18; ctx.fillStyle = '#BF00FF';

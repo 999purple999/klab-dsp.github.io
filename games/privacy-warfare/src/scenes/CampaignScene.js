@@ -1,22 +1,90 @@
 // ─── CampaignScene ────────────────────────────────────────────────────────────
-// HTML-based campaign map — premium zone grid + detail panel.
-// Renders via DOM (no canvas drawing) for clean, readable UI.
+// Premium campaign map — 20-zone threat grid with intelligence briefings.
 
 import { CampaignSave } from '../data/CampaignSave.js';
 import { openLoadout }  from '../ui/LoadoutModal.js';
 
 const ZONE_NAMES = [
-  'FIREWALL', 'PHISH NET', 'DARKWEB', 'BOTNET', 'RANSOMWARE',
-  'SPYWARE', 'TROJANS', 'ROOTKIT', 'CRYPTOVAULT', 'ZERO-DAY',
-  'DDOS CORE', 'MITM NODE', 'EXFILTRAT', 'DEEPFAKE', 'AI THREAT',
-  'SHADOWNET', 'QUANTUM ERR', 'VOID SHARD', 'SYS ADMIN', 'NEXUS',
+  'FIREWALL BREACH', 'PHISHING DELTA', 'DARK WEB NODE', 'BOTNET ALPHA', 'RANSOMWARE HUB',
+  'SPYWARE NEXUS',   'TROJAN GATE',   'ROOTKIT CORE',  'CRYPTO VAULT', 'ZERO-DAY LAB',
+  'DDoS COMMAND',    'MITM JUNCTION', 'EXFIL RELAY',   'DEEPFAKE FORGE','AI DOMINION',
+  'SHADOWNET DEEP',  'QUANTUM ERROR', 'VOID SHARD',    'SYSADMIN LAIR', 'NEXUS OMEGA',
+];
+
+const ZONE_LORE = [
+  'Corporate firewall compromised. Enemy units pouring through a 0-day exploit in the outer perimeter. Establish a counterbeachhead before core systems fall.',
+  'Phishing campaigns flooding the subnet. Thousands of deceptive packets disguised as legitimate traffic — distinguishing real threats from noise is impossible.',
+  'Deep web marketplace for stolen data. The architecture here routes traffic through 14 layers of obfuscation. Threat actors vanish and reappear unpredictably.',
+  'Botnet command node controlling 200k compromised machines. Taking it down requires surviving waves of zombie processes desperate to protect their master.',
+  'Ransomware syndicate headquarters. Encrypted floors, encrypted enemies, encrypted everything. Your weapons are your only decryption key.',
+  'Spyware embedded at the silicon level. Invisible threats extract your tactical data in real time. Every movement you make is already anticipated.',
+  'Trojan insertion point. The enemy disguises units as friendly assets. Trust nothing that hasn\'t tried to kill you yet.',
+  'Rootkit nest buried beneath the OS kernel. Reality itself is unstable — the environment is actively rewriting itself to disadvantage you.',
+  'Cryptocurrency mining operation funding the entire network. Hardened infrastructure, heavily defended. Thermal systems are maxed out.',
+  'Zero-day research facility. Cutting-edge exploits are assembled here before deployment. The scientists are also the weapons.',
+  'DDoS command center coordinating attacks against 40 nations. Surge waves of enemy units will swarm in coordinated, overwhelming bursts.',
+  'Man-in-the-middle junction intercepting and corrupting all communications. Nothing you fire is guaranteed to hit what you aimed at.',
+  'Data exfiltration relay station. Enemy forces are actively stealing intel and fleeing with it. Speed is critical — let nothing escape.',
+  'Deepfake forge producing synthetic identities. Enemies replicate your appearance and tactics. The copy is always one step ahead.',
+  'Autonomous AI threat hub achieving self-optimization. The longer the fight goes, the harder it gets. The AI learns. You must learn faster.',
+  'Shadow network substrate — the hidden layer beneath everything. Enemies here do not obey normal physics. Darkness is operational.',
+  'Quantum computing error cascade. Probabilistic reality means enemies exist in superposition until observed. Laws of physics are suggestions.',
+  'Void shard — a region of deleted space. Corrupted data fills the arena. Navigation is treacherous; the map itself is hostile.',
+  'The sysadmin — a rogue human operator with godlike system privileges. Manual control of all defenses. This one fights with intelligence.',
+  'NEXUS OMEGA: the core of everything. All threat actors converge here. Infinite waves. No mercy. The final protocol.',
+];
+
+const ZONE_MODIFIERS = [
+  ['Enemies +20% speed', 'Perimeter breach chaos'],
+  ['Projectile spam waves', 'Decoy signals active'],
+  ['Enemy teleport every 4s', 'Fog of war enabled'],
+  ['Enemy count ×1.5', 'Botnet surge events'],
+  ['Arena sections lock', 'Encryption fields'],
+  ['Cloaked enemy majority', 'Intel blackout zones'],
+  ['Trojan units disguised', 'Trust verification fail'],
+  ['Environment rewrites', 'Rootkit stability drain'],
+  ['Thermal heat system', 'Overclocked enemies'],
+  ['New exploit every wave', 'Zero-day escalation'],
+  ['DDoS surge waves ×2', 'Swarm coordination active'],
+  ['Projectile deflection zones', 'MITM interception'],
+  ['Timed exfil objectives', 'Escape events'],
+  ['Mirage enemy majority', 'Deepfake identification'],
+  ['AI learns player patterns', 'Self-optimizing units'],
+  ['Darkness protocol active', 'Shadow movement'],
+  ['Quantum positions unstable', 'Superposition enemies'],
+  ['Void corruption spreading', 'Deleted zones'],
+  ['Manual enemy control', 'Admin override powers'],
+  ['All threats simultaneously', 'Nexus convergence'],
 ];
 
 const BOSS_NAMES = [
-  'IGNIS PRIME',  'PHISH QUEEN', 'DARKMASTER',   'BOT OVERLORD',  'RANSOM KING',
-  'EYE SPIDER',   'TROJAN HORSE','ROOT DAEMON',  'CRYPTO WRAITH', '0DAY GHOST',
-  'DDoS HYDRA',   'MITM SHADE',  'DATA KRAKEN',  'DEEP FAKER',    'AI DOMINION',
-  'SHADOW LORD',  'QUANTUM RIFT','VOID HERALD',  'SYSADM1N',      'NEXUS OMEGA',
+  'IGNIS PRIME',    'PHISH QUEEN',   'DARKMASTER',    'BOT OVERLORD',   'RANSOM KING',
+  'EYE SPIDER',     'TROJAN HORSE',  'ROOT DAEMON',   'CRYPTO WRAITH',  '0DAY GHOST',
+  'DDoS HYDRA',     'MITM SHADE',    'DATA KRAKEN',   'DEEP FAKER',      'AI DOMINION-X',
+  'SHADOW LORD',    'QUANTUM RIFT',  'VOID HERALD',   'SYSADM1N',       'NEXUS OMEGA',
+];
+
+const BOSS_LORE = [
+  'A firewall sentinel corrupted by the breach. Immune to conventional approaches — only sustained assault reveals its true attack surface.',
+  'The architect of the phishing campaign. Spawns endless decoys; only one is the real target. Destroy the right one.',
+  'Dark web kingpin who has compiled every exploit ever written. Phases through damage until forced into the light.',
+  'The botnet\'s central coordinator. Continuously summons zombie units. Kill the master and the swarm loses coherence.',
+  'The ransom king encrypts both attacks and defenses in real time. Break the cipher, break the boss.',
+  'A living spyware organism. Reads your inputs 0.5s before you make them. Randomize your approach.',
+  'The Trojan Horse appears as an ally until critical range. The reveal is always explosive.',
+  'Root Daemon controls the kernel. Every environment object becomes a weapon at its command.',
+  'Crypto Wraith exists simultaneously across multiple wallet addresses. Only one instance is real.',
+  '0-Day Ghost is pure exploit — a moving collection of weaponized vulnerabilities with no fixed form.',
+  'DDoS Hydra cannot be killed normally. Each head must be defeated simultaneously or they regenerate.',
+  'MITM Shade intercepts every projectile you fire and returns it at double velocity.',
+  'Data Kraken tentacles drag intel packets to safety. Stop the exfiltration or the zone is lost.',
+  'Deep Faker has copied your loadout perfectly. Fight your own shadow.',
+  'AI Dominion-X self-optimizes after each hit. The 1st hit is easy. Each subsequent hit is harder.',
+  'Shadow Lord exists only in darkness. The spotlight is your weapon.',
+  'Quantum Rift exists as all possible bosses until you observe it. Choose your counter wisely.',
+  'Void Herald corrupts reality around it. Standing still is lethal.',
+  'SYSADM1N is a human operator with manual override of all systems. Unpredictable, adaptive, lethal.',
+  'NEXUS OMEGA is everything. It is the sum of all previous bosses and all previous failures.',
 ];
 
 const CATS = [
@@ -38,7 +106,7 @@ export class CampaignScene {
     this._sel      = 0;
     this._modal    = null;
     this._onKey    = e => this._handleKey(e);
-    this._activeFilter = -1; // -1 = all
+    this._activeFilter = -1;
   }
 
   enter() {
@@ -59,7 +127,6 @@ export class CampaignScene {
   }
 
   update(dt) {
-    // Clear canvas while HTML modal is shown
     const ctx = this.ctx;
     if (ctx) {
       ctx.fillStyle = '#020108';
@@ -67,16 +134,11 @@ export class CampaignScene {
     }
   }
 
-  // ─── Build zone grid ────────────────────────────────────────────────────────
-
   _buildGrid() {
     const grid = document.getElementById('cp-zone-grid');
     if (!grid) return;
     grid.innerHTML = '';
-    for (let i = 0; i < 20; i++) {
-      const card = this._makeCard(i);
-      grid.appendChild(card);
-    }
+    for (let i = 0; i < 20; i++) grid.appendChild(this._makeCard(i));
   }
 
   _makeCard(i) {
@@ -84,6 +146,7 @@ export class CampaignScene {
     const unl     = this.save.isZoneUnlocked(i);
     const prog    = this._progress(i);
     const cleared = prog >= 10;
+    const threat  = Math.floor((i + 1) / 20 * 100);
 
     const div = document.createElement('div');
     div.className = `cp-zone-card${!unl ? ' cp-locked' : ''}${cleared ? ' cp-cleared' : ''}`;
@@ -91,15 +154,18 @@ export class CampaignScene {
     div.dataset.cat  = Math.floor(i / 4);
     div.style.setProperty('--zc', cleared ? '#00CC44' : cat.color);
 
-    const statusTxt = !unl ? 'LOCKED'
+    const statusTxt = !unl ? '⬡ LOCKED'
       : cleared            ? '✓ CLEARED'
-      : prog > 0           ? `${prog}/10 LEVELS`
+      : prog > 0           ? `${prog}/10`
                            : 'AVAILABLE';
+
+    const threatBar = `<div style="height:2px;background:linear-gradient(90deg,${cat.color},transparent);width:${threat}%;opacity:0.6;margin-top:3px"></div>`;
+
     div.innerHTML = `
-      <div class="cp-znum">ZONE ${String(i+1).padStart(2,'0')}</div>
-      <div class="cp-zname">${ZONE_NAMES[i]}</div>
-      <div class="cp-zprog-wrap"><div class="cp-zprog" style="width:${prog*10}%"></div></div>
-      <div class="cp-zstatus">${statusTxt}</div>
+      <div class="cp-znum" style="color:${cat.color};font-size:9px;opacity:0.7">ZONE ${String(i+1).padStart(2,'0')} · ${cat.name}</div>
+      <div class="cp-zname" style="font-size:11px;margin:2px 0">${ZONE_NAMES[i]}</div>
+      ${threatBar}
+      <div class="cp-zstatus" style="font-size:9px;margin-top:4px;opacity:0.8">${statusTxt}</div>
     `;
     div.addEventListener('click', () => this._selectZone(i));
     return div;
@@ -110,8 +176,6 @@ export class CampaignScene {
     for (let l = 0; l < 10; l++) if (this.save.isLevelComplete(z, l)) n++;
     return n;
   }
-
-  // ─── Select zone ────────────────────────────────────────────────────────────
 
   _selectZone(i, noScroll) {
     this._sel = i;
@@ -124,8 +188,6 @@ export class CampaignScene {
     this._renderDetail(i);
   }
 
-  // ─── Detail panel ───────────────────────────────────────────────────────────
-
   _renderDetail(z) {
     const panel = document.getElementById('cp-detail');
     if (!panel) return;
@@ -134,42 +196,55 @@ export class CampaignScene {
     const prog    = this._progress(z);
     const cleared = prog >= 10;
     const threat  = (z + 1) / 20;
+    const tier    = z < 4 ? 'ALPHA' : z < 8 ? 'BETA' : z < 12 ? 'GAMMA' : z < 16 ? 'DELTA' : 'OMEGA';
+    const mods    = ZONE_MODIFIERS[z] || [];
 
     const badgeCls = !unl ? 'locked' : cleared ? 'cleared' : 'unlocked';
-    const badgeTxt = !unl ? '⬡ LOCKED ZONE' : cleared ? '● ZONE CLEARED' : '● ACTIVE ZONE';
+    const badgeTxt = !unl ? '⬡ CLASSIFIED' : cleared ? '● ZONE CLEARED' : '● ACTIVE THREAT';
 
     const lvlCells = Array.from({ length: 10 }, (_, l) => {
       const done  = this.save.isLevelComplete(z, l);
       const avail = unl;
+      const isBoss = l === 9;
       const cls   = done ? 'done' : avail ? 'avail' : 'locked';
-      return `<div class="cp-d-lvl ${cls}">L${l+1}</div>`;
+      return `<div class="cp-d-lvl ${cls}" title="${isBoss ? 'BOSS: ' + BOSS_NAMES[z] : 'Level ' + (l+1)}">${isBoss ? '👁' : 'L' + (l+1)}</div>`;
     }).join('');
 
+    const modHTML = mods.map(m => `<div style="font-size:9px;color:${cat.color};opacity:0.8;margin:2px 0">▸ ${m}</div>`).join('');
+
     const actionHTML = unl
-      ? `<button class="cp-deploy-btn" id="cp-deploy-now" style="border-color:${cat.color};color:${cat.color};background:rgba(${_rgb(cat.color)},0.1)">DEPLOY TO ZONE ${z+1}</button>`
-      : `<div class="cp-locked-msg">Complete zone ${z} to unlock this sector</div>`;
+      ? `<button class="cp-deploy-btn" id="cp-deploy-now" style="border-color:${cat.color};color:${cat.color};background:rgba(${_rgb(cat.color)},0.1)">▶ DEPLOY TO ZONE ${z+1}</button>`
+      : `<div class="cp-locked-msg">Complete zone ${z} to unlock</div>`;
 
     panel.innerHTML = `
-      <div class="cp-d-cat" style="color:${cat.color}">${cat.name} · ZONE ${z+1}</div>
-      <div class="cp-d-zone-name">${ZONE_NAMES[z]}</div>
+      <div style="font-size:9px;color:${cat.color};opacity:0.6;letter-spacing:2px">${cat.name} · SECTOR ${tier} · ZONE ${z+1}</div>
+      <div class="cp-d-zone-name" style="font-size:18px;margin:4px 0 2px">${ZONE_NAMES[z]}</div>
       <div class="cp-d-status-badge ${badgeCls}">${badgeTxt}</div>
 
       <div class="cp-d-divider"></div>
-      <div class="cp-d-label">THREAT LEVEL</div>
-      <div class="cp-d-threat-wrap">
+      <div class="cp-d-label">INTELLIGENCE REPORT</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.55);line-height:1.5;margin:4px 0 8px">${ZONE_LORE[z]}</div>
+
+      <div class="cp-d-divider"></div>
+      <div class="cp-d-label">THREAT LEVEL — ${Math.round(threat*100)}%</div>
+      <div class="cp-d-threat-wrap" style="margin:4px 0">
         <div class="cp-d-threat-fill" style="width:${(threat*100).toFixed(0)}%;background:linear-gradient(90deg,${cat.color}66,${cat.color})"></div>
       </div>
       <div class="cp-d-threat-txt">TIER ${z+1} / 20 — ${z < 5 ? 'LOW' : z < 10 ? 'MEDIUM' : z < 15 ? 'HIGH' : 'CRITICAL'}</div>
 
       <div class="cp-d-divider"></div>
-      <div class="cp-d-label">MISSION PROGRESS</div>
-      <div class="cp-d-lvl-grid">${lvlCells}</div>
-      <div class="cp-d-prog-txt">${prog} / 10 LEVELS CLEARED</div>
+      <div class="cp-d-label">ACTIVE MODIFIERS</div>
+      ${modHTML || '<div style="font-size:9px;opacity:0.4">Standard threat profile</div>'}
 
       <div class="cp-d-divider"></div>
-      <div class="cp-boss-card">
-        <div class="cp-boss-lbl">BOSS ENCOUNTER · LEVEL 10</div>
+      <div class="cp-d-label">MISSION PROGRESS — ${prog}/10</div>
+      <div class="cp-d-lvl-grid">${lvlCells}</div>
+
+      <div class="cp-d-divider"></div>
+      <div class="cp-boss-card" style="border-color:${cat.color}44">
+        <div class="cp-boss-lbl" style="color:${cat.color}">BOSS ENCOUNTER · LEVEL 10</div>
         <div class="cp-boss-name">${BOSS_NAMES[z]}</div>
+        <div style="font-size:9px;color:rgba(255,255,255,0.45);margin-top:4px;line-height:1.4">${BOSS_LORE[z]}</div>
       </div>
 
       ${actionHTML}
@@ -177,8 +252,6 @@ export class CampaignScene {
 
     document.getElementById('cp-deploy-now')?.addEventListener('click', () => this._launch());
   }
-
-  // ─── Category filter tabs ───────────────────────────────────────────────────
 
   _wireTabs() {
     const tabs = document.getElementById('cp-cat-tabs');
@@ -201,8 +274,6 @@ export class CampaignScene {
     });
   }
 
-  // ─── Navigation ─────────────────────────────────────────────────────────────
-
   _handleKey(e) {
     const visible = [...document.querySelectorAll('.cp-zone-card')]
       .filter(c => c.style.display !== 'none')
@@ -220,19 +291,15 @@ export class CampaignScene {
 
   _goBack() {
     this.exit();
-    // Re-push the menu scene
     const g = this.gameScene?.game;
     if (g) g.scenes.replace(g.menuScene);
   }
-
-  // ─── Launch ─────────────────────────────────────────────────────────────────
 
   _launch() {
     const z = this._sel;
     if (!this.save.isZoneUnlocked(z)) return;
     const waveNum = z * 10 + 1;
 
-    // Hook boss-kill to record campaign progress
     const origKillBoss = this.gameScene._killBoss?.bind(this.gameScene);
     if (origKillBoss) {
       this.gameScene._killBoss = () => {
