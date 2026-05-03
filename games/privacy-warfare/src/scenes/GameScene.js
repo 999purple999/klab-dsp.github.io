@@ -8,7 +8,7 @@ import { MAPS, STARS, BLDGS, WEB_LINES, AMBIENT, OBSTACLES, TRAPS,
          buildMapAssets, buildObstacles, buildTraps, resolveObstaclePos,
          INTERACTIVES, buildInteractives,
          PORTALS, CONVEYOR_ZONES, MOVING_OBSTACLES, buildGeometry } from '../mapgen/MapData.js';
-import { renderBiomeExtras } from '../mapgen/BiomeRenderer.js';
+import { renderBiomeExtras, renderBiomeObstacle } from '../mapgen/BiomeRenderer.js';
 import { WPNS, BASE_CD, BASE_DMG, BASE_RNG, BASE_AMMO } from '../entities/Weapon/WeaponDefinitions.js';
 import { GADGETS } from '../ui/LoadoutModal.js';
 import { setCameraState, wx, wy, onScreen, d2,
@@ -318,6 +318,8 @@ export class GameScene {
     this.EYES.length = 0; this.boss = null; this.EPROJS.length = 0;
     this._biomeState = {}; // reset per-biome state each wave
     this.mapIdx = this.nextMapIdx;
+    // Recolor ambient particles to match the new biome
+    AMBIENT.forEach(a => { a.col = MAPS[this.mapIdx].sc; });
     buildObstacles(wv, this.WW, this.WH);
     buildTraps(wv, this.WW, this.WH);
     buildInteractives(wv, this.WW, this.WH);
@@ -2683,15 +2685,10 @@ export class GameScene {
     });
     ctx.shadowBlur = 0;
 
-    // Obstacles
+    // Obstacles — biome-themed rendering
     OBSTACLES.forEach(o => {
       if (!onScreen(o.x + o.w / 2, o.y + o.h / 2, Math.max(o.w, o.h))) return;
-      ctx.fillStyle = 'rgba(255,255,255,0.03)'; ctx.fillRect(wx(o.x), wy(o.y), o.w * DPR, o.h * DPR);
-      ctx.strokeStyle = M.ac; ctx.lineWidth = 1; ctx.strokeRect(wx(o.x), wy(o.y), o.w * DPR, o.h * DPR);
-      ctx.fillStyle = M.sc;
-      [[o.x, o.y], [o.x + o.w, o.y], [o.x, o.y + o.h], [o.x + o.w, o.y + o.h]].forEach(([cx2, cy2]) => {
-        ctx.beginPath(); ctx.arc(wx(cx2), wy(cy2), 2.5 * DPR, 0, Math.PI * 2); ctx.fill();
-      });
+      renderBiomeObstacle(ctx, o, wx, wy, DPR, this.mapIdx, M, t2);
     });
 
     // Traps
