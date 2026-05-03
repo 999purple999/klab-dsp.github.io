@@ -98,10 +98,11 @@ const CATS = [
 function catOf(z) { return CATS[Math.floor(z / 4)]; }
 
 export class CampaignScene {
-  constructor(cv, ctx, gameScene) {
+  constructor(cv, ctx, gameScene, game) {
     this.cv        = cv;
     this.ctx       = ctx;
     this.gameScene = gameScene;
+    this.game      = game;
     this.save      = new CampaignSave();
     this._sel      = 0;
     this._modal    = null;
@@ -291,8 +292,12 @@ export class CampaignScene {
 
   _goBack() {
     this.exit();
-    const g = this.gameScene?.game;
-    if (g) g.scenes.replace(g.menuScene);
+    const g = this.game;
+    if (g) {
+      document.getElementById('overlay')?.classList.remove('hidden');
+      document.getElementById('crosshair').style.display = 'none';
+      g.scenes.replace(g.menuScene);
+    }
   }
 
   _launch() {
@@ -313,6 +318,7 @@ export class CampaignScene {
 
     this.exit();
     openLoadout((wpnSlots, gadSlots) => {
+      document.getElementById('crosshair').style.display = 'block';
       this.gameScene.setLoadout(wpnSlots, gadSlots);
       this.gameScene.startCampaignLevel(waveNum);
     });

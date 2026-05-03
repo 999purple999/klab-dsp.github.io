@@ -19,7 +19,7 @@ import { setCameraState, wx, wy, onScreen, d2,
 import * as Camera from '../rendering/Camera.js';
 import { updateHpHud, setWpn, updateScore, updateCredits, showMsg, showStreak,
          updateWave, updateEnemyCount, updateWeather, updateAbilityUI,
-         updateWeaponCD, updateCombo, updateStyleMeter } from '../ui/HUD.js';
+         updateWeaponCD, updateCombo, updateStyleMeter, addKillFeed } from '../ui/HUD.js';
 import { renderMM } from '../ui/MiniMap.js';
 import { getHiScore, setHiScore, getCredits, setCredits } from '../data/Storage.js';
 import { MasterySystem } from '../data/MasterySystem.js';
@@ -884,6 +884,11 @@ export class GameScene {
     this.score += pts; this.credits += Math.floor(e.pts * 0.1);
     this.combo = Math.min(this.combo + 0.4, 8); this.comboTimer = 2.5;
     SFX.kill();
+    const _ENAMES = { trojan:'TROJAN', tank:'T-80 TANK', necro:'NECROMANCER', hawk:'HAWK', leech:'LEECH',
+      berser:'BERSERKER', teleport:'PHANTOM', broker:'DATA BROKER', hornet:'HORNET', dropper:'DROPPER',
+      mirage:'MIRAGE', zeryday:'ZERO-DAY', corrupted:'CORRUPTED', icecannon:'ICE CANNON',
+      sentry:'SENTRY', zealot:'ZEALOT', glitch:'GLITCH', titan:'TITAN' };
+    addKillFeed(_ENAMES[e.t] || e.t?.toUpperCase() || 'THREAT', e.col);
     if (e.t === 'necro')       this._burst(e.x, e.y, '#CC00FF', 20, 90);
     else if (e.t === 'tank')   this._burst(e.x, e.y, '#FF8800', 22, 80);
     else if (e.t === 'boss')   this._burst(e.x, e.y, '#FF0000', 30, 130);
@@ -936,7 +941,10 @@ export class GameScene {
     this._spawnFloat(this.boss.x, this.boss.y - 50, '+' + pts + ' BOSS!', '#FF4400');
     updateScore(this.score);
     updateCredits(this.credits);
-    this.boss = null; SFX.kill(); showMsg('BOSS ELIMINATED', 'Threat Neutralized');
+    const _bossName = this.boss?.constructor?.name?.toUpperCase() || 'BOSS';
+    this.boss = null; SFX.kill();
+    addKillFeed(_bossName, '#FF4400');
+    showMsg('BOSS ELIMINATED', 'Threat Neutralized');
     this.mastery.updateStat('bossKills', 1);
     this.progression.addXP(500);
     this._addStyle(50);

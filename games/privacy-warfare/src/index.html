@@ -848,6 +848,18 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
 #s-auth-err{min-height:16px;font-size:9px;color:#FF4466;letter-spacing:.06em;margin:6px 0 10px;}
 #s-auth-logged-in{display:none;}
 #s-account-status{font-size:10px;color:rgba(0,255,65,0.85);font-weight:700;letter-spacing:.1em;flex:1;}
+/* ── Settings Tabs ─────────────────────────────────────────────────────── */
+.st-tabs{display:flex;gap:0;border-bottom:1px solid rgba(191,0,255,0.2);margin:0 -20px 0;padding:0 20px;}
+.st-tab{
+  flex:1;padding:8px 4px 7px;font-size:8px;font-weight:900;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;
+  background:none;border:none;border-bottom:2px solid transparent;
+  color:rgba(255,255,255,0.35);transition:all .15s;margin-bottom:-1px;
+}
+.st-tab:hover{color:rgba(191,0,255,0.7);}
+.st-tab.active{color:#BF00FF;border-bottom-color:#BF00FF;text-shadow:0 0 12px rgba(191,0,255,0.6);}
+.st-panel{display:none;padding:14px 0 0;}
+.st-panel.active{display:block;}
 
 /* ── Style Meter ───────────────────────────────────────────────────────────── */
 #style-wrap{
@@ -867,6 +879,25 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
   text-transform:uppercase;transition:color .2s;
 }
 
+/* ── Virtual joystick ──────────────────────────────────────────────────────── */
+#vjoy{
+  position:fixed;left:20px;bottom:100px;
+  width:90px;height:90px;border-radius:50%;
+  background:rgba(191,0,255,0.08);
+  border:2px solid rgba(191,0,255,0.28);
+  display:none;z-index:30;opacity:0.5;
+  touch-action:none;
+}
+@media(pointer:coarse){#vjoy{display:block;}}
+#vjoy-knob{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(191,0,255,0.32);
+  border:1.5px solid rgba(191,0,255,0.6);
+  pointer-events:none;
+  transition:transform .04s linear;
+}
 /* ── Mobile action buttons ─────────────────────────────────────────────────── */
 #mob-actions{
   position:fixed;left:12px;bottom:80px;
@@ -893,6 +924,12 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
 }
 .mob-btn-key{font-size:12px;font-weight:900;color:#BF00FF;}
 .mob-btn-lbl{font-size:7px;color:rgba(255,255,255,0.38);letter-spacing:.08em;}
+
+/* ── Reduced-motion accessibility ──────────────────────────────────────────── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+  #crt-overlay{display:none!important;}
+}
 
 /* ── Scrollbar style ───────────────────────────────────────────────────────── */
 #arsenal-grid::-webkit-scrollbar,#ch-list::-webkit-scrollbar,#lb-list::-webkit-scrollbar{width:3px;}
@@ -1206,6 +1243,9 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
   <div id="nuke-lbl">Nuke Charging</div>
 </div>
 
+<!-- ── Virtual thumbstick (touch devices only) ───────────────────────────── -->
+<div id="vjoy"><div id="vjoy-knob"></div></div>
+
 <!-- ── Mobile gadget buttons (touch devices only) ────────────────────────── -->
 <div id="mob-actions">
   <button class="mob-btn" data-gadget="0"><span class="mob-btn-key">F</span><span class="mob-btn-lbl" id="mob-gad-0">GADGET</span></button>
@@ -1365,73 +1405,105 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
 <!-- ── Settings Modal ─────────────────────────────────────────────────────── -->
 <div id="settings-modal" class="pw-modal">
   <div class="pw-modal-inner">
-    <div class="pw-modal-title">Settings</div>
+    <div class="pw-modal-title">SYSTEM SETTINGS</div>
     <div class="pw-modal-body">
-      <div class="sett-section">Audio</div>
-      <div class="sett-row">
-        <label>Music Volume</label>
-        <input type="range" id="s-music-vol" min="0" max="1" step="0.05" value="0.7">
-        <span id="s-music-val">70%</span>
-      </div>
-      <div class="sett-row">
-        <label>SFX Volume</label>
-        <input type="range" id="s-sfx-vol" min="0" max="1" step="0.05" value="1.0">
-        <span id="s-sfx-val">100%</span>
+
+      <!-- Tab bar -->
+      <div class="st-tabs" id="st-tabs">
+        <button class="st-tab active" data-st="audio">AUDIO</button>
+        <button class="st-tab" data-st="display">DISPLAY</button>
+        <button class="st-tab" data-st="controls">CONTROLS</button>
+        <button class="st-tab" data-st="account">ACCOUNT</button>
       </div>
 
-      <div class="sett-section">Display</div>
-      <div class="sett-row">
-        <label>Quality</label>
-        <div class="sett-select" id="s-quality">
-          <button class="sq-btn" data-q="low">LOW</button>
-          <button class="sq-btn" data-q="medium">MED</button>
-          <button class="sq-btn active" data-q="high">HIGH</button>
-        </div>
-      </div>
-      <div class="sett-row">
-        <label>Particles</label>
-        <div class="sett-toggle tog-on" id="s-particles">ON</div>
-      </div>
-
-      <div class="sett-section">Controls</div>
-      <div class="sett-row">
-        <label>Virtual Joystick</label>
-        <div class="sett-toggle tog-on" id="s-joystick">ON</div>
-      </div>
-
-      <div class="sett-section">Account &amp; Cloud</div>
-
-      <!-- ── Not logged in: login / register form ── -->
-      <div id="s-auth-logged-out">
-        <div class="sett-row" style="gap:6px;margin-bottom:10px;">
-          <button class="sq-btn active" id="s-tab-login">Login</button>
-          <button class="sq-btn" id="s-tab-register">Register</button>
+      <!-- AUDIO panel -->
+      <div class="st-panel active" id="stp-audio">
+        <div class="sett-row">
+          <label>Music Volume</label>
+          <input type="range" id="s-music-vol" min="0" max="1" step="0.05" value="0.7">
+          <span id="s-music-val">70%</span>
         </div>
         <div class="sett-row">
-          <label>Username</label>
-          <input class="sett-input" type="text" id="s-username" placeholder="3–32 chars" maxlength="32" autocomplete="username">
-        </div>
-        <div class="sett-row">
-          <label>Password</label>
-          <input class="sett-input" type="password" id="s-password" placeholder="8+ chars, one special char" autocomplete="current-password">
-        </div>
-        <div id="s-auth-err"></div>
-        <button class="sh-buy" id="s-auth-btn" style="width:100%">Sign In</button>
-      </div>
-
-      <!-- ── Logged in: account info + cloud sync ── -->
-      <div id="s-auth-logged-in">
-        <div class="sett-row">
-          <span id="s-account-status">Signed in</span>
-          <button class="sh-buy" id="s-logout-btn" style="padding:6px 12px;font-size:10px;border-color:rgba(255,68,68,0.4);color:#FF4444">Sign Out</button>
-        </div>
-        <div class="sett-row">
-          <button class="sh-buy" id="s-sync-up-btn" style="flex:1;font-size:10px">Upload Save</button>
-          <button class="sh-buy" id="s-sync-dn-btn" style="flex:1;font-size:10px">Download Save</button>
+          <label>SFX Volume</label>
+          <input type="range" id="s-sfx-vol" min="0" max="1" step="0.05" value="1.0">
+          <span id="s-sfx-val">100%</span>
         </div>
       </div>
 
-      <button class="sh-buy" style="width:100%;margin-top:12px" id="close-settings-btn">Close</button>
+      <!-- DISPLAY panel -->
+      <div class="st-panel" id="stp-display">
+        <div class="sett-row">
+          <label>Render Quality</label>
+          <div class="sett-select" id="s-quality">
+            <button class="sq-btn" data-q="low">LOW</button>
+            <button class="sq-btn" data-q="medium">MED</button>
+            <button class="sq-btn active" data-q="high">HIGH</button>
+          </div>
+        </div>
+        <div class="sett-row">
+          <label>Particles</label>
+          <div class="sett-toggle tog-on" id="s-particles">ON</div>
+        </div>
+        <div class="sett-row">
+          <label>CRT Overlay</label>
+          <div class="sett-toggle tog-on" id="s-crt">ON</div>
+        </div>
+      </div>
+
+      <!-- CONTROLS panel -->
+      <div class="st-panel" id="stp-controls">
+        <div class="sett-row">
+          <label>Virtual Joystick</label>
+          <div class="sett-toggle tog-on" id="s-joystick">ON</div>
+        </div>
+        <div style="margin-top:14px;padding:10px 12px;background:rgba(191,0,255,0.04);border:1px solid rgba(191,0,255,0.12);border-radius:6px;">
+          <div style="font-size:8px;color:rgba(191,0,255,0.5);letter-spacing:.25em;margin-bottom:8px">KEYBINDS</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;font-size:9px;color:rgba(255,255,255,0.5);">
+            <span><span style="color:#BF00FF">WASD</span> Move</span>
+            <span><span style="color:#BF00FF">Mouse</span> Aim &amp; Fire</span>
+            <span><span style="color:#BF00FF">Q / E</span> Cycle Weapon</span>
+            <span><span style="color:#BF00FF">F / G</span> Gadget 1 / 2</span>
+            <span><span style="color:#BF00FF">X</span> Dash</span>
+            <span><span style="color:#BF00FF">Tab</span> Shop</span>
+            <span><span style="color:#BF00FF">P / Esc</span> Pause</span>
+            <span><span style="color:#BF00FF">R</span> Restart (paused)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCOUNT panel -->
+      <div class="st-panel" id="stp-account">
+        <!-- Not logged in -->
+        <div id="s-auth-logged-out">
+          <div class="sett-row" style="gap:6px;margin-bottom:10px;">
+            <button class="sq-btn active" id="s-tab-login">Login</button>
+            <button class="sq-btn" id="s-tab-register">Register</button>
+          </div>
+          <div class="sett-row">
+            <label>Username</label>
+            <input class="sett-input" type="text" id="s-username" placeholder="3–32 chars" maxlength="32" autocomplete="username">
+          </div>
+          <div class="sett-row">
+            <label>Password</label>
+            <input class="sett-input" type="password" id="s-password" placeholder="8+ chars" autocomplete="current-password">
+          </div>
+          <div id="s-auth-err"></div>
+          <button class="sh-buy" id="s-auth-btn" style="width:100%">Sign In</button>
+        </div>
+        <!-- Logged in -->
+        <div id="s-auth-logged-in">
+          <div class="sett-row">
+            <span id="s-account-status">Signed in</span>
+            <button class="sh-buy" id="s-logout-btn" style="padding:6px 12px;font-size:10px;border-color:rgba(255,68,68,0.4);color:#FF4444">Sign Out</button>
+          </div>
+          <div class="sett-row">
+            <button class="sh-buy" id="s-sync-up-btn" style="flex:1;font-size:10px">Upload Save</button>
+            <button class="sh-buy" id="s-sync-dn-btn" style="flex:1;font-size:10px">Download Save</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="sh-buy" style="width:100%;margin-top:14px" id="close-settings-btn">CLOSE</button>
     </div>
   </div>
 </div>

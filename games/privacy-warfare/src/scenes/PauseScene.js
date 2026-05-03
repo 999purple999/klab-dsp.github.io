@@ -9,19 +9,22 @@ export class PauseScene {
    * @param {CanvasRenderingContext2D} ctx
    * @param {Function} onResume
    * @param {Function} onQuit
+   * @param {Function} onRestart
    */
-  constructor(cv, ctx, onResume, onQuit) {
-    this.cv       = cv;
-    this.ctx      = ctx;
-    this.onResume = onResume || (() => {});
-    this.onQuit   = onQuit   || (() => {});
+  constructor(cv, ctx, onResume, onQuit, onRestart) {
+    this.cv        = cv;
+    this.ctx       = ctx;
+    this.onResume  = onResume  || (() => {});
+    this.onQuit    = onQuit    || (() => {});
+    this.onRestart = onRestart || (() => {});
 
     // Button state
     this._buttons = [
-      { label: 'RESUME',   action: () => this.onResume() },
-      { label: 'QUIT',     action: () => this.onQuit()   },
+      { label: 'RESUME',  hint: '[P / ESC]',   action: () => this.onResume()  },
+      { label: 'RESTART', hint: '[R]',          action: () => this.onRestart() },
+      { label: 'QUIT',    hint: '[Q]',          action: () => this.onQuit()    },
     ];
-    this._focused = 0;    // 0 = Resume, 1 = Quit
+    this._focused = 0;
 
     this._keyBound    = (e) => this._handleKey(e);
     this._clickBound  = (e) => this._handleClick(e);
@@ -76,9 +79,9 @@ export class PauseScene {
     const cx = W / 2;
     const cy = H / 2;
 
-    // Panel background
+    // Panel background — taller to fit 3 buttons
     const panelW = 260 * DPR;
-    const panelH = 180 * DPR;
+    const panelH = 216 * DPR;
     const panelX = cx - panelW / 2;
     const panelY = cy - panelH / 2;
 
@@ -131,36 +134,43 @@ export class PauseScene {
       // Save button rect for click detection (in canvas px)
       btn._rect = { x: bx, y: by, w: btnW, h: btnH };
 
+      // Color theme: QUIT is red-tinted, RESTART is orange-tinted
+      const isQuit    = btn.label === 'QUIT';
+      const isRestart = btn.label === 'RESTART';
+      const accentCol = isQuit ? '#FF4444' : isRestart ? '#FF8800' : '#BF00FF';
+
       // Background
       ctx.fillStyle = focused
-        ? 'rgba(191,0,255,0.28)'
+        ? isQuit    ? 'rgba(255,68,68,0.18)'
+        : isRestart ? 'rgba(255,136,0,0.18)'
+        :             'rgba(191,0,255,0.28)'
         : 'rgba(30,10,60,0.6)';
       ctx.beginPath();
       ctx.roundRect(bx, by, btnW, btnH, 5 * DPR);
       ctx.fill();
 
       // Border
-      ctx.strokeStyle = focused ? '#BF00FF' : 'rgba(120,80,160,0.5)';
+      ctx.strokeStyle = focused ? accentCol : 'rgba(120,80,160,0.5)';
       ctx.lineWidth   = focused ? 1.8 * DPR : 1 * DPR;
-      if (focused) { ctx.shadowBlur = 14; ctx.shadowColor = '#BF00FF'; }
+      if (focused) { ctx.shadowBlur = 14; ctx.shadowColor = accentCol; }
       ctx.beginPath();
       ctx.roundRect(bx, by, btnW, btnH, 5 * DPR);
       ctx.stroke();
       ctx.shadowBlur = 0;
 
       // Label
-      ctx.fillStyle    = focused ? '#FFFFFF' : '#AAAACC';
+      const labelCol = focused ? (isQuit ? '#FF8888' : isRestart ? '#FFBB44' : '#FFFFFF') : '#AAAACC';
+      ctx.fillStyle    = labelCol;
       ctx.font         = `900 ${10 * DPR}px 'JetBrains Mono',monospace`;
       ctx.textAlign    = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(btn.label, cx, by + btnH / 2);
 
       // Shortcut hint
-      const hint = i === 0 ? '[P / ENTER]' : '[Q]';
       ctx.fillStyle    = 'rgba(150,120,180,0.6)';
       ctx.font         = `${6 * DPR}px 'JetBrains Mono',monospace`;
       ctx.textBaseline = 'middle';
-      ctx.fillText(hint, cx, by + btnH - 6 * DPR);
+      ctx.fillText(btn.hint, cx, by + btnH - 6 * DPR);
     });
 
     ctx.globalAlpha = 1;
@@ -188,6 +198,10 @@ export class PauseScene {
       case ' ':
         e.preventDefault();
         this._buttons[this._focused].action();
+        break;
+      case 'r':
+        e.preventDefault();
+        this.onRestart();
         break;
       case 'q':
         e.preventDefault();

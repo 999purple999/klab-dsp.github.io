@@ -505,6 +505,27 @@ function _renderChallenges(cat) {
 function _initSettingsControls() {
   const cfg = getSettings();
 
+  // Settings tab switching
+  document.getElementById('st-tabs')?.addEventListener('click', e => {
+    const tab = e.target.closest('.st-tab'); if (!tab) return;
+    document.querySelectorAll('.st-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.st-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    const panel = document.getElementById('stp-' + tab.dataset.st);
+    if (panel) panel.classList.add('active');
+  });
+
+  // CRT overlay toggle
+  const crtToggle = document.getElementById('s-crt');
+  if (crtToggle) {
+    const crtEl = document.getElementById('crt-overlay');
+    crtToggle.addEventListener('click', () => {
+      const on = crtToggle.classList.toggle('tog-on');
+      crtToggle.textContent = on ? 'ON' : 'OFF';
+      if (crtEl) crtEl.style.display = on ? '' : 'none';
+    });
+  }
+
   // Music volume
   const musicSlider = document.getElementById('s-music-vol');
   const musicVal    = document.getElementById('s-music-val');

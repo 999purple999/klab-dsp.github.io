@@ -3,7 +3,7 @@
 
 import { Engine }       from './Engine.js';
 import { SceneManager } from './SceneManager.js';
-import { initInput, KEYS, mx, my, isMouseDown } from './Input.js';
+import { initInput, initVirtualJoystick, KEYS, mx, my, isMouseDown } from './Input.js';
 import * as Input       from './Input.js';
 import { getAC }        from '../audio/AudioManager.js';
 import { buildMapAssets } from '../mapgen/MapData.js';
@@ -31,13 +31,14 @@ export class Game {
     this._music  = null; // AdaptiveMusic — lazy-init after first AudioContext unlock
 
     this.gameScene     = new GameScene(this.cv, this.ctx, this.mmCv, this.mctx);
-    this.campaignScene = new CampaignScene(this.cv, this.ctx, this.gameScene);
+    this.campaignScene = new CampaignScene(this.cv, this.ctx, this.gameScene, this);
     this.bootScene     = new BootScene(this);
     this.menuScene     = new MenuScene(this);
     this.pauseScene    = new PauseScene(
       this.cv, this.ctx,
       () => { this.gameScene.paused = false; },
-      () => { this.gameScene.paused = false; this.gameScene.gameOver(); }
+      () => { this.gameScene.paused = false; this.gameScene.gameOver(); },
+      () => { this.pauseScene.exit(); this.gameScene.paused = false; this.gameScene.startGame(); }
     );
 
     this._resize();
@@ -49,6 +50,7 @@ export class Game {
     window.addEventListener('resize', () => this._resize());
     document.addEventListener('pw:gameover', e => this._onGameOver(e.detail));
     this._initMobileButtons();
+    initVirtualJoystick(document.getElementById('vjoy'));
     this._initTutorial();
 
     // Push menu — will stay until a mode is selected
