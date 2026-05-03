@@ -78,19 +78,28 @@ function _open(id) {
 
 // ── GADGET DEFINITIONS (exported — LoadoutModal imports from here) ─────────────
 export const GADGETS = [
-  { key:'bomb',      name:'FRAG BOMB',   desc:'Area explosion — devastates groups.',  col:'#FF4422', effect:'Throws a frag grenade dealing 80 dmg in 180px radius. Cooldown 14s.' },
-  { key:'kp',        name:'EMP BURST',   desc:'Screen-wide stun — instant panic.',    col:'#00FFFF', effect:'Emits EMP pulse stunning all enemies for 2.5s. Cooldown 20s.' },
-  { key:'dash',      name:'GHOST DASH',  desc:'Invincible dash — escape any threat.', col:'#BF00FF', effect:'Dash 200px in aim direction with 0.6s invincibility. Cooldown 8s.' },
-  { key:'overclock', name:'OVERCLOCK',   desc:'Fire rate ×3 — four second window.',   col:'#FFFF00', effect:'Triples weapon fire rate for 4 seconds. Cooldown 18s.' },
-  { key:'empshield', name:'EMP SHIELD',  desc:'Absorb next 3 hits — zero damage.',    col:'#00FF88', effect:'Energy shield absorbs up to 3 incoming hits. Lasts 12s or until depleted.' },
-  { key:'timewarp',  name:'TIME WARP',   desc:'Slow all enemies — four seconds.',     col:'#FF8800', effect:'Reduces all enemy speed and attack rate by 60% for 4s. Cooldown 22s.' },
+  { key:'bomb',      name:'FRAG BOMB',   desc:'Area explosion — devastates groups.',  col:'#FF4422', effect:'Throws a frag grenade dealing 80 dmg in 180px radius. Cooldown 14s.', unlockCost:0   },
+  { key:'dash',      name:'GHOST DASH',  desc:'Invincible dash — escape any threat.', col:'#BF00FF', effect:'Dash 200px in aim direction with 0.6s invincibility. Cooldown 8s.',   unlockCost:100 },
+  { key:'kp',        name:'EMP BURST',   desc:'Screen-wide stun — instant panic.',    col:'#00FFFF', effect:'Emits EMP pulse stunning all enemies for 2.5s. Cooldown 20s.',        unlockCost:150 },
+  { key:'empshield', name:'EMP SHIELD',  desc:'Absorb next 3 hits — zero damage.',    col:'#00FF88', effect:'Energy shield absorbs up to 3 incoming hits. Lasts 12s or until depleted.', unlockCost:200 },
+  { key:'overclock', name:'OVERCLOCK',   desc:'Fire rate ×3 — four second window.',   col:'#FFFF00', effect:'Triples weapon fire rate for 4 seconds. Cooldown 18s.',               unlockCost:250 },
+  { key:'timewarp',  name:'TIME WARP',   desc:'Slow all enemies — four seconds.',     col:'#FF8800', effect:'Reduces all enemy speed and attack rate by 60% for 4s. Cooldown 22s.', unlockCost:300 },
 ];
 
 // ── ARSENAL v2 – 30 weapons from WeaponCatalog ────────────────────────────────
 
 const UNLOCK_KEY   = 'pw_catalog_unlocks_v1';
 const SELECTED_KEY = 'pw_catalog_selected_v1';
-const GADGET_KEY   = 'pw_catalog_gadgets_v1';
+const GADGET_KEY        = 'pw_catalog_gadgets_v1';
+const GADGET_UNLOCK_KEY = 'pw_gadget_unlocks_v1';
+let _gadUnlocks = null;
+function _gadGetUnlocks() {
+  if (!_gadUnlocks) { try { _gadUnlocks = JSON.parse(localStorage.getItem(GADGET_UNLOCK_KEY) || '{}'); } catch { _gadUnlocks = {}; } }
+  return _gadUnlocks;
+}
+function _gadSaveUnlocks() { try { localStorage.setItem(GADGET_UNLOCK_KEY, JSON.stringify(_gadUnlocks)); } catch {} }
+function _gadIsUnlocked(key) { const g = GADGETS.find(x => x.key === key); return !g || g.unlockCost === 0 || !!_gadGetUnlocks()[key]; }
+function _gadUnlock(key) { _gadGetUnlocks()[key] = true; _gadSaveUnlocks(); }
 
 let _arUnlocks    = null;  // { [weaponId]: true }
 let _arSelected   = { s0: null, s1: null };
@@ -391,15 +400,16 @@ function _arRenderGadgets() {
   const list = document.getElementById('ar-wpn-list'); if (!list) return;
   list.innerHTML = '';
   GADGETS.forEach(g => {
-    const isF = _arGadSlots.f === g.key;
-    const isG = _arGadSlots.g === g.key;
+    const isF      = _arGadSlots.f === g.key;
+    const isG      = _arGadSlots.g === g.key;
+    const unlocked = _gadIsUnlocked(g.key);
     const row = document.createElement('div');
-    row.className = `ar-row${_arGadSelKey === g.key ? ' ar-sel' : ''}`;
+    row.className = `ar-row${_arGadSelKey === g.key ? ' ar-sel' : ''}${!unlocked ? ' ar-dim' : ''}`;
     row.innerHTML = `
-      <div class="ar-dot" style="background:${g.col};box-shadow:0 0 7px ${g.col}55"></div>
+      <div class="ar-dot" style="background:${unlocked ? g.col : '#555'};box-shadow:0 0 7px ${unlocked ? g.col : '#555'}55"></div>
       <div class="ar-rinfo">
         <div class="ar-rname">${g.name}</div>
-        <div class="ar-rtag">${g.desc}</div>
+        <div class="ar-rtag">${unlocked ? g.desc : '⬡ LOCKED — ' + g.unlockCost + ' ◈'}</div>
       </div>
       <div style="display:flex;gap:4px;flex-shrink:0">
         ${isF ? `<div class="ar-eq-badge">F</div>` : ''}
@@ -426,35 +436,55 @@ function _arGadDetail(key) {
   const bv = parseInt(g.col.slice(5,7),16)||255;
   const rgba = a => `rgba(${rv},${gv},${bv},${a})`;
 
+  const unlocked = _gadIsUnlocked(key);
+  const credits  = getCredits();
+  const canAfford = credits >= g.unlockCost;
+
   panel.innerHTML = `
     <div class="ar-d-top">
-      <div class="ar-d-icon" style="background:${rgba(.1)};border:1.5px solid ${g.col};box-shadow:0 0 20px ${rgba(.18)}">
-        <div style="font-size:26px;text-align:center;line-height:48px;filter:drop-shadow(0 0 8px ${g.col})">◈</div>
+      <div class="ar-d-icon" style="background:${rgba(.1)};border:1.5px solid ${unlocked ? g.col : '#555'};box-shadow:0 0 20px ${unlocked ? rgba(.18) : 'transparent'}">
+        <div style="font-size:26px;text-align:center;line-height:48px;filter:drop-shadow(0 0 8px ${unlocked ? g.col : '#555'})">${unlocked ? '◈' : '⬡'}</div>
       </div>
       <div>
         <div class="ar-d-name" style="text-shadow:0 0 28px ${rgba(.45)}">${g.name}</div>
-        <div class="ar-d-cat" style="color:${g.col}">TACTICAL GADGET</div>
-        <div style="font-size:8px;color:rgba(255,255,255,.3);margin-top:4px">Always available · No credits required</div>
+        <div class="ar-d-cat" style="color:${unlocked ? g.col : '#888'}">TACTICAL GADGET</div>
+        <div style="font-size:8px;color:rgba(255,255,255,.3);margin-top:4px">${unlocked ? 'Unlocked · Assign to F or G key' : 'Locked · Cost: ' + g.unlockCost + ' ◈ · You have: ' + credits + ' ◈'}</div>
       </div>
     </div>
     <div class="ar-d-desc" style="border-color:${rgba(.25)};margin-top:12px">${g.desc}</div>
     <div class="ar-stats-lbl" style="margin-top:14px">EFFECT DETAILS</div>
-    <div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.7;letter-spacing:.04em;margin-bottom:16px">${g.effect}</div>
+    <div style="font-size:12px;color:rgba(255,255,255,${unlocked ? '.65' : '.3'});line-height:1.7;letter-spacing:.04em;margin-bottom:16px">${g.effect}</div>
     <div class="ar-action">
-      <div style="display:flex;gap:8px;margin-top:0;flex-wrap:wrap">
-        <button class="ar-equip-btn ${isF?'equipped':''}" id="ar-gad-f">
-          ${isF ? '✓ F KEY' : 'EQUIP → F KEY'}</button>
-        <button class="ar-equip-btn ${isG?'equipped':''}" id="ar-gad-g" style="opacity:.8">
-          ${isG ? '✓ G KEY' : 'EQUIP → G KEY'}</button>
-      </div>
+      ${unlocked ? `
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="ar-equip-btn ${isF?'equipped':''}" id="ar-gad-f">${isF ? '✓ F KEY' : 'EQUIP → F KEY'}</button>
+          <button class="ar-equip-btn ${isG?'equipped':''}" id="ar-gad-g" style="opacity:.8">${isG ? '✓ G KEY' : 'EQUIP → G KEY'}</button>
+        </div>` : `
+        <button class="ar-buy-btn" id="ar-gad-buy" ${canAfford ? '' : 'disabled'} style="width:100%;${canAfford ? '' : 'opacity:.4'}">
+          ${canAfford ? '🔓 UNLOCK — ' + g.unlockCost + ' ◈' : 'NOT ENOUGH CREDITS — NEED ' + g.unlockCost + ' ◈'}</button>`}
     </div>`;
 
-  document.getElementById('ar-gad-f')?.addEventListener('click', () => {
-    _arGadSlots.f = key; _arSaveGadgets(); _arRenderGadgets(); _arGadDetail(key);
-  });
-  document.getElementById('ar-gad-g')?.addEventListener('click', () => {
-    _arGadSlots.g = key; _arSaveGadgets(); _arRenderGadgets(); _arGadDetail(key);
-  });
+  if (unlocked) {
+    document.getElementById('ar-gad-f')?.addEventListener('click', () => {
+      _arGadSlots.f = key; _arSaveGadgets(); _arRenderGadgets(); _arGadDetail(key);
+    });
+    document.getElementById('ar-gad-g')?.addEventListener('click', () => {
+      _arGadSlots.g = key; _arSaveGadgets(); _arRenderGadgets(); _arGadDetail(key);
+    });
+  } else {
+    document.getElementById('ar-gad-buy')?.addEventListener('click', () => {
+      if (!canAfford) return;
+      setCredits(credits - g.unlockCost);
+      _gadUnlock(key);
+      // Auto-assign to first empty slot
+      if (!_arGadSlots.f || !_gadIsUnlocked(_arGadSlots.f))      { _arGadSlots.f = key; }
+      else if (!_arGadSlots.g || !_gadIsUnlocked(_arGadSlots.g)) { _arGadSlots.g = key; }
+      _arSaveGadgets();
+      _arRenderGadgets(); _arGadDetail(key);
+      const credEl = document.getElementById('ar-credits-amt');
+      if (credEl) credEl.textContent = getCredits().toLocaleString();
+    });
+  }
 }
 
 // ── CHALLENGES ────────────────────────────────────────────────────────────────
@@ -502,101 +532,87 @@ function _renderChallenges(cat) {
 }
 
 // ── SETTINGS ─────────────────────────────────────────────────────────────────
-function _initSettingsControls() {
+function _syncSettingsUI() {
   const cfg = getSettings();
+  const musicSlider = document.getElementById('s-music-vol');
+  const musicVal    = document.getElementById('s-music-val');
+  if (musicSlider) { musicSlider.value = cfg.musicVol; if (musicVal) musicVal.textContent = Math.round(cfg.musicVol * 100) + '%'; }
 
-  // Settings tab switching
+  const sfxSlider = document.getElementById('s-sfx-vol');
+  const sfxVal    = document.getElementById('s-sfx-val');
+  if (sfxSlider) { sfxSlider.value = cfg.sfxVol; if (sfxVal) sfxVal.textContent = Math.round(cfg.sfxVol * 100) + '%'; }
+
+  document.querySelectorAll('#s-quality .sq-btn').forEach(b => b.classList.toggle('active', b.dataset.q === cfg.quality));
+
+  const jsToggle  = document.getElementById('s-joystick');
+  if (jsToggle)  { jsToggle.textContent  = cfg.joystick  ? 'ON' : 'OFF'; jsToggle.classList.toggle('tog-on',  cfg.joystick); }
+  const parToggle = document.getElementById('s-particles');
+  if (parToggle) { parToggle.textContent = cfg.particles ? 'ON' : 'OFF'; parToggle.classList.toggle('tog-on', cfg.particles); }
+  const crtToggle = document.getElementById('s-crt');
+  if (crtToggle) {
+    const on = cfg.crt !== false;
+    crtToggle.textContent = on ? 'ON' : 'OFF';
+    crtToggle.classList.toggle('tog-on', on);
+    const crtEl = document.getElementById('crt-overlay');
+    if (crtEl) crtEl.style.display = on ? '' : 'none';
+  }
+}
+
+function _initSettingsControls() {
+  // Tab switching (event-delegated — bind once)
   document.getElementById('st-tabs')?.addEventListener('click', e => {
     const tab = e.target.closest('.st-tab'); if (!tab) return;
     document.querySelectorAll('.st-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.st-panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
-    const panel = document.getElementById('stp-' + tab.dataset.st);
-    if (panel) panel.classList.add('active');
+    document.getElementById('stp-' + tab.dataset.st)?.classList.add('active');
   });
 
-  // CRT overlay toggle
-  const crtToggle = document.getElementById('s-crt');
-  if (crtToggle) {
-    const crtEl = document.getElementById('crt-overlay');
-    crtToggle.addEventListener('click', () => {
-      const on = crtToggle.classList.toggle('tog-on');
-      crtToggle.textContent = on ? 'ON' : 'OFF';
-      if (crtEl) crtEl.style.display = on ? '' : 'none';
-    });
-  }
+  // Sliders
+  document.getElementById('s-music-vol')?.addEventListener('input', e => {
+    const v = parseFloat(e.target.value);
+    const el = document.getElementById('s-music-val'); if (el) el.textContent = Math.round(v * 100) + '%';
+    saveSettings({ musicVol: v });
+  });
+  document.getElementById('s-sfx-vol')?.addEventListener('input', e => {
+    const v = parseFloat(e.target.value);
+    const el = document.getElementById('s-sfx-val'); if (el) el.textContent = Math.round(v * 100) + '%';
+    saveSettings({ sfxVol: v });
+  });
 
-  // Music volume
-  const musicSlider = document.getElementById('s-music-vol');
-  const musicVal    = document.getElementById('s-music-val');
-  if (musicSlider) {
-    musicSlider.value = cfg.musicVol;
-    if (musicVal) musicVal.textContent = Math.round(cfg.musicVol * 100) + '%';
-    musicSlider.addEventListener('input', () => {
-      const v = parseFloat(musicSlider.value);
-      if (musicVal) musicVal.textContent = Math.round(v * 100) + '%';
-      saveSettings({ musicVol: v });
-    });
-  }
-
-  // SFX volume
-  const sfxSlider = document.getElementById('s-sfx-vol');
-  const sfxVal    = document.getElementById('s-sfx-val');
-  if (sfxSlider) {
-    sfxSlider.value = cfg.sfxVol;
-    if (sfxVal) sfxVal.textContent = Math.round(cfg.sfxVol * 100) + '%';
-    sfxSlider.addEventListener('input', () => {
-      const v = parseFloat(sfxSlider.value);
-      if (sfxVal) sfxVal.textContent = Math.round(v * 100) + '%';
-      saveSettings({ sfxVol: v });
-    });
-  }
-
-  // Quality buttons
-  document.querySelectorAll('.sq-btn').forEach(btn => {
-    if (btn.dataset.q === cfg.quality) btn.classList.add('active');
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.sq-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      saveSettings({ quality: btn.dataset.q });
-    });
+  // Quality buttons — scoped to #s-quality to avoid clashing with other .sq-btn
+  document.getElementById('s-quality')?.addEventListener('click', e => {
+    const btn = e.target.closest('.sq-btn[data-q]'); if (!btn) return;
+    document.querySelectorAll('#s-quality .sq-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    saveSettings({ quality: btn.dataset.q });
   });
 
   // Joystick toggle
-  const jsToggle = document.getElementById('s-joystick');
-  if (jsToggle) {
-    jsToggle.textContent = cfg.joystick ? 'ON' : 'OFF';
-    jsToggle.classList.toggle('tog-on', cfg.joystick);
-    jsToggle.addEventListener('click', () => {
-      const cur = getSettings().joystick;
-      saveSettings({ joystick: !cur });
-      jsToggle.textContent = !cur ? 'ON' : 'OFF';
-      jsToggle.classList.toggle('tog-on', !cur);
-    });
-  }
-
+  document.getElementById('s-joystick')?.addEventListener('click', () => {
+    const cur = getSettings().joystick; saveSettings({ joystick: !cur }); _syncSettingsUI();
+  });
   // Particles toggle
-  const parToggle = document.getElementById('s-particles');
-  if (parToggle) {
-    parToggle.textContent = cfg.particles ? 'ON' : 'OFF';
-    parToggle.classList.toggle('tog-on', cfg.particles);
-    parToggle.addEventListener('click', () => {
-      const cur = getSettings().particles;
-      saveSettings({ particles: !cur });
-      parToggle.textContent = !cur ? 'ON' : 'OFF';
-      parToggle.classList.toggle('tog-on', !cur);
-    });
-  }
+  document.getElementById('s-particles')?.addEventListener('click', () => {
+    const cur = getSettings().particles; saveSettings({ particles: !cur }); _syncSettingsUI();
+  });
+  // CRT toggle — also saves to settings
+  document.getElementById('s-crt')?.addEventListener('click', () => {
+    const cur = getSettings().crt !== false; saveSettings({ crt: !cur }); _syncSettingsUI();
+  });
 
   // Account / cloud
-  _updateAccountUI();
   _initAuthForm();
   _on('s-logout-btn',  () => { clearToken(); _updateAccountUI(); });
   _on('s-sync-up-btn', () => _syncUp());
   _on('s-sync-dn-btn', () => _syncDown());
+
+  // Apply initial values
+  _syncSettingsUI();
 }
 
 function _openSettings() {
+  _syncSettingsUI();
   _updateAccountUI();
   _open('settings-modal');
 }

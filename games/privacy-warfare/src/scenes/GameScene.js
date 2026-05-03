@@ -159,9 +159,14 @@ export class GameScene {
     this.EYES      = [];
     this.DEAD_EYES = [];
     this.EPROJS    = [];
+    this.PPROJS    = [];   // player laser projectiles
     this.PARTS     = [];
     this.BEAMS     = [];
     this.FLOATS    = [];
+
+    // campaign progress hooks (set by CampaignScene before startCampaignLevel)
+    this._campaignSave = null;
+    this._campaignZone = -1;
     this.AMMO_PKUPS = [];
     this.HP_PKUPS   = [];
 
@@ -285,7 +290,9 @@ export class GameScene {
     this.abCDs = { bomb: 0, kp: 0, dash: 0, overclock: 0, empshield: 0, timewarp: 0 };
     this.abilityCDMult = 1; this.ghostBonusTime = 0; this.comboDecayMult = 1; this.chainExtraTargets = 0;
     this.EYES.length = 0; this.PARTS.length = 0; this.BEAMS.length = 0;
-    this.EPROJS.length = 0; this.DEAD_EYES.length = 0; this.FLOATS.length = 0;
+    this.EPROJS.length = 0; this.PPROJS.length = 0; this.DEAD_EYES.length = 0; this.FLOATS.length = 0;
+    // Clear campaign state for plain survival starts (startWave===1 default)
+    if (startWave === 1) { this._campaignSave = null; this._campaignZone = -1; }
     this.AMMO_PKUPS.length = 0; this.HP_PKUPS.length = 0; this.ammoPkupTimer = 8;
     this.vortexList.length = 0; this.timeLoopProjs.length = 0; this.drones.length = 0; this.CORRUPT_ZONES.length = 0; this._ddosTriggered = false;
     this.styleMeter = 0; this.overdriveActive = false; this.overdriveTimer = 0;
@@ -410,6 +417,11 @@ export class GameScene {
     const leveled = this.progression.addXP(100);
     if (leveled) setTimeout(() => showMsg('LEVEL UP', 'Rank ' + this.progression.level), 200);
     showMsg('WAVE ' + this.wave + ' CLEARED', 'Opening Skill Matrix…');
+    // Campaign: save this level as complete (levels 0-8 are non-boss waves)
+    if (this._campaignSave && this._campaignZone >= 0) {
+      const lvl = this.wave - this._campaignZone * 10 - 1;
+      if (lvl >= 0 && lvl < 9) this._campaignSave.completeLevel(this._campaignZone, lvl, 1);
+    }
     setTimeout(() => { if (this.running && this.betweenWaves) this._openSkillModal(); }, 900);
   }
 
@@ -846,6 +858,34 @@ export class GameScene {
 
   _addBeam(x1, y1, x2, y2, col, life, lw) { this.BEAMS.push({ x1, y1, x2, y2, col, life, maxLife: life, lw }); }
 
+  _spawnPProj(x, y, vx, vy, col, r, len, dmg, maxDist, wpnIdx) {
+    this.PPROJS.push({ x, y, vx, vy, col, r, len, dmg, maxDist, wpnIdx, trav: 0 });
+  }
+
+  _updatePProjs(dt) {
+    for (let i = this.PPROJS.length - 1; i >= 0; i--) {
+      const p = this.PPROJS[i];
+      const step = Math.hypot(p.vx, p.vy) * dt;
+      p.x += p.vx * dt; p.y += p.vy * dt; p.trav += step;
+      if (p.trav >= p.maxDist || p.x < -50 || p.x > this.WW + 50 || p.y < -50 || p.y > this.WH + 50) {
+        this.PPROJS.splice(i, 1); continue;
+      }
+      let hit = false;
+      for (const e of this.EYES) {
+        if (d2(p.x, p.y, e.x, e.y) < e.sz + p.r * 2) {
+          this._damageE(e, p.dmg * this.powerMult, false, p.wpnIdx);
+          this._burst(e.x, e.y, p.col, 5, 25);
+          this.PPROJS.splice(i, 1); hit = true; break;
+        }
+      }
+      if (hit) continue;
+      if (this.boss?.alive && d2(p.x, p.y, this.boss.x, this.boss.y) < this.boss.sz + p.r * 2) {
+        this._hurtBoss(p.dmg * this.powerMult);
+        this.PPROJS.splice(i, 1);
+      }
+    }
+  }
+
   _damageE(e, dmg, big, wpnIdx) {
     if (!e || e.hp <= 0) return;
     // Zeryday immunity: track hits per weapon; block after 3 from same weapon
@@ -942,6 +982,13 @@ export class GameScene {
     updateScore(this.score);
     updateCredits(this.credits);
     const _bossName = this.boss?.constructor?.name?.toUpperCase() || 'BOSS';
+    // Campaign: save boss kill as level 9 (zone clear)
+    if (this._campaignSave && this._campaignZone >= 0) {
+      const hpPct = this.hp / (this.maxHp || 3);
+      const stars  = hpPct > 0.66 ? 3 : hpPct > 0.33 ? 2 : 1;
+      this._campaignSave.completeLevel(this._campaignZone, 9, stars);
+      this._campaignSave = null; // zone complete, stop tracking
+    }
     this.boss = null; SFX.kill();
     addKillFeed(_bossName, '#FF4400');
     showMsg('BOSS ELIMINATED', 'Threat Neutralized');
@@ -1143,27 +1190,23 @@ export class GameScene {
 
     if (w.t === 'pulse') {
       SFX.shoot();
-      this._addBeam(this.px, this.py, this.px + ux * w.rng, this.py + uy * w.rng, w.col, 0.12, 2.5);
-      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 16, null, this.wpnIdx);
+      this._spawnPProj(this.px, this.py, ux * 560, uy * 560, w.col, 2.5, 42, w.dmg, w.rng, this.wpnIdx);
     } else if (w.t === 'beam') {
       SFX.beam();
-      this._addBeam(this.px, this.py, this.px + ux * w.rng, this.py + uy * w.rng, w.col, 0.09, 4);
-      this._hitDir(this.px, this.py, ux, uy, w.rng, w.dmg, 12, null, this.wpnIdx);
+      this._spawnPProj(this.px, this.py, ux * 420, uy * 420, w.col, 5,   58, w.dmg, w.rng, this.wpnIdx);
     } else if (w.t === 'spread') {
       SFX.shoot();
       for (let a = -0.44; a <= 0.45; a += 0.22) {
         const c = Math.cos(a), s = Math.sin(a);
         const bx = ux * c - uy * s, by = ux * s + uy * c;
-        this._addBeam(this.px, this.py, this.px + bx * w.rng, this.py + by * w.rng, w.col, 0.14, 2);
-        this._hitDir(this.px, this.py, bx, by, w.rng, w.dmg, 15, null, this.wpnIdx);
+        this._spawnPProj(this.px, this.py, bx * 500, by * 500, w.col, 2, 30, w.dmg, w.rng, this.wpnIdx);
       }
     } else if (w.t === 'split') {
       SFX.shoot();
       [-0.38, -0.19, 0, 0.19, 0.38].forEach(a => {
         const c = Math.cos(a), s = Math.sin(a);
         const bx = ux * c - uy * s, by = ux * s + uy * c;
-        this._addBeam(this.px, this.py, this.px + bx * w.rng, this.py + by * w.rng, w.col, 0.16, 2);
-        this._hitDir(this.px, this.py, bx, by, w.rng, w.dmg, 14, null, this.wpnIdx);
+        this._spawnPProj(this.px, this.py, bx * 480, by * 480, w.col, 2, 35, w.dmg, w.rng, this.wpnIdx);
       });
     } else if (w.t === 'wave') {
       SFX.shoot();
@@ -2877,6 +2920,8 @@ export class GameScene {
     }
     // Beams
     for (let i = this.BEAMS.length - 1; i >= 0; i--) { this.BEAMS[i].life -= dt; if (this.BEAMS[i].life <= 0) this.BEAMS.splice(i, 1); }
+    // Player laser projectiles
+    this._updatePProjs(dt);
     // Corruption zones: DoT player, pulse animation, optional life expiry
     for (let zi = this.CORRUPT_ZONES.length - 1; zi >= 0; zi--) {
       const z = this.CORRUPT_ZONES[zi];
@@ -3065,6 +3110,24 @@ export class GameScene {
       ctx.globalAlpha = a * 0.9; ctx.strokeStyle = b.col; ctx.lineWidth = b.lw * DPR;
       ctx.shadowBlur = 22; ctx.shadowColor = b.col;
       ctx.beginPath(); ctx.moveTo(wx(b.x1), wy(b.y1)); ctx.lineTo(wx(b.x2), wy(b.y2)); ctx.stroke();
+      ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+    });
+
+    // Player laser bolts
+    this.PPROJS.forEach(p => {
+      if (!onScreen(p.x, p.y, 80)) return;
+      const spd = Math.hypot(p.vx, p.vy);
+      const dx = p.vx / spd, dy = p.vy / spd;
+      const bLen = Math.min(p.len, p.trav) * DPR;
+      const x1 = wx(p.x), y1 = wy(p.y), x2 = x1 - dx * bLen, y2 = y1 - dy * bLen;
+      ctx.globalAlpha = 0.4; ctx.strokeStyle = p.col; ctx.lineWidth = p.r * DPR * 3;
+      ctx.shadowBlur = 20; ctx.shadowColor = p.col;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      ctx.globalAlpha = 1; ctx.lineWidth = p.r * DPR;
+      ctx.shadowBlur = 12; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = Math.max(0.5, p.r * 0.4) * DPR;
+      ctx.shadowBlur = 6; ctx.shadowColor = '#FFFFFF';
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
       ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     });
 

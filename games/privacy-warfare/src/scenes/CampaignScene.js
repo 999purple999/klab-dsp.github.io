@@ -302,18 +302,17 @@ export class CampaignScene {
   _launch() {
     const z = this._sel;
     if (!this.save.isZoneUnlocked(z)) return;
-    const waveNum = z * 10 + 1;
 
-    const origKillBoss = this.gameScene._killBoss?.bind(this.gameScene);
-    if (origKillBoss) {
-      this.gameScene._killBoss = () => {
-        origKillBoss();
-        const hpPct = this.gameScene.hp / (this.gameScene.maxHp || 5);
-        const stars  = hpPct > 0.66 ? 3 : hpPct > 0.33 ? 2 : 1;
-        this.save.completeLevel(z, 0, stars);
-        this.gameScene._killBoss = origKillBoss;
-      };
+    // Find the first incomplete level so the player continues where they left off
+    let startLevel = 0;
+    for (let l = 0; l < 10; l++) {
+      if (!this.save.isLevelComplete(z, l)) { startLevel = l; break; }
     }
+    const waveNum = z * 10 + startLevel + 1;
+
+    // Wire save hooks into gameScene — cleared in _killBoss or on game-over
+    this.gameScene._campaignSave = this.save;
+    this.gameScene._campaignZone = z;
 
     this.exit();
     openLoadout((wpnSlots, gadSlots) => {
