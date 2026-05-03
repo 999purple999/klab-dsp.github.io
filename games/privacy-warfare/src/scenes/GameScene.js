@@ -643,7 +643,54 @@ export class GameScene {
       const t = this.EYES.find(e => d2(e.x, e.y, this.wMX, this.wMY) < e.sz + 14);
       if (t) { t.applyVirus(12); this._damageE(t, w.dmg * this.powerMult, false); }
       else if (this.boss && d2(this.boss.x, this.boss.y, this.wMX, this.wMY) < this.boss.sz + 22) this.boss.applyVirus(7);
+    } else if (w.t === 'sniper') {
+      this._fireSniperLaser();
     }
+  }
+
+  // ── Sniper Rail: piercing red laser — hits all enemies on line simultaneously
+  _fireSniperLaser() {
+    const w   = WPNS[this.wpnIdx];
+    const dx  = this.wMX - this.px, dy = this.wMY - this.py;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux  = dx / len, uy = dy / len;
+    const far = Math.max(this.WW, this.WH) * 1.5;
+    const ex  = this.px + ux * far, ey = this.py + uy * far;
+    // Three-layer beam: outer glow → mid beam → white core
+    this._addBeam(this.px, this.py, ex, ey, w.col, 0.30, 18);
+    this._addBeam(this.px, this.py, ex, ey, w.col, 0.22,  7);
+    this._addBeam(this.px, this.py, ex, ey, '#FFFFFF',   0.16,  2);
+    // Piercing hit — all enemies on the line
+    let hits = 0;
+    for (const e of this.EYES) {
+      if (e.cloaking && Math.random() < 0.65) continue;
+      const tx = e.x - this.px, ty = e.y - this.py;
+      const proj = tx * ux + ty * uy;
+      if (proj < 0) continue;
+      const cx = this.px + ux * proj, cy = this.py + uy * proj;
+      if (d2(e.x, e.y, cx, cy) < e.sz + 18) {
+        this._damageE(e, w.dmg * this.powerMult, true);
+        this._burst(e.x, e.y, w.col, 8, 35);
+        hits++;
+      }
+    }
+    if (this.boss) {
+      const tx = this.boss.x - this.px, ty = this.boss.y - this.py;
+      const proj = tx * ux + ty * uy;
+      if (proj >= 0) {
+        const cx = this.px + ux * proj, cy = this.py + uy * proj;
+        if (d2(this.boss.x, this.boss.y, cx, cy) < this.boss.sz + 28) {
+          this._hurtBoss(w.dmg * this.powerMult); hits++;
+          this._burst(this.boss.x, this.boss.y, w.col, 14, 60);
+        }
+      }
+    }
+    SFX.beam();
+    this.flashAlpha  = Math.max(this.flashAlpha, 0.2);
+    this.chromAberr  = Math.max(this.chromAberr, 1.5);
+    this._shakeDir(this.px, this.py, 12);
+    if (hits > 1) showMsg('MULTI-KILL', `${hits} TARGETS ELIMINATED`, 1500);
+    else showMsg('RAILGUN FIRE', 'PRECISION STRIKE', 1200);
   }
 
   // ── Plasma Vortex (10): slow pull-orb that explodes after 1.5 s

@@ -70,67 +70,163 @@ function _open(id) {
   if (el) el.style.display = 'flex';
 }
 
-// ── ARSENAL ───────────────────────────────────────────────────────────────────
+// ── ARSENAL (CoD-style 2-panel) ───────────────────────────────────────────────
+const WPN_CAT = {
+  pulse: 'energy', beam: 'energy', sniper: 'energy',
+  spread: 'spread',
+  split: 'tactical', wave: 'tactical', chain: 'tactical',
+  blackhole: 'special', nuke: 'special',
+  virus: 'status', cryo: 'status',
+};
+
+let _arActiveFilter = 'all';
+let _arSelectedIdx  = -1;
+
 function _openArsenal() {
-  const grid = document.getElementById('arsenal-grid');
-  if (!grid) return;
+  const credEl = document.getElementById('ar-credits-amt');
+  if (credEl) credEl.textContent = getCredits().toLocaleString();
 
-  const credits = getCredits();
-  document.getElementById('arsenal-credits').textContent = credits + ' ◈';
-
-  grid.innerHTML = WPNS.map((w, i) => {
-    const locked    = !w.unlocked;
-    const cost      = w.unlockCost || 0;
-    const canAfford = credits >= cost;
-    const statsBar  = _bar('DMG', w.dmg, 10) + _bar('RNG', w.rng, 600) + _bar('SPD', 1 / w.cd, 30);
-    const equipped  = _gameScene?.wpnIdx === i;
-
-    return `<div class="ar-card ${locked ? 'ar-locked' : ''}" style="--wc:${w.col}">
-      <div class="ar-color-strip"></div>
-      <div class="ar-body">
-        <div class="ar-name">${w.n}</div>
-        <div class="ar-desc">${w.desc || ''}</div>
-        <div class="ar-stats">${statsBar}</div>
-      </div>
-      <div class="ar-right">
-        ${locked
-          ? `<button class="ar-btn ar-buy" data-buy="${i}" ${canAfford ? '' : 'disabled'}>${cost} ◈ UNLOCK</button>`
-          : `<button class="ar-btn ar-equip" data-equip="${i}">${equipped ? '✓ EQUIPPED' : 'EQUIP'}</button>`
-        }
-        <div class="ar-type">${w.t.toUpperCase()}</div>
-      </div>
-    </div>`;
-  }).join('');
-
-  grid.querySelectorAll('[data-equip]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = +btn.dataset.equip;
-      if (_gameScene) _gameScene.wpnIdx = idx;
-      import('../ui/HUD.js').then(m => m.setWpn(idx, WPNS));
-      grid.querySelectorAll('.ar-equip').forEach(b => b.textContent = 'EQUIP');
-      btn.textContent = '✓ EQUIPPED';
+  // Filter tab wiring (once per open)
+  const filterBar = document.getElementById('ar-filters');
+  if (filterBar && !filterBar._wired) {
+    filterBar._wired = true;
+    filterBar.querySelectorAll('.ar-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBar.querySelectorAll('.ar-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _arActiveFilter = btn.dataset.f;
+        _arRenderList();
+      });
     });
-  });
+  }
 
-  grid.querySelectorAll('[data-buy]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx  = +btn.dataset.buy;
+  _arRenderList();
+
+  // Default: show currently equipped weapon
+  const startIdx = _gameScene?.wpnIdx ?? 0;
+  _arShowDetail(startIdx);
+
+  _open('arsenal-modal');
+}
+
+function _arRenderList() {
+  const list = document.getElementById('ar-wpn-list');
+  if (!list) return;
+  const credits   = getCredits();
+  const equippedI = _gameScene?.wpnIdx ?? 0;
+
+  list.innerHTML = '';
+  WPNS.forEach((w, i) => {
+    if (_arActiveFilter !== 'all' && (WPN_CAT[w.t] || 'tactical') !== _arActiveFilter) return;
+    const locked   = !w.unlocked;
+    const equipped = i === equippedI;
+    const row = document.createElement('div');
+    row.className = `ar-row${locked ? ' ar-dim' : ''}${_arSelectedIdx === i ? ' ar-sel' : ''}`;
+    row.dataset.idx = i;
+    row.innerHTML = `
+      <div class="ar-dot" style="background:${w.col};box-shadow:0 0 7px ${w.col}55"></div>
+      <div class="ar-rinfo">
+        <div class="ar-rname">${w.n}</div>
+        <div class="ar-rtag">${(w.tag || w.t).toUpperCase()} · ${(WPN_CAT[w.t]||'TACTICAL').toUpperCase()}</div>
+      </div>
+      <div class="ar-rprice ${locked ? 'pay' : 'free'}">${locked ? (w.unlockCost||0)+' ◈' : ''}</div>
+      ${equipped ? '<div class="ar-eq-badge">EQUIPPED</div>' : ''}
+    `;
+    row.addEventListener('click', () => {
+      list.querySelectorAll('.ar-row').forEach(r => r.classList.remove('ar-sel'));
+      row.classList.add('ar-sel');
+      _arSelectedIdx = i;
+      _arShowDetail(i);
+    });
+    list.appendChild(row);
+  });
+}
+
+function _arShowDetail(idx) {
+  _arSelectedIdx = idx;
+  const panel = document.getElementById('ar-detail');
+  if (!panel) return;
+  const w = WPNS[idx];
+  if (!w) return;
+
+  const credits   = getCredits();
+  const locked    = !w.unlocked;
+  const equipped  = (_gameScene?.wpnIdx ?? 0) === idx;
+  const canAfford = credits >= (w.unlockCost || 0);
+
+  // Color components for rgba usage
+  const r = parseInt(w.col.slice(1,3),16)||0;
+  const g = parseInt(w.col.slice(3,5),16)||0;
+  const b = parseInt(w.col.slice(5,7),16)||0;
+
+  const stats = [
+    { n:'DAMAGE',    v: Math.min(100, (w.dmg  / 15)  * 100), lbl: w.dmg >= 10 ? w.dmg.toFixed(0) : w.dmg.toFixed(1) },
+    { n:'RANGE',     v: Math.min(100, (Math.min(w.rng,600) / 600) * 100), lbl: w.rng >= 600 ? 'MAX' : w.rng.toString() },
+    { n:'FIRE RATE', v: Math.min(100, (1 / w.cd) / 20 * 100), lbl: (1/w.cd).toFixed(1)+'/s' },
+    { n:'IMPACT',    v: Math.min(100, w.dmg * (1/w.cd) / 4 * 100), lbl: (w.dmg*(1/w.cd)).toFixed(1) },
+  ];
+
+  const priceHTML = locked
+    ? `<div class="ar-price-pill">${w.unlockCost || 0} ◈</div>`
+    : `<div class="ar-free-pill">UNLOCKED</div>`;
+
+  const btnHTML = locked
+    ? `<button class="ar-buy-btn" id="ar-buy-${idx}" ${canAfford?'':'disabled'}>${canAfford ? `UNLOCK — ${w.unlockCost} ◈` : `NEED ${(w.unlockCost||0)-credits} MORE ◈`}</button>${!canAfford ? '<div class="ar-cant-afford">Earn credits by playing Survival mode</div>' : ''}`
+    : `<button class="ar-equip-btn ${equipped?'equipped':''}" id="ar-eq-${idx}">${equipped ? '✓  EQUIPPED' : 'EQUIP WEAPON'}</button>`;
+
+  panel.innerHTML = `
+    <div class="ar-d-top">
+      <div class="ar-d-icon" style="background:rgba(${r},${g},${b},0.12);border:1.5px solid ${w.col};box-shadow:0 0 20px rgba(${r},${g},${b},0.2)">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${w.col}" stroke-width="1.8">
+          <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/>
+          <circle cx="12" cy="12" r="3" fill="${w.col}" opacity=".5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="ar-d-name" style="text-shadow:0 0 28px rgba(${r},${g},${b},0.5)">${w.n}</div>
+        <div class="ar-d-cat" style="color:${w.col}">${w.t.toUpperCase()} · ${(WPN_CAT[w.t]||'TACTICAL').toUpperCase()}</div>
+      </div>
+    </div>
+    <div class="ar-d-tag" style="color:${w.col};border-color:rgba(${r},${g},${b},0.35)">${w.tag || w.t.toUpperCase()}</div>
+    <div class="ar-d-desc" style="border-color:rgba(${r},${g},${b},0.3)">${w.desc || ''}</div>
+    <div class="ar-stats-lbl">WEAPON STATS</div>
+    ${stats.map(s => `
+      <div class="ar-srow">
+        <span class="ar-sn">${s.n}</span>
+        <div class="ar-sb"><div class="ar-sf" style="width:${s.v.toFixed(0)}%;background:${w.col}"></div></div>
+        <span class="ar-sv">${s.lbl}</span>
+      </div>`).join('')}
+    <div class="ar-action">
+      ${priceHTML}
+      ${btnHTML}
+    </div>
+  `;
+
+  // Wire up action button
+  const buyBtn = document.getElementById(`ar-buy-${idx}`);
+  if (buyBtn) {
+    buyBtn.addEventListener('click', () => {
       const cost = WPNS[idx]?.unlockCost || 0;
       if (getCredits() >= cost) {
         setCredits(getCredits() - cost);
         if (_gameScene) _gameScene.credits = getCredits();
         unlockWeapon(idx);
-        _openArsenal();
+        const cEl = document.getElementById('ar-credits-amt');
+        if (cEl) cEl.textContent = getCredits().toLocaleString();
+        _arRenderList();
+        _arShowDetail(idx);
       }
     });
-  });
-
-  _open('arsenal-modal');
-}
-
-function _bar(label, val, max) {
-  const pct = Math.min(100, (val / max) * 100).toFixed(0);
-  return `<div class="ar-stat-row"><span>${label}</span><div class="ar-stat-bg"><div class="ar-stat-fill" style="width:${pct}%;background:var(--wc)"></div></div></div>`;
+  }
+  const eqBtn = document.getElementById(`ar-eq-${idx}`);
+  if (eqBtn && !equipped) {
+    eqBtn.addEventListener('click', () => {
+      if (_gameScene) _gameScene.wpnIdx = idx;
+      import('../ui/HUD.js').then(m => m.setWpn(idx, WPNS));
+      _arRenderList();
+      _arShowDetail(idx);
+    });
+  }
 }
 
 // ── CHALLENGES ────────────────────────────────────────────────────────────────
