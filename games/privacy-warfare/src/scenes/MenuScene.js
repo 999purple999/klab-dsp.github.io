@@ -36,7 +36,6 @@ export class MenuScene {
 
   enter() {
     document.getElementById('overlay').classList.remove('hidden');
-    document.getElementById('crosshair').style.display = 'none';
     document.getElementById('game-over-modal').style.display = 'none';
     document.addEventListener('mousemove', this._onMouseMove);
     document.getElementById('mp-survival')?.addEventListener('click', this._onSurvival);
@@ -93,7 +92,6 @@ export class MenuScene {
   _doStartSurvival() {
     document.getElementById('overlay').classList.add('hidden');
     this._game.scenes.pop();
-    document.getElementById('crosshair').style.display = 'block';
     openLoadout((wpnSlots, gadSlots) => {
       this._game.gameScene.setLoadout(wpnSlots, gadSlots);
       this._game.gameScene.startGame();
@@ -102,7 +100,6 @@ export class MenuScene {
 
   _startCampaign() {
     document.getElementById('overlay').classList.add('hidden');
-    document.getElementById('crosshair').style.display = 'block';
     this._game.scenes.replace(this._game.campaignScene);
   }
 

@@ -626,22 +626,38 @@ canvas{display:block;position:absolute;top:0;left:0}
 }
 @keyframes crt-flicker{0%,100%{opacity:.97}48%{opacity:1}50%{opacity:.98}92%{opacity:.99}94%{opacity:.97}}
 
-/* ── Custom cursor ────────────────────────────────────────────────────────── */
+/* ── Custom cursor / crosshair ────────────────────────────────────────────── */
 *{cursor:none}
 #cur-core{
-  position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;
-  border:2px solid var(--neon-cyan,#00f0ff);background:transparent;z-index:var(--z-cursor,500);
-  transform:translate(-50%,-50%);transition:transform .08s linear,border-color .15s,width .15s,height .15s;
-  mix-blend-mode:screen;
+  position:fixed;width:26px;height:26px;
+  pointer-events:none;z-index:var(--z-cursor,500);
+  transform:translate(-50%,-50%);mix-blend-mode:screen;
+  transition:opacity .15s,transform .08s linear;
+}
+#cur-core::before{
+  content:'';position:absolute;
+  top:50%;left:0;right:0;height:1.5px;
+  transform:translateY(-50%);
+  background:rgba(0,240,255,.85);
+  box-shadow:0 0 6px rgba(0,240,255,.65);
+}
+#cur-core::after{
+  content:'';position:absolute;
+  left:50%;top:0;bottom:0;width:1.5px;
+  transform:translateX(-50%);
+  background:rgba(0,240,255,.85);
+  box-shadow:0 0 6px rgba(0,240,255,.65);
 }
 #cur-trail{
-  position:fixed;width:24px;height:24px;border-radius:50%;pointer-events:none;
-  border:1px solid rgba(0,240,255,.3);background:transparent;z-index:calc(var(--z-cursor,500) - 1);
-  transform:translate(-50%,-50%);transition:transform .15s ease-out,opacity .15s;
-  mix-blend-mode:screen;
+  position:fixed;width:28px;height:28px;border-radius:50%;pointer-events:none;
+  border:1px solid rgba(0,240,255,.22);background:transparent;z-index:calc(var(--z-cursor,500) - 1);
+  transform:translate(-50%,-50%);mix-blend-mode:screen;
 }
-body:has(button:hover) #cur-core{width:14px;height:14px;border-color:var(--neon-purple,#b026ff);}
-body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
+body:has(button:hover) #cur-core::before,
+body:has(button:hover) #cur-core::after{
+  background:rgba(191,0,255,.85);box-shadow:0 0 8px rgba(191,0,255,.7);
+}
+body:has(button:hover) #cur-trail{border-color:rgba(191,0,255,.3);width:36px;height:36px;}
 
 @media(max-width:640px){
   .ar-layout{flex-direction:column;width:100vw;height:100vh;border-radius:0;}
@@ -984,15 +1000,6 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
 #mode-cancel-btn:hover{border-color:rgba(255,40,40,.5);color:rgba(255,80,80,.7);}
 
 /* ── Wave C: Crosshair ──────────────────────────────────────────────────────── */
-#crosshair{
-  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:28px;height:28px;pointer-events:none;z-index:30;
-}
-.ch-line{position:absolute;background:rgba(0,240,255,.7);box-shadow:0 0 4px rgba(0,240,255,.45);}
-.ch-t,.ch-b{width:2px;height:10px;left:50%;transform:translateX(-50%);}
-.ch-l,.ch-r{height:2px;width:10px;top:50%;transform:translateY(-50%);}
-.ch-t{top:0;}.ch-b{bottom:0;}.ch-l{left:0;}.ch-r{right:0;}
-.ch-dot{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(0,240,255,.9);top:50%;left:50%;transform:translate(-50%,-50%);}
 
 /* ── Wave C: Kill Feed ──────────────────────────────────────────────────────── */
 #kill-feed{
@@ -1153,14 +1160,6 @@ body:has(button:hover) #cur-trail{width:40px;height:40px;opacity:.2;}
   </div>
 </div>
 
-<!-- ── Wave C: Crosshair ──────────────────── -->
-<div id="crosshair" style="display:none">
-  <div class="ch-line ch-t"></div>
-  <div class="ch-line ch-b"></div>
-  <div class="ch-line ch-l"></div>
-  <div class="ch-line ch-r"></div>
-  <div class="ch-dot"></div>
-</div>
 
 <!-- ── Wave C: Kill Feed ─────────────────── -->
 <div id="kill-feed"></div>

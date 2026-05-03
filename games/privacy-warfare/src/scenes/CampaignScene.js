@@ -295,7 +295,6 @@ export class CampaignScene {
     const g = this.game;
     if (g) {
       document.getElementById('overlay')?.classList.remove('hidden');
-      document.getElementById('crosshair').style.display = 'none';
       g.scenes.replace(g.menuScene);
     }
   }
@@ -318,7 +317,6 @@ export class CampaignScene {
 
     this.exit();
     openLoadout((wpnSlots, gadSlots) => {
-      document.getElementById('crosshair').style.display = 'block';
       this.gameScene.setLoadout(wpnSlots, gadSlots);
       this.gameScene.startCampaignLevel(waveNum);
     });

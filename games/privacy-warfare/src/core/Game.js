@@ -182,7 +182,6 @@ export class Game {
 
       document.getElementById('go-retry').onclick = () => {
         modal.style.display = 'none';
-        document.getElementById('crosshair').style.display = 'block';
         this.gameScene.startGame();
       };
       document.getElementById('go-menu').onclick = () => {
