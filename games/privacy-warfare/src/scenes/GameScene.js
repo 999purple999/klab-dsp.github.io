@@ -7,7 +7,8 @@ import { renderPlayer } from '../entities/PlayerVisual.js';
 import { MAPS, STARS, BLDGS, WEB_LINES, AMBIENT, OBSTACLES, TRAPS,
          buildMapAssets, buildObstacles, buildTraps, resolveObstaclePos,
          INTERACTIVES, buildInteractives,
-         PORTALS, CONVEYOR_ZONES, MOVING_OBSTACLES, buildGeometry } from '../mapgen/MapData.js';
+         PORTALS, CONVEYOR_ZONES, MOVING_OBSTACLES, buildGeometry,
+         SECRETS, buildSecrets } from '../mapgen/MapData.js';
 import { renderBiomeExtras, renderBiomeObstacle } from '../mapgen/BiomeRenderer.js';
 import { WPNS, BASE_CD, BASE_DMG, BASE_RNG, BASE_AMMO } from '../entities/Weapon/WeaponDefinitions.js';
 import { GADGETS } from '../ui/LoadoutModal.js';
@@ -320,10 +321,11 @@ export class GameScene {
     this.mapIdx = this.nextMapIdx;
     // Recolor ambient particles to match the new biome
     AMBIENT.forEach(a => { a.col = MAPS[this.mapIdx].sc; });
-    buildObstacles(wv, this.WW, this.WH);
+    buildObstacles(wv, this.WW, this.WH, this.mapIdx);
     buildTraps(wv, this.WW, this.WH);
     buildInteractives(wv, this.WW, this.WH);
     buildGeometry(wv, this.WW, this.WH);
+    buildSecrets(wv, this.WW, this.WH, this.mapIdx);
     const M = MAPS[this.mapIdx];
     const mf = document.getElementById('map-name-flash');
     mf.style.opacity = '1'; mf.textContent = M.n;
@@ -963,11 +965,21 @@ export class GameScene {
 
   _hurtPlayer() {
     if (this.invincible > 0 || this.ghostActive || this.empShieldActive) return;
+    if ((this._secretDmgReduceTimer || 0) > 0 && Math.random() < 0.75) return;
     this.hp--; updateHpHud(this.hp, this.maxHp); SFX.hurt();
     this.invincible = 1.8 + this.ghostBonusTime;
     this.ghostActive = true; this.ghostTimer = this.invincible;
     this._shakeDir(this.px, this.py, 20); this.flashAlpha = 0.28; this.chromAberr = 0.8;
-    if (this.hp <= 0) this.gameOver();
+    if (this.hp <= 0) {
+      if ((this._extraLives || 0) > 0) {
+        this._extraLives--;
+        this.hp = this.maxHp;
+        updateHpHud(this.hp, this.maxHp);
+        this._spawnFloat(this.px, this.py - 40, '✦ EXTRA LIFE ✦', '#00FF88');
+        return;
+      }
+      this.gameOver();
+    }
   }
 
   // ─── Abilities
@@ -1790,6 +1802,218 @@ export class GameScene {
       }
       case 13: break; // SHADOW PROTOCOL — handled in _render (darkness overlay)
       case 14: break; // NEURAL CLUSTER — mind link handled in _killE
+    }
+  }
+
+  _updateSecrets(dt) {
+    if (!SECRETS.length) return;
+    if ((this._secretDmgReduceTimer || 0) > 0) this._secretDmgReduceTimer -= dt;
+
+    for (const s of SECRETS) {
+      if (s.found) continue;
+      s.pulse += dt;
+      const dist = Math.hypot(this.px - s.x, this.py - s.y);
+
+      if (s.type === 'relic') {
+        if (dist < 45) {
+          s.scanTimer += dt;
+          if (s.scanTimer >= s.scanMax) {
+            s.found = true;
+            this._triggerSecret(s);
+            this._spawnFloat(s.x, s.y - 40, '✦ ' + s.name + ' ✦', s.col);
+            this._spawnFloat(s.x, s.y - 60, s.lore, '#CCCCCC');
+          }
+        } else {
+          s.scanTimer = Math.max(0, s.scanTimer - dt * 2);
+        }
+      } else if (dist < 30) {
+        s.found = true;
+        if (s.type === 'hp_cache') {
+          this.hp = Math.min(this.maxHp, this.hp + 1);
+          updateHpHud(this.hp, this.maxHp);
+          this._spawnFloat(s.x, s.y - 30, '+1 HP CACHE', '#FF4466');
+        } else {
+          this.loadoutWpns.forEach(i => {
+            if (this.wpnAmmo[i] !== undefined)
+              this.wpnAmmo[i] = Math.min(BASE_AMMO[i] ?? 80, (this.wpnAmmo[i] ?? 0) + 20);
+          });
+          this._updateAmmoHUD();
+          this._spawnFloat(s.x, s.y - 30, '+AMMO CACHE', '#FFAA00');
+        }
+      }
+    }
+
+    // Allied turrets update
+    if (this._allyTurrets?.length) {
+      for (let i = this._allyTurrets.length - 1; i >= 0; i--) {
+        const at = this._allyTurrets[i];
+        at.lifetime = (at.lifetime || 0) + dt;
+        if (at.lifetime > 20) { this._allyTurrets.splice(i, 1); continue; }
+        let closest = null, closestD = 320;
+        for (const e of this.EYES) {
+          const ed = Math.hypot(e.x - at.x, e.y - at.y);
+          if (ed < closestD) { closest = e; closestD = ed; }
+        }
+        if (!closest && this.boss) closest = this.boss;
+        at.shootTimer = (at.shootTimer || 0) - dt;
+        if (at.shootTimer <= 0 && closest) {
+          at.shootTimer = 0.65;
+          const adx = closest.x - at.x, ady = closest.y - at.y, ad = Math.hypot(adx, ady) || 1;
+          if (!this._allyProjs) this._allyProjs = [];
+          this._allyProjs.push({ x: at.x, y: at.y, vx: adx/ad*300, vy: ady/ad*300, r: 5, col: at.col, life: 1.8 });
+        }
+      }
+      if (this._allyProjs?.length) {
+        for (let i = this._allyProjs.length - 1; i >= 0; i--) {
+          const p = this._allyProjs[i];
+          p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
+          if (p.life <= 0) { this._allyProjs.splice(i, 1); continue; }
+          let hit = false;
+          for (const e of this.EYES) {
+            if (Math.hypot(e.x - p.x, e.y - p.y) < e.sz + p.r) {
+              this._damageE(e, 1, true); this._allyProjs.splice(i, 1); hit = true; break;
+            }
+          }
+          if (!hit && this.boss && Math.hypot(this.boss.x - p.x, this.boss.y - p.y) < this.boss.sz + p.r) {
+            this._hurtBoss(1); this._allyProjs.splice(i, 1);
+          }
+        }
+      }
+    }
+  }
+
+  _triggerSecret(s) {
+    switch (s.effect) {
+      case 'xray':        this._xrayMode = true; break;
+      case 'freeze_all':
+        this.EYES.forEach(e => e.applyFreeze(6));
+        if (this.boss) this.boss.applyFreeze(3);
+        break;
+      case 'credits':
+        this.credits += 150; updateCredits(this.credits); break;
+      case 'speed_bullets':
+        this._speedBulletsTimer = 12; break;
+      case 'invincible':
+        this.invincible = 8; break;
+      case 'kill_all':
+        for (const e of [...this.EYES]) this._damageE(e, 99999, true); break;
+      case 'turret_ally':
+        if (!this._allyTurrets) this._allyTurrets = [];
+        if (!this._allyProjs) this._allyProjs = [];
+        this._allyTurrets.push({ x: this.px, y: this.py, col: s.col, shootTimer: 0.3, lifetime: 0 });
+        break;
+      case 'freeze_bullets':
+        this.EPROJS.length = 0; break;
+      case 'inf_ammo':
+        this.loadoutWpns.forEach(i => { if (this.wpnAmmo[i] !== undefined) this.wpnAmmo[i] = BASE_AMMO[i] ?? 80; });
+        this._updateAmmoHUD(); break;
+      case 'extra_life':
+        this._extraLives = (this._extraLives || 0) + 1; break;
+      case 'homing':
+        this._homingTimer = 20; break;
+      case 'health_cache':
+        for (let i = 0; i < 3; i++) {
+          const a = (i / 3) * Math.PI * 2;
+          this.HP_PKUPS.push({ x: this.px + Math.cos(a) * 60, y: this.py + Math.sin(a) * 60, pulse: 0 });
+        }
+        break;
+      case 'lure_enemies':
+        this.EYES.forEach(e => {
+          const dx = this.px - e.x, dy = this.py - e.y, d = Math.hypot(dx, dy) || 1;
+          e.vx = dx / d * 220; e.vy = dy / d * 220; e._lured = 5;
+        });
+        break;
+      case 'damage_reduce':
+        this._secretDmgReduceTimer = 10; break;
+      case 'invisible':
+        this.invincible = 8; this.ghostActive = true; this.ghostTimer = 8; break;
+    }
+  }
+
+  _renderSecrets(ctx, camX, camY, DPR, t) {
+    for (const s of SECRETS) {
+      if (s.found) continue;
+      const sx = (s.x - camX) * DPR, sy = (s.y - camY) * DPR;
+      if (!onScreen(s.x, s.y, 80)) continue;
+      const pr = Math.sin(s.pulse * 2.5) * 0.5 + 0.5;
+      ctx.save();
+      if (s.type === 'relic') {
+        const gR = (22 + pr * 16) * DPR;
+        const grad = ctx.createRadialGradient(sx, sy, 0, sx, sy, gR);
+        grad.addColorStop(0, s.col + 'AA'); grad.addColorStop(1, s.col + '00');
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(sx, sy, gR, 0, Math.PI * 2); ctx.fill();
+        ctx.save();
+        ctx.translate(sx, sy); ctx.rotate(t * 1.8);
+        ctx.strokeStyle = s.col; ctx.lineWidth = 2.5;
+        ctx.shadowBlur = 18 + pr * 18; ctx.shadowColor = s.col;
+        const ds = (13 + pr * 5) * DPR;
+        ctx.beginPath();
+        ctx.moveTo(0, -ds); ctx.lineTo(ds * 0.7, 0); ctx.lineTo(0, ds); ctx.lineTo(-ds * 0.7, 0);
+        ctx.closePath(); ctx.stroke();
+        ctx.restore();
+        ctx.fillStyle = s.col + 'CC';
+        ctx.shadowBlur = 14; ctx.shadowColor = s.col;
+        ctx.beginPath(); ctx.arc(sx, sy, (5 + pr * 2) * DPR, 0, Math.PI * 2); ctx.fill();
+        const progress = s.scanTimer / s.scanMax;
+        if (progress > 0) {
+          ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 3;
+          ctx.shadowBlur = 12; ctx.shadowColor = '#FFFFFF';
+          ctx.beginPath();
+          ctx.arc(sx, sy, (20 + pr * 5) * DPR, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * progress);
+          ctx.stroke();
+          ctx.font = `bold ${8 * DPR}px monospace`;
+          ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+          ctx.shadowBlur = 8; ctx.shadowColor = s.col;
+          ctx.fillText('SCANNING...', sx, sy - 24 * DPR);
+        }
+        if (Math.hypot(this.px - s.x, this.py - s.y) < 200) {
+          const alpha2 = Math.min(1, (200 - Math.hypot(this.px - s.x, this.py - s.y)) / 100);
+          ctx.globalAlpha = alpha2;
+          ctx.font = `bold ${7 * DPR}px monospace`;
+          ctx.fillStyle = s.col; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+          ctx.shadowBlur = 10; ctx.shadowColor = s.col;
+          ctx.fillText('◈ ' + s.name + ' ◈', sx, sy + 22 * DPR);
+          ctx.globalAlpha = 1;
+        }
+      } else {
+        const col = s.type === 'hp_cache' ? '#FF4466' : '#FFAA00';
+        const cs = (s.r + pr * 5) * DPR;
+        ctx.strokeStyle = col; ctx.lineWidth = 2;
+        ctx.shadowBlur = 12 + pr * 10; ctx.shadowColor = col;
+        ctx.fillStyle = col + '44';
+        ctx.beginPath(); ctx.arc(sx, sy, cs, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.font = `bold ${9 * DPR}px monospace`;
+        ctx.fillStyle = col; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(s.type === 'hp_cache' ? '+' : '◆', sx, sy);
+      }
+      ctx.shadowBlur = 0; ctx.restore();
+    }
+    if (this._allyTurrets?.length) {
+      for (const at of this._allyTurrets) {
+        const tx2 = (at.x - camX) * DPR, ty2 = (at.y - camY) * DPR;
+        ctx.save(); ctx.translate(tx2, ty2);
+        ctx.strokeStyle = at.col; ctx.lineWidth = 2.5;
+        ctx.shadowBlur = 18; ctx.shadowColor = at.col;
+        ctx.fillStyle = at.col + '44';
+        ctx.beginPath(); ctx.arc(0, 0, 12 * DPR, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.font = `bold ${7 * DPR}px monospace`;
+        ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('T', 0, 0);
+        const frac = 1 - (at.lifetime || 0) / 20;
+        ctx.fillStyle = at.col;
+        ctx.fillRect(-10 * DPR, 15 * DPR, 20 * frac * DPR, 2 * DPR);
+        ctx.shadowBlur = 0; ctx.restore();
+      }
+    }
+    if (this._allyProjs?.length) {
+      for (const p of this._allyProjs) {
+        const px2 = (p.x - camX) * DPR, py2 = (p.y - camY) * DPR;
+        ctx.save();
+        ctx.fillStyle = p.col; ctx.shadowBlur = 10; ctx.shadowColor = p.col;
+        ctx.beginPath(); ctx.arc(px2, py2, p.r * DPR, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0; ctx.restore();
+      }
     }
   }
 
@@ -2635,6 +2859,7 @@ export class GameScene {
 
     this._updateTraps(dt);
     this._updateInteractives(dt);
+    this._updateSecrets(dt);
     this._updateGeometry(dt);
     this._updateBiomeEffects(dt);
     this._updateEnemyCount();
@@ -2694,6 +2919,7 @@ export class GameScene {
     // Traps
     this._renderTraps(ctx, camX, camY, DPR);
     this._renderInteractives(ctx, camX, camY, DPR);
+    this._renderSecrets(ctx, camX, camY, DPR, t2);
 
     // Corruption zones
     for (const z of this.CORRUPT_ZONES) {
